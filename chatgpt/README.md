@@ -92,6 +92,16 @@ Portable-пакет находится в `plugin/`: `plugin.json`, `mcp.json` �
 в общедоступный каталог. Для обычного ChatGPT используйте созданный Sites
 плагин; OAuth connection и точный resource берите из Sites get_site.
 
+Обновление MCP каталога не импортирует skill и стартовые запросы из ZIP.
+Для пакета существующего личного Sites-плагина сначала скачайте его ZIP,
+сохраните служебное `name`, исходный `.app.json` и поля карточки, включая
+`developerName`. Добавьте новые значения interface из portable manifest и
+`skills/media-statistics/SKILL.md`, увеличьте версию пакета и загрузите его
+через **Ещё действия → Загрузить новую версию** того же плагина.
+Не подменяйте существующую ссылку на зарегистрированное приложение конфигурацией
+нового MCP-сервера. Архив для текущего владельца находится в
+`dist/social-analytics-sites-plugin.zip`; общий переносимый пакет — отдельно.
+
 Официальные инструкции: [Sites plugin](https://help.openai.com/en/articles/20001547-hosting-a-plugin-with-chatgpt-sites),
 [plugin packaging](https://developers.openai.com/plugins/build/plugins).
 
