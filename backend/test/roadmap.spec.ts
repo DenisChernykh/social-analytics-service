@@ -681,8 +681,8 @@ describe("Stories, private comments and reviews", () => {
       metric: "navigation",
       period: "lifetime",
       metricType: "total_value",
-      value: 3,
-      reason: null,
+      value: null,
+      reason: "not_returned",
       description: null,
       points: [],
       breakdowns: [
@@ -703,6 +703,12 @@ describe("Stories, private comments and reviews", () => {
     expect(
       (await f.request(`/api/collection-jobs/${operationId}/advance`, "POST", {})).status,
     ).toBe(200);
+    expect(f.transport.stories).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      null,
+      5,
+    );
     const report = await f.request(`/api/media/${mediaId}/statistics`);
     expect(await report.json()).toMatchObject({
       media: { productType: "STORY" },
@@ -710,8 +716,8 @@ describe("Stories, private comments and reviews", () => {
       storyInsights: {
         replies: { value: 0 },
         navigation: {
-          tap_forward: { value: 3 },
-          tap_exit: { value: 0 },
+          tap_forward: { value: 3, reason: null },
+          tap_exit: { value: 0, reason: null },
           tap_back: { value: null, reason: "not_returned" },
         },
       },

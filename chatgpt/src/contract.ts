@@ -351,6 +351,7 @@ export const collectionStatusResponse = z.object({
   policy: z.object({
     runBudget: z.number(),
     pageSize: z.number(),
+    storyPageSize: z.number(),
     cronMinutes: z.number(),
     ageIntervalsHours: z.array(z.number()),
     maximumConsecutiveFailures: z.number(),

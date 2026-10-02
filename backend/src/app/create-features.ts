@@ -77,7 +77,7 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
             accountId,
             operationId,
             cursor,
-            pageSize: 1,
+            pageSize: stories ? 5 : 1,
             kind: stories ? "stories" : "page",
           }),
       };

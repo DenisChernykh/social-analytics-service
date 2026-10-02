@@ -186,7 +186,9 @@ export class InstagramSource implements AnalyticsSource {
             category,
             {
               value: categories.get(category)?.value ?? null,
-              reason: categories.get(category)?.reason ?? navigation.reason ?? "not_returned",
+              reason: categories.has(category)
+                ? (categories.get(category)?.reason ?? null)
+                : (navigation.reason ?? "not_returned"),
               unit: "count",
               sourceField: `navigation.story_navigation_action_type.${category}`,
             },

@@ -122,6 +122,7 @@ export class Collect {
       policy: {
         runBudget: 2,
         pageSize: 1,
+        storyPageSize: 5,
         cronMinutes: 15,
         ageIntervalsHours: [1, 6, 24, 168],
         maximumConsecutiveFailures: 5,

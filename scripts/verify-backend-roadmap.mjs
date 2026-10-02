@@ -181,17 +181,25 @@ if (flags.has("--stories")) {
   )
     job = await request("POST", `/api/collection-jobs/${operationId}/advance`, {});
   output("story-discovery", {
+    jobId: operationId,
     status: job.status,
     observations: job.collected,
     pages: job.pages,
     errorCode: job.errorCode,
   });
+  assert.equal(
+    job.status,
+    "completed",
+    `Story collection is incomplete: ${job.errorCode ?? job.status}.`,
+  );
   const stories = await request(
     "GET",
     `/api/media?${new URLSearchParams({ accountId, productType: "STORY", limit: "10" })}`,
   );
   if (stories.items.length) {
     const story = await request("GET", mediaPath(stories.items[0].id, "statistics"));
+    for (const value of Object.values(story.storyInsights?.navigation ?? {}))
+      if (value.value !== null) assert.equal(value.reason, null);
     output("story-metrics", {
       viewsAvailable: story.metrics?.views.value != null,
       reachAvailable: story.metrics?.reach.value != null,
@@ -224,7 +232,7 @@ if (flags.has("--comments")) {
       "GET",
       `/api/media?${new URLSearchParams({ accountId, productType: "REELS", limit: "10" })}`,
     );
-    let selected = media;
+    let selected = candidates.items[0] ?? media;
     for (const candidate of candidates.items) {
       const candidateReport = await request("GET", mediaPath(candidate.id, "statistics"));
       if ((candidateReport.metrics?.comments?.value ?? 0) > 0) {
@@ -232,17 +240,29 @@ if (flags.has("--comments")) {
         break;
       }
     }
-    const collected = await request("POST", mediaPath(media.id, "comments/collect"), {
-      operationId: randomUUID(),
+    const operationId = randomUUID();
+    let collection = await request("POST", mediaPath(selected.id, "comments/collect"), {
+      operationId,
       limit: 5,
     });
-    const collection =
-      selected.id === media.id
-        ? collected
-        : await request("POST", mediaPath(selected.id, "comments/collect"), {
-            operationId: randomUUID(),
-            limit: 5,
-          });
+    const repeated = await request("POST", mediaPath(selected.id, "comments/collect"), {
+      operationId,
+      limit: 5,
+    });
+    assert.deepEqual(repeated, collection);
+    assert.deepEqual(await request("GET", `/api/comment-collections/${operationId}`), collection);
+    let pages = 1;
+    let collected = collection.collected;
+    while (collection.nextCursor && collected === 0 && pages < 3) {
+      collection = await request("POST", mediaPath(selected.id, "comments/collect"), {
+        operationId: randomUUID(),
+        cursor: collection.nextCursor,
+        limit: 5,
+      });
+      collected += collection.collected;
+      pages++;
+    }
+    assert.equal(collection.status, "completed");
     const saved = await request("GET", mediaPath(selected.id, "comments"));
     if (saved.items[0]) {
       const replies = await request("POST", mediaPath(selected.id, "comments/collect"), {
@@ -255,7 +275,9 @@ if (flags.has("--comments")) {
     output("comments", {
       consentGranted: true,
       status: collection.status,
-      collected: collection.collected,
+      collected,
+      pages,
+      idempotent: true,
       hasMore: collection.nextCursor !== null,
       savedTextsAreUntrusted: saved.signals.untrustedData,
     });

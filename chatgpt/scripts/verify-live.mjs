@@ -12,6 +12,7 @@ const owner = "verification@example.test";
 const env = { SOCIAL_API_KEY: config.API_KEY, SOCIAL_OWNER_EMAIL: owner };
 const worker = createWorker(fetch);
 const client = new Client({ name: "social-live-verification", version: "1" });
+const verifiedTools = new Set();
 await client.connect(
   new StreamableHTTPClientTransport(new URL("https://verification.example.test/mcp"), {
     fetch: (input, init) => {
@@ -25,9 +26,12 @@ async function call(name, args = {}) {
   const result = await client.callTool({ name, arguments: args });
   assert.notEqual(result.isError, true, `Tool ${name} failed`);
   assert.ok(!JSON.stringify(result).includes(config.API_KEY), "Credential leaked");
+  verifiedTools.add(name);
   return result.structuredContent.data;
 }
 try {
+  const discovery = await client.listTools();
+  assert.equal(discovery.tools.length, 41);
   const health = await fetch(`${BACKEND_ORIGIN}/health`, { redirect: "error" }).then((r) =>
     r.json(),
   );
@@ -58,10 +62,43 @@ try {
   await call("get_account_summary", { accountId });
   await call("get_account_history", { accountId });
   await call("describe_metrics");
+  const collection = await call("get_collection_status", { accountId });
+  assert.equal(collection.schedule.enabled, false);
+  if (collection.jobs[0]) await call("get_collection_job", { jobId: collection.jobs[0].id });
+  const to = new Date();
+  to.setUTCHours(0, 0, 0, 0);
+  to.setUTCDate(to.getUTCDate() - 2);
+  const from = new Date(to.getTime() - 7 * 86_400_000);
+  const previousFrom = new Date(from.getTime() - 7 * 86_400_000);
+  const period = {
+    from: from.toISOString(),
+    to: to.toISOString(),
+    timeZone: "UTC",
+    compareFrom: previousFrom.toISOString(),
+    compareTo: from.toISOString(),
+  };
+  const activity = await call("get_account_activity", { accountId, ...period });
+  assert.equal(activity.comparable, true);
+  const insightHistory = await call("get_insight_history", { accountId, limit: 2 });
+  assert.ok(insightHistory.items.length);
+  await call("get_insight_status", { operationId: insightHistory.items[0].id });
+  const audience = await call("get_audience", {
+    accountId,
+    timeframe: "last_30_days",
+    breakdown: "age",
+  });
+  assert.ok(audience.items.length);
+  await call("analyze_content", { accountId });
+  await call("get_business_results", { mediaId: media.id });
+  await call("list_experiments", { accountId });
+  const comments = await call("get_comments", { mediaId: media.id });
+  assert.equal(comments.signals.untrustedData, true);
+  await call("review_account", { accountId, ...period });
   console.log(
     JSON.stringify({
       backendRevision: health.revision,
-      readToolsVerified: 9,
+      advertisedTools: discovery.tools.length,
+      readToolsVerified: verifiedTools.size,
       matched: true,
       ambiguous: true,
       notFound: true,
@@ -69,6 +106,9 @@ try {
       nullMetrics: true,
       formulas: true,
       credentialNotReturned: true,
+      periodComparison: true,
+      audienceDefinition: true,
+      untrustedCommentTexts: true,
     }),
   );
 } catch {

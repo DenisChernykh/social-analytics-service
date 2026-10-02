@@ -4695,6 +4695,9 @@
                         "pageSize": {
                           "type": "number"
                         },
+                        "storyPageSize": {
+                          "type": "number"
+                        },
                         "cronMinutes": {
                           "type": "number"
                         },
@@ -4711,6 +4714,7 @@
                       "required": [
                         "runBudget",
                         "pageSize",
+                        "storyPageSize",
                         "cronMinutes",
                         "ageIntervalsHours",
                         "maximumConsecutiveFailures"
