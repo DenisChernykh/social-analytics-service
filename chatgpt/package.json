@@ -1,0 +1,27 @@
+{
+  "name": "social-analytics-chatgpt",
+  "version": "0.1.2",
+  "private": true,
+  "type": "module",
+  "description": "Личная статистика соцсетей в ChatGPT; первая готовая интеграция — Instagram",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": "11.15.1"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "biome check . && tsc --noEmit && pnpm test && pnpm build",
+    "test": "node --test src/*.test.ts",
+    "format": "biome check --write ."
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@types/node": "24.13.3",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  }
+}

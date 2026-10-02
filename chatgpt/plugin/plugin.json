@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "social-analytics",
+  "version": "0.1.2",
+  "description": "Личная статистика соцсетей: поиск публикаций, отчёты, история и сравнения. Пока подключён Instagram.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Social Analytics",
+        "shortDescription": "Статистика соцсетей по названию публикации",
+        "longDescription": "Social Analytics объединяет статистику ваших соцсетей. Первая готовая интеграция — официальный Instagram API. Отчёты показывают источники, время сбора, формулы и ограничения. Другие соцсети пока не подключены.",
+        "defaultPrompt": ["Мне нужна статистика по ролику: <название, подпись или ссылка>"]
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "social-analytics-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": "11.15.1"
+  },
+  "scripts": {
+    "dev": "pnpm --dir backend dev",
+    "check": "pnpm --dir backend check && pnpm --dir chatgpt check",
+    "test": "pnpm --dir backend test && pnpm --dir chatgpt test",
+    "format": "pnpm --dir backend format && pnpm --dir chatgpt format",
+    "mcp:build": "pnpm --dir chatgpt build",
+    "boundaries:check": "pnpm --dir backend boundaries:check",
+    "db:generate": "pnpm --dir backend db:generate",
+    "db:migrate:local": "pnpm --dir backend db:migrate:local",
+    "setup:local": "node scripts/setup-local.mjs",
+    "secrets:upload": "node scripts/upload-secrets.mjs",
+    "api": "node scripts/api.mjs",
+    "deploy:dry-run": "pnpm --dir backend deploy:dry-run"
+  }
+}

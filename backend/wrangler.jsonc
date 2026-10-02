@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "api",
+  "account_id": "7a2715978428a86e0c9d8ce757d33687",
+  "workers_dev": true,
+  "preview_urls": false,
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "secrets": {
+    "required": [
+      "API_KEY",
+      "TOKEN_ENCRYPTION_KEY",
+      "INSTAGRAM_CLIENT_ID",
+      "INSTAGRAM_CLIENT_SECRET"
+    ]
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "INSTAGRAM_API_VERSION": "v26.0",
+    "INSTAGRAM_REDIRECT_URI": "https://api.social-insights.workers.dev/api/instagram/oauth/callback",
+    "BUILD_REVISION": "0.1.7"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "social-analytics-db",
+      "database_id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": {
+    "enabled": false,
+    "logs": { "enabled": false, "invocation_logs": false }
+  }
+}

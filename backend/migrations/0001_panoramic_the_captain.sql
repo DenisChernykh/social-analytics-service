@@ -1,0 +1,1 @@
+ALTER TABLE `media` ADD `title_search` text DEFAULT '' NOT NULL;

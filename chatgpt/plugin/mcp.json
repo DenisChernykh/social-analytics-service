@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "social-analytics": {
+      "type": "streamable-http",
+      "url": "https://social-analytics.scary-rustles-7p.chatgpt.site/mcp"
+    }
+  }
+}
