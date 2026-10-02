@@ -81,6 +81,17 @@ export class D1Analytics implements AnalyticsRepository {
     const row = (await this.db.select().from(mediaTable).where(eq(mediaTable.id, id)).limit(1))[0];
     return row ? mapMedia(row) : null;
   }
+  async selectedMedia(ids: string[]) {
+    const result: Media[] = [];
+    for (let offset = 0; offset < ids.length; offset += 50) {
+      const rows = await this.db
+        .select()
+        .from(mediaTable)
+        .where(inArray(mediaTable.id, ids.slice(offset, offset + 50)));
+      result.push(...rows.map(mapMedia));
+    }
+    return result;
+  }
   async search(filter: MediaFilter) {
     const cursor = decodeCursor(filter.cursor);
     const words = JSON.stringify(filter.words);

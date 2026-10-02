@@ -246,6 +246,22 @@ describe("account and audience insights", () => {
         }),
       ]),
       current: { object: "account" },
+      categoryComparisons: expect.arrayContaining([
+        expect.objectContaining({
+          metric: "follows_and_unfollows",
+          categories: ["FOLLOW"],
+          current: 4,
+          previous: 4,
+          absoluteChange: 0,
+        }),
+        expect.objectContaining({
+          metric: "follows_and_unfollows",
+          categories: ["UNFOLLOW"],
+          current: 2,
+          previous: 2,
+          absoluteChange: 0,
+        }),
+      ]),
     });
     expect(
       (
@@ -372,6 +388,85 @@ describe("account and audience insights", () => {
 });
 
 describe("content context, comparable age and external results", () => {
+  it("handles 50 selected contexts and atomic business imports, and assesses all 100 planned publications", async () => {
+    const f = await collected();
+    const externalIds = Array.from({ length: 100 }, (_, index) =>
+      String(17900000000003000n + BigInt(index)),
+    );
+    await env.DB.prepare(
+      "INSERT INTO media(id,account_id,external_id,caption,search_text,media_type,product_type,permalink,published_at,updated_at) SELECT account_id || '_' || value,account_id,value,caption,search_text,media_type,product_type,permalink,published_at,updated_at FROM media CROSS JOIN json_each(?) WHERE media.id=?",
+    )
+      .bind(JSON.stringify(externalIds), mediaId)
+      .run();
+    const ids = externalIds.map((id) => `${accountId}_${id}`);
+    const context = await f.request("/api/media/context/batch", "PATCH", {
+      mediaIds: ids.slice(0, 50),
+      source: "manual",
+      values: { rubric: "Большая выборка" },
+    });
+    expect(context.status).toBe(200);
+    expect(await (await f.request(`/api/media/${ids[49]}/context`)).json()).toMatchObject({
+      context: { confirmed: { rubric: "Большая выборка" } },
+    });
+    const records = ids.slice(0, 50).map((mediaId, index) => ({
+      id: crypto.randomUUID(),
+      mediaId,
+      kind: "production_cost",
+      value: 100 + index,
+      unit: "money",
+      currency: "RUB",
+      from: 1,
+      to: 2,
+      source: "owner worksheet",
+      attribution: "production",
+      allocation: "one publication",
+    }));
+    expect(
+      (await f.request(`/api/accounts/${accountId}/business/import`, "POST", { records })).status,
+    ).toBe(200);
+    expect(
+      (
+        await f.request(`/api/accounts/${accountId}/business/import`, "POST", {
+          records: [
+            { ...records[0], source: "other source" },
+            { ...records[1], value: 777 },
+          ],
+        })
+      ).status,
+    ).toBe(409);
+    expect(await (await f.request(`/api/media/${ids[1]}/business`)).json()).toMatchObject({
+      currencies: [{ cost: 101 }],
+      records: [expect.objectContaining({ source: "owner worksheet", value: 101 })],
+    });
+    const operationId = crypto.randomUUID();
+    expect(
+      (
+        await f.request(`/api/accounts/${accountId}/experiments`, "POST", {
+          operationId,
+          plan: {
+            question: "Сравнить варианты",
+            metric: "reach",
+            ageDays: 7,
+            decisionRule: "Медиана охвата",
+            minimumSample: 5,
+            retrospective: true,
+            variants: [
+              { name: "Первый", mediaIds: ids.slice(0, 50) },
+              { name: "Второй", mediaIds: ids.slice(50) },
+            ],
+          },
+        })
+      ).status,
+    ).toBe(200);
+    const evaluated = await f.request(`/api/experiments/${operationId}`);
+    expect(evaluated.status).toBe(200);
+    const evaluation = (await evaluated.json()) as {
+      decisionReady: boolean;
+      variants: { publications: unknown[] }[];
+    };
+    expect(evaluation.variants.map((variant) => variant.publications.length)).toEqual([50, 50]);
+    expect(evaluation.decisionReady).toBe(false);
+  });
   it("separates proposals from manual context and preserves confirmed fields during Meta sync", async () => {
     const f = await collected();
     expect(

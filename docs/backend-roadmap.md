@@ -74,7 +74,7 @@ Meta в другой timezone. Для местного календарного 
 Поддержка сочетания metric/type/breakdown зависит от v26 и аккаунта. Отказ поля
 даёт null с причиной; rate limit/временная ошибка проваливают операцию, сохраняя
 безопасный статус. Account fields: views, reach, accounts_engaged,
-total_interactions, likes, comments, saved, shares, replies, profile_links_taps,
+total_interactions, likes, comments, saves, shares, replies, profile_links_taps,
 follows_and_unfollows. Для подписок/отписок автоматически запрашивается
 `follow_type`, если другая разбивка не задана. Категории — значения Meta,
 не разница соседних наблюдений числа подписчиков.

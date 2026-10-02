@@ -572,6 +572,19 @@ export const activityResponse = z.object({
       reason: z.string().nullable(),
     }),
   ),
+  categoryComparisons: z.array(
+    z.object({
+      metric: z.string(),
+      dimensions: z.array(z.string()),
+      categories: z.array(z.string()),
+      current: z.number().nullable(),
+      previous: z.number().nullable(),
+      absoluteChange: z.number().nullable(),
+      percentChange: z.number().nullable(),
+      formula: z.string(),
+      reason: z.string().nullable(),
+    }),
+  ),
   coverage: z.object({
     currentAvailable: z.boolean(),
     previousAvailable: z.boolean(),
@@ -1339,6 +1352,19 @@ export const reviewResponse = z.object({
         reason: z.string().nullable(),
       }),
     ),
+    categoryComparisons: z.array(
+      z.object({
+        metric: z.string(),
+        dimensions: z.array(z.string()),
+        categories: z.array(z.string()),
+        current: z.number().nullable(),
+        previous: z.number().nullable(),
+        absoluteChange: z.number().nullable(),
+        percentChange: z.number().nullable(),
+        formula: z.string(),
+        reason: z.string().nullable(),
+      }),
+    ),
     coverage: z.object({
       currentAvailable: z.boolean(),
       previousAvailable: z.boolean(),
@@ -1508,7 +1534,7 @@ export const collectAccountInsightsInput = z.object({
         "total_interactions",
         "likes",
         "comments",
-        "saved",
+        "saves",
         "shares",
         "replies",
         "profile_links_taps",

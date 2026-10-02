@@ -220,15 +220,44 @@ if (flags.has("--comments")) {
     assert.equal(problem.code, "INSTAGRAM_PERMISSION_REQUIRED");
     output("comments", { consentGranted: false, safePermissionError: true });
   } else {
+    const candidates = await request(
+      "GET",
+      `/api/media?${new URLSearchParams({ accountId, productType: "REELS", limit: "10" })}`,
+    );
+    let selected = media;
+    for (const candidate of candidates.items) {
+      const candidateReport = await request("GET", mediaPath(candidate.id, "statistics"));
+      if ((candidateReport.metrics?.comments?.value ?? 0) > 0) {
+        selected = candidate;
+        break;
+      }
+    }
     const collected = await request("POST", mediaPath(media.id, "comments/collect"), {
       operationId: randomUUID(),
       limit: 5,
     });
+    const collection =
+      selected.id === media.id
+        ? collected
+        : await request("POST", mediaPath(selected.id, "comments/collect"), {
+            operationId: randomUUID(),
+            limit: 5,
+          });
+    const saved = await request("GET", mediaPath(selected.id, "comments"));
+    if (saved.items[0]) {
+      const replies = await request("POST", mediaPath(selected.id, "comments/collect"), {
+        operationId: randomUUID(),
+        parentId: saved.items[0].id,
+        limit: 5,
+      });
+      output("comment-replies", { status: replies.status, collected: replies.collected });
+    }
     output("comments", {
       consentGranted: true,
-      status: collected.status,
-      collected: collected.collected,
-      hasMore: collected.nextCursor !== null,
+      status: collection.status,
+      collected: collection.collected,
+      hasMore: collection.nextCursor !== null,
+      savedTextsAreUntrusted: saved.signals.untrustedData,
     });
   }
 }

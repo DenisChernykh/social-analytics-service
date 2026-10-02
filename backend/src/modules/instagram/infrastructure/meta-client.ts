@@ -486,7 +486,7 @@ export class MetaClient implements InstagramTransport {
           name: z.string(),
           period: z.string().optional(),
           description: z.string().optional(),
-          values: z.array(valueSchema.extend({ end_time: z.string() })).optional(),
+          values: z.array(valueSchema.extend({ end_time: z.string().optional() })).optional(),
           total_value: z
             .object({
               value: z.unknown().optional(),
@@ -494,9 +494,11 @@ export class MetaClient implements InstagramTransport {
                 .array(
                   z.object({
                     dimension_keys: z.array(z.string()),
-                    results: z.array(
-                      z.object({ dimension_values: z.array(z.string()), value: z.unknown() }),
-                    ),
+                    results: z
+                      .array(
+                        z.object({ dimension_values: z.array(z.string()), value: z.unknown() }),
+                      )
+                      .nullish(),
                   }),
                 )
                 .optional(),
@@ -531,21 +533,28 @@ export class MetaClient implements InstagramTransport {
         : { value: null, reason: value == null ? "not_returned" : "invalid_value" };
     return {
       ...result,
-      ...number(item.total_value?.value),
+      ...number(
+        item.total_value?.value ??
+          (query.period === "lifetime" && item.values?.length === 1
+            ? item.values[0]?.value
+            : undefined),
+      ),
       period: item.period ?? query.period,
       description: item.description ?? null,
-      points: (item.values ?? []).map((point) => {
-        const endTime = Date.parse(point.end_time);
-        if (!Number.isFinite(endTime))
-          throw new ApplicationError(
-            "INSTAGRAM_UNAVAILABLE",
-            "Instagram returned an invalid insight period.",
-          );
-        return { ...number(point.value), endTime };
-      }),
+      points: (item.values ?? [])
+        .filter((point) => query.metricType === "time_series" || point.end_time !== undefined)
+        .map((point) => {
+          const endTime = point.end_time === undefined ? NaN : Date.parse(point.end_time);
+          if (!Number.isFinite(endTime))
+            throw new ApplicationError(
+              "INSTAGRAM_UNAVAILABLE",
+              "Instagram returned an invalid insight period.",
+            );
+          return { ...number(point.value), endTime };
+        }),
       breakdowns: (item.total_value?.breakdowns ?? []).map((group) => ({
         dimensions: group.dimension_keys,
-        results: group.results.map((entry) => ({
+        results: (group.results ?? []).map((entry) => ({
           categories: entry.dimension_values,
           ...number(entry.value),
         })),

@@ -16,6 +16,7 @@ export interface ContentStore {
 export interface ContentAnalytics {
   account(id: string): Promise<unknown>;
   media(id: string): Promise<Media>;
+  selection(ids: string[]): Promise<Map<string, Media>>;
   search(
     filter: Omit<MediaFilter, "words">,
   ): Promise<{ items: Media[]; nextCursor: string | null }>;

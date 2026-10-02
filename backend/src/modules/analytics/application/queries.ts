@@ -28,6 +28,15 @@ export class AnalyticsQueries {
     if (!media) throw new ApplicationError("NOT_FOUND", "The media was not found.");
     return media;
   }
+  async mediaSelection(ids: string[]) {
+    const unique = [...new Set(ids)];
+    if (unique.length > 200)
+      throw new ApplicationError("VALIDATION_FAILED", "Select at most 200 publications.");
+    const items = await this.repository.selectedMedia(unique);
+    if (items.length !== unique.length)
+      throw new ApplicationError("NOT_FOUND", "A selected publication was not found.");
+    return new Map(items.map((item) => [item.id, item]));
+  }
   async search(input: Omit<MediaFilter, "words"> & { query?: string }) {
     if (input.accountId) await this.account(input.accountId);
     const words = searchWords(input.query ?? "");

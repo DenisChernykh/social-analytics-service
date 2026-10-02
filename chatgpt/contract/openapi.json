@@ -6122,7 +6122,7 @@
                         "total_interactions",
                         "likes",
                         "comments",
-                        "saved",
+                        "saves",
                         "shares",
                         "replies",
                         "profile_links_taps",
@@ -6138,7 +6138,7 @@
                       "total_interactions",
                       "likes",
                       "comments",
-                      "saved",
+                      "saves",
                       "shares",
                       "replies",
                       "profile_links_taps",
@@ -7711,6 +7711,73 @@
                         ]
                       }
                     },
+                    "categoryComparisons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "metric": {
+                            "type": "string"
+                          },
+                          "dimensions": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "categories": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "current": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "previous": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "absoluteChange": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "percentChange": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "formula": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "metric",
+                          "dimensions",
+                          "categories",
+                          "current",
+                          "previous",
+                          "absoluteChange",
+                          "percentChange",
+                          "formula",
+                          "reason"
+                        ]
+                      }
+                    },
                     "coverage": {
                       "type": "object",
                       "properties": {
@@ -7752,6 +7819,7 @@
                     "previous",
                     "comparable",
                     "comparisons",
+                    "categoryComparisons",
                     "coverage",
                     "note"
                   ]
@@ -16194,6 +16262,73 @@
                             ]
                           }
                         },
+                        "categoryComparisons": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "metric": {
+                                "type": "string"
+                              },
+                              "dimensions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "categories": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "current": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "previous": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "absoluteChange": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "percentChange": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "formula": {
+                                "type": "string"
+                              },
+                              "reason": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "metric",
+                              "dimensions",
+                              "categories",
+                              "current",
+                              "previous",
+                              "absoluteChange",
+                              "percentChange",
+                              "formula",
+                              "reason"
+                            ]
+                          }
+                        },
                         "coverage": {
                           "type": "object",
                           "properties": {
@@ -16235,6 +16370,7 @@
                         "previous",
                         "comparable",
                         "comparisons",
+                        "categoryComparisons",
                         "coverage",
                         "note"
                       ]

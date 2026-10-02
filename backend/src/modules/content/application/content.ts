@@ -39,7 +39,7 @@ export class Content {
   ) {
     if (new Set(ids).size !== ids.length)
       throw new ApplicationError("VALIDATION_FAILED", "Select each publication once.");
-    for (const id of ids) await this.analytics.media(id);
+    await this.analytics.selection(ids);
     const stored = await this.store.contexts(ids);
     const updates = new Map<string, ContentContext>();
     for (const id of ids) {
@@ -64,9 +64,10 @@ export class Content {
     await this.analytics.account(accountId);
     if (new Set(records.map((record) => record.id)).size !== records.length)
       throw new ApplicationError("VALIDATION_FAILED", "Duplicate record IDs in import.");
+    const selected = await this.analytics.selection(records.map((record) => record.mediaId));
     for (const record of records) {
-      const media = await this.analytics.media(record.mediaId);
-      if (media.accountId !== accountId)
+      const media = selected.get(record.mediaId);
+      if (media?.accountId !== accountId)
         throw new ApplicationError(
           "VALIDATION_FAILED",
           "All records must belong to the selected account.",
@@ -256,9 +257,10 @@ export class Content {
         "VALIDATION_FAILED",
         "Select each media in exactly one uniquely named variant.",
       );
+    const selected = await this.analytics.selection(ids);
     for (const id of ids) {
-      const media = await this.analytics.media(id);
-      if (media.accountId !== accountId)
+      const media = selected.get(id);
+      if (media?.accountId !== accountId)
         throw new ApplicationError(
           "VALIDATION_FAILED",
           "Experiment publications must belong to this account.",
@@ -291,6 +293,9 @@ export class Content {
   async assign(id: string, assignments: Experiment["assignments"]) {
     const experiment = await this.experiment(id);
     const used = new Set(experiment.plan.variants.flatMap((variant) => variant.mediaIds));
+    const selected = await this.analytics.selection(
+      assignments.map((assignment) => assignment.mediaId),
+    );
     for (const assignment of assignments) {
       if (
         used.has(assignment.mediaId) ||
@@ -301,9 +306,9 @@ export class Content {
           "Choose one existing variant per publication, without duplicates of the original plan.",
         );
       used.add(assignment.mediaId);
-      const media = await this.analytics.media(assignment.mediaId);
+      const media = selected.get(assignment.mediaId);
       if (
-        media.accountId !== experiment.accountId ||
+        media?.accountId !== experiment.accountId ||
         (!experiment.plan.retrospective && media.publishedAt < experiment.createdAt)
       )
         throw new ApplicationError(
@@ -316,6 +321,10 @@ export class Content {
   }
   async evaluate(id: string) {
     const experiment = await this.experiment(id);
+    const selected = await this.analytics.selection([
+      ...experiment.plan.variants.flatMap((variant) => variant.mediaIds),
+      ...experiment.assignments.map((item) => item.mediaId),
+    ]);
     const variants = [];
     for (const variant of experiment.plan.variants) {
       const ids = [
@@ -327,7 +336,8 @@ export class Content {
       const snapshots = await this.analytics.snapshots(ids, experiment.plan.ageDays);
       const publications = [];
       for (const id of ids) {
-        const media = await this.analytics.media(id);
+        const media = selected.get(id);
+        if (!media) throw new ApplicationError("NOT_FOUND", "The publication was not found.");
         const snapshot = snapshots.get(id) ?? null;
         publications.push({
           media,
@@ -367,9 +377,13 @@ export class Content {
     const sequence = await this.store.sequence(id);
     if (!sequence) throw new ApplicationError("NOT_FOUND", "The Story sequence was not found.");
     const snapshots = await this.analytics.snapshots(sequence.mediaIds);
+    const selected = await this.analytics.selection(sequence.mediaIds);
     const items = [];
-    for (const id of sequence.mediaIds)
-      items.push({ media: await this.analytics.media(id), snapshot: snapshots.get(id) ?? null });
+    for (const id of sequence.mediaIds) {
+      const media = selected.get(id);
+      if (!media) throw new ApplicationError("NOT_FOUND", "The publication was not found.");
+      items.push({ media, snapshot: snapshots.get(id) ?? null });
+    }
     return {
       sequence,
       items,
@@ -384,9 +398,10 @@ export class Content {
     const previous = await this.store.sequence(sequence.id);
     if (previous && previous.accountId !== sequence.accountId)
       throw new ApplicationError("OPERATION_CONFLICT", "The sequence belongs to another account.");
+    const selected = await this.analytics.selection(sequence.mediaIds);
     for (const id of sequence.mediaIds) {
-      const media = await this.analytics.media(id);
-      if (media.accountId !== sequence.accountId || media.productType !== "STORY")
+      const media = selected.get(id);
+      if (media?.accountId !== sequence.accountId || media.productType !== "STORY")
         throw new ApplicationError(
           "VALIDATION_FAILED",
           "Sequence items must be Stories of the selected account.",

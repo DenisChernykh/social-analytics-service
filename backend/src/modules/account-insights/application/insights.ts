@@ -1,5 +1,10 @@
 import { ApplicationError } from "../../../shared/application/application-error";
-import { compareValues, type InsightCollection, type InsightInput } from "../domain/model";
+import {
+  compareCategories,
+  compareValues,
+  type InsightCollection,
+  type InsightInput,
+} from "../domain/model";
 import type { AccountInsightSource, InsightSelection, InsightStore } from "./ports";
 
 export class AccountInsights {
@@ -179,6 +184,11 @@ export class AccountInsights {
               : null,
           ),
         })) ?? [],
+      categoryComparisons: compareCategories(
+        current?.values ?? [],
+        previous?.values ?? [],
+        comparable,
+      ),
       coverage: {
         currentAvailable: current !== null,
         previousAvailable: previous !== null,

@@ -92,6 +92,19 @@ export const activityReportSchema = z.object({
       reason,
     }),
   ),
+  categoryComparisons: z.array(
+    z.object({
+      metric: z.string(),
+      dimensions: z.array(z.string()),
+      categories: z.array(z.string()),
+      current: z.number().nullable(),
+      previous: z.number().nullable(),
+      absoluteChange: z.number().nullable(),
+      percentChange: z.number().nullable(),
+      formula: z.string(),
+      reason,
+    }),
+  ),
   coverage: z.object({
     currentAvailable: z.boolean(),
     previousAvailable: z.boolean(),

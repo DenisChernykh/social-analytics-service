@@ -5,7 +5,7 @@ export const activityMetrics = [
   "total_interactions",
   "likes",
   "comments",
-  "saved",
+  "saves",
   "shares",
   "replies",
   "profile_links_taps",
@@ -69,4 +69,39 @@ export function compareValues(current: number | null, previous: number | null) {
           ? "zero_denominator"
           : null,
   };
+}
+
+export function compareCategories(
+  current: InsightValue[],
+  previous: InsightValue[],
+  comparable: boolean,
+) {
+  const entries = (values: InsightValue[]) =>
+    values.flatMap((value) =>
+      value.breakdowns.flatMap((group) =>
+        group.results.map((result) => ({
+          metric: value.metric,
+          dimensions: group.dimensions,
+          categories: result.categories,
+          value: result.value,
+        })),
+      ),
+    );
+  const before = entries(previous);
+  const after = entries(current);
+  const key = (entry: ReturnType<typeof entries>[number]) =>
+    JSON.stringify([entry.metric, entry.dimensions, entry.categories]);
+  const beforeByKey = new Map(before.map((entry) => [key(entry), entry.value]));
+  const afterByKey = new Map(after.map((entry) => [key(entry), entry.value]));
+  return [...new Map([...after, ...before].map((entry) => [key(entry), entry])).values()].map(
+    (entry) => ({
+      metric: entry.metric,
+      dimensions: entry.dimensions,
+      categories: entry.categories,
+      ...compareValues(
+        afterByKey.get(key(entry)) ?? null,
+        comparable ? (beforeByKey.get(key(entry)) ?? null) : null,
+      ),
+    }),
+  );
 }

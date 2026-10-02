@@ -29,13 +29,13 @@ export class D1Content implements ContentStore {
   }
   async setContexts(contexts: Map<string, ContentContext>) {
     if (!contexts.size) return;
-    await this.database.batch(
-      [...contexts].map(([id, context]) =>
-        this.database
-          .prepare("UPDATE media SET context_json=? WHERE id=?")
-          .bind(JSON.stringify(context), id),
-      ),
-    );
+    const payload = JSON.stringify([...contexts].map(([id, context]) => ({ id, context })));
+    await this.database
+      .prepare(
+        "UPDATE media SET context_json=(SELECT json_extract(item.value,'$.context') FROM json_each(?) item WHERE json_extract(item.value,'$.id')=media.id) WHERE id IN (SELECT json_extract(value,'$.id') FROM json_each(?))",
+      )
+      .bind(payload, payload)
+      .run();
   }
   async businessRecords(ids: string[]) {
     if (!ids.length) return [];
@@ -56,33 +56,23 @@ export class D1Content implements ContentStore {
     return result;
   }
   async importRecords(records: BusinessRecord[], now: number) {
-    for (const record of records) {
-      const stored = (
-        await this.db
-          .select()
-          .from(businessRecords)
-          .where(eq(businessRecords.id, record.id))
-          .limit(1)
-      )[0];
-      if (
-        stored &&
-        (stored.mediaId !== record.mediaId ||
-          (JSON.parse(stored.payloadJson) as BusinessRecord).source !== record.source)
+    if (!records.length) return;
+    const payload = JSON.stringify(records);
+    const result = await this.database
+      .prepare(`INSERT INTO business_records (id,media_id,recorded_at,payload_json)
+      SELECT json_extract(value,'$.id'),json_extract(value,'$.mediaId'),?,value FROM json_each(?)
+      WHERE NOT EXISTS (
+        SELECT 1 FROM json_each(?) incoming JOIN business_records stored ON stored.id=json_extract(incoming.value,'$.id')
+        WHERE stored.media_id<>json_extract(incoming.value,'$.mediaId') OR json_extract(stored.payload_json,'$.source')<>json_extract(incoming.value,'$.source')
       )
-        throw new ApplicationError(
-          "OPERATION_CONFLICT",
-          "A record correction must retain its publication and original source.",
-        );
-    }
-    await this.database.batch(
-      records.map((record) =>
-        this.database
-          .prepare(
-            "INSERT INTO business_records (id,media_id,recorded_at,payload_json) VALUES (?,?,?,?) ON CONFLICT(id) DO UPDATE SET payload_json=excluded.payload_json,recorded_at=excluded.recorded_at WHERE business_records.media_id=excluded.media_id AND json_extract(business_records.payload_json,'$.source')=json_extract(excluded.payload_json,'$.source')",
-          )
-          .bind(record.id, record.mediaId, now, JSON.stringify(record)),
-      ),
-    );
+      ON CONFLICT(id) DO UPDATE SET payload_json=excluded.payload_json,recorded_at=excluded.recorded_at`)
+      .bind(now, payload, payload)
+      .run();
+    if (result.meta.changes !== records.length)
+      throw new ApplicationError(
+        "OPERATION_CONFLICT",
+        "A record correction must retain its publication and original source. No records were changed.",
+      );
   }
   async experiment(id: string) {
     const row = (

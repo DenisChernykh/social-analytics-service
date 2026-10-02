@@ -26,6 +26,7 @@ export interface AnalyticsRepository {
   accounts(): Promise<Account[]>;
   account(id: string): Promise<Account | null>;
   media(id: string): Promise<Media | null>;
+  selectedMedia(ids: string[]): Promise<Media[]>;
   search(filter: MediaFilter): Promise<{ items: Media[]; nextCursor: string | null }>;
   snapshots(mediaId: string, limit: number): Promise<Snapshot[]>;
   latest(mediaIds: string[]): Promise<Map<string, Snapshot>>;

@@ -10,6 +10,79 @@ const config = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
 describe("official Meta API adapter", () => {
+  it("preserves unavailable demographic categories and untimed lifetime Story values without inventing daily points", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        json({
+          data: [
+            {
+              name: "engaged_audience_demographics",
+              period: "lifetime",
+              total_value: { breakdowns: [{ dimension_keys: ["age"] }] },
+            },
+          ],
+        }),
+      )
+      .mockResolvedValueOnce(
+        json({
+          data: [
+            {
+              name: "navigation",
+              period: "lifetime",
+              values: [{ value: 10 }],
+              total_value: {
+                value: 10,
+                breakdowns: [
+                  {
+                    dimension_keys: ["story_navigation_action_type"],
+                    results: [{ dimension_values: ["tap_back"], value: 0 }],
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      )
+      .mockResolvedValueOnce(
+        json({ data: [{ name: "reach", period: "day", values: [{ value: 10 }] }] }),
+      );
+    const client = new MetaClient(config, request);
+    expect(
+      await client.structuredInsights("fake-token", "123", {
+        metric: "engaged_audience_demographics",
+        period: "lifetime",
+        metricType: "total_value",
+        timeframe: "last_30_days",
+        breakdown: "age",
+      }),
+    ).toMatchObject({
+      value: null,
+      reason: "not_returned",
+      breakdowns: [{ dimensions: ["age"], results: [] }],
+      points: [],
+    });
+    expect(
+      await client.structuredInsights("fake-token", "123", {
+        metric: "navigation",
+        period: "lifetime",
+        metricType: "total_value",
+        breakdown: "story_navigation_action_type",
+      }),
+    ).toMatchObject({
+      value: 10,
+      reason: null,
+      points: [],
+      breakdowns: [{ results: [{ categories: ["tap_back"], value: 0, reason: null }] }],
+    });
+    await expect(
+      client.structuredInsights("fake-token", "123", {
+        metric: "reach",
+        period: "day",
+        metricType: "time_series",
+      }),
+    ).rejects.toMatchObject({ code: "INSTAGRAM_UNAVAILABLE" });
+  });
   it("requests comment permission only for an explicitly chosen reconnect", () => {
     const client = new MetaClient(config);
     expect(new URL(client.authorizationUrl("fake-state")).searchParams.get("scope")).not.toContain(

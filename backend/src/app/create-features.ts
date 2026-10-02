@@ -22,6 +22,7 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
       return {
         account: (id: string) => queries.account(id),
         media: (id: string) => queries.media(id),
+        selection: (ids: string[]) => queries.mediaSelection(ids),
         search: (filter: Parameters<typeof queries.search>[0]) => queries.search(filter),
         snapshots: (ids: string[], ageDays?: number) => queries.observations(ids, ageDays),
         history: async (id: string) => {
@@ -52,7 +53,7 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
               "total_interactions",
               "likes",
               "comments",
-              "saved",
+              "saves",
               "shares",
               "replies",
               "profile_links_taps",
