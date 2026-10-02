@@ -31,7 +31,7 @@ async function call(name, args = {}) {
 }
 try {
   const discovery = await client.listTools();
-  assert.equal(discovery.tools.length, 41);
+  assert.equal(discovery.tools.length, 43);
   const health = await fetch(`${BACKEND_ORIGIN}/health`, { redirect: "error" }).then((r) =>
     r.json(),
   );
@@ -64,6 +64,15 @@ try {
   await call("describe_metrics");
   const collection = await call("get_collection_status", { accountId });
   assert.equal(collection.schedule.enabled, false);
+  const panel = await call("open_social_analytics", { accountId });
+  assert.equal(panel.selectedAccountId, accountId);
+  assert.equal(panel.history.beginningKnown, false);
+  const choices = await call("choose_media", { query: "а", accountId });
+  assert.equal(choices.resolution.status, "ambiguous");
+  assert.equal(choices.resolution.report, null);
+  const resources = await client.listResources();
+  const widget = await client.readResource({ uri: resources.resources[0].uri });
+  assert.equal(widget.contents[0].mimeType, "text/html;profile=mcp-app");
   if (collection.jobs[0]) await call("get_collection_job", { jobId: collection.jobs[0].id });
   const to = new Date();
   to.setUTCHours(0, 0, 0, 0);
@@ -109,6 +118,8 @@ try {
       periodComparison: true,
       audienceDefinition: true,
       untrustedCommentTexts: true,
+      optionalUiResource: true,
+      explicitPublicationChoice: true,
     }),
   );
 } catch {

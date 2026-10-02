@@ -37,13 +37,23 @@ async function connect(fetchBackend: BackendFetch, owner = env.SOCIAL_OWNER_EMAI
   await client.connect(transport);
   return client;
 }
-test("MCP discovery lists focused tools and correct mutation annotations", async () => {
+test("MCP discovery lists focused tools, optional UI and correct mutation annotations", async () => {
   const client = await connect(async () => {
     throw new Error("Discovery must not call backend");
   });
   try {
     const { tools } = await client.listTools();
-    assert.equal(tools.length, 41);
+    assert.equal(tools.length, 43);
+    const panelTool = tools.find((t) => t.name === "open_social_analytics");
+    assert.ok(panelTool?._meta?.ui);
+    assert.equal(
+      (panelTool._meta.ui as { resourceUri: string }).resourceUri,
+      "ui://social-analytics/control-v1.html",
+    );
+    const resources = await client.listResources();
+    const resource = await client.readResource({ uri: resources.resources[0].uri });
+    assert.equal(resource.contents[0].mimeType, "text/html;profile=mcp-app");
+    assert.ok(!JSON.stringify(resource).includes(env.SOCIAL_API_KEY));
     assert.equal(
       tools.find((t) => t.name === "set_collection_schedule")?.annotations?.readOnlyHint,
       false,
@@ -106,6 +116,8 @@ test("Missing or different owner cannot read data or mutate metadata", async () 
     try {
       for (const action of [
         { name: "list_accounts", arguments: {} },
+        { name: "open_social_analytics", arguments: {} },
+        { name: "choose_media", arguments: { query: "Название" } },
         { name: "set_media_metadata", arguments: { mediaId: media.id, title: "Alias" } },
       ]) {
         const result = await client.callTool(action);
@@ -116,6 +128,45 @@ test("Missing or different owner cannot read data or mutate metadata", async () 
     } finally {
       await client.close();
     }
+  }
+});
+test("UI selection retains authoritative candidates and never fetches a chosen report automatically", async () => {
+  const calls: Request[] = [];
+  const client = await connect(async (request) => {
+    calls.push(request);
+    return Response.json({
+      status: "ambiguous",
+      candidates: [media, { ...media, id: "ig_media_2" }],
+      moreMatches: false,
+      report: null,
+    });
+  });
+  try {
+    const result = await client.callTool({
+      name: "choose_media",
+      arguments: { query: "Название", accountId: "ig_1" },
+    });
+    assert.notEqual(result.isError, true);
+    const data = (
+      result.structuredContent as {
+        data: {
+          mode: string;
+          resolution: { status: string; candidates: { id: string }[]; report: unknown };
+        };
+      }
+    ).data;
+    assert.equal(data.mode, "selection");
+    assert.equal(data.resolution.status, "ambiguous");
+    assert.deepEqual(
+      data.resolution.candidates.map((c) => c.id),
+      ["ig_media_1", "ig_media_2"],
+    );
+    assert.equal(data.resolution.report, null);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].method, "GET");
+    assert.equal(new URL(calls[0].url).searchParams.get("accountId"), "ig_1");
+  } finally {
+    await client.close();
   }
 });
 test("Untrusted upstream errors are safe and no request token is reflected", async () => {
