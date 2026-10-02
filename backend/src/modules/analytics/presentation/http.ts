@@ -30,7 +30,7 @@ const accountParams = z.object({ accountId: idSchema });
 
 export function createAnalyticsHttp(
   createOperations: (env: RuntimeBindings) => Operations,
-  catalog: Record<string, { field: string; unit: string; appliesTo: string }>,
+  catalog: Record<string, { field: string; unit: string; appliesTo: string; definition: string }>,
 ) {
   const router = new OpenAPIHono<HttpEnv>({
     defaultHook: (result, c) => {
@@ -68,7 +68,10 @@ export function createAnalyticsHttp(
           .object({
             q: z.string().min(1).max(200).optional(),
             accountId: idSchema.optional(),
-            productType: z.enum(["REELS", "FEED", "UNKNOWN"]).optional(),
+            productType: z.enum(["REELS", "FEED", "STORY", "UNKNOWN"]).optional(),
+            rubric: z.string().min(1).max(100).optional(),
+            goal: z.string().min(1).max(100).optional(),
+            format: z.string().min(1).max(100).optional(),
             from: dateQuery,
             to: dateQuery,
             cursor: cursorQuery,
@@ -109,7 +112,7 @@ export function createAnalyticsHttp(
             status: z.enum(["matched", "ambiguous", "not_found"]),
             candidates: z.array(mediaSchema),
             moreMatches: z.boolean(),
-            report: reportSchema.nullable(),
+            report: z.union([reportSchema, z.null()]),
           }),
           "Full report by title or caption. Ambiguous searches return candidates and require a choice.",
         ),
@@ -217,6 +220,7 @@ export function createAnalyticsHttp(
             items: z.array(snapshotSchema),
             nextCursor: z.string().nullable(),
             growth: growthSchema,
+            intervals: z.array(growthSchema),
             coverage: z.object({
               fromSnapshot: timestamp.nullable(),
               toSnapshot: timestamp.nullable(),
@@ -296,7 +300,10 @@ export function createAnalyticsHttp(
           .object({
             from: dateQuery,
             to: dateQuery,
-            productType: z.enum(["REELS", "FEED", "UNKNOWN"]).optional(),
+            productType: z.enum(["REELS", "FEED", "STORY", "UNKNOWN"]).optional(),
+            rubric: z.string().min(1).max(100).optional(),
+            goal: z.string().min(1).max(100).optional(),
+            format: z.string().min(1).max(100).optional(),
           })
           .refine(validRange),
       },
@@ -445,9 +452,15 @@ export function createAnalyticsHttp(
         200: json(
           z.object({
             source: z.literal("instagram_api"),
+            supportedPlatforms: z.array(z.string()),
             metrics: z.record(
               z.string(),
-              z.object({ field: z.string(), unit: z.string(), appliesTo: z.string() }),
+              z.object({
+                field: z.string(),
+                unit: z.string(),
+                appliesTo: z.string(),
+                definition: z.string(),
+              }),
             ),
             note: z.string(),
           }),
@@ -460,11 +473,50 @@ export function createAnalyticsHttp(
       c.json(
         {
           source: "instagram_api" as const,
+          supportedPlatforms: ["instagram"],
           metrics: catalog,
           note: "Missing values are null with a reason. Some metrics are estimated by Meta; no values are invented.",
         },
         200,
       ),
+  );
+  router.openapi(
+    createRoute({
+      method: "post",
+      path: "/api/media/{mediaId}/refresh",
+      operationId: "refreshMedia",
+      tags: ["Collection"],
+      security: secured,
+      request: {
+        params: mediaParams,
+        body: {
+          required: true,
+          content: { "application/json": { schema: z.object({ operationId: z.uuid() }).strict() } },
+        },
+      },
+      responses: {
+        200: json(
+          syncSchema,
+          "Refresh the selected publication without traversing the account catalogue. Query sync-runs after an uncertain response.",
+        ),
+        ...errorResponses,
+      },
+    }),
+    async (c) => {
+      const operations = createOperations(c.env);
+      const media = await operations.queries.media(c.req.valid("param").mediaId);
+      return c.json(
+        await operations.sync.execute({
+          accountId: media.accountId,
+          operationId: c.req.valid("json").operationId,
+          cursor: null,
+          pageSize: 1,
+          kind: "media",
+          mediaId: media.id,
+        }),
+        200,
+      );
+    },
   );
   return router;
 }

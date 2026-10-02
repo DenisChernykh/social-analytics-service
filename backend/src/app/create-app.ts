@@ -1,16 +1,22 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { bodyLimit } from "hono/body-limit";
 import { HTTPException } from "hono/http-exception";
-import { createAnalyticsModule } from "../modules/analytics";
+import { activityReportSchema, createInsightModule } from "../modules/account-insights";
+import { accountSchema, createAnalyticsModule, summarySchema } from "../modules/analytics";
+import { createCollectionModule } from "../modules/collection";
+import { createCommentModule } from "../modules/community";
+import { createContentModule } from "../modules/content";
 import {
   createInstagramModule,
   createInstagramOperations,
   type InstagramModuleOptions,
 } from "../modules/instagram";
+import { createReviewModule } from "../modules/reviews";
 import { authenticate } from "../platform/http/authentication";
 import type { HttpEnv } from "../platform/http/environment";
 import { applicationProblem, errorResponses, problem } from "../platform/http/problem";
 import { ApplicationError } from "../shared/application/application-error";
+import { featureOptions } from "./create-features";
 
 export function createApp(
   options: { instagram?: InstagramModuleOptions; clock?: () => number } = {},
@@ -76,12 +82,22 @@ export function createApp(
     (c) => c.json({ status: "ok" as const, revision: c.env.BUILD_REVISION }, 200),
   );
   app.route("/", createInstagramModule(instagramOptions).router);
+  const features = featureOptions(instagramOptions, options.clock);
   app.route(
     "/",
     createAnalyticsModule({
       reader: (env) => createInstagramOperations(env, instagramOptions),
       clock: options.clock,
     }).router,
+  );
+  app.route("/", createCollectionModule(features.collectionOptions).router);
+  app.route("/", createInsightModule(features.insightsOptions).router);
+  app.route("/", createContentModule(features.contentOptions).router);
+  app.route("/", createCommentModule(features.commentOptions).router);
+  app.route(
+    "/",
+    createReviewModule(features.reviewOptions, [activityReportSchema, summarySchema, accountSchema])
+      .router,
   );
   app.openAPIRegistry.registerComponent("securitySchemes", "personalKey", {
     type: "http",

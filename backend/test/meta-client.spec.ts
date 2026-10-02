@@ -10,6 +10,126 @@ const config = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
 describe("official Meta API adapter", () => {
+  it("requests comment permission only for an explicitly chosen reconnect", () => {
+    const client = new MetaClient(config);
+    expect(new URL(client.authorizationUrl("fake-state")).searchParams.get("scope")).not.toContain(
+      "manage_comments",
+    );
+    expect(
+      new URL(client.authorizationUrl("fake-state", true)).searchParams.get("scope"),
+    ).toContain("instagram_business_manage_comments");
+  });
+  it("parses structured totals, categories and real time series without summing unique reach", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        json({
+          data: [
+            {
+              name: "reach",
+              period: "day",
+              total_value: {
+                value: 10,
+                breakdowns: [
+                  {
+                    dimension_keys: ["media_product_type"],
+                    results: [
+                      { dimension_values: ["REELS"], value: 8 },
+                      { dimension_values: ["FEED"], value: 7 },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      )
+      .mockResolvedValueOnce(
+        json({
+          data: [
+            {
+              name: "reach",
+              period: "day",
+              values: [
+                { value: 8, end_time: "2026-10-01T00:00:00Z" },
+                { value: 7, end_time: "2026-10-02T00:00:00Z" },
+              ],
+            },
+          ],
+        }),
+      );
+    const client = new MetaClient(config, request);
+    const total = await client.structuredInsights("fake-token", "123", {
+      metric: "reach",
+      period: "day",
+      metricType: "total_value",
+      since: 1790812800000,
+      until: 1790899200000,
+      breakdown: "media_product_type",
+    });
+    expect(total.value).toBe(10);
+    expect(total.breakdowns[0]?.results.map((item) => item.value)).toEqual([8, 7]);
+    const series = await client.structuredInsights("fake-token", "123", {
+      metric: "reach",
+      period: "day",
+      metricType: "time_series",
+    });
+    expect(series.value).toBeNull();
+    expect(series.points.map((point) => point.value)).toEqual([8, 7]);
+    const url = new URL(String(request.mock.calls[0]?.[0]));
+    expect(url.hostname).toBe("graph.instagram.com");
+    expect(url.searchParams.get("since")).toBe("1790812800");
+    expect(url.searchParams.has("access_token")).toBe(false);
+  });
+  it("keeps rejected combinations distinct from transport failures and invalid numeric values", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(json({ error: { code: 100 } }, 400))
+      .mockResolvedValueOnce(json({ error: { code: 4 } }, 429))
+      .mockResolvedValueOnce(json({ data: [{ name: "views", total_value: { value: -1 } }] }));
+    const client = new MetaClient(config, request);
+    const query = { metric: "views", period: "day" as const, metricType: "total_value" as const };
+    expect(await client.structuredInsights("fake-token", "123", query)).toMatchObject({
+      value: null,
+      reason: "not_supported",
+    });
+    await expect(client.structuredInsights("fake-token", "123", query)).rejects.toMatchObject({
+      code: "INSTAGRAM_RATE_LIMITED",
+    });
+    expect(await client.structuredInsights("fake-token", "123", query)).toMatchObject({
+      value: null,
+      reason: "invalid_value",
+    });
+  });
+  it("reads Story discovery and comment replies on fixed hosts with cursor-only pagination", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(json({ data: [] }))
+      .mockResolvedValueOnce(
+        json({
+          data: [{ id: "456", text: "Question?", timestamp: "2026-10-01T00:00:00Z" }],
+          paging: {
+            next: "https://invalid.example/?access_token=fake",
+            cursors: { after: "next" },
+          },
+        }),
+      );
+    const client = new MetaClient(config, request);
+    expect(await client.stories("fake-token", "123", null, 1)).toEqual({
+      media: [],
+      nextCursor: null,
+    });
+    expect(new URL(String(request.mock.calls[0]?.[0])).pathname).toBe("/v26.0/123/stories");
+    expect(await client.comments("fake-token", "123", true, "before", 25)).toMatchObject({
+      items: [{ id: "456", text: "Question?" }],
+      nextCursor: "next",
+    });
+    const url = new URL(String(request.mock.calls[1]?.[0]));
+    expect(url.pathname).toBe("/v26.0/123/replies");
+    expect(url.searchParams.get("fields")).toBe("id,text,timestamp");
+    expect(url.searchParams.get("after")).toBe("before");
+    expect(request).toHaveBeenCalledTimes(2);
+  });
   it("preserves the global receiver required by a native Worker fetch", async () => {
     const request = vi.fn<typeof fetch>(async function (this: unknown) {
       if (this !== globalThis) throw new TypeError("Illegal invocation");

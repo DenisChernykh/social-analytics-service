@@ -14,13 +14,17 @@ export class SyncAccount {
     operationId: string;
     cursor: string | null;
     pageSize: number;
+    kind?: "page" | "media" | "stories";
+    mediaId?: string;
   }): Promise<SyncRun> {
     const previous = await this.repository.run(input.operationId);
     if (previous) {
       if (
         previous.accountId !== input.accountId ||
         previous.inputCursor !== input.cursor ||
-        previous.pageSize !== input.pageSize
+        previous.pageSize !== input.pageSize ||
+        (previous.kind ?? "page") !== (input.kind ?? "page") ||
+        (previous.targetMediaId ?? null) !== (input.mediaId ?? null)
       ) {
         throw new ApplicationError(
           "OPERATION_CONFLICT",
@@ -28,6 +32,15 @@ export class SyncAccount {
         );
       }
       if (previous.status !== "running") return previous;
+      if (this.clock() - previous.startedAt >= 15 * 60_000) {
+        await this.repository.fail(previous, "SYNC_LEASE_EXPIRED", this.clock());
+        return {
+          ...previous,
+          status: "failed",
+          completedAt: this.clock(),
+          errorCode: "SYNC_LEASE_EXPIRED",
+        };
+      }
       throw new ApplicationError(
         "SYNC_IN_PROGRESS",
         "This sync operation is still running; retrieve its status.",
@@ -47,6 +60,8 @@ export class SyncAccount {
       nextCursor: null,
       mediaCount: 0,
       errorCode: null,
+      kind: input.kind ?? "page",
+      targetMediaId: input.mediaId ?? null,
     };
     if (!(await this.repository.begin(run, now + 15 * 60_000))) {
       throw new ApplicationError(
@@ -60,7 +75,9 @@ export class SyncAccount {
         !stored ||
         stored.accountId !== run.accountId ||
         stored.inputCursor !== run.inputCursor ||
-        stored.pageSize !== run.pageSize
+        stored.pageSize !== run.pageSize ||
+        (stored.kind ?? "page") !== run.kind ||
+        (stored.targetMediaId ?? null) !== run.targetMediaId
       ) {
         throw new ApplicationError(
           "OPERATION_CONFLICT",
@@ -73,7 +90,17 @@ export class SyncAccount {
           "INSTAGRAM_AUTH_EXPIRED",
           "Reconnect the Instagram account; the token belongs to a different account.",
         );
-      const page = await this.source.mediaPage(account, input.cursor, input.pageSize);
+      let page: Awaited<ReturnType<AnalyticsSource["mediaPage"]>>;
+      if (input.kind === "media") {
+        const existing = input.mediaId ? await this.repository.media(input.mediaId) : null;
+        if (!existing || existing.accountId !== account.id)
+          throw new ApplicationError("NOT_FOUND", "The media was not found in this account.");
+        page = { items: [await this.source.media(account, existing.externalId)], nextCursor: null };
+      } else
+        page =
+          input.kind === "stories"
+            ? await this.source.stories(account, input.cursor, input.pageSize)
+            : await this.source.mediaPage(account, input.cursor, input.pageSize);
       const items = [];
       for (const item of page.items) {
         const statistics = await this.source.metrics(account.id, item);

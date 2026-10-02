@@ -1,7 +1,12 @@
 import { z } from "zod";
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { InstagramTransport } from "../application/ports";
-import type { InstagramInsight } from "../public-contracts";
+import type {
+  InsightQuery,
+  InstagramInsight,
+  InstagramMedia,
+  StructuredInsight,
+} from "../public-contracts";
 
 const identifier = z.string().regex(/^\d+$/);
 const count = z.number().finite().nonnegative().safe().optional();
@@ -84,13 +89,13 @@ export class MetaClient implements InstagramTransport {
     private readonly request: typeof fetch = fetch,
   ) {}
 
-  authorizationUrl(state: string): string {
+  authorizationUrl(state: string, comments = false): string {
     const url = new URL("https://www.instagram.com/oauth/authorize");
     url.search = new URLSearchParams({
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
       response_type: "code",
-      scope: "instagram_business_basic,instagram_business_manage_insights",
+      scope: `instagram_business_basic,instagram_business_manage_insights${comments ? ",instagram_business_manage_comments" : ""}`,
       state,
       enable_fb_login: "false",
     }).toString();
@@ -281,6 +286,51 @@ export class MetaClient implements InstagramTransport {
   }
 
   async mediaPage(token: string, userId: string, cursor: string | null, limit: number) {
+    return this.catalogPage(token, userId, cursor, limit, "media");
+  }
+  async stories(token: string, userId: string, cursor: string | null, limit: number) {
+    return this.catalogPage(token, userId, cursor, limit, "stories");
+  }
+  private mapMedia(item: z.infer<typeof mediaSchema>): InstagramMedia {
+    const timestamp = Date.parse(item.timestamp);
+    if (!Number.isFinite(timestamp))
+      throw new ApplicationError(
+        "INSTAGRAM_UNAVAILABLE",
+        "Instagram returned an invalid publication timestamp.",
+      );
+    return {
+      id: item.id,
+      caption: item.caption ?? "",
+      mediaType: item.media_type,
+      productType: item.media_product_type ?? "UNKNOWN",
+      permalink: item.permalink,
+      timestamp,
+      likeCount: item.like_count ?? null,
+      commentsCount: item.comments_count ?? null,
+    };
+  }
+  async media(token: string, mediaId: string) {
+    return this.mapMedia(
+      this.parsed(
+        mediaSchema,
+        await this.json(
+          this.graph(encodeURIComponent(mediaId), {
+            fields:
+              "id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count",
+          }),
+          "media_catalog",
+          { headers: { Authorization: `Bearer ${token}` } },
+        ),
+      ),
+    );
+  }
+  private async catalogPage(
+    token: string,
+    userId: string,
+    cursor: string | null,
+    limit: number,
+    edge: "media" | "stories",
+  ) {
     const parameters: Record<string, string> = {
       fields:
         "id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count",
@@ -290,7 +340,7 @@ export class MetaClient implements InstagramTransport {
     const data = this.parsed(
       mediaPageSchema,
       await this.json(
-        this.graph(`${encodeURIComponent(userId)}/media`, parameters),
+        this.graph(`${encodeURIComponent(userId)}/${edge}`, parameters),
         "media_catalog",
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -308,7 +358,7 @@ export class MetaClient implements InstagramTransport {
         id: item.id,
         caption: item.caption ?? "",
         mediaType: item.media_type,
-        productType: item.media_product_type ?? "UNKNOWN",
+        productType: edge === "stories" ? "STORY" : (item.media_product_type ?? "UNKNOWN"),
         permalink: item.permalink,
         timestamp,
         likeCount: item.like_count ?? null,
@@ -394,5 +444,154 @@ export class MetaClient implements InstagramTransport {
       }
     }
     return result;
+  }
+
+  async structuredInsights(
+    token: string,
+    objectId: string,
+    query: InsightQuery,
+  ): Promise<StructuredInsight> {
+    const result: StructuredInsight = {
+      metric: query.metric,
+      period: query.period,
+      metricType: query.metricType,
+      value: null,
+      reason: "not_returned",
+      description: null,
+      points: [],
+      breakdowns: [],
+    };
+    const parameters: Record<string, string> = {
+      metric: query.metric,
+      period: query.period,
+      metric_type: query.metricType,
+    };
+    if (query.since !== undefined) parameters.since = String(Math.floor(query.since / 1000));
+    if (query.until !== undefined) parameters.until = String(Math.floor(query.until / 1000));
+    if (query.breakdown) parameters.breakdown = query.breakdown;
+    if (query.timeframe) parameters.timeframe = query.timeframe;
+    const valueSchema = z.object({ value: z.unknown() });
+    const schema = z.object({
+      data: z.array(
+        z.object({
+          name: z.string(),
+          period: z.string().optional(),
+          description: z.string().optional(),
+          values: z.array(valueSchema.extend({ end_time: z.string() })).optional(),
+          total_value: z
+            .object({
+              value: z.unknown().optional(),
+              breakdowns: z
+                .array(
+                  z.object({
+                    dimension_keys: z.array(z.string()),
+                    results: z.array(
+                      z.object({ dimension_values: z.array(z.string()), value: z.unknown() }),
+                    ),
+                  }),
+                )
+                .optional(),
+            })
+            .optional(),
+        }),
+      ),
+    });
+    let data: z.infer<typeof schema>;
+    try {
+      data = this.parsed(
+        schema,
+        await this.json(
+          this.graph(`${encodeURIComponent(objectId)}/insights`, parameters),
+          "insights",
+          { headers: { Authorization: `Bearer ${token}` } },
+          true,
+        ),
+      );
+    } catch (error) {
+      if (!(error instanceof MetricUnavailable)) throw error;
+      return { ...result, reason: error.reason };
+    }
+    const item = data.data.find((item) => item.name === query.metric);
+    if (!item) return result;
+    const number = (value: unknown): InstagramInsight =>
+      typeof value === "number" &&
+      Number.isFinite(value) &&
+      value >= 0 &&
+      value <= Number.MAX_SAFE_INTEGER
+        ? { value, reason: null }
+        : { value: null, reason: value == null ? "not_returned" : "invalid_value" };
+    return {
+      ...result,
+      ...number(item.total_value?.value),
+      period: item.period ?? query.period,
+      description: item.description ?? null,
+      points: (item.values ?? []).map((point) => {
+        const endTime = Date.parse(point.end_time);
+        if (!Number.isFinite(endTime))
+          throw new ApplicationError(
+            "INSTAGRAM_UNAVAILABLE",
+            "Instagram returned an invalid insight period.",
+          );
+        return { ...number(point.value), endTime };
+      }),
+      breakdowns: (item.total_value?.breakdowns ?? []).map((group) => ({
+        dimensions: group.dimension_keys,
+        results: group.results.map((entry) => ({
+          categories: entry.dimension_values,
+          ...number(entry.value),
+        })),
+      })),
+    };
+  }
+  async comments(
+    token: string,
+    objectId: string,
+    replies: boolean,
+    cursor: string | null,
+    limit: number,
+  ) {
+    const parameters: Record<string, string> = {
+      fields: "id,text,timestamp",
+      limit: String(limit),
+    };
+    if (cursor) parameters.after = cursor;
+    const schema = z.object({
+      data: z.array(z.object({ id: identifier, text: z.string(), timestamp: z.string() })),
+      paging: z
+        .object({
+          next: z.string().optional(),
+          cursors: z.object({ after: z.string().optional() }).optional(),
+        })
+        .optional(),
+    });
+    const page = this.parsed(
+      schema,
+      await this.json(
+        this.graph(
+          `${encodeURIComponent(objectId)}/${replies ? "replies" : "comments"}`,
+          parameters,
+        ),
+        "media_catalog",
+        { headers: { Authorization: `Bearer ${token}` } },
+      ),
+    );
+    const nextCursor = page.paging?.next ? (page.paging.cursors?.after ?? null) : null;
+    if (page.paging?.next && !nextCursor)
+      throw new ApplicationError(
+        "INSTAGRAM_UNAVAILABLE",
+        "Instagram pagination did not contain a cursor.",
+      );
+    return {
+      items: page.data.map((item) => {
+        const publishedAt = Date.parse(item.timestamp);
+        if (!Number.isFinite(publishedAt))
+          throw new ApplicationError(
+            "INSTAGRAM_UNAVAILABLE",
+            "Instagram returned an invalid comment timestamp.",
+          );
+        return { id: item.id, text: item.text, publishedAt };
+      }),
+      nextCursor,
+    };
   }
 }

@@ -9,6 +9,7 @@
     "pnpm": "11.15.1"
   },
   "scripts": {
+    "contract:generate": "node scripts/capture-contract.mjs && node scripts/generate-contract.mjs && biome check --write src/contract.ts contract/openapi.json",
     "build": "node scripts/build.mjs",
     "check": "biome check . && tsc --noEmit && pnpm test && pnpm build",
     "test": "node --test src/*.test.ts",

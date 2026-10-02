@@ -1,5 +1,5 @@
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { InstagramReader } from "../public-contracts";
+import type { InsightQuery, InstagramReader } from "../public-contracts";
 import type { ConnectionRepository, InstagramTransport, TokenProtection } from "./ports";
 
 export class InstagramConnections implements InstagramReader {
@@ -11,11 +11,11 @@ export class InstagramConnections implements InstagramReader {
     private readonly clock: () => number,
   ) {}
 
-  async start(state: string, hash: string) {
+  async start(state: string, hash: string, comments = false) {
     const now = this.clock();
     const expiresAt = now + 10 * 60_000;
     await this.repository.saveState(hash, expiresAt, now);
-    return { authorizationUrl: this.transport.authorizationUrl(state), expiresAt };
+    return { authorizationUrl: this.transport.authorizationUrl(state, comments), expiresAt };
   }
 
   async callback(input: { stateHash: string; code?: string; denied: boolean }) {
@@ -105,5 +105,29 @@ export class InstagramConnections implements InstagramReader {
   }
   async insights(accountId: string, mediaId: string, fields: string[]) {
     return this.transport.insights(await this.token(accountId), mediaId, fields);
+  }
+  async media(accountId: string, mediaId: string) {
+    return this.transport.media(await this.token(accountId), mediaId);
+  }
+  async stories(accountId: string, userId: string, cursor: string | null, limit: number) {
+    return this.transport.stories(await this.token(accountId), userId, cursor, limit);
+  }
+  async structuredInsights(accountId: string, objectId: string, query: InsightQuery) {
+    return this.transport.structuredInsights(await this.token(accountId), objectId, query);
+  }
+  async comments(
+    accountId: string,
+    objectId: string,
+    replies: boolean,
+    cursor: string | null,
+    limit: number,
+  ) {
+    const connection = await this.repository.get(accountId);
+    if (!connection?.scopes.includes("instagram_business_manage_comments"))
+      throw new ApplicationError(
+        "INSTAGRAM_PERMISSION_REQUIRED",
+        "Reconnect Instagram with instagram_business_manage_comments to read comment texts.",
+      );
+    return this.transport.comments(await this.token(accountId), objectId, replies, cursor, limit);
   }
 }

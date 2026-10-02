@@ -43,7 +43,15 @@ test("MCP discovery lists focused tools and correct mutation annotations", async
   });
   try {
     const { tools } = await client.listTools();
-    assert.equal(tools.length, 12);
+    assert.equal(tools.length, 41);
+    assert.equal(
+      tools.find((t) => t.name === "set_collection_schedule")?.annotations?.readOnlyHint,
+      false,
+    );
+    assert.equal(
+      tools.find((t) => t.name === "erase_comments")?.annotations?.destructiveHint,
+      true,
+    );
     assert.equal(tools.find((t) => t.name === "get_media_report")?.annotations?.readOnlyHint, true);
     assert.equal(
       tools.find((t) => t.name === "sync_account_page")?.annotations?.readOnlyHint,
@@ -137,6 +145,90 @@ test("Sync forwards exact operation parameters and performs no automatic retry",
     assert.equal(result.isError, true);
     assert.equal(calls, 1);
     assert.ok(!JSON.stringify(result).includes(env.SOCIAL_API_KEY));
+  } finally {
+    await client.close();
+  }
+});
+test("Refresh, selected context and opt-in schedule call their precise backend routes", async () => {
+  const operationId = randomUUID();
+  const calls: { method: string; path: string; body: unknown }[] = [];
+  const client = await connect(async (request) => {
+    calls.push({
+      method: request.method,
+      path: new URL(request.url).pathname,
+      body: await request.json(),
+    });
+    return new Response(null, { status: 503 });
+  });
+  try {
+    for (const action of [
+      { name: "refresh_media", arguments: { mediaId: media.id, body: { operationId } } },
+      {
+        name: "set_media_context",
+        arguments: {
+          body: {
+            mediaIds: [media.id],
+            source: "assistant_suggestion",
+            values: { rubric: "Наблюдение" },
+          },
+        },
+      },
+      {
+        name: "set_collection_schedule",
+        arguments: { accountId: "ig_1", body: { enabled: false, discoveryMinutes: 120 } },
+      },
+    ]) {
+      const result = await client.callTool(action);
+      assert.equal(result.isError, true);
+    }
+    assert.deepEqual(calls, [
+      { method: "POST", path: `/api/media/${media.id}/refresh`, body: { operationId } },
+      {
+        method: "PATCH",
+        path: "/api/media/context/batch",
+        body: {
+          mediaIds: [media.id],
+          source: "assistant_suggestion",
+          values: { rubric: "Наблюдение" },
+        },
+      },
+      {
+        method: "PATCH",
+        path: "/api/accounts/ig_1/collection/schedule",
+        body: { enabled: false, discoveryMinutes: 120 },
+      },
+    ]);
+  } finally {
+    await client.close();
+  }
+});
+test("A collection request never enables recurring collection and status uses only GET", async () => {
+  const operationId = randomUUID();
+  const calls: { method: string; path: string; body: unknown }[] = [];
+  const client = await connect(async (request) => {
+    calls.push({
+      method: request.method,
+      path: new URL(request.url).pathname,
+      body: request.method === "GET" ? null : await request.json(),
+    });
+    return new Response(null, { status: 503 });
+  });
+  try {
+    await client.callTool({
+      name: "collect_all",
+      arguments: { accountId: "ig_1", body: { operationId } },
+    });
+    await client.callTool({ name: "get_collection_status", arguments: { accountId: "ig_1" } });
+    await client.callTool({ name: "get_collection_job", arguments: { jobId: operationId } });
+    assert.deepEqual(calls, [
+      {
+        method: "POST",
+        path: "/api/accounts/ig_1/collection",
+        body: { operationId },
+      },
+      { method: "GET", path: "/api/accounts/ig_1/collection", body: null },
+      { method: "GET", path: `/api/collection-jobs/${operationId}`, body: null },
+    ]);
   } finally {
     await client.close();
   }

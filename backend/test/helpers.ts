@@ -52,6 +52,19 @@ export function fixture() {
     })),
     profile: vi.fn(async () => profile),
     mediaPage: vi.fn(async () => ({ media: [sampleMedia], nextCursor: null })),
+    media: vi.fn(async () => sampleMedia),
+    stories: vi.fn(async () => ({ media: [], nextCursor: null })),
+    structuredInsights: vi.fn(async (_token, _id, query) => ({
+      metric: query.metric,
+      period: query.period,
+      metricType: query.metricType,
+      value: null,
+      reason: "not_returned" as const,
+      description: null,
+      points: [],
+      breakdowns: [],
+    })),
+    comments: vi.fn(async () => ({ items: [], nextCursor: null })),
     insights: vi.fn(async (_token: string, _id: string, fields: string[]) =>
       Object.fromEntries(
         fields.map((field) => [

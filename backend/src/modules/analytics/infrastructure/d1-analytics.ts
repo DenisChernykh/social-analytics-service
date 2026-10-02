@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, inArray, lt, lte, or, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, gte, inArray, lt, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import {
   accountSnapshots,
@@ -12,14 +12,18 @@ import type { AnalyticsRepository, MediaFilter } from "../application/ports";
 import type { Account, Media, Metrics, Snapshot, SyncRun } from "../domain/model";
 import { normalizeSearch } from "../domain/search";
 
-type Cursor = { time: number; id: string };
+type Cursor = { time: number; id: string; rank?: number; filter?: string };
 function encodeCursor(cursor: Cursor): string {
-  return btoa(JSON.stringify(cursor));
+  return btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(cursor))));
 }
 function decodeCursor(value: string | undefined): Cursor | null {
   if (!value) return null;
   try {
-    const cursor = JSON.parse(atob(value)) as Cursor;
+    const cursor = JSON.parse(
+      new TextDecoder().decode(
+        Uint8Array.from(atob(value), (character) => character.charCodeAt(0)),
+      ),
+    ) as Cursor;
     if (
       !Number.isSafeInteger(cursor.time) ||
       typeof cursor.id !== "string" ||
@@ -44,6 +48,7 @@ function mapMedia(row: typeof mediaTable.$inferSelect): Media {
     publishedAt: row.publishedAt,
     durationSeconds: row.durationSeconds,
     durationSource: row.durationSource as Media["durationSource"],
+    context: row.contextJson ? JSON.parse(row.contextJson) : null,
   };
 }
 function mapSnapshot(row: typeof mediaSnapshots.$inferSelect): Snapshot {
@@ -53,6 +58,7 @@ function mapSnapshot(row: typeof mediaSnapshots.$inferSelect): Snapshot {
     observedAt: row.observedAt,
     apiVersion: row.apiVersion,
     metrics: JSON.parse(row.metricsJson) as Metrics,
+    storyInsights: row.storyInsightsJson ? JSON.parse(row.storyInsightsJson) : null,
   };
 }
 
@@ -77,28 +83,50 @@ export class D1Analytics implements AnalyticsRepository {
   }
   async search(filter: MediaFilter) {
     const cursor = decodeCursor(filter.cursor);
-    const conditions = filter.words.map((word) =>
-      or(
-        sql`instr(${mediaTable.searchText}, ${word}) > 0`,
-        sql`instr(${mediaTable.titleSearch}, ${word}) > 0`,
-      ),
-    );
+    const words = JSON.stringify(filter.words);
+    const phrase = normalizeSearch(filter.query ?? "");
+    const signature = JSON.stringify([
+      phrase,
+      filter.accountId,
+      filter.productType,
+      filter.from,
+      filter.to,
+      filter.exactTitle,
+      filter.rubric,
+      filter.goal,
+      filter.format,
+    ]);
+    if (cursor && (cursor.filter !== signature || !Number.isInteger(cursor.rank)))
+      throw new ApplicationError(
+        "VALIDATION_FAILED",
+        "Continue pagination with the same search filters.",
+      );
+    const rank = filter.words.length
+      ? sql<number>`CASE WHEN ${mediaTable.titleSearch} = ${phrase} OR rtrim(${mediaTable.permalink}, '/') = ${filter.query?.trim().replace(/\/$/, "") ?? ""} THEN 0 WHEN NOT EXISTS (SELECT 1 FROM json_each(${words}) w WHERE instr(' ' || ${mediaTable.searchText} || ' ', ' ' || w.value || ' ') = 0 AND instr(' ' || ${mediaTable.titleSearch} || ' ', ' ' || w.value || ' ') = 0) THEN 1 ELSE 2 END`
+      : sql<number>`CASE WHEN 1 THEN 0 END`;
+    const conditions = [
+      sql`NOT EXISTS (SELECT 1 FROM json_each(${words}) w WHERE instr(${mediaTable.searchText}, w.value) = 0 AND instr(${mediaTable.titleSearch}, w.value) = 0)`,
+    ];
+    if (filter.exactTitle !== undefined)
+      conditions.push(eq(mediaTable.titleSearch, filter.exactTitle));
+    for (const key of ["rubric", "goal", "format"] as const)
+      if (filter[key])
+        conditions.push(
+          sql`json_extract(${mediaTable.contextJson}, ${`$.confirmed.${key}`}) = ${filter[key]}`,
+        );
     if (filter.accountId) conditions.push(eq(mediaTable.accountId, filter.accountId));
     if (filter.productType) conditions.push(eq(mediaTable.productType, filter.productType));
     if (filter.from !== undefined) conditions.push(gte(mediaTable.publishedAt, filter.from));
     if (filter.to !== undefined) conditions.push(lte(mediaTable.publishedAt, filter.to));
     if (cursor)
       conditions.push(
-        or(
-          lt(mediaTable.publishedAt, cursor.time),
-          and(eq(mediaTable.publishedAt, cursor.time), lt(mediaTable.id, cursor.id)),
-        ),
+        sql`(${rank} > ${cursor.rank} OR (${rank} = ${cursor.rank} AND (${mediaTable.publishedAt} < ${cursor.time} OR (${mediaTable.publishedAt} = ${cursor.time} AND ${mediaTable.id} < ${cursor.id}))))`,
       );
     const rows = await this.db
-      .select()
+      .select({ ...getTableColumns(mediaTable), relevance: rank })
       .from(mediaTable)
       .where(and(...conditions))
-      .orderBy(desc(mediaTable.publishedAt), desc(mediaTable.id))
+      .orderBy(rank, desc(mediaTable.publishedAt), desc(mediaTable.id))
       .limit(filter.limit + 1);
     const items = rows.slice(0, filter.limit).map(mapMedia);
     const last = items.at(-1);
@@ -106,7 +134,12 @@ export class D1Analytics implements AnalyticsRepository {
       items,
       nextCursor:
         rows.length > filter.limit && last
-          ? encodeCursor({ time: last.publishedAt, id: last.id })
+          ? encodeCursor({
+              time: last.publishedAt,
+              id: last.id,
+              rank: rows[filter.limit - 1]?.relevance ?? 0,
+              filter: signature,
+            })
           : null,
     };
   }
@@ -171,6 +204,36 @@ export class D1Analytics implements AnalyticsRepository {
       nextCursor:
         rows.length > limit && last ? encodeCursor({ time: last.observedAt, id: last.id }) : null,
     };
+  }
+  async atAge(mediaIds: string[], ageDays: number) {
+    const result = new Map<string, Snapshot>();
+    const tolerance = (ageDays === 1 ? 6 : ageDays === 7 ? 12 : 24) * 3_600_000;
+    for (let offset = 0; offset < mediaIds.length; offset += 40) {
+      const ids = mediaIds.slice(offset, offset + 40);
+      const rows = await this.database
+        .prepare(
+          `SELECT * FROM (SELECT s.*, row_number() OVER (PARTITION BY s.media_id ORDER BY abs(s.observed_at-m.published_at-?),s.observed_at,s.id) AS position FROM media_snapshots s JOIN media m ON m.id=s.media_id WHERE m.id IN (${ids.map(() => "?").join(",")}) AND abs(s.observed_at-m.published_at-?)<=?) WHERE position=1`,
+        )
+        .bind(ageDays * 86_400_000, ...ids, ageDays * 86_400_000, tolerance)
+        .all<{
+          id: string;
+          media_id: string;
+          observed_at: number;
+          api_version: string;
+          metrics_json: string;
+          story_insights_json: string | null;
+        }>();
+      for (const row of rows.results)
+        result.set(row.media_id, {
+          id: row.id,
+          mediaId: row.media_id,
+          observedAt: row.observed_at,
+          apiVersion: row.api_version,
+          metrics: JSON.parse(row.metrics_json),
+          storyInsights: row.story_insights_json ? JSON.parse(row.story_insights_json) : null,
+        });
+    }
+    return result;
   }
   async accountHistory(accountId: string, limit: number) {
     const rows = await this.db
@@ -279,14 +342,15 @@ export class D1Analytics implements AnalyticsRepository {
       const snapshot = item.snapshot;
       statements.push(
         this.database
-          .prepare(`INSERT INTO media_snapshots (id,media_id,observed_at,api_version,metrics_json)
-        SELECT ?,?,?,?,? WHERE ${guard} ON CONFLICT(id) DO NOTHING`)
+          .prepare(`INSERT INTO media_snapshots (id,media_id,observed_at,api_version,metrics_json,story_insights_json)
+        SELECT ?,?,?,?,?,? WHERE ${guard} ON CONFLICT(id) DO NOTHING`)
           .bind(
             snapshot.id,
             snapshot.mediaId,
             snapshot.observedAt,
             snapshot.apiVersion,
             JSON.stringify(snapshot.metrics),
+            snapshot.storyInsights ? JSON.stringify(snapshot.storyInsights) : null,
             ...fence,
           ),
       );

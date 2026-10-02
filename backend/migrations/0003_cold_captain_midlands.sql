@@ -1,0 +1,1 @@
+ALTER TABLE `experiments` ADD `assignments_json` text DEFAULT '[]' NOT NULL;

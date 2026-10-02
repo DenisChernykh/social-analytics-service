@@ -1,6 +1,34 @@
-import type { InstagramReader } from "../../instagram/public-contracts";
+import type { InstagramMedia, InstagramReader } from "../../instagram/public-contracts";
 import type { AnalyticsSource } from "../application/ports";
-import type { Account, Media, Metric, Metrics } from "../domain/model";
+import type {
+  Account,
+  Media,
+  Metric,
+  Metrics,
+  ReportDefinition,
+  StoryInsights,
+} from "../domain/model";
+
+export function instagramReportDefinition(productType: string): ReportDefinition {
+  return {
+    provider: "instagram_api",
+    scope:
+      productType === "STORY" ? "organic_instagram_story_lifetime" : "organic_instagram_lifetime",
+    object: "media",
+    aggregation: "lifetime",
+    limitations: [
+      "Instagram insights may lag behind by up to 48 hours.",
+      "Metrics cover organic Instagram activity; paid and cross-platform totals are separate.",
+      "Watch-time ratio is not a completion rate and can exceed 100%.",
+      "Historical growth starts with the snapshots collected by this service.",
+      ...(productType === "STORY"
+        ? [
+            "Only currently discoverable Stories can be collected; navigation counts actions, not unique viewers or completion.",
+          ]
+        : []),
+    ],
+  };
+}
 
 export const metricDefinitions = {
   views: { field: "views", unit: "count", appliesTo: "all" },
@@ -45,44 +73,61 @@ export class InstagramSource implements AnalyticsSource {
   async mediaPage(account: Account, cursor: string | null, limit: number) {
     const page = await this.reader.mediaPage(account.id, account.externalId, cursor, limit);
     return {
-      items: page.media.map((item) => ({
-        media: {
-          id: `${account.id}_${item.id}`,
-          accountId: account.id,
-          externalId: item.id,
-          caption: item.caption,
-          title: null,
-          mediaType: item.mediaType,
-          productType: item.productType,
-          permalink: item.permalink,
-          publishedAt: item.timestamp,
-          durationSeconds: null,
-          durationSource: null,
-        } as Media,
-        initialMetrics: {
-          likes: {
-            value: item.likeCount,
-            sourceField: "like_count",
-            unit: "count",
-            reason: item.likeCount === null ? "not_returned" : null,
-          },
-          comments: {
-            value: item.commentsCount,
-            sourceField: "comments_count",
-            unit: "count",
-            reason: item.commentsCount === null ? "not_returned" : null,
-          },
-        } as Partial<Metrics>,
-      })),
+      items: page.media.map((item) => this.mapMedia(account, item)),
       nextCursor: page.nextCursor,
+    };
+  }
+  async stories(account: Account, cursor: string | null, limit: number) {
+    const page = await this.reader.stories(account.id, account.externalId, cursor, limit);
+    return {
+      items: page.media.map((item) => this.mapMedia(account, { ...item, productType: "STORY" })),
+      nextCursor: page.nextCursor,
+    };
+  }
+  async media(account: Account, externalId: string) {
+    const item = await this.reader.media(account.id, externalId);
+    if (item.id !== externalId) throw new Error("Unexpected media identity");
+    return this.mapMedia(account, item);
+  }
+  private mapMedia(account: Account, item: InstagramMedia) {
+    return {
+      media: {
+        id: `${account.id}_${item.id}`,
+        accountId: account.id,
+        externalId: item.id,
+        caption: item.caption,
+        title: null,
+        mediaType: item.mediaType,
+        productType: item.productType,
+        permalink: item.permalink,
+        publishedAt: item.timestamp,
+        durationSeconds: null,
+        durationSource: null,
+      } as Media,
+      initialMetrics: {
+        likes: {
+          value: item.likeCount,
+          sourceField: "like_count",
+          unit: "count",
+          reason: item.likeCount === null ? "not_returned" : null,
+        },
+        comments: {
+          value: item.commentsCount,
+          sourceField: "comments_count",
+          unit: "count",
+          reason: item.commentsCount === null ? "not_returned" : null,
+        },
+      } as Partial<Metrics>,
     };
   }
   async metrics(accountId: string, item: { media: Media; initialMetrics: Partial<Metrics> }) {
     const isReel = item.media.productType === "REELS" || /\/reels?\//.test(item.media.permalink);
-    const requested = Object.entries(metricDefinitions).filter(
-      ([, definition]) =>
-        definition.appliesTo === "all" ||
-        (isReel ? definition.appliesTo === "reels" : definition.appliesTo === "feed"),
+    const isStory = item.media.productType === "STORY";
+    const requested = Object.entries(metricDefinitions).filter(([, definition]) =>
+      isStory
+        ? ["views", "reach"].includes(definition.field)
+        : definition.appliesTo === "all" ||
+          (isReel ? definition.appliesTo === "reels" : definition.appliesTo === "feed"),
     );
     const response = await this.reader.insights(
       accountId,
@@ -97,12 +142,58 @@ export class InstagramSource implements AnalyticsSource {
           : { value: null, reason: "not_supported" as const };
         const fallback = item.initialMetrics[key as keyof Metrics];
         const metric: Metric =
-          result.value === null && result.reason !== "invalid_value" && fallback?.value != null
+          !isStory &&
+          result.value === null &&
+          result.reason !== "invalid_value" &&
+          fallback?.value != null
             ? fallback
             : { ...result, sourceField: definition.field, unit: definition.unit };
         return [key, metric];
       }),
     ) as Metrics;
-    return { metrics, observedAt: this.clock(), apiVersion: this.apiVersion };
+    let storyInsights: StoryInsights | null = null;
+    if (isStory) {
+      const replies = await this.reader.insights(accountId, item.media.externalId, ["replies"]);
+      const navigation = await this.reader.structuredInsights(accountId, item.media.externalId, {
+        metric: "navigation",
+        period: "lifetime",
+        metricType: "total_value",
+        breakdown: "story_navigation_action_type",
+      });
+      const categories = new Map(
+        navigation.breakdowns
+          .filter(
+            (group) =>
+              group.dimensions.length === 1 &&
+              group.dimensions[0] === "story_navigation_action_type",
+          )
+          .flatMap((group) => group.results.map((entry) => [entry.categories[0], entry] as const)),
+      );
+      storyInsights = {
+        replies: {
+          ...(replies.replies ?? { value: null, reason: "not_returned" }),
+          sourceField: "replies",
+          unit: "count",
+        },
+        navigation: Object.fromEntries(
+          [
+            ...new Set(
+              ["tap_forward", "tap_back", "tap_exit", "swipe_forward", ...categories.keys()].filter(
+                (value): value is string => typeof value === "string",
+              ),
+            ),
+          ].map((category) => [
+            category,
+            {
+              value: categories.get(category)?.value ?? null,
+              reason: categories.get(category)?.reason ?? navigation.reason ?? "not_returned",
+              unit: "count",
+              sourceField: `navigation.story_navigation_action_type.${category}`,
+            },
+          ]),
+        ),
+      };
+    }
+    return { metrics, storyInsights, observedAt: this.clock(), apiVersion: this.apiVersion };
   }
 }

@@ -1,6 +1,6 @@
 import { ApplicationError } from "../../../shared/application/application-error";
 import { calculateGrowth, calculateMetrics, median } from "../domain/calculations";
-import { type MetricKey, metricKeys, type Snapshot } from "../domain/model";
+import { type MetricKey, metricKeys, type ReportDefinition, type Snapshot } from "../domain/model";
 import { normalizeSearch, searchWords } from "../domain/search";
 import type { AnalyticsRepository, MediaFilter } from "./ports";
 
@@ -8,9 +8,15 @@ export class AnalyticsQueries {
   constructor(
     private readonly repository: AnalyticsRepository,
     private readonly clock: () => number,
+    private readonly definition: (platform: string, productType: string) => ReportDefinition,
   ) {}
   accounts() {
     return this.repository.accounts();
+  }
+  observations(ids: string[], ageDays?: number) {
+    return ageDays === undefined
+      ? this.repository.latest(ids)
+      : this.repository.atAge(ids, ageDays);
   }
   async account(id: string) {
     const account = await this.repository.account(id);
@@ -41,6 +47,7 @@ export class AnalyticsQueries {
   async report(id: string) {
     const media = await this.media(id);
     const account = await this.account(media.accountId);
+    const definition = this.definition(account.platform, media.productType);
     const [latest, previous] = await this.repository.snapshots(id, 2);
     const missingMetrics = latest
       ? metricKeys.filter((key) => latest.metrics[key].value === null)
@@ -50,31 +57,39 @@ export class AnalyticsQueries {
       account,
       source: latest
         ? {
-            provider: "instagram_api" as const,
+            provider: definition.provider,
             apiVersion: latest.apiVersion,
             observedAt: latest.observedAt,
             ageSeconds: Math.max(0, this.clock() - latest.observedAt) / 1000,
-            scope: "organic_instagram_lifetime" as const,
+            scope: definition.scope,
+            object: definition.object,
+            aggregation: definition.aggregation,
           }
         : null,
       metrics: latest?.metrics ?? null,
+      storyInsights: latest?.storyInsights ?? null,
       calculated: latest ? calculateMetrics(latest.metrics, media) : null,
       growth: calculateGrowth(previous ?? null, latest ?? null),
       completeness: { snapshotAvailable: !!latest, missingMetrics },
-      limitations: [
-        "Instagram insights may lag behind by up to 48 hours.",
-        "Metrics cover organic Instagram activity; paid and cross-platform totals are separate.",
-        "Watch-time ratio is not a completion rate and can exceed 100%.",
-        "Historical growth starts with the snapshots collected by this service.",
-      ],
+      limitations: definition.limitations,
     };
   }
   async resolve(input: { query: string; accountId?: string }) {
-    const matches = await this.search({ ...input, limit: 20 });
-    const exact = matches.items.filter(
-      (item) => item.title && normalizeSearch(item.title) === normalizeSearch(input.query),
-    );
-    const candidates = exact.length === 1 && !matches.nextCursor ? exact : matches.items;
+    const words = searchWords(input.query);
+    if (!words.length || words.length > 40)
+      throw new ApplicationError(
+        "VALIDATION_FAILED",
+        "Use letters or numbers and at most 40 distinct words in the search query.",
+      );
+    if (input.accountId) await this.account(input.accountId);
+    const exact = await this.repository.search({
+      accountId: input.accountId,
+      words: [],
+      exactTitle: normalizeSearch(input.query),
+      limit: 20,
+    });
+    const matches = exact.items.length ? exact : await this.search({ ...input, limit: 20 });
+    const candidates = matches.items;
     const status = !candidates.length
       ? ("not_found" as const)
       : candidates.length === 1 && !matches.nextCursor
@@ -101,6 +116,9 @@ export class AnalyticsQueries {
     return {
       ...result,
       growth: calculateGrowth(first === last ? null : first, last),
+      intervals: result.items
+        .slice(0, -1)
+        .map((snapshot, index) => calculateGrowth(result.items[index + 1] ?? null, snapshot)),
       coverage: {
         fromSnapshot: first?.observedAt ?? null,
         toSnapshot: last?.observedAt ?? null,
@@ -127,9 +145,28 @@ export class AnalyticsQueries {
   async run(id: string) {
     const run = await this.repository.run(id);
     if (!run) throw new ApplicationError("NOT_FOUND", "The sync operation was not found.");
+    if (run.status === "running" && this.clock() - run.startedAt >= 15 * 60_000) {
+      await this.repository.fail(run, "SYNC_LEASE_EXPIRED", this.clock());
+      return {
+        ...run,
+        status: "failed" as const,
+        completedAt: this.clock(),
+        errorCode: "SYNC_LEASE_EXPIRED",
+      };
+    }
     return run;
   }
-  async summary(accountId: string, filter: { from?: number; to?: number; productType?: string }) {
+  async summary(
+    accountId: string,
+    filter: {
+      from?: number;
+      to?: number;
+      productType?: string;
+      rubric?: string;
+      goal?: string;
+      format?: string;
+    },
+  ) {
     const account = await this.account(accountId);
     const page = await this.repository.search({ ...filter, accountId, words: [], limit: 1000 });
     const snapshots = await this.repository.latest(page.items.map((media) => media.id));

@@ -1,0 +1,1 @@
+ALTER TABLE `collection_schedules` ADD `next_insights_at` integer DEFAULT 0 NOT NULL;

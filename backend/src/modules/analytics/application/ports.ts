@@ -1,4 +1,12 @@
-import type { Account, AccountSnapshot, Media, Metrics, Snapshot, SyncRun } from "../domain/model";
+import type {
+  Account,
+  AccountSnapshot,
+  Media,
+  Metrics,
+  Snapshot,
+  StoryInsights,
+  SyncRun,
+} from "../domain/model";
 
 export type MediaFilter = {
   accountId?: string;
@@ -8,6 +16,11 @@ export type MediaFilter = {
   to?: number;
   limit: number;
   cursor?: string;
+  query?: string;
+  exactTitle?: string;
+  rubric?: string;
+  goal?: string;
+  format?: string;
 };
 export interface AnalyticsRepository {
   accounts(): Promise<Account[]>;
@@ -16,6 +29,7 @@ export interface AnalyticsRepository {
   search(filter: MediaFilter): Promise<{ items: Media[]; nextCursor: string | null }>;
   snapshots(mediaId: string, limit: number): Promise<Snapshot[]>;
   latest(mediaIds: string[]): Promise<Map<string, Snapshot>>;
+  atAge(mediaIds: string[], ageDays: number): Promise<Map<string, Snapshot>>;
   history(
     mediaId: string,
     from: number | undefined,
@@ -46,6 +60,10 @@ export interface AnalyticsRepository {
 }
 
 export interface AnalyticsSource {
+  media(
+    account: Account,
+    externalId: string,
+  ): Promise<{ media: Media; initialMetrics: Partial<Metrics> }>;
   profile(accountId: string): Promise<{
     userId: string;
     username: string;
@@ -64,5 +82,18 @@ export interface AnalyticsSource {
   metrics(
     accountId: string,
     item: { media: Media; initialMetrics: Partial<Metrics> },
-  ): Promise<{ metrics: Metrics; observedAt: number; apiVersion: string }>;
+  ): Promise<{
+    metrics: Metrics;
+    observedAt: number;
+    apiVersion: string;
+    storyInsights?: StoryInsights | null;
+  }>;
+  stories(
+    account: Account,
+    cursor: string | null,
+    limit: number,
+  ): Promise<{
+    items: Array<{ media: Media; initialMetrics: Partial<Metrics> }>;
+    nextCursor: string | null;
+  }>;
 }

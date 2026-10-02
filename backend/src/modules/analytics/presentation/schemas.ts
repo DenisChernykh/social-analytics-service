@@ -9,7 +9,9 @@ export const timestamp = z
 export const accountSchema = z
   .object({
     id: idSchema,
-    platform: z.literal("instagram"),
+    platform: z.string().openapi({
+      description: "Platform of this saved account. Only Instagram is currently connected.",
+    }),
     externalId: z.string(),
     username: z.string(),
     accountType: z.string(),
@@ -30,6 +32,38 @@ export const mediaSchema = z
     publishedAt: timestamp,
     durationSeconds: z.number().nullable(),
     durationSource: z.literal("manual").nullable(),
+    context: z
+      .object({
+        confirmed: z.object({
+          rubric: z.string().nullable().optional(),
+          series: z.string().nullable().optional(),
+          topics: z.array(z.string()).optional(),
+          tags: z.array(z.string()).optional(),
+          format: z.string().nullable().optional(),
+          hook: z.string().nullable().optional(),
+          callToAction: z.string().nullable().optional(),
+          goal: z.string().nullable().optional(),
+          sponsored: z.boolean().nullable().optional(),
+          notes: z.string().nullable().optional(),
+        }),
+        proposal: z.object({
+          rubric: z.string().nullable().optional(),
+          series: z.string().nullable().optional(),
+          topics: z.array(z.string()).optional(),
+          tags: z.array(z.string()).optional(),
+          format: z.string().nullable().optional(),
+          hook: z.string().nullable().optional(),
+          callToAction: z.string().nullable().optional(),
+          goal: z.string().nullable().optional(),
+          sponsored: z.boolean().nullable().optional(),
+          notes: z.string().nullable().optional(),
+        }),
+        confirmedSource: z.literal("manual"),
+        proposalSource: z.literal("assistant_suggestion"),
+        updatedAt: timestamp,
+      })
+      .nullable()
+      .optional(),
   })
   .openapi("Media");
 export const metricSchema = z
@@ -57,6 +91,10 @@ export const snapshotSchema = z
     observedAt: timestamp,
     apiVersion: z.string(),
     metrics: metricsSchema,
+    storyInsights: z
+      .object({ replies: metricSchema, navigation: z.record(z.string(), metricSchema) })
+      .nullable()
+      .optional(),
   })
   .openapi("MediaSnapshot");
 export const calculatedSchema = z
@@ -93,14 +131,19 @@ export const reportSchema = z
     account: accountSchema,
     source: z
       .object({
-        provider: z.literal("instagram_api"),
+        provider: z.string(),
         apiVersion: z.string(),
         observedAt: timestamp,
         ageSeconds: z.number(),
-        scope: z.literal("organic_instagram_lifetime"),
+        scope: z.string(),
+        object: z.literal("media"),
+        aggregation: z.literal("lifetime"),
       })
       .nullable(),
     metrics: metricsSchema.nullable(),
+    storyInsights: z
+      .object({ replies: metricSchema, navigation: z.record(z.string(), metricSchema) })
+      .nullable(),
     calculated: z
       .object({
         engagementByReach: calculatedSchema,
@@ -143,3 +186,29 @@ export const rangeQuery = z.object({ from: dateQuery, to: dateQuery });
 export function validRange(input: { from?: number; to?: number }) {
   return input.from === undefined || input.to === undefined || input.from <= input.to;
 }
+
+const cohortTotalSchema = z.object({
+  value: z.number().nullable(),
+  knownSum: z.number(),
+  available: z.number(),
+  mediaCount: z.number(),
+});
+export const summarySchema = z.object({
+  account: accountSchema,
+  cohort: z.object({
+    publishedFrom: timestamp.nullable(),
+    publishedTo: timestamp.nullable(),
+    productType: z.string().nullable(),
+    mediaCount: z.number(),
+    truncated: z.boolean(),
+  }),
+  totals: z.object({
+    views: cohortTotalSchema,
+    likes: cohortTotalSchema,
+    comments: cohortTotalSchema,
+    saves: cohortTotalSchema,
+    shares: cohortTotalSchema,
+  }),
+  snapshotRange: z.object({ oldest: timestamp.nullable(), newest: timestamp.nullable() }),
+  note: z.string(),
+});

@@ -64,7 +64,12 @@ function request(method, path, body) {
 }
 
 if (command === "connect") {
-  const response = await request("POST", "/api/instagram/oauth/start");
+  const response = await request(
+    "POST",
+    args.includes("--comments")
+      ? "/api/instagram/oauth/start?comments=true"
+      : "/api/instagram/oauth/start",
+  );
   const url = new URL(response.authorizationUrl);
   if (url.origin !== "https://www.instagram.com" || url.pathname !== "/oauth/authorize")
     throw new Error("Unexpected OAuth destination.");
@@ -99,6 +104,34 @@ if (command === "connect") {
       2,
     ),
   );
+} else if (command === "collect" && args[0]) {
+  const accountId = encodeURIComponent(args[0]);
+  const operationId = args[1] ?? randomUUID();
+  let job = await request("POST", `/api/accounts/${accountId}/collection`, {
+    operationId,
+    stories: false,
+  });
+  console.log(`Saved collection job: ${job.id}. Use the same ID to continue after interruption.`);
+  for (let page = 0; page < 1000 && job.status === "running"; page++) {
+    if (job.nextAttemptAt > Date.now()) {
+      console.log(`Backoff until ${new Date(job.nextAttemptAt).toISOString()}; job=${job.id}.`);
+      break;
+    }
+    try {
+      job = await request("POST", `/api/collection-jobs/${job.id}/advance`, {});
+    } catch {
+      job = await request("GET", `/api/collection-jobs/${job.id}`);
+      console.log(`Response uncertain; inspected saved job ${job.id} before continuing.`);
+      break;
+    }
+    console.log(
+      `Job ${job.status}: ${job.pages} pages, ${job.collected} observations; id=${job.id}.`,
+    );
+  }
+  if (job.status === "failed" || job.status === "cancelled") {
+    console.log(`Inspect job ${job.id}; explicit resume is available through the collection API.`);
+    process.exitCode = 1;
+  }
 } else if (command === "sync" && args[0]) {
   let cursor = null;
   let count = 0;
@@ -148,7 +181,7 @@ if (command === "connect") {
   );
 } else {
   console.log(
-    "Usage: pnpm api accounts | connect | sync ACCOUNT_ID | report 'TITLE' [ACCOUNT_ID] | request METHOD /api/PATH [JSON]",
+    "Usage: pnpm api accounts | connect [--comments] | collect ACCOUNT_ID [JOB_ID] | sync ACCOUNT_ID | report 'TITLE' [ACCOUNT_ID] | request METHOD /api/PATH [JSON]",
   );
   process.exitCode = 1;
 }

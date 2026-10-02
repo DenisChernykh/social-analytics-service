@@ -31,6 +31,7 @@ export function createInstagramHttp(
       operationId: "startInstagramAuthorization",
       tags: ["Instagram"],
       security: secured,
+      request: { query: z.object({ comments: z.enum(["true", "false"]).default("false") }) },
       responses: {
         200: {
           description:
@@ -46,7 +47,14 @@ export function createInstagramHttp(
     }),
     async (c) => {
       const state = randomState();
-      return c.json(await createOperations(c.env).start(state, await sha256(state)), 200);
+      return c.json(
+        await createOperations(c.env).start(
+          state,
+          await sha256(state),
+          c.req.valid("query").comments === "true",
+        ),
+        200,
+      );
     },
   );
 

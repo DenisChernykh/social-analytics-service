@@ -1,4 +1,11 @@
-import type { InstagramInsight, InstagramMedia, InstagramProfile } from "../public-contracts";
+import type {
+  CommentPage,
+  InsightQuery,
+  InstagramInsight,
+  InstagramMedia,
+  InstagramProfile,
+  StructuredInsight,
+} from "../public-contracts";
 
 export type StoredConnection = {
   accountId: string;
@@ -26,7 +33,7 @@ export interface TokenProtection {
   decrypt(value: string, accountId: string): Promise<string>;
 }
 export interface InstagramTransport {
-  authorizationUrl(state: string): string;
+  authorizationUrl(state: string, comments?: boolean): string;
   exchangeCode(code: string): Promise<{ accessToken: string; scopes: string[] }>;
   extendToken(token: string): Promise<{ accessToken: string; expiresIn: number }>;
   refreshToken(token: string): Promise<{ accessToken: string; expiresIn: number }>;
@@ -42,4 +49,23 @@ export interface InstagramTransport {
     mediaId: string,
     fields: string[],
   ): Promise<Record<string, InstagramInsight>>;
+  media(token: string, mediaId: string): Promise<InstagramMedia>;
+  stories(
+    token: string,
+    userId: string,
+    cursor: string | null,
+    limit: number,
+  ): Promise<{ media: InstagramMedia[]; nextCursor: string | null }>;
+  structuredInsights(
+    token: string,
+    objectId: string,
+    query: InsightQuery,
+  ): Promise<StructuredInsight>;
+  comments(
+    token: string,
+    objectId: string,
+    replies: boolean,
+    cursor: string | null,
+    limit: number,
+  ): Promise<CommentPage>;
 }

@@ -1,3 +1,5 @@
+import type { ContentContext } from "../../../shared/domain/content";
+
 export const metricKeys = [
   "views",
   "reach",
@@ -26,7 +28,7 @@ export type Metrics = Record<MetricKey, Metric>;
 
 export type Account = {
   id: string;
-  platform: "instagram";
+  platform: string;
   externalId: string;
   username: string;
   accountType: string;
@@ -45,6 +47,7 @@ export type Media = {
   publishedAt: number;
   durationSeconds: number | null;
   durationSource: "manual" | null;
+  context?: ContentContext | null;
 };
 export type Snapshot = {
   id: string;
@@ -52,6 +55,7 @@ export type Snapshot = {
   observedAt: number;
   apiVersion: string;
   metrics: Metrics;
+  storyInsights?: StoryInsights | null;
 };
 export type AccountSnapshot = {
   observedAt: number;
@@ -69,4 +73,18 @@ export type SyncRun = {
   nextCursor: string | null;
   mediaCount: number;
   errorCode: string | null;
+  kind?: "page" | "media" | "stories";
+  targetMediaId?: string | null;
+};
+
+export type StoryInsights = {
+  replies: Metric;
+  navigation: Record<string, Metric>;
+};
+export type ReportDefinition = {
+  provider: string;
+  scope: string;
+  object: "media";
+  aggregation: "lifetime";
+  limitations: string[];
 };
