@@ -206,11 +206,20 @@ export class MetaClient implements InstagramTransport {
 
   private parsed<T>(schema: z.ZodType<T>, data: unknown): T {
     const result = schema.safeParse(data);
-    if (!result.success)
+    if (!result.success) {
+      const issue = result.error.issues[0];
+      const path =
+        issue?.path
+          .filter(
+            (part) =>
+              typeof part === "number" || (typeof part === "string" && /^[a-z_]+$/.test(part)),
+          )
+          .join(".") ?? "response";
       throw new ApplicationError(
         "INSTAGRAM_UNAVAILABLE",
-        "The Instagram response did not match the expected API contract.",
+        `The Instagram response did not match the expected API contract at ${path || "response"} (${issue?.code ?? "invalid_response"}).`,
       );
+    }
     return result.data;
   }
 

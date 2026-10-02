@@ -413,10 +413,12 @@ export function createAnalyticsHttp(
     }),
     async (c) =>
       c.json(
-        await createOperations(c.env).sync.execute({
-          accountId: c.req.valid("param").accountId,
-          ...c.req.valid("json"),
-        }),
+        syncSchema.parse(
+          await createOperations(c.env).sync.execute({
+            accountId: c.req.valid("param").accountId,
+            ...c.req.valid("json"),
+          }),
+        ),
         200,
       ),
   );
@@ -438,7 +440,12 @@ export function createAnalyticsHttp(
       },
     }),
     async (c) =>
-      c.json(await createOperations(c.env).queries.run(c.req.valid("param").operationId), 200),
+      c.json(
+        syncSchema.parse(
+          await createOperations(c.env).queries.run(c.req.valid("param").operationId),
+        ),
+        200,
+      ),
   );
 
   router.openapi(
@@ -506,14 +513,16 @@ export function createAnalyticsHttp(
       const operations = createOperations(c.env);
       const media = await operations.queries.media(c.req.valid("param").mediaId);
       return c.json(
-        await operations.sync.execute({
-          accountId: media.accountId,
-          operationId: c.req.valid("json").operationId,
-          cursor: null,
-          pageSize: 1,
-          kind: "media",
-          mediaId: media.id,
-        }),
+        syncSchema.parse(
+          await operations.sync.execute({
+            accountId: media.accountId,
+            operationId: c.req.valid("json").operationId,
+            cursor: null,
+            pageSize: 1,
+            kind: "media",
+            mediaId: media.id,
+          }),
+        ),
         200,
       );
     },

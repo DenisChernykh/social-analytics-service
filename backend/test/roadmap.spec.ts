@@ -35,12 +35,16 @@ describe("single-media refresh and durable collection", () => {
     f.advance(3_600_000);
     f.values.views = 2600;
     const operationId = crypto.randomUUID();
-    expect((await f.request(`/api/media/${mediaId}/refresh`, "POST", { operationId })).status).toBe(
-      200,
-    );
-    expect((await f.request(`/api/media/${mediaId}/refresh`, "POST", { operationId })).status).toBe(
-      200,
-    );
+    const firstRefresh = await f.request(`/api/media/${mediaId}/refresh`, "POST", { operationId });
+    const repeatedRefresh = await f.request(`/api/media/${mediaId}/refresh`, "POST", {
+      operationId,
+    });
+    expect(firstRefresh.status).toBe(200);
+    expect(repeatedRefresh.status).toBe(200);
+    const result = await firstRefresh.json();
+    expect(await repeatedRefresh.json()).toEqual(result);
+    expect(result).not.toHaveProperty("leaseExpiresAt");
+    expect(await (await f.request(`/api/sync-runs/${operationId}`)).json()).toEqual(result);
     expect(f.transport.mediaPage).toHaveBeenCalledTimes(1);
     expect(f.transport.media).toHaveBeenCalledTimes(1);
     expect(await (await f.request(`/api/media/${mediaId}/statistics`)).json()).toMatchObject({
