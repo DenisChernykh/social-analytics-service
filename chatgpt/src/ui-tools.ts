@@ -7,6 +7,13 @@ import { WIDGET_HTML, WIDGET_URI } from "./widget.ts";
 
 type Api = ReturnType<typeof createBackendClient>;
 type Run = (operation: (api: Api) => Promise<Record<string, unknown>>) => Promise<CallToolResult>;
+export const APP_ICONS = [
+  {
+    src: `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v14h14M6 13V9m4 4V5m4 8V7"/></svg>')}`,
+    mimeType: "image/svg+xml",
+    sizes: ["20x20"],
+  },
+];
 const id = z
   .string()
   .min(1)
@@ -39,7 +46,10 @@ export function registerUiTools(server: McpServer, run: Run) {
           uri: WIDGET_URI,
           mimeType: "text/html;profile=mcp-app",
           text: WIDGET_HTML,
-          _meta: { ui: { prefersBorder: true, csp: { connectDomains: [], resourceDomains: [] } } },
+          _meta: {
+            ui: { prefersBorder: true, csp: { connectDomains: [], resourceDomains: [] } },
+            "openai/ui": { availableDisplayModes: ["inline", "fullscreen"] },
+          },
         },
       ],
     }),
@@ -49,13 +59,13 @@ export function registerUiTools(server: McpServer, run: Run) {
   server.registerTool(
     "open_social_analytics",
     {
-      title: "Состояние Social Analytics",
+      title: "Social Analytics",
       description:
         "Небольшая карточка в ChatGPT: аккаунты, свежесть и подтверждённые полные проходы, отдельные действия сбора и расписания. Только чтение; открытие не запускает сбор. Клиент загружает UI отдельно от JSON результата: отсутствие HTML в результате не означает сбой карточки. Сообщай о недоступности UI только при явной ошибке клиента или подтверждении пользователя; тогда верни состояния текстом.",
       inputSchema: z.object({ accountId: id.optional() }),
       outputSchema: z.object({ data: panelResponse }),
       annotations,
-      _meta: ui,
+      _meta: { ...ui, "openai/ui": { entrypoints: [{ type: "global" }] } },
     },
     ({ accountId }) =>
       run(async (api) => {

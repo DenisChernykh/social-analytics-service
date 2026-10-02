@@ -48,11 +48,22 @@ test("MCP discovery lists focused tools, optional UI and correct mutation annota
     assert.ok(panelTool?._meta?.ui);
     assert.equal(
       (panelTool._meta.ui as { resourceUri: string }).resourceUri,
-      "ui://social-analytics/control-v1.html",
+      "ui://social-analytics/control-v2.html",
+    );
+    assert.equal(panelTool.title, "Social Analytics");
+    assert.deepEqual(panelTool._meta["openai/ui"], { entrypoints: [{ type: "global" }] });
+    assert.deepEqual(panelTool.inputSchema.required ?? [], []);
+    assert.equal(panelTool.annotations?.readOnlyHint, true);
+    assert.deepEqual(
+      tools.filter((t) => t._meta?.["openai/ui"]).map((t) => t.name),
+      ["open_social_analytics"],
     );
     const resources = await client.listResources();
     const resource = await client.readResource({ uri: resources.resources[0].uri });
     assert.equal(resource.contents[0].mimeType, "text/html;profile=mcp-app");
+    assert.deepEqual(resource.contents[0]._meta?.["openai/ui"], {
+      availableDisplayModes: ["inline", "fullscreen"],
+    });
     assert.ok(!JSON.stringify(resource).includes(env.SOCIAL_API_KEY));
     assert.equal(
       tools.find((t) => t.name === "set_collection_schedule")?.annotations?.readOnlyHint,
