@@ -67,6 +67,7 @@ class MetricUnavailable extends Error {
     super(reason);
   }
 }
+class AudienceUnavailable extends Error {}
 
 export type MetaClientConfig = {
   clientId: string;
@@ -163,6 +164,8 @@ export class MetaClient implements InstagramTransport {
         );
       }
       const fields = metricRequest ? (url.searchParams.get("metric")?.split(",") ?? []) : [];
+      if (metricRequest && code === 3006 && fields.some((field) => field.endsWith("_demographics")))
+        throw new AudienceUnavailable("insufficient_audience");
       if (metricRequest && code === 100) {
         const message = body.error?.message ?? body.error_message;
         const rejected =
@@ -519,6 +522,8 @@ export class MetaClient implements InstagramTransport {
         ),
       );
     } catch (error) {
+      if (error instanceof AudienceUnavailable)
+        return { ...result, reason: "insufficient_audience" };
       if (!(error instanceof MetricUnavailable)) throw error;
       return { ...result, reason: error.reason };
     }

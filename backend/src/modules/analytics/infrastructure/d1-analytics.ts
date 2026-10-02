@@ -8,7 +8,7 @@ import {
   syncRuns,
 } from "../../../platform/database/schema";
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { AnalyticsRepository, MediaFilter } from "../application/ports";
+import type { AccountHistoryInput, AnalyticsRepository, MediaFilter } from "../application/ports";
 import type { Account, Media, Metrics, Snapshot, SyncRun } from "../domain/model";
 import { normalizeSearch } from "../domain/search";
 
@@ -246,18 +246,62 @@ export class D1Analytics implements AnalyticsRepository {
     }
     return result;
   }
-  async accountHistory(accountId: string, limit: number) {
+  async accountHistory(accountId: string, input: AccountHistoryInput) {
+    const cursor = decodeCursor(input.cursor);
+    const signature = JSON.stringify([accountId, input.from, input.to]);
+    if (cursor && cursor.filter !== signature)
+      throw new ApplicationError(
+        "VALIDATION_FAILED",
+        "Continue account history with the same account and date filters.",
+      );
+    const conditions = [eq(accountSnapshots.accountId, accountId)];
+    if (input.from !== undefined) conditions.push(gte(accountSnapshots.observedAt, input.from));
+    if (input.to !== undefined) conditions.push(lte(accountSnapshots.observedAt, input.to));
+    const pageConditions = [...conditions];
+    if (cursor)
+      pageConditions.push(
+        sql`(${accountSnapshots.observedAt}<${cursor.time} OR (${accountSnapshots.observedAt}=${cursor.time} AND ${accountSnapshots.id}<${cursor.id}))`,
+      );
     const rows = await this.db
       .select()
       .from(accountSnapshots)
-      .where(eq(accountSnapshots.accountId, accountId))
+      .where(and(...pageConditions))
       .orderBy(desc(accountSnapshots.observedAt), desc(accountSnapshots.id))
-      .limit(limit);
-    return rows.map((row) => ({
+      .limit(input.limit + 1);
+    const [count, firstRows, lastRows] = await Promise.all([
+      this.db
+        .select({ total: sql<number>`count(*)` })
+        .from(accountSnapshots)
+        .where(and(...conditions)),
+      this.db
+        .select()
+        .from(accountSnapshots)
+        .where(and(...conditions))
+        .orderBy(accountSnapshots.observedAt, accountSnapshots.id)
+        .limit(1),
+      this.db
+        .select()
+        .from(accountSnapshots)
+        .where(and(...conditions))
+        .orderBy(desc(accountSnapshots.observedAt), desc(accountSnapshots.id))
+        .limit(1),
+    ]);
+    const map = (row: typeof accountSnapshots.$inferSelect) => ({
       observedAt: row.observedAt,
       followersCount: row.followersCount,
       mediaCount: row.mediaCount,
-    }));
+    });
+    const last = rows[input.limit - 1];
+    return {
+      items: rows.slice(0, input.limit).map(map),
+      nextCursor:
+        rows.length > input.limit && last
+          ? encodeCursor({ time: last.observedAt, id: last.id, filter: signature })
+          : null,
+      totalObservations: count[0]?.total ?? 0,
+      first: firstRows[0] ? map(firstRows[0]) : null,
+      last: lastRows[0] ? map(lastRows[0]) : null,
+    };
   }
   async updateMedia(
     id: string,

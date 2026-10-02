@@ -82,10 +82,20 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "collect_all",
     "Собрать весь аккаунт",
-    "Только по явной просьбе владельца. Создаёт сохраняемое задание; продолжение выполняет Worker. Одна страница не означает полный обход. stories=true собирает доступные Stories, без восстановления исчезнувших.",
+    "Только по явной просьбе владельца. Полный каталог с текущими метриками; после завершения создаются отдельные задания демографии и массовых комментариев при выданном manage_comments. Проверяй все задания, completed каталога не означает завершения комментариев. stories=true собирает доступные Stories, без восстановления исчезнувших.",
     z.object({ accountId: id, body: contract.startFullCollectionInput }),
     contract.collectionJobResponse,
     (args) => `${account(args)}/collection`,
+    "POST",
+    (args) => args.body,
+  );
+  register(
+    "collect_all_comments",
+    "Собрать комментарии всего аккаунта",
+    "По явной просьбе владельца. Сохраняемое задание проходит весь каталог, все страницы и ответы; пустая страница с nextCursor не является концом. Требуется manage_comments. Прогресс и продолжение через get_collection_job/advance_collection; mediaProcessed — число проверенных публикаций, collected — наблюдения текстов. Meta может скрывать тексты даже при ненулевом comments_count; completed не доказывает доступность всех комментариев.",
+    z.object({ accountId: id, body: contract.startAccountCommentsCollectionInput }),
+    contract.collectionJobResponse,
+    (args) => `${account(args)}/comments/collect`,
     "POST",
     (args) => args.body,
   );
@@ -174,7 +184,7 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "collect_audience",
     "Собрать демографию",
-    "По просьбе владельца. Meta timeframe, не произвольные даты; категории и неизвестные значения сохраняются раздельно для подписчиков и вовлечённой аудитории.",
+    "По просьбе владельца. this_month — последние 30 дней, this_week — последние 7 дней; старые last_30_days и другие окна удалены для вовлечённой аудитории. Подписчики и вовлечённая аудитория сохраняются раздельно. При недостаточной аудитории источник даёт insufficient_audience.",
     z.object({ accountId: id, body: contract.collectAudienceInsightsInput }),
     contract.accountInsightCollectionResponse,
     (args) => `${account(args)}/audience/collect`,
@@ -184,7 +194,7 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "get_audience",
     "Демография аудитории",
-    "Покажи выбранный timeframe, аудиторию, базу процентов и неполноту категорий. Не выводи данные об отдельных людях.",
+    "Покажи timeframe, обе аудитории, availableCategories и базу процентов. Демография доступна при ненулевых breakdowns/results, даже если scalar value/denominator=null и reason=not_returned: тогда неизвестна база процентов, а не вся демография. Для текущей вовлечённой аудитории читай this_month/this_week; отсутствие одного сохранённого окна не доказывает отсутствие всей истории. Не выводи данные об отдельных людях.",
     z.object({
       accountId: id,
       timeframe: z.enum([

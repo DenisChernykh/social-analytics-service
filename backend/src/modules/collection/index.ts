@@ -1,11 +1,12 @@
 import type { RuntimeBindings } from "../../platform/config/runtime-config";
 import { Collect } from "./application/collect";
-import type { CollectionAnalytics } from "./application/ports";
+import type { CollectionAnalytics, CollectionComments } from "./application/ports";
 import { D1Collection } from "./infrastructure/d1-collection";
 import { createCollectionHttp } from "./presentation/http";
 
 export type CollectionOptions = {
   analytics: (env: RuntimeBindings) => CollectionAnalytics;
+  comments: (env: RuntimeBindings) => CollectionComments;
   clock?: () => number;
 };
 async function operationId(key: string) {
@@ -21,6 +22,7 @@ export function createCollectionOperations(env: RuntimeBindings, options: Collec
   return new Collect(
     new D1Collection(env.DB),
     options.analytics(env),
+    options.comments(env),
     options.clock ?? Date.now,
     operationId,
     () => crypto.randomUUID(),

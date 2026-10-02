@@ -31,7 +31,7 @@ async function call(name, args = {}) {
 }
 try {
   const discovery = await client.listTools();
-  assert.equal(discovery.tools.length, 43);
+  assert.equal(discovery.tools.length, 44);
   const health = await fetch(`${BACKEND_ORIGIN}/health`, { redirect: "error" }).then((r) =>
     r.json(),
   );
@@ -63,10 +63,10 @@ try {
   await call("get_account_history", { accountId });
   await call("describe_metrics");
   const collection = await call("get_collection_status", { accountId });
-  assert.equal(collection.schedule.enabled, false);
+  assert.equal(typeof collection.schedule.enabled, "boolean");
   const panel = await call("open_social_analytics", { accountId });
   assert.equal(panel.selectedAccountId, accountId);
-  assert.equal(panel.history.beginningKnown, false);
+  assert.equal(typeof panel.history.beginningKnown, "boolean");
   const choices = await call("choose_media", { query: "а", accountId });
   assert.equal(choices.resolution.status, "ambiguous");
   assert.equal(choices.resolution.report, null);
@@ -93,7 +93,7 @@ try {
   await call("get_insight_status", { operationId: insightHistory.items[0].id });
   const audience = await call("get_audience", {
     accountId,
-    timeframe: "last_30_days",
+    timeframe: "this_month",
     breakdown: "age",
   });
   assert.ok(audience.items.length);

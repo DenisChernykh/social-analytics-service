@@ -2,7 +2,7 @@ import { and, eq, gt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { collectionJobs, collectionSchedules } from "../../../platform/database/schema";
 import type { CollectionStore } from "../application/ports";
-import type { CollectionJob, CollectionSchedule } from "../domain/model";
+import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../domain/model";
 
 export class D1Collection implements CollectionStore {
   private readonly db;
@@ -32,6 +32,32 @@ export class D1Collection implements CollectionStore {
   }
   async create(job: CollectionJob) {
     await this.db.insert(collectionJobs).values(job).onConflictDoNothing();
+  }
+  async latestJob(accountId: string, origin: CollectionJob["origin"]) {
+    return (
+      ((
+        await this.db
+          .select()
+          .from(collectionJobs)
+          .where(and(eq(collectionJobs.accountId, accountId), eq(collectionJobs.origin, origin)))
+          .orderBy(
+            sql`CASE WHEN ${collectionJobs.status}='running' THEN 0 ELSE 1 END`,
+            sql`${collectionJobs.startedAt} DESC`,
+            sql`${collectionJobs.id} DESC`,
+          )
+          .limit(1)
+      )[0] as CollectionJob | undefined) ?? null
+    );
+  }
+  async nextCommentMedia(accountId: string, after: CataloguePosition | null, before: number) {
+    const statement = this.database.prepare(
+      `SELECT id,published_at AS publishedAt FROM media WHERE account_id=? AND product_type!='STORY' AND published_at<=? ${after ? "AND (published_at<? OR (published_at=? AND id<?))" : ""} ORDER BY published_at DESC,id DESC LIMIT 1`,
+    );
+    return (
+      after
+        ? statement.bind(accountId, before, after.publishedAt, after.publishedAt, after.id)
+        : statement.bind(accountId, before)
+    ).first<CataloguePosition>();
   }
   async claim(id: string, token: string, now: number) {
     const result = await this.database

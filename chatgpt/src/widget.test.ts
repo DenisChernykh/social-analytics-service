@@ -159,6 +159,19 @@ test("Card reads confirmed state without starting collection; full catalogue is 
       ?.children.some((node) => node.textContent.includes("Полный проход завершён")),
   );
 });
+test("Card displays the total saved history instead of a 100-observation sample", async () => {
+  const w = await widget(() => result(panel));
+  w.receive({ ...panel, history: { observedFrom: 1000, sampled: 325, beginningKnown: true } });
+  assert.ok(
+    w.nodes
+      .get("facts")
+      ?.children.some(
+        (node) =>
+          node.textContent.includes("325 наблюдений") &&
+          node.textContent.includes("начало сохранённого сбора"),
+      ),
+  );
+});
 test("Collection and recurring schedule have separate explicit calls, and uncertain collection checks its UUID", async () => {
   const calls: Invocation[] = [];
   const w = await widget((call) => {

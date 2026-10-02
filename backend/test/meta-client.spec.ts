@@ -203,6 +203,21 @@ describe("official Meta API adapter", () => {
     expect(url.searchParams.get("after")).toBe("before");
     expect(request).toHaveBeenCalledTimes(2);
   });
+  it("reports Meta's minimum-audience response as missing demographic data without inventing zeros", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(json({ error: { code: 3006, message: "Not enough users" } }, 400));
+    const client = new MetaClient(config, request);
+    expect(
+      await client.structuredInsights("fake-token", "123", {
+        metric: "engaged_audience_demographics",
+        period: "lifetime",
+        metricType: "total_value",
+        timeframe: "this_week",
+        breakdown: "country",
+      }),
+    ).toMatchObject({ value: null, reason: "insufficient_audience", breakdowns: [] });
+  });
   it("preserves the global receiver required by a native Worker fetch", async () => {
     const request = vi.fn<typeof fetch>(async function (this: unknown) {
       if (this !== globalThis) throw new TypeError("Illegal invocation");

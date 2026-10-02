@@ -22,7 +22,13 @@ export type Metric = {
   value: number | null;
   unit: "count" | "milliseconds" | "percent";
   sourceField: string;
-  reason: "not_returned" | "not_supported" | "permission_required" | "invalid_value" | null;
+  reason:
+    | "not_returned"
+    | "not_supported"
+    | "permission_required"
+    | "invalid_value"
+    | "insufficient_audience"
+    | null;
 };
 export type Metrics = Record<MetricKey, Metric>;
 

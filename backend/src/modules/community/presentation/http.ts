@@ -24,6 +24,7 @@ const collectionSchema = z.object({
   observedAt: z.number().nullable(),
   nextCursor: z.string().nullable(),
   collected: z.number(),
+  commentIds: z.array(id).default([]),
   errorCode: z.string().nullable(),
 });
 const listSchema = z.object({

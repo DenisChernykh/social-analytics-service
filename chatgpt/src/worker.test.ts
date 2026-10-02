@@ -43,12 +43,12 @@ test("MCP discovery lists focused tools, optional UI and correct mutation annota
   });
   try {
     const { tools } = await client.listTools();
-    assert.equal(tools.length, 43);
+    assert.equal(tools.length, 44);
     const panelTool = tools.find((t) => t.name === "open_social_analytics");
     assert.ok(panelTool?._meta?.ui);
     assert.equal(
       (panelTool._meta.ui as { resourceUri: string }).resourceUri,
-      "ui://social-analytics/control-v2.html",
+      "ui://social-analytics/control-v3.html",
     );
     assert.equal(panelTool.title, "Social Analytics");
     assert.deepEqual(panelTool._meta["openai/ui"], { entrypoints: [{ type: "global" }] });
@@ -386,4 +386,40 @@ test("Backend credential cannot leave the pinned HTTPS origin", async () => {
     /маршрут/,
   );
   await assert.rejects(client.request("/api/instagram/oauth/start", accountsResponse), /маршрут/);
+});
+test("Account history forwards cursors and retains full saved coverage beyond the page size", async () => {
+  const calls: URL[] = [];
+  const client = await connect(async (request) => {
+    calls.push(new URL(request.url));
+    return Response.json({
+      items: [{ observedAt: 2000, followersCount: 10, mediaCount: 1 }],
+      nextCursor: "older-page",
+      followerNetChange: 7,
+      coverage: { totalObservations: 325, fromSnapshot: 1000, toSnapshot: 3000, truncated: true },
+      note: "Saved history across all pages",
+    });
+  });
+  try {
+    const result = await client.callTool({
+      name: "get_account_history",
+      arguments: {
+        accountId: "ig_1",
+        limit: 100,
+        cursor: "current-page",
+        from: "2026-10-01T00:00:00Z",
+      },
+    });
+    assert.notEqual(result.isError, true);
+    assert.equal(calls[0].searchParams.get("cursor"), "current-page");
+    assert.equal(calls[0].searchParams.get("from"), "2026-10-01T00:00:00Z");
+    const data = (
+      result.structuredContent as {
+        data: { nextCursor: string; coverage: { totalObservations: number } };
+      }
+    ).data;
+    assert.equal(data.nextCursor, "older-page");
+    assert.equal(data.coverage.totalObservations, 325);
+  } finally {
+    await client.close();
+  }
 });

@@ -22,6 +22,7 @@ export function createCommentOperations(env: RuntimeBindings, options: CommentOp
     options.clock ?? Date.now,
   );
 }
+export type { CommentCollection } from "./domain/model";
 export function createCommentModule(options: CommentOptions) {
   return { router: createCommentsHttp((env) => createCommentOperations(env, options)) };
 }

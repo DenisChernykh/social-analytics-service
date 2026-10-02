@@ -1,5 +1,6 @@
 import type { SyncRun } from "../../analytics/public-contracts";
-import type { CollectionJob, CollectionSchedule } from "../domain/model";
+import type { CommentCollection } from "../../community";
+import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../domain/model";
 
 export interface CollectionStore {
   job(id: string): Promise<CollectionJob | null>;
@@ -14,9 +15,27 @@ export interface CollectionStore {
   dueMedia(accountId: string, now: number): Promise<string | null>;
   sawKnownMedia(operationId: string, startedAt: number): Promise<boolean>;
   finishSchedule(schedule: CollectionSchedule, version: number): Promise<void>;
+  latestJob(accountId: string, origin: CollectionJob["origin"]): Promise<CollectionJob | null>;
+  nextCommentMedia(
+    accountId: string,
+    after: CataloguePosition | null,
+    before: number,
+  ): Promise<CataloguePosition | null>;
+}
+export interface CollectionComments {
+  enabled(accountId: string): Promise<boolean>;
+  collect(
+    mediaId: string,
+    input: { operationId: string; parentId: string | null; cursor: string | null; limit: number },
+  ): Promise<CommentCollection>;
 }
 export interface CollectionAnalytics {
   activity(accountId: string, operationId: string, now: number): Promise<void>;
+  audience(
+    accountId: string,
+    operationId: string,
+    dimension: "age" | "gender" | "country" | "city",
+  ): Promise<number>;
   account(id: string): Promise<unknown>;
   refresh(mediaId: string, operationId: string): Promise<SyncRun>;
   page(

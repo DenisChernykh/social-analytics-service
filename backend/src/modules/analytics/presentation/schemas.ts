@@ -72,7 +72,13 @@ export const metricSchema = z
     unit: z.enum(["count", "milliseconds", "percent"]),
     sourceField: z.string(),
     reason: z
-      .enum(["not_returned", "not_supported", "permission_required", "invalid_value"])
+      .enum([
+        "not_returned",
+        "not_supported",
+        "permission_required",
+        "invalid_value",
+        "insufficient_audience",
+      ])
       .nullable(),
   })
   .openapi("SourceMetric");

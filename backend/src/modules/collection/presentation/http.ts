@@ -10,11 +10,13 @@ const jobParams = z.object({ jobId: z.uuid() });
 export const jobSchema = z.object({
   id: z.uuid(),
   accountId: id,
-  origin: z.enum(["manual", "scheduled", "stories"]),
+  origin: z.enum(["manual", "scheduled", "stories", "comments", "audience"]),
+  automatic: z.boolean(),
   status: z.enum(["running", "completed", "failed", "cancelled"]),
   cursor: z.string().nullable(),
   pages: z.number().int(),
   collected: z.number().int(),
+  mediaProcessed: z.number().int(),
   attempt: z.number().int(),
   failures: z.number().int(),
   nextAttemptAt: z.number(),
@@ -64,6 +66,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
       runBudget: z.number(),
       pageSize: z.number(),
       storyPageSize: z.number(),
+      commentPageSize: z.number(),
       cronMinutes: z.number(),
       ageIntervalsHours: z.array(z.number()),
       maximumConsecutiveFailures: z.number(),
@@ -108,6 +111,31 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
             c.req.valid("param").accountId,
             c.req.valid("json").operationId,
             c.req.valid("json").stories ? "stories" : "manual",
+          ),
+        ),
+        200,
+      ),
+  );
+  router.openapi(
+    createRoute({
+      method: "post",
+      path: "/api/accounts/{accountId}/comments/collect",
+      operationId: "startAccountCommentsCollection",
+      tags: ["Comments"],
+      security,
+      request: {
+        params,
+        body: body(z.object({ operationId: z.uuid() }).strict()),
+      },
+      responses: responses(jobSchema),
+    }),
+    async (c) =>
+      c.json(
+        jobSchema.parse(
+          await operations(c.env).start(
+            c.req.valid("param").accountId,
+            c.req.valid("json").operationId,
+            "comments",
           ),
         ),
         200,

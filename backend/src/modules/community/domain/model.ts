@@ -17,6 +17,7 @@ export type CommentCollection = {
   observedAt: number | null;
   nextCursor: string | null;
   collected: number;
+  commentIds: string[];
   errorCode: string | null;
 };
 export function commentSignals(comments: SavedComment[]) {

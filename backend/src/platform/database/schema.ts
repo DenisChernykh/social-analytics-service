@@ -123,10 +123,12 @@ export const collectionJobs = sqliteTable(
       .notNull()
       .references(() => accounts.id, { onDelete: "cascade" }),
     origin: text("origin").notNull(),
+    automatic: integer("automatic", { mode: "boolean" }).notNull().default(false),
     status: text("status").notNull(),
     cursor: text("cursor"),
     pages: integer("pages").notNull().default(0),
     collected: integer("collected").notNull().default(0),
+    mediaProcessed: integer("media_processed").notNull().default(0),
     attempt: integer("attempt").notNull().default(0),
     failures: integer("failures").notNull().default(0),
     nextAttemptAt: integer("next_attempt_at").notNull(),

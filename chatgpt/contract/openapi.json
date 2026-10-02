@@ -622,6 +622,7 @@
               "not_supported",
               "permission_required",
               "invalid_value",
+              "insufficient_audience",
               null
             ]
           }
@@ -3654,6 +3655,34 @@
             "required": false,
             "name": "limit",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false,
+            "name": "from",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false,
+            "name": "to",
+            "in": "query"
           }
         ],
         "responses": {
@@ -3693,10 +3722,47 @@
                         ]
                       }
                     },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "followerNetChange": {
                       "type": [
                         "number",
                         "null"
+                      ]
+                    },
+                    "coverage": {
+                      "type": "object",
+                      "properties": {
+                        "totalObservations": {
+                          "type": "integer"
+                        },
+                        "fromSnapshot": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Unix timestamp in milliseconds, UTC."
+                        },
+                        "toSnapshot": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Unix timestamp in milliseconds, UTC."
+                        },
+                        "truncated": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "totalObservations",
+                        "fromSnapshot",
+                        "toSnapshot",
+                        "truncated"
                       ]
                     },
                     "note": {
@@ -3705,7 +3771,9 @@
                   },
                   "required": [
                     "items",
+                    "nextCursor",
                     "followerNetChange",
+                    "coverage",
                     "note"
                   ]
                 }
@@ -4613,8 +4681,13 @@
                             "enum": [
                               "manual",
                               "scheduled",
-                              "stories"
+                              "stories",
+                              "comments",
+                              "audience"
                             ]
+                          },
+                          "automatic": {
+                            "type": "boolean"
                           },
                           "status": {
                             "type": "string",
@@ -4635,6 +4708,9 @@
                             "type": "integer"
                           },
                           "collected": {
+                            "type": "integer"
+                          },
+                          "mediaProcessed": {
                             "type": "integer"
                           },
                           "attempt": {
@@ -4672,10 +4748,12 @@
                           "id",
                           "accountId",
                           "origin",
+                          "automatic",
                           "status",
                           "cursor",
                           "pages",
                           "collected",
+                          "mediaProcessed",
                           "attempt",
                           "failures",
                           "nextAttemptAt",
@@ -4698,6 +4776,9 @@
                         "storyPageSize": {
                           "type": "number"
                         },
+                        "commentPageSize": {
+                          "type": "number"
+                        },
                         "cronMinutes": {
                           "type": "number"
                         },
@@ -4715,6 +4796,7 @@
                         "runBudget",
                         "pageSize",
                         "storyPageSize",
+                        "commentPageSize",
                         "cronMinutes",
                         "ageIntervalsHours",
                         "maximumConsecutiveFailures"
@@ -4914,8 +4996,13 @@
                       "enum": [
                         "manual",
                         "scheduled",
-                        "stories"
+                        "stories",
+                        "comments",
+                        "audience"
                       ]
+                    },
+                    "automatic": {
+                      "type": "boolean"
                     },
                     "status": {
                       "type": "string",
@@ -4936,6 +5023,9 @@
                       "type": "integer"
                     },
                     "collected": {
+                      "type": "integer"
+                    },
+                    "mediaProcessed": {
                       "type": "integer"
                     },
                     "attempt": {
@@ -4973,10 +5063,275 @@
                     "id",
                     "accountId",
                     "origin",
+                    "automatic",
                     "status",
                     "cursor",
                     "pages",
                     "collected",
+                    "mediaProcessed",
+                    "attempt",
+                    "failures",
+                    "nextAttemptAt",
+                    "startedAt",
+                    "completedAt",
+                    "lastSuccessAt",
+                    "errorCode"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/comments/collect": {
+      "post": {
+        "operationId": "startAccountCommentsCollection",
+        "tags": [
+          "Comments"
+        ],
+        "security": [
+          {
+            "personalKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "required": true,
+            "name": "accountId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "operationId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Collection progress and safe status. Automatic collection is disabled until explicitly enabled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "accountId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 150
+                    },
+                    "origin": {
+                      "type": "string",
+                      "enum": [
+                        "manual",
+                        "scheduled",
+                        "stories",
+                        "comments",
+                        "audience"
+                      ]
+                    },
+                    "automatic": {
+                      "type": "boolean"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "running",
+                        "completed",
+                        "failed",
+                        "cancelled"
+                      ]
+                    },
+                    "cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "pages": {
+                      "type": "integer"
+                    },
+                    "collected": {
+                      "type": "integer"
+                    },
+                    "mediaProcessed": {
+                      "type": "integer"
+                    },
+                    "attempt": {
+                      "type": "integer"
+                    },
+                    "failures": {
+                      "type": "integer"
+                    },
+                    "nextAttemptAt": {
+                      "type": "number"
+                    },
+                    "startedAt": {
+                      "type": "number"
+                    },
+                    "completedAt": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "lastSuccessAt": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "errorCode": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "accountId",
+                    "origin",
+                    "automatic",
+                    "status",
+                    "cursor",
+                    "pages",
+                    "collected",
+                    "mediaProcessed",
                     "attempt",
                     "failures",
                     "nextAttemptAt",
@@ -5374,8 +5729,13 @@
                       "enum": [
                         "manual",
                         "scheduled",
-                        "stories"
+                        "stories",
+                        "comments",
+                        "audience"
                       ]
+                    },
+                    "automatic": {
+                      "type": "boolean"
                     },
                     "status": {
                       "type": "string",
@@ -5396,6 +5756,9 @@
                       "type": "integer"
                     },
                     "collected": {
+                      "type": "integer"
+                    },
+                    "mediaProcessed": {
                       "type": "integer"
                     },
                     "attempt": {
@@ -5433,10 +5796,12 @@
                     "id",
                     "accountId",
                     "origin",
+                    "automatic",
                     "status",
                     "cursor",
                     "pages",
                     "collected",
+                    "mediaProcessed",
                     "attempt",
                     "failures",
                     "nextAttemptAt",
@@ -5627,8 +5992,13 @@
                       "enum": [
                         "manual",
                         "scheduled",
-                        "stories"
+                        "stories",
+                        "comments",
+                        "audience"
                       ]
+                    },
+                    "automatic": {
+                      "type": "boolean"
                     },
                     "status": {
                       "type": "string",
@@ -5649,6 +6019,9 @@
                       "type": "integer"
                     },
                     "collected": {
+                      "type": "integer"
+                    },
+                    "mediaProcessed": {
                       "type": "integer"
                     },
                     "attempt": {
@@ -5686,10 +6059,12 @@
                     "id",
                     "accountId",
                     "origin",
+                    "automatic",
                     "status",
                     "cursor",
                     "pages",
                     "collected",
+                    "mediaProcessed",
                     "attempt",
                     "failures",
                     "nextAttemptAt",
@@ -5871,8 +6246,13 @@
                       "enum": [
                         "manual",
                         "scheduled",
-                        "stories"
+                        "stories",
+                        "comments",
+                        "audience"
                       ]
+                    },
+                    "automatic": {
+                      "type": "boolean"
                     },
                     "status": {
                       "type": "string",
@@ -5893,6 +6273,9 @@
                       "type": "integer"
                     },
                     "collected": {
+                      "type": "integer"
+                    },
+                    "mediaProcessed": {
                       "type": "integer"
                     },
                     "attempt": {
@@ -5930,10 +6313,12 @@
                     "id",
                     "accountId",
                     "origin",
+                    "automatic",
                     "status",
                     "cursor",
                     "pages",
                     "collected",
+                    "mediaProcessed",
                     "attempt",
                     "failures",
                     "nextAttemptAt",
@@ -6587,13 +6972,10 @@
                   "timeframe": {
                     "type": "string",
                     "enum": [
-                      "last_14_days",
-                      "last_30_days",
-                      "last_90_days",
                       "this_month",
-                      "prev_month",
                       "this_week"
-                    ]
+                    ],
+                    "default": "this_month"
                   },
                   "breakdown": {
                     "type": "string",
@@ -6607,7 +6989,6 @@
                 },
                 "required": [
                   "operationId",
-                  "timeframe",
                   "breakdown"
                 ],
                 "additionalProperties": false
@@ -8791,6 +9172,9 @@
                                     "null"
                                   ]
                                 },
+                                "availableCategories": {
+                                  "type": "integer"
+                                },
                                 "categories": {
                                   "type": "array",
                                   "items": {
@@ -8833,6 +9217,7 @@
                               "required": [
                                 "metric",
                                 "denominator",
+                                "availableCategories",
                                 "categories"
                               ]
                             }
@@ -14640,6 +15025,15 @@
                     "collected": {
                       "type": "number"
                     },
+                    "commentIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                      },
+                      "default": []
+                    },
                     "errorCode": {
                       "type": [
                         "string",
@@ -14858,6 +15252,15 @@
                     },
                     "collected": {
                       "type": "number"
+                    },
+                    "commentIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                      },
+                      "default": []
                     },
                     "errorCode": {
                       "type": [

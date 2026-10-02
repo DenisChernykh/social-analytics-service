@@ -149,6 +149,8 @@ describe("single-media refresh and durable collection", () => {
     expect(f.transport.stories).toHaveBeenCalledTimes(1);
     f.advance(15 * 60_000);
     await collector.tick();
+    f.advance(15 * 60_000);
+    await collector.tick();
     expect(f.transport.structuredInsights).toHaveBeenCalled();
     f.advance(15 * 60_000);
     await collector.tick();
@@ -302,13 +304,13 @@ describe("account and audience insights", () => {
       (
         await f.request(`/api/accounts/${accountId}/audience/collect`, "POST", {
           operationId: crypto.randomUUID(),
-          timeframe: "last_30_days",
+          timeframe: "this_month",
           breakdown: "country",
         })
       ).status,
     ).toBe(200);
     const audience = await f.request(
-      `/api/accounts/${accountId}/audience?timeframe=last_30_days&breakdown=country`,
+      `/api/accounts/${accountId}/audience?timeframe=this_month&breakdown=country`,
     );
     expect(await audience.json()).toMatchObject({
       percentages: [
@@ -316,6 +318,7 @@ describe("account and audience insights", () => {
           audiences: expect.arrayContaining([
             expect.objectContaining({
               denominator: null,
+              availableCategories: 1,
               categories: [expect.objectContaining({ value: 80, percent: null })],
             }),
           ]),
@@ -324,7 +327,7 @@ describe("account and audience insights", () => {
     });
     expect(vi.mocked(f.transport.structuredInsights).mock.calls[0]?.[2]).toMatchObject({
       period: "lifetime",
-      timeframe: "last_30_days",
+      timeframe: "this_month",
       since: undefined,
       until: undefined,
     });

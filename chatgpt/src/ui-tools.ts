@@ -27,7 +27,7 @@ export const panelResponse = z.object({
   history: z.object({
     observedFrom: z.number().nullable(),
     sampled: z.number(),
-    beginningKnown: z.literal(false),
+    beginningKnown: z.boolean(),
   }),
 });
 export const choiceResponse = z.object({
@@ -100,11 +100,9 @@ export function registerUiTools(server: McpServer, run: Run) {
             selectedAccountId: selected.id,
             collection,
             history: {
-              observedFrom: history.items.length
-                ? Math.min(...history.items.map((i) => i.observedAt))
-                : null,
-              sampled: history.items.length,
-              beginningKnown: false,
+              observedFrom: history.coverage.fromSnapshot,
+              sampled: history.coverage.totalObservations,
+              beginningKnown: history.coverage.totalObservations > 0,
             },
           },
         };

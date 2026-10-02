@@ -17,6 +17,7 @@ const timeframe = z.enum([
   "prev_month",
   "this_week",
 ]);
+const collectionTimeframe = z.enum(["this_month", "this_week"]).default("this_month");
 const dimension = z.enum(["age", "gender", "country", "city"]);
 const activityBreakdown = z.enum(["media_product_type", "follow_type"]).optional();
 const inputSchema = z.object({
@@ -125,6 +126,7 @@ const audienceSchema = z.object({
         z.object({
           metric: z.string(),
           denominator: z.number().nullable(),
+          availableCategories: z.number().int(),
           categories: z.array(
             z.object({
               categories: z.array(z.string()),
@@ -220,7 +222,11 @@ export function createInsightsHttp(operations: (env: RuntimeBindings) => Account
       security,
       request: {
         params,
-        body: body(z.object({ operationId: z.uuid(), timeframe, breakdown: dimension }).strict()),
+        body: body(
+          z
+            .object({ operationId: z.uuid(), timeframe: collectionTimeframe, breakdown: dimension })
+            .strict(),
+        ),
       },
       responses: responses(insightCollectionSchema),
     }),

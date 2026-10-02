@@ -1,11 +1,13 @@
 import { ApplicationError } from "../../../shared/application/application-error";
 import { type CollectionJob, type CollectionSchedule, retryDelay } from "../domain/model";
-import type { CollectionAnalytics, CollectionStore } from "./ports";
+import { advanceComments } from "./bulk-comments";
+import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
 
 export class Collect {
   constructor(
     private readonly store: CollectionStore,
     private readonly analytics: CollectionAnalytics,
+    private readonly comments: CollectionComments,
     private readonly clock: () => number,
     private readonly operationId: (key: string) => Promise<string>,
     private readonly randomId: () => string,
@@ -15,26 +17,42 @@ export class Collect {
     if (!job) throw new ApplicationError("NOT_FOUND", "The collection job was not found.");
     return job;
   }
-  async start(accountId: string, id: string, origin: CollectionJob["origin"] = "manual") {
+  async start(
+    accountId: string,
+    id: string,
+    origin: CollectionJob["origin"] = "manual",
+    automatic = origin === "scheduled",
+  ) {
     await this.analytics.account(accountId);
     const previous = await this.store.job(id);
     if (previous) {
-      if (previous.accountId !== accountId || previous.origin !== origin)
+      if (
+        previous.accountId !== accountId ||
+        previous.origin !== origin ||
+        previous.automatic !== automatic
+      )
         throw new ApplicationError(
           "OPERATION_CONFLICT",
           "This collection ID was used for another request.",
         );
       return previous;
     }
+    if (origin === "comments" && !(await this.comments.enabled(accountId)))
+      throw new ApplicationError(
+        "INSTAGRAM_PERMISSION_REQUIRED",
+        "Grant instagram_business_manage_comments before collecting account comments.",
+      );
     const now = this.clock();
     await this.store.create({
       id,
       accountId,
       origin,
+      automatic,
       status: "running",
       cursor: null,
       pages: 0,
       collected: 0,
+      mediaProcessed: 0,
       attempt: 0,
       failures: 0,
       nextAttemptAt: now,
@@ -45,6 +63,13 @@ export class Collect {
     });
     return this.job(id);
   }
+  private async supporting(accountId: string, key: string, automatic: boolean) {
+    for (const origin of ["audience", "comments"] as const) {
+      if (origin === "comments" && !(await this.comments.enabled(accountId))) continue;
+      if ((await this.store.latestJob(accountId, origin))?.status === "running") continue;
+      await this.start(accountId, await this.operationId(`${key}:${origin}`), origin, automatic);
+    }
+  }
   async advance(id: string) {
     let job = await this.job(id);
     const now = this.clock();
@@ -54,32 +79,57 @@ export class Collect {
     if (job.status !== "running") return job;
     try {
       const operationId = await this.operationId(`${id}:${job.pages}:${job.attempt}`);
-      const result = await this.analytics.page(
-        job.accountId,
-        operationId,
-        job.cursor,
-        job.origin === "stories",
-      );
-      if (result.status !== "completed")
-        throw new ApplicationError(
-          "INSTAGRAM_UNAVAILABLE",
-          "The page failed; resume collection after retry backoff.",
+      let cursor: string | null;
+      let collected: number;
+      let mediaProcessed: number;
+      if (job.origin === "comments") {
+        const result = await advanceComments(job, operationId, this.store, this.comments);
+        cursor = result.cursor;
+        collected = result.collected;
+        mediaProcessed = result.mediaProcessed;
+      } else if (job.origin === "audience") {
+        const dimensions = ["age", "gender", "country", "city"] as const;
+        const dimension = dimensions[job.pages];
+        collected = dimension
+          ? await this.analytics.audience(job.accountId, operationId, dimension)
+          : 0;
+        cursor = job.pages + 1 < dimensions.length ? String(job.pages + 1) : null;
+        mediaProcessed = 0;
+      } else {
+        const result = await this.analytics.page(
+          job.accountId,
+          operationId,
+          job.cursor,
+          job.origin === "stories",
         );
-      if (result.nextCursor && result.nextCursor === job.cursor)
-        throw new ApplicationError(
-          "INSTAGRAM_UNAVAILABLE",
-          "Instagram returned a repeated pagination cursor.",
-        );
+        if (result.status !== "completed")
+          throw new ApplicationError(
+            "INSTAGRAM_UNAVAILABLE",
+            "The page failed; resume collection after retry backoff.",
+          );
+        if (result.nextCursor && result.nextCursor === job.cursor)
+          throw new ApplicationError(
+            "INSTAGRAM_UNAVAILABLE",
+            "Instagram returned a repeated pagination cursor.",
+          );
+        const stoppedAtKnown =
+          job.origin === "scheduled" &&
+          (await this.store.sawKnownMedia(operationId, job.startedAt));
+        cursor = stoppedAtKnown ? null : result.nextCursor;
+        collected = result.mediaCount;
+        mediaProcessed = result.mediaCount;
+        if (!cursor && job.origin === "manual")
+          await this.supporting(job.accountId, `catalogue:${job.id}`, false);
+      }
       const completedAt = this.clock();
-      const stoppedAtKnown =
-        job.origin === "scheduled" && (await this.store.sawKnownMedia(operationId, job.startedAt));
-      const hasMore = !!result.nextCursor && !stoppedAtKnown;
+      const hasMore = cursor !== null;
       await this.store.save(
         {
           ...job,
           pages: job.pages + 1,
-          collected: job.collected + result.mediaCount,
-          cursor: hasMore ? result.nextCursor : null,
+          collected: job.collected + collected,
+          mediaProcessed: job.mediaProcessed + mediaProcessed,
+          cursor,
           status: hasMore ? "running" : "completed",
           completedAt: hasMore ? null : completedAt,
           lastSuccessAt: completedAt,
@@ -123,11 +173,12 @@ export class Collect {
         runBudget: 2,
         pageSize: 1,
         storyPageSize: 5,
+        commentPageSize: 50,
         cronMinutes: 15,
         ageIntervalsHours: [1, 6, 24, 168],
         maximumConsecutiveFailures: 5,
       },
-      note: "Manual collection completes pagination. Scheduled discovery stops at the first previously observed publication and assumes Meta's reverse publication order; explicit full passes reconcile catalogue changes. Collected counts observations, not distinct media. Jobs are bounded and resumable. Scheduling is opt-in; reads never collect data.",
+      note: "A manual catalogue pass queues separate audience and, when permission was granted, account-wide comments jobs. Comments exhaust source pages and replies, including empty intermediate pages; mediaProcessed counts finished publications, collected counts comment observations, not distinct comments. Audience refresh covers all four dimensions in this_month. Scheduled discovery stops at previously observed media; daily insights queue audience and comments refresh. Jobs are bounded and resumable. Scheduling is opt-in; reads never collect data.",
     };
   }
   async schedule(accountId: string): Promise<CollectionSchedule> {
@@ -159,7 +210,7 @@ export class Collect {
     });
     if (!input.enabled)
       for (const job of await this.store.jobs(accountId))
-        if (job.origin !== "manual" && job.status === "running")
+        if (job.automatic && job.status === "running")
           await this.store.control(job.id, "cancelled", this.clock());
     return this.schedule(accountId);
   }
@@ -176,7 +227,7 @@ export class Collect {
         const id = await this.operationId(
           `stories:${schedule.accountId}:${schedule.nextStoriesAt}`,
         );
-        const job = await this.start(schedule.accountId, id, "stories");
+        const job = await this.start(schedule.accountId, id, "stories", true);
         if (!active) {
           const result = await this.advance(job.id);
           lastSuccessAt = result.lastSuccessAt ?? lastSuccessAt;
@@ -188,13 +239,9 @@ export class Collect {
         }
         schedule.nextStoriesAt = now + 60 * 60_000;
       } else if (schedule.nextInsightsAt <= now) {
-        await this.analytics.activity(
-          schedule.accountId,
-          await this.operationId(
-            `account-insights:${schedule.accountId}:${schedule.nextInsightsAt}`,
-          ),
-          now,
-        );
+        const key = `account-insights:${schedule.accountId}:${schedule.nextInsightsAt}`;
+        await this.analytics.activity(schedule.accountId, await this.operationId(key), now);
+        await this.supporting(schedule.accountId, key, true);
         lastSuccessAt = this.clock();
         schedule.nextInsightsAt = now + 24 * 60 * 60_000;
       } else if (schedule.nextDiscoveryAt <= now) {

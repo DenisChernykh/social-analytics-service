@@ -1,11 +1,13 @@
 export type CollectionJob = {
   id: string;
   accountId: string;
-  origin: "manual" | "scheduled" | "stories";
+  origin: "manual" | "scheduled" | "stories" | "comments" | "audience";
+  automatic: boolean;
   status: "running" | "completed" | "failed" | "cancelled";
   cursor: string | null;
   pages: number;
   collected: number;
+  mediaProcessed: number;
   attempt: number;
   failures: number;
   nextAttemptAt: number;
@@ -13,6 +15,14 @@ export type CollectionJob = {
   completedAt: number | null;
   lastSuccessAt: number | null;
   errorCode: string | null;
+};
+export type CataloguePosition = { id: string; publishedAt: number };
+export type CommentPosition = {
+  afterMedia: CataloguePosition | null;
+  current: CataloguePosition | null;
+  commentCursor: string | null;
+  parents: string[];
+  replyCursor: string | null;
 };
 export type CollectionSchedule = {
   accountId: string;

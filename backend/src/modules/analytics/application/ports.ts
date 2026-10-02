@@ -22,6 +22,12 @@ export type MediaFilter = {
   goal?: string;
   format?: string;
 };
+export type AccountHistoryInput = {
+  from?: number;
+  to?: number;
+  cursor?: string;
+  limit: number;
+};
 export interface AnalyticsRepository {
   accounts(): Promise<Account[]>;
   account(id: string): Promise<Account | null>;
@@ -38,7 +44,16 @@ export interface AnalyticsRepository {
     cursor: string | undefined,
     limit: number,
   ): Promise<{ items: Snapshot[]; nextCursor: string | null }>;
-  accountHistory(accountId: string, limit: number): Promise<AccountSnapshot[]>;
+  accountHistory(
+    accountId: string,
+    input: AccountHistoryInput,
+  ): Promise<{
+    items: AccountSnapshot[];
+    nextCursor: string | null;
+    totalObservations: number;
+    first: AccountSnapshot | null;
+    last: AccountSnapshot | null;
+  }>;
   updateMedia(
     id: string,
     input: { title?: string | null; durationSeconds?: number | null },

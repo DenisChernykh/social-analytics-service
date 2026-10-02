@@ -45,6 +45,15 @@ export class AccountInsights {
           "Select whole-second boundaries, at most 31 days, within the last 90 days and not in the future. Periods are [from,to). Save older collected history locally.",
         );
     }
+    if (
+      input.kind === "demographics" &&
+      input.metrics.includes("engaged_audience_demographics") &&
+      !["this_month", "this_week"].includes(input.timeframe ?? "")
+    )
+      throw new ApplicationError(
+        "VALIDATION_FAILED",
+        "Engaged audience demographics require this_month (rolling 30 days) or this_week (rolling 7 days). Meta removed the older windows in v20.0.",
+      );
     const previous = await this.store.collection(id);
     if (previous) {
       if (
@@ -122,7 +131,8 @@ export class AccountInsights {
             ]
           : [
               "Timeframe is a Meta window, not arbitrary since/until dates.",
-              "At least 100 followers or engaged accounts can be required. Meta may return only top categories; unknown categories are not zeros.",
+              "At least 100 followers or engagements in the timeframe can be required. Meta may return only top categories; unknown categories are not zeros.",
+              "Engaged demographics in v20.0+ support this_month (rolling 30 days) and this_week (rolling 7 days). Older saved windows can contain follower data while engaged breakdowns are empty.",
               "Percentage denominators are the returned total_value only; category sums are not the population.",
             ],
     };
@@ -220,6 +230,10 @@ export class AccountInsights {
         audiences: item.values.map((value) => ({
           metric: value.metric,
           denominator: value.value,
+          availableCategories: value.breakdowns.reduce(
+            (count, group) => count + group.results.filter((entry) => entry.value !== null).length,
+            0,
+          ),
           categories: value.breakdowns.flatMap((group) =>
             group.results.map((entry) => ({
               ...entry,

@@ -29,7 +29,13 @@ export type InsightValue = {
   period: string;
   metricType: "total_value" | "time_series";
   value: number | null;
-  reason: "not_returned" | "not_supported" | "permission_required" | "invalid_value" | null;
+  reason:
+    | "not_returned"
+    | "not_supported"
+    | "permission_required"
+    | "invalid_value"
+    | "insufficient_audience"
+    | null;
   description: string | null;
   points: { value: number | null; endTime: number; reason: string | null }[];
   breakdowns: {

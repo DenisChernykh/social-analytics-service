@@ -67,7 +67,7 @@ export type StructuredInsight = {
   period: string;
   metricType: "total_value" | "time_series";
   value: number | null;
-  reason: InstagramInsight["reason"];
+  reason: InstagramInsight["reason"] | "insufficient_audience";
   description: string | null;
   points: { value: number | null; endTime: number; reason: InstagramInsight["reason"] }[];
   breakdowns: {

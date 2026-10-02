@@ -2,7 +2,7 @@ import { ApplicationError } from "../../../shared/application/application-error"
 import { calculateGrowth, calculateMetrics, median } from "../domain/calculations";
 import { type MetricKey, metricKeys, type ReportDefinition, type Snapshot } from "../domain/model";
 import { normalizeSearch, searchWords } from "../domain/search";
-import type { AnalyticsRepository, MediaFilter } from "./ports";
+import type { AccountHistoryInput, AnalyticsRepository, MediaFilter } from "./ports";
 
 export class AnalyticsQueries {
   constructor(
@@ -135,15 +135,24 @@ export class AnalyticsQueries {
       },
     };
   }
-  async accountHistory(id: string, limit: number) {
+  async accountHistory(id: string, input: AccountHistoryInput) {
     await this.account(id);
-    const items = await this.repository.accountHistory(id, limit);
-    const first = items.at(-1)?.followersCount ?? null;
-    const last = items[0]?.followersCount ?? null;
+    const { items, nextCursor, totalObservations, first, last } =
+      await this.repository.accountHistory(id, input);
     return {
       items,
-      followerNetChange: items.length >= 2 && first !== null && last !== null ? last - first : null,
-      note: "Net follower change between the returned observations; not gross follows or unfollows.",
+      nextCursor,
+      followerNetChange:
+        totalObservations >= 2 && first?.followersCount != null && last?.followersCount != null
+          ? last.followersCount - first.followersCount
+          : null,
+      coverage: {
+        totalObservations,
+        fromSnapshot: first?.observedAt ?? null,
+        toSnapshot: last?.observedAt ?? null,
+        truncated: nextCursor !== null,
+      },
+      note: "Net follower change between the first and last saved observations in the selected date range, across all pages; not gross follows or unfollows. Coverage describes saved history, not the account's lifetime before collection began.",
     };
   }
   async updateMedia(id: string, input: { title?: string | null; durationSeconds?: number | null }) {

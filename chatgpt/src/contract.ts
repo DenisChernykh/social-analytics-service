@@ -60,7 +60,13 @@ const SourceMetricSchema = z.object({
   unit: z.enum(["count", "milliseconds", "percent"]),
   sourceField: z.string(),
   reason: z
-    .enum(["not_returned", "not_supported", "permission_required", "invalid_value"])
+    .enum([
+      "not_returned",
+      "not_supported",
+      "permission_required",
+      "invalid_value",
+      "insufficient_audience",
+    ])
     .nullable(),
 });
 const MediaMetricsSchema = z
@@ -297,7 +303,14 @@ export const accountHistoryResponse = z.object({
       mediaCount: z.number().nullable(),
     }),
   ),
+  nextCursor: z.string().nullable(),
   followerNetChange: z.number().nullable(),
+  coverage: z.object({
+    totalObservations: z.number().int(),
+    fromSnapshot: z.number().int().nullable(),
+    toSnapshot: z.number().int().nullable(),
+    truncated: z.boolean(),
+  }),
   note: z.string(),
 });
 export const syncResponse = SyncRunSchema;
@@ -334,11 +347,13 @@ export const collectionStatusResponse = z.object({
     z.object({
       id: z.string().uuid(),
       accountId: z.string().min(1).max(150),
-      origin: z.enum(["manual", "scheduled", "stories"]),
+      origin: z.enum(["manual", "scheduled", "stories", "comments", "audience"]),
+      automatic: z.boolean(),
       status: z.enum(["running", "completed", "failed", "cancelled"]),
       cursor: z.string().nullable(),
       pages: z.number().int(),
       collected: z.number().int(),
+      mediaProcessed: z.number().int(),
       attempt: z.number().int(),
       failures: z.number().int(),
       nextAttemptAt: z.number(),
@@ -352,6 +367,7 @@ export const collectionStatusResponse = z.object({
     runBudget: z.number(),
     pageSize: z.number(),
     storyPageSize: z.number(),
+    commentPageSize: z.number(),
     cronMinutes: z.number(),
     ageIntervalsHours: z.array(z.number()),
     maximumConsecutiveFailures: z.number(),
@@ -361,11 +377,13 @@ export const collectionStatusResponse = z.object({
 export const collectionJobResponse = z.object({
   id: z.string().uuid(),
   accountId: z.string().min(1).max(150),
-  origin: z.enum(["manual", "scheduled", "stories"]),
+  origin: z.enum(["manual", "scheduled", "stories", "comments", "audience"]),
+  automatic: z.boolean(),
   status: z.enum(["running", "completed", "failed", "cancelled"]),
   cursor: z.string().nullable(),
   pages: z.number().int(),
   collected: z.number().int(),
+  mediaProcessed: z.number().int(),
   attempt: z.number().int(),
   failures: z.number().int(),
   nextAttemptAt: z.number(),
@@ -722,6 +740,7 @@ export const audienceResponse = z.object({
         z.object({
           metric: z.string(),
           denominator: z.number().nullable(),
+          availableCategories: z.number().int(),
           categories: z.array(
             z.object({
               categories: z.array(z.string()),
@@ -1203,6 +1222,7 @@ export const commentCollectionResponse = z.object({
   observedAt: z.number().nullable(),
   nextCursor: z.string().nullable(),
   collected: z.number(),
+  commentIds: z.array(z.string().min(1).max(150)).optional(),
   errorCode: z.string().nullable(),
 });
 export const erasedCommentsResponse = z.object({
@@ -1514,6 +1534,7 @@ export const startFullCollectionInput = z.object({
   operationId: z.string().uuid(),
   stories: z.boolean().optional(),
 });
+export const startAccountCommentsCollectionInput = z.object({ operationId: z.string().uuid() });
 export const configureCollectionScheduleInput = z.object({
   enabled: z.boolean(),
   discoveryMinutes: z.number().int().min(60).max(10080).optional(),
@@ -1547,14 +1568,7 @@ export const collectAccountInsightsInput = z.object({
 });
 export const collectAudienceInsightsInput = z.object({
   operationId: z.string().uuid(),
-  timeframe: z.enum([
-    "last_14_days",
-    "last_30_days",
-    "last_90_days",
-    "this_month",
-    "prev_month",
-    "this_week",
-  ]),
+  timeframe: z.enum(["this_month", "this_week"]).optional(),
   breakdown: z.enum(["age", "gender", "country", "city"]),
 });
 export const setMediaContextInput = z.object({

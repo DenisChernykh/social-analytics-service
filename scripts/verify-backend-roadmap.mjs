@@ -164,7 +164,7 @@ if (flags.has("--audience")) {
   for (const breakdown of ["age", "gender", "country", "city"]) {
     const collection = await request("POST", accountPath(accountId, "audience/collect"), {
       operationId: randomUUID(),
-      timeframe: "last_30_days",
+      timeframe: "this_month",
       breakdown,
     });
     output(`audience-${breakdown}`, availability(collection));

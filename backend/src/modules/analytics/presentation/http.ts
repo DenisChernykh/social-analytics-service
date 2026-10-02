@@ -350,7 +350,17 @@ export function createAnalyticsHttp(
       operationId: "getAccountHistory",
       tags: ["Accounts"],
       security: secured,
-      request: { params: accountParams, query: z.object({ limit: limitQuery }) },
+      request: {
+        params: accountParams,
+        query: z
+          .object({
+            limit: limitQuery,
+            cursor: z.string().min(1).max(4096).optional(),
+            from: dateQuery.optional(),
+            to: dateQuery.optional(),
+          })
+          .refine(validRange),
+      },
       responses: {
         200: json(
           z.object({
@@ -361,7 +371,14 @@ export function createAnalyticsHttp(
                 mediaCount: z.number().nullable(),
               }),
             ),
+            nextCursor: z.string().nullable(),
             followerNetChange: z.number().nullable(),
+            coverage: z.object({
+              totalObservations: z.number().int(),
+              fromSnapshot: timestamp.nullable(),
+              toSnapshot: timestamp.nullable(),
+              truncated: z.boolean(),
+            }),
             note: z.string(),
           }),
           "Follower count observations and their net change.",
@@ -373,7 +390,7 @@ export function createAnalyticsHttp(
       c.json(
         await createOperations(c.env).queries.accountHistory(
           c.req.valid("param").accountId,
-          c.req.valid("query").limit,
+          c.req.valid("query"),
         ),
         200,
       ),
