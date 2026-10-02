@@ -8,13 +8,26 @@ Site: https://social-analytics.scary-rustles-7p.chatgpt.site
 Плагин: https://chatgpt.com/plugins/plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01
 Исходники и инструкции: [chatgpt/README.md](../chatgpt/README.md).
 
-2026-10-02 опубликована версия Sites 8, адаптер `0.3.2`, 43 MCP-инструмента
-и UI resource `ui://social-analytics/control-v2.html`.
+2026-10-03 опубликована версия Sites 9, адаптер `0.3.3`, 44 MCP-инструмента
+и UI resource `ui://social-analytics/control-v3.html`.
 Sites подтвердил `succeeded`, `has_mcp: true`, runtime env revision 1.
-Служебный источник: `7e50f35d692cef580391d05ed858cc12e495c3bf`.
-Публикация: `appgdep_6abfe8c29b7c81918f98d5989e851b30`.
+Служебный источник: `ad402e9c914c9ca370394f1b9b2390a454a3ffb7`.
+Публикация: `appgdep_6ac0042a2418819185690fab4e664576`.
 Приватность подтверждена после публикации: один владелец, без групп.
-Код в основном репозитории: `bf66ea8`; backend `0.2.3`.
+Код в основном репозитории: `58e1737`; backend `0.2.4`.
+
+Карточка показывает полный счётчик сохранённой истории и её начало. В live API
+проверены все 326 наблюдений за четыре страницы по 100 записей, без повторов.
+Доступны фильтры дат и продолжение истории через nextCursor. Расписание сейчас
+включено; чтение карточки его не изменяет. Добавлены collect_all_comments и
+кнопка «Собрать комментарии», сохранение прогресса и продолжение полного прохода.
+Root pnpm check прошёл: 51 backend и 17 MCP/UI тестов. Через MCP transport
+против production backend проверены 22 инструмента чтения. Исправленная
+демография this_month загружена по всем четырём разбивкам. Полный проход
+комментариев завершил 236 публикаций и 270 страниц; Meta вернул 0 текстов.
+Диагностика и оставшееся ограничение описаны в [data-collection-fixes.md](data-collection-fixes.md).
+
+## Предыдущие проверки интерфейса и плагина
 
 Social Analytics теперь открывается отдельным приложением из левого меню
 ChatGPT, как «Ритм». Инструмент `open_social_analytics` объявляет global
@@ -83,7 +96,7 @@ Root `pnpm check` прошёл: 45 backend и 15 MCP/UI тестов, типы, 
 iframe «Выбрать публикацию» и запросил выбор. Первый результат и отчёт не
 выбраны автоматически; сбор и расписание не вызывались.
 
-Новый переносимый архив: `chatgpt/dist/social-analytics-plugin.zip`, `0.3.2`.
+Новый переносимый архив: `chatgpt/dist/social-analytics-plugin.zip`, `0.3.3`.
 Пакет обновления текущего личного плагина:
 `chatgpt/dist/social-analytics-sites-plugin.zip`, `1.1.0`.
 Сборка Worker и экспорт исходников не содержат ключей или данных владельца.
