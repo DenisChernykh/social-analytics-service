@@ -135,6 +135,27 @@ export class AnalyticsQueries {
       },
     };
   }
+  async savedHistory(id: string) {
+    await this.media(id);
+    const items: Snapshot[] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await this.repository.history(id, undefined, undefined, cursor, 100);
+      items.push(...page.items);
+      cursor = page.nextCursor ?? undefined;
+    } while (cursor);
+    return { items, truncated: false };
+  }
+  private async catalogue(filter: Omit<MediaFilter, "cursor" | "limit">) {
+    const items: Awaited<ReturnType<AnalyticsRepository["search"]>>["items"] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await this.repository.search({ ...filter, cursor, limit: 100 });
+      items.push(...page.items);
+      cursor = page.nextCursor ?? undefined;
+    } while (cursor);
+    return { items, nextCursor: null };
+  }
   async accountHistory(id: string, input: AccountHistoryInput) {
     await this.account(id);
     const { items, nextCursor, totalObservations, first, last } =
@@ -186,7 +207,7 @@ export class AnalyticsQueries {
     },
   ) {
     const account = await this.account(accountId);
-    const page = await this.repository.search({ ...filter, accountId, words: [], limit: 1000 });
+    const page = await this.catalogue({ ...filter, accountId, words: [] });
     const snapshots = await this.repository.latest(page.items.map((media) => media.id));
     const entries = page.items.map((media) => ({
       media,
@@ -235,11 +256,10 @@ export class AnalyticsQueries {
   async benchmark(id: string) {
     const media = await this.media(id);
     const target = (await this.repository.snapshots(id, 1))[0] ?? null;
-    const page = await this.repository.search({
+    const page = await this.catalogue({
       accountId: media.accountId,
       productType: media.productType,
       words: [],
-      limit: 100,
     });
     const peers: Snapshot[] = [];
     const peerSnapshots = await this.repository.latest(page.items.map((peer) => peer.id));
@@ -276,7 +296,7 @@ export class AnalyticsQueries {
           ];
         }),
       ),
-      note: "Lifetime comparison with up to 100 recent publications of the same product type. Publication ages and observation times can differ; this is not a causal or age-normalized ranking.",
+      note: "Lifetime comparison with all saved publications of the same product type, across catalogue pages. Publication ages and observation times can differ; this is not a causal or age-normalized ranking.",
     };
   }
 }

@@ -88,6 +88,13 @@ export class Content {
       throw new ApplicationError("VALIDATION_FAILED", "Use a valid IANA time zone.");
     }
     const page = await this.analytics.search({ ...input, limit: 100 });
+    let cursor = page.nextCursor;
+    while (cursor) {
+      const next = await this.analytics.search({ ...input, limit: 100, cursor });
+      page.items.push(...next.items);
+      cursor = next.nextCursor;
+    }
+    page.nextCursor = null;
     const observations = await this.analytics.snapshots(
       page.items.map((media) => media.id),
       input.ageDays,
@@ -222,7 +229,7 @@ export class Content {
         toleranceHours: input.ageDays === 1 ? 6 : input.ageDays === 7 ? 12 : 24,
       },
       formulaVersion: "content-v1",
-      note: "Real snapshots nearest age 1/7/30 days; no interpolation or reconstructed early history. Rankings are absolute with reach ratios shown. Baselines exclude the target and match product type/API version, minimum 5 peers. Above usual >=1.5x median, below usual <=0.5x. Groups require 5 observations. Publication timing and frequency are associations, not causal advice; frequency uses this capped catalogue. Overlapping topic groups must not be added as an account total.",
+      note: "Real snapshots nearest age 1/7/30 days; no interpolation or reconstructed early history. All saved publications matching the selected filters are examined across catalogue pages. Rankings are absolute with reach ratios shown. Baselines exclude the target and match product type/API version, minimum 5 peers. Above usual >=1.5x median, below usual <=0.5x. Groups require 5 observations. Publication timing and frequency are associations, not causal advice; frequency uses the full selected catalogue. Overlapping topic groups must not be added as an account total.",
     };
   }
   async experiment(id: string) {

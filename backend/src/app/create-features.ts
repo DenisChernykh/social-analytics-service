@@ -26,10 +26,7 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
         selection: (ids: string[]) => queries.mediaSelection(ids),
         search: (filter: Parameters<typeof queries.search>[0]) => queries.search(filter),
         snapshots: (ids: string[], ageDays?: number) => queries.observations(ids, ageDays),
-        history: async (id: string) => {
-          const result = await queries.history(id, { limit: 100 });
-          return { items: result.items, truncated: !!result.nextCursor };
-        },
+        history: (id: string) => queries.savedHistory(id),
       };
     },
   };
@@ -152,10 +149,7 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
             timeZone: input.timeZone,
             metric: "reach",
           }),
-        history: async (id: string) => {
-          const result = await queries.history(id, { limit: 100 });
-          return { items: result.items, truncated: !!result.nextCursor };
-        },
+        history: (id: string) => queries.savedHistory(id),
       };
     },
   };

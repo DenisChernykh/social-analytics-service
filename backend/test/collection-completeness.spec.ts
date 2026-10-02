@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { featureOptions } from "../src/app/create-features";
-import type { createAnalyticsOperations } from "../src/modules/analytics";
+import { createAnalyticsOperations } from "../src/modules/analytics";
 import { createCollectionOperations } from "../src/modules/collection";
 import { accountId, connect, fixture, sampleMedia } from "./helpers";
 
@@ -90,6 +90,103 @@ describe("complete saved account history", () => {
     filtered.set("cursor", first.nextCursor);
     expect((await f.request(`/api/accounts/${accountId}/history?${filtered}`)).status).toBe(400);
     expect((await f.request(`/api/accounts/${accountId}/history?cursor=invalid`)).status).toBe(400);
+  });
+});
+
+describe("complete analytical cohorts", () => {
+  it("includes older publications beyond the first 100 in rankings, lifetime comparisons and filtered summaries", async () => {
+    const f = await ready();
+    const publishedAt = f.now() - 7 * 86_400_000 - 120_000;
+    await env.DB.batch(
+      Array.from({ length: 120 }, (_, index) => {
+        const id = `catalogue-${String(index).padStart(3, "0")}`;
+        return [
+          env.DB.prepare(
+            "INSERT INTO media (id,account_id,external_id,caption,search_text,media_type,product_type,permalink,published_at,updated_at,context_json) SELECT ?,account_id,?,caption,search_text,media_type,product_type,permalink,?,updated_at,? FROM media WHERE id=?",
+          ).bind(
+            id,
+            id,
+            publishedAt + index * 1000,
+            JSON.stringify({
+              confirmed: { rubric: "Long cohort" },
+              proposal: {},
+              confirmedSource: "manual",
+              proposalSource: "assistant_suggestion",
+              updatedAt: f.now(),
+            }),
+            mediaId,
+          ),
+          env.DB.prepare(
+            "INSERT INTO media_snapshots (id,media_id,observed_at,api_version,metrics_json) SELECT ?,?,?,api_version,json_set(metrics_json,'$.reach.value',?) FROM media_snapshots WHERE media_id=? LIMIT 1",
+          ).bind(
+            `snapshot-${id}`,
+            id,
+            publishedAt + index * 1000 + 7 * 86_400_000,
+            index === 0 ? 5000 : 1000,
+            mediaId,
+          ),
+        ];
+      }).flat(),
+    );
+    const response = await f.request(
+      `/api/accounts/${accountId}/content-analysis?ageDays=7&productType=REELS`,
+    );
+    expect(response.status).toBe(200);
+    const ranking = (await response.json()) as {
+      items: { media: { id: string }; absolute: number | null; sampleSize: number }[];
+      coverage: { examined: number; observed: number; missing: number; truncated: boolean };
+    };
+    expect(ranking.coverage).toMatchObject({
+      examined: 121,
+      observed: 120,
+      missing: 1,
+      truncated: false,
+    });
+    expect(ranking.items[0]).toMatchObject({
+      media: { id: "catalogue-000" },
+      absolute: 5000,
+      sampleSize: 119,
+    });
+    expect(new Set(ranking.items.map((item) => item.media.id)).size).toBe(121);
+    expect(await (await f.request(`/api/media/catalogue-000/benchmark`)).json()).toMatchObject({
+      cohort: { examined: 121, snapshots: 120, truncated: false },
+    });
+    expect(
+      await (await f.request(`/api/accounts/${accountId}/summary?rubric=Long%20cohort`)).json(),
+    ).toMatchObject({
+      cohort: { mediaCount: 120, truncated: false },
+      totals: { views: { available: 120 } },
+    });
+    expect(
+      await (
+        await f.request(`/api/accounts/${accountId}/content-analysis?rubric=Long%20cohort`)
+      ).json(),
+    ).toMatchObject({ coverage: { examined: 120, observed: 120, missing: 0, truncated: false } });
+  });
+  it("provides all saved media snapshots to experiment and review evidence", async () => {
+    const f = await ready();
+    await env.DB.batch(
+      Array.from({ length: 120 }, (_, index) =>
+        env.DB.prepare(
+          "INSERT INTO media_snapshots (id,media_id,observed_at,api_version,metrics_json) SELECT ?,media_id,?,api_version,metrics_json FROM media_snapshots WHERE media_id=? LIMIT 1",
+        ).bind(`older-${String(index).padStart(3, "0")}`, f.now() - (index + 1) * 1000, mediaId),
+      ),
+    );
+    const options = featureOptions({ transport: () => f.transport }, f.now);
+    const analytics = createAnalyticsOperations(env, options.analyticsOptions);
+    const history = await analytics.queries.savedHistory(mediaId);
+    expect(history.items).toHaveLength(121);
+    expect(history.truncated).toBe(false);
+    expect(new Set(history.items.map((item) => item.id)).size).toBe(121);
+    expect(history.items.at(-1)?.observedAt).toBe(f.now() - 120_000);
+    expect(await options.contentOptions.analytics(env).history(mediaId)).toMatchObject({
+      items: expect.arrayContaining([expect.objectContaining({ id: "older-119" })]),
+      truncated: false,
+    });
+    expect(await options.reviewOptions.evidence(env).history(mediaId)).toMatchObject({
+      items: expect.arrayContaining([expect.objectContaining({ id: "older-119" })]),
+      truncated: false,
+    });
   });
 });
 
