@@ -31,6 +31,13 @@ Backend использует Instagram App ID и его секрет. Почта
 Доступ для пользователей вне ролей приложения потребует отдельной настройки
 Meta и проверки приложения; эта установка предназначена для владельца.
 
+Для настройки существующего приложения Meta опубликованы информационные
+адреса backend: [политика конфиденциальности](https://api.social-insights.workers.dev/privacy-policy)
+и [инструкции удаления данных](https://api.social-insights.workers.dev/data-deletion).
+Они не открывают доступ к статистике: `/api/accounts` без ключа возвращает 401.
+Контакт использует ранее согласованный адрес владельца. Эти страницы сами по себе
+не переводят приложение Meta в опубликованный режим и не меняют выданные права.
+
 Документация:
 [Instagram Login](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/),
 [Business Login](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/business-login/),
