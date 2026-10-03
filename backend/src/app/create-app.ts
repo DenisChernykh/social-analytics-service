@@ -17,6 +17,7 @@ import type { HttpEnv } from "../platform/http/environment";
 import { applicationProblem, errorResponses, problem } from "../platform/http/problem";
 import { ApplicationError } from "../shared/application/application-error";
 import { featureOptions } from "./create-features";
+import { registerPublicInformation } from "./public-information";
 
 export function createApp(
   options: { instagram?: InstagramModuleOptions; clock?: () => number } = {},
@@ -81,6 +82,7 @@ export function createApp(
     }),
     (c) => c.json({ status: "ok" as const, revision: c.env.BUILD_REVISION }, 200),
   );
+  registerPublicInformation(app);
   app.route("/", createInstagramModule(instagramOptions).router);
   const features = featureOptions(instagramOptions, options.clock);
   app.route(
