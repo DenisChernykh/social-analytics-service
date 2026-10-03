@@ -13,6 +13,7 @@ const env = { SOCIAL_API_KEY: config.API_KEY, SOCIAL_OWNER_EMAIL: owner };
 const worker = createWorker(fetch);
 const client = new Client({ name: "social-live-verification", version: "1" });
 const verifiedTools = new Set();
+let lastTool;
 await client.connect(
   new StreamableHTTPClientTransport(new URL("https://verification.example.test/mcp"), {
     fetch: (input, init) => {
@@ -23,6 +24,7 @@ await client.connect(
   }),
 );
 async function call(name, args = {}) {
+  lastTool = name;
   const result = await client.callTool({ name, arguments: args });
   assert.notEqual(result.isError, true, `Tool ${name} failed`);
   assert.ok(!JSON.stringify(result).includes(config.API_KEY), "Credential leaked");
@@ -74,23 +76,51 @@ try {
   const widget = await client.readResource({ uri: resources.resources[0].uri });
   assert.equal(widget.contents[0].mimeType, "text/html;profile=mcp-app");
   if (collection.jobs[0]) await call("get_collection_job", { jobId: collection.jobs[0].id });
-  const to = new Date();
-  to.setUTCHours(0, 0, 0, 0);
-  to.setUTCDate(to.getUTCDate() - 2);
-  const from = new Date(to.getTime() - 7 * 86_400_000);
-  const previousFrom = new Date(from.getTime() - 7 * 86_400_000);
+  const observations = [];
+  let insightCursor;
+  let pair;
+  do {
+    const history = await call("get_insight_history", {
+      accountId,
+      limit: 100,
+      ...(insightCursor ? { cursor: insightCursor } : {}),
+    });
+    observations.push(...history.items);
+    const suitable = observations.filter(
+      (item) =>
+        item.status === "completed" &&
+        item.input.metricType === "total_value" &&
+        item.input.breakdown === undefined &&
+        typeof item.input.from === "number" &&
+        typeof item.input.to === "number",
+    );
+    for (const current of suitable) {
+      const previous = suitable.find(
+        (item) =>
+          item.id !== current.id &&
+          item.apiVersion === current.apiVersion &&
+          item.input.timeZone === current.input.timeZone &&
+          item.input.to <= current.input.from &&
+          item.input.to - item.input.from === current.input.to - current.input.from,
+      );
+      if (previous) {
+        pair = { current, previous };
+        break;
+      }
+    }
+    insightCursor = history.nextCursor;
+  } while (!pair && insightCursor);
+  assert.ok(pair, "Two compatible saved activity intervals are required");
   const period = {
-    from: from.toISOString(),
-    to: to.toISOString(),
-    timeZone: "UTC",
-    compareFrom: previousFrom.toISOString(),
-    compareTo: from.toISOString(),
+    from: new Date(pair.current.input.from).toISOString(),
+    to: new Date(pair.current.input.to).toISOString(),
+    timeZone: pair.current.input.timeZone,
+    compareFrom: new Date(pair.previous.input.from).toISOString(),
+    compareTo: new Date(pair.previous.input.to).toISOString(),
   };
   const activity = await call("get_account_activity", { accountId, ...period });
   assert.equal(activity.comparable, true);
-  const insightHistory = await call("get_insight_history", { accountId, limit: 2 });
-  assert.ok(insightHistory.items.length);
-  await call("get_insight_status", { operationId: insightHistory.items[0].id });
+  await call("get_insight_status", { operationId: pair.current.id });
   const audience = await call("get_audience", {
     accountId,
     timeframe: "this_month",
@@ -123,7 +153,13 @@ try {
     }),
   );
 } catch {
-  console.error("Live MCP verification failed; no upstream details printed.");
+  console.error(
+    JSON.stringify({
+      check: "live-mcp-verification-failed",
+      lastTool,
+      verifiedReadTools: verifiedTools.size,
+    }),
+  );
   process.exitCode = 1;
 } finally {
   await client.close();
