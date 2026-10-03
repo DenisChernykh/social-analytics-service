@@ -19,6 +19,9 @@ export class Comments {
     const comment = await this.store.comment(id);
     return comment !== null && comment.mediaId === mediaId && comment.parentId === null;
   }
+  async rootCommentIds(mediaId: string, ids: string[]) {
+    return this.store.rootCommentIds(mediaId, ids);
+  }
   async collect(
     mediaId: string,
     input: { operationId: string; parentId: string | null; cursor: string | null; limit: number },
@@ -77,7 +80,7 @@ export class Comments {
         parentId: item.parentId ?? input.parentId,
         observedAt: collection.observedAt as number,
       }));
-      collection.commentIds = items.filter((item) => item.parentId === null).map((item) => item.id);
+      collection.commentIds = items.map((item) => item.id);
       await this.store.finish(collection, items);
     } catch (error) {
       collection.status = "failed";

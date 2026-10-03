@@ -1,4 +1,4 @@
-import { and, desc, eq, lt, or } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, lt, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { commentCollections, comments } from "../../../platform/database/schema";
 import type { CommentStore } from "../application/ports";
@@ -80,6 +80,17 @@ export class D1Comments implements CommentStore {
   }
   async comment(id: string) {
     return (await this.db.select().from(comments).where(eq(comments.id, id)).limit(1))[0] ?? null;
+  }
+  async rootCommentIds(mediaId: string, ids: string[]) {
+    if (!ids.length) return [];
+    const rows = await this.db
+      .select({ id: comments.id })
+      .from(comments)
+      .where(
+        and(eq(comments.mediaId, mediaId), inArray(comments.id, ids), isNull(comments.parentId)),
+      );
+    const roots = new Set(rows.map((row) => row.id));
+    return [...new Set(ids)].filter((id) => roots.has(id));
   }
   async erase(mediaId: string) {
     await this.db.batch([

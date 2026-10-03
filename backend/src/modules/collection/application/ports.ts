@@ -25,6 +25,7 @@ export interface CollectionStore {
 export interface CollectionComments {
   enabled(accountId: string): Promise<boolean>;
   isRootComment(mediaId: string, id: string): Promise<boolean>;
+  rootCommentIds(mediaId: string, ids: string[]): Promise<string[]>;
   collect(
     mediaId: string,
     input: { operationId: string; parentId: string | null; cursor: string | null; limit: number },

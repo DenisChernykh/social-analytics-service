@@ -438,10 +438,14 @@ describe("audience windows and account-wide comments", () => {
     expect(JSON.parse((await advance()).cursor ?? "null")).toMatchObject({
       parents: ["111", "222"],
     });
-    await f.request(`/api/media/${mediaId}/comments/collect`, "POST", {
-      operationId: crypto.randomUUID(),
-      parentId: "111",
-    });
+    expect(
+      await (
+        await f.request(`/api/media/${mediaId}/comments/collect`, "POST", {
+          operationId: crypto.randomUUID(),
+          parentId: "111",
+        })
+      ).json(),
+    ).toMatchObject({ status: "completed", collected: 1, commentIds: ["222"] });
     expect(await advance()).toMatchObject({ status: "running", pages: 2, collected: 3 });
     expect(await advance()).toMatchObject({
       status: "completed",

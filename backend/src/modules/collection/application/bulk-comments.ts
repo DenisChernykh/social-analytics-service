@@ -40,7 +40,7 @@ export async function advanceComments(
       if (!page.nextCursor) position.parents.shift();
     } else {
       position.commentCursor = page.nextCursor;
-      position.parents = page.commentIds;
+      position.parents = await comments.rootCommentIds(position.current.id, page.commentIds);
     }
   }
   let mediaProcessed = 0;

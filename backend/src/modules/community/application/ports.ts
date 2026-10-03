@@ -9,6 +9,7 @@ export interface CommentStore {
     limit: number,
   ): Promise<SavedComment[]>;
   comment(id: string): Promise<SavedComment | null>;
+  rootCommentIds(mediaId: string, ids: string[]): Promise<string[]>;
   erase(mediaId: string): Promise<void>;
 }
 export interface CommentSource {
