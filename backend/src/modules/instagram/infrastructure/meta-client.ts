@@ -574,12 +574,19 @@ export class MetaClient implements InstagramTransport {
     limit: number,
   ) {
     const parameters: Record<string, string> = {
-      fields: "id,text,timestamp",
+      fields: "id,text,timestamp,parent_id",
       limit: String(limit),
     };
     if (cursor) parameters.after = cursor;
     const schema = z.object({
-      data: z.array(z.object({ id: identifier, text: z.string(), timestamp: z.string() })),
+      data: z.array(
+        z.object({
+          id: identifier,
+          text: z.string(),
+          timestamp: z.string(),
+          parent_id: identifier.nullish(),
+        }),
+      ),
       paging: z
         .object({
           next: z.string().optional(),
@@ -612,7 +619,12 @@ export class MetaClient implements InstagramTransport {
             "INSTAGRAM_UNAVAILABLE",
             "Instagram returned an invalid comment timestamp.",
           );
-        return { id: item.id, text: item.text, publishedAt };
+        return {
+          id: item.id,
+          text: item.text,
+          publishedAt,
+          parentId: item.parent_id ?? (replies ? objectId : null),
+        };
       }),
       nextCursor,
     };

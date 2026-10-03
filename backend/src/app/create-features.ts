@@ -46,6 +46,7 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
               connection.accountId === accountId &&
               connection.scopes.includes("instagram_business_manage_comments"),
           ),
+        isRootComment: (mediaId: string, id: string) => operations.isRootComment(mediaId, id),
         collect: (mediaId: string, input: Parameters<typeof operations.collect>[1]) =>
           operations.collect(mediaId, input),
       };

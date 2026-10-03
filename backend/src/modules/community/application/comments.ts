@@ -15,6 +15,10 @@ export class Comments {
       ? { ...result, status: "failed" as const, errorCode: "COLLECTION_EXPIRED" }
       : result;
   }
+  async isRootComment(mediaId: string, id: string) {
+    const comment = await this.store.comment(id);
+    return comment !== null && comment.mediaId === mediaId && comment.parentId === null;
+  }
   async collect(
     mediaId: string,
     input: { operationId: string; parentId: string | null; cursor: string | null; limit: number },
@@ -67,16 +71,14 @@ export class Comments {
       collection.observedAt = this.clock();
       collection.nextCursor = page.nextCursor;
       collection.collected = page.items.length;
-      collection.commentIds = page.items.map((item) => item.id);
-      await this.store.finish(
-        collection,
-        page.items.map((item) => ({
-          ...item,
-          mediaId,
-          parentId: input.parentId,
-          observedAt: collection.observedAt as number,
-        })),
-      );
+      const items = page.items.map((item) => ({
+        ...item,
+        mediaId,
+        parentId: item.parentId ?? input.parentId,
+        observedAt: collection.observedAt as number,
+      }));
+      collection.commentIds = items.filter((item) => item.parentId === null).map((item) => item.id);
+      await this.store.finish(collection, items);
     } catch (error) {
       collection.status = "failed";
       collection.errorCode = error instanceof ApplicationError ? error.code : "INTERNAL_ERROR";

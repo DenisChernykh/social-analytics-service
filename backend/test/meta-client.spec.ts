@@ -194,14 +194,40 @@ describe("official Meta API adapter", () => {
     });
     expect(new URL(String(request.mock.calls[0]?.[0])).pathname).toBe("/v26.0/123/stories");
     expect(await client.comments("fake-token", "123", true, "before", 25)).toMatchObject({
-      items: [{ id: "456", text: "Question?" }],
+      items: [{ id: "456", text: "Question?", parentId: "123" }],
       nextCursor: "next",
     });
     const url = new URL(String(request.mock.calls[1]?.[0]));
     expect(url.pathname).toBe("/v26.0/123/replies");
-    expect(url.searchParams.get("fields")).toBe("id,text,timestamp");
+    expect(url.searchParams.get("fields")).toBe("id,text,timestamp,parent_id");
     expect(url.searchParams.get("after")).toBe("before");
     expect(request).toHaveBeenCalledTimes(2);
+  });
+  it("preserves parent IDs when the media comments edge includes replies in its flat list", async () => {
+    const request = vi.fn<typeof fetch>().mockResolvedValueOnce(
+      json({
+        data: [
+          { id: "111", text: "Question?", timestamp: "2026-10-01T00:00:00Z" },
+          {
+            id: "222",
+            text: "Answer",
+            timestamp: "2026-10-01T00:01:00Z",
+            parent_id: "111",
+          },
+        ],
+      }),
+    );
+    const client = new MetaClient(config, request);
+    expect(await client.comments("fake-token", "123", false, null, 50)).toMatchObject({
+      items: [
+        { id: "111", parentId: null },
+        { id: "222", parentId: "111" },
+      ],
+      nextCursor: null,
+    });
+    const url = new URL(String(request.mock.calls[0]?.[0]));
+    expect(url.pathname).toBe("/v26.0/123/comments");
+    expect(url.searchParams.get("fields")).toBe("id,text,timestamp,parent_id");
   });
   it("reports Meta's minimum-audience response as missing demographic data without inventing zeros", async () => {
     const request = vi

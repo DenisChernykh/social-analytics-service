@@ -19,7 +19,7 @@
     "ENVIRONMENT": "production",
     "INSTAGRAM_API_VERSION": "v26.0",
     "INSTAGRAM_REDIRECT_URI": "https://api.social-insights.workers.dev/api/instagram/oauth/callback",
-    "BUILD_REVISION": "0.2.7"
+    "BUILD_REVISION": "0.2.8"
   },
   "d1_databases": [
     {

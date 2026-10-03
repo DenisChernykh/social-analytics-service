@@ -76,6 +76,6 @@ export type StructuredInsight = {
   }[];
 };
 export type CommentPage = {
-  items: { id: string; text: string; publishedAt: number }[];
+  items: { id: string; text: string; publishedAt: number; parentId?: string | null }[];
   nextCursor: string | null;
 };

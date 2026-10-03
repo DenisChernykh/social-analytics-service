@@ -39,7 +39,7 @@ export class D1Comments implements CommentStore {
       ...items.map((item) =>
         this.database
           .prepare(
-            "INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT ?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?) ON CONFLICT(id) DO UPDATE SET text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at",
+            "INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT ?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?) ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at",
           )
           .bind(
             item.id,

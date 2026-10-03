@@ -340,6 +340,124 @@ describe("audience windows and account-wide comments", () => {
     expect(f.transport.comments).toHaveBeenCalledTimes(1);
     expect(vi.mocked(f.transport.structuredInsights).mock.calls).toHaveLength(8);
   });
+  it("repairs flat replies saved as roots and queries replies only for actual root comments", async () => {
+    const f = await ready(true);
+    vi.mocked(f.transport.comments).mockResolvedValueOnce({
+      items: [{ id: "222", text: "Legacy reply", publishedAt: 2000 }],
+      nextCursor: null,
+    });
+    await f.request(`/api/media/${mediaId}/comments/collect`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    f.advance(1000);
+    vi.mocked(f.transport.comments).mockImplementation(async (_token, objectId, replies) => {
+      if (replies) {
+        expect(objectId).toBe("111");
+        return {
+          items: [{ id: "222", text: "Current reply", publishedAt: 2000 }],
+          nextCursor: null,
+        };
+      }
+      return {
+        items: [
+          { id: "111", text: "Root", publishedAt: 1000, parentId: null },
+          { id: "222", text: "Current reply", publishedAt: 2000, parentId: "111" },
+          { id: "333", text: "Other reply", publishedAt: 3000, parentId: "999" },
+        ],
+        nextCursor: null,
+      };
+    });
+    const jobId = crypto.randomUUID();
+    await f.request(`/api/accounts/${accountId}/comments/collect`, "POST", {
+      operationId: jobId,
+    });
+    const advance = async () =>
+      (await (await f.request(`/api/collection-jobs/${jobId}/advance`, "POST", {})).json()) as Job;
+    const first = await advance();
+    expect(JSON.parse(first.cursor ?? "null")).toMatchObject({ parents: ["111"] });
+    expect(await advance()).toMatchObject({
+      status: "completed",
+      pages: 2,
+      mediaProcessed: 1,
+      collected: 4,
+    });
+    f.advance(1000);
+    vi.mocked(f.transport.comments).mockResolvedValueOnce({
+      items: [{ id: "222", text: "Updated sparse reply", publishedAt: 2000 }],
+      nextCursor: null,
+    });
+    await f.request(`/api/media/${mediaId}/comments/collect`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    expect(await (await f.request(`/api/media/${mediaId}/comments`)).json()).toMatchObject({
+      items: [
+        { id: "333", parentId: "999" },
+        { id: "222", parentId: "111", text: "Updated sparse reply" },
+        { id: "111", parentId: null },
+      ],
+    });
+    expect(
+      vi
+        .mocked(f.transport.comments)
+        .mock.calls.filter((call) => call[2])
+        .map((call) => call[1]),
+    ).toEqual(["111"]);
+    expect(
+      (
+        await f.request(`/api/media/${mediaId}/comments/collect`, "POST", {
+          operationId: crypto.randomUUID(),
+          parentId: "222",
+        })
+      ).status,
+    ).toBe(404);
+  });
+  it("continues a legacy cursor after one of its queued parents is reclassified as a reply", async () => {
+    const f = await ready(true);
+    vi.mocked(f.transport.comments).mockImplementation(async (_token, objectId, replies) => {
+      if (replies) {
+        expect(objectId).toBe("111");
+        return {
+          items: [{ id: "222", text: "Reply", publishedAt: 2000 }],
+          nextCursor: null,
+        };
+      }
+      return {
+        items: [
+          { id: "111", text: "Root", publishedAt: 1000 },
+          { id: "222", text: "Reply", publishedAt: 2000 },
+        ],
+        nextCursor: null,
+      };
+    });
+    const jobId = crypto.randomUUID();
+    await f.request(`/api/accounts/${accountId}/comments/collect`, "POST", {
+      operationId: jobId,
+    });
+    const advance = async () =>
+      (await (await f.request(`/api/collection-jobs/${jobId}/advance`, "POST", {})).json()) as Job;
+    expect(JSON.parse((await advance()).cursor ?? "null")).toMatchObject({
+      parents: ["111", "222"],
+    });
+    await f.request(`/api/media/${mediaId}/comments/collect`, "POST", {
+      operationId: crypto.randomUUID(),
+      parentId: "111",
+    });
+    expect(await advance()).toMatchObject({ status: "running", pages: 2, collected: 3 });
+    expect(await advance()).toMatchObject({
+      status: "completed",
+      pages: 3,
+      mediaProcessed: 1,
+      collected: 3,
+      errorCode: null,
+    });
+    expect(f.transport.comments).toHaveBeenCalledTimes(3);
+    expect(await (await f.request(`/api/media/${mediaId}/comments`)).json()).toMatchObject({
+      items: [
+        { id: "222", parentId: "111" },
+        { id: "111", parentId: null },
+      ],
+    });
+  });
   it("requires granted permission for bulk collection", async () => {
     const f = await ready();
     expect(

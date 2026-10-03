@@ -20,7 +20,7 @@ export interface CommentSource {
     cursor: string | null,
     limit: number,
   ): Promise<{
-    items: { id: string; text: string; publishedAt: number }[];
+    items: { id: string; text: string; publishedAt: number; parentId?: string | null }[];
     nextCursor: string | null;
   }>;
 }
