@@ -3,6 +3,8 @@ import { type CollectionJob, type CollectionSchedule, retryDelay } from "../doma
 import { advanceComments } from "./bulk-comments";
 import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
 
+const maximumJobAdvances = 12;
+
 export class Collect {
   constructor(
     private readonly store: CollectionStore,
@@ -170,11 +172,11 @@ export class Collect {
       schedule: await this.schedule(accountId),
       jobs: await this.store.jobs(accountId),
       policy: {
-        runBudget: 2,
+        runBudget: maximumJobAdvances + 1,
         pageSize: 1,
         storyPageSize: 5,
         commentPageSize: 50,
-        cronMinutes: 15,
+        cronMinutes: 5,
         ageIntervalsHours: [1, 6, 24, 168],
         maximumConsecutiveFailures: 5,
       },
@@ -215,8 +217,24 @@ export class Collect {
     return this.schedule(accountId);
   }
   async tick() {
-    const active = (await this.store.jobs()).find((job) => job.nextAttemptAt <= this.clock());
-    if (active) await this.advance(active.id);
+    const skipped = new Set<string>();
+    let advances = 0;
+    let advancedOtherJob = false;
+    while (advances < maximumJobAdvances) {
+      const active = (await this.store.jobs()).find(
+        (job) =>
+          job.status === "running" &&
+          job.nextAttemptAt <= this.clock() &&
+          !skipped.has(job.id) &&
+          (job.origin === "comments" || !advancedOtherJob),
+      );
+      if (!active) break;
+      const result = await this.advance(active.id);
+      advances++;
+      // Other pages may gather several metrics; retain their one-page budget.
+      if (active.origin !== "comments") advancedOtherJob = true;
+      if (result.pages === active.pages) skipped.add(active.id);
+    }
     const schedules = await this.store.schedules();
     const schedule = schedules.find((item) => item.failures < 5 && item.retryAt <= this.clock());
     if (!schedule) return;
@@ -228,7 +246,7 @@ export class Collect {
           `stories:${schedule.accountId}:${schedule.nextStoriesAt}`,
         );
         const job = await this.start(schedule.accountId, id, "stories", true);
-        if (!active) {
+        if (advances === 0) {
           const result = await this.advance(job.id);
           lastSuccessAt = result.lastSuccessAt ?? lastSuccessAt;
           if (result.errorCode)
