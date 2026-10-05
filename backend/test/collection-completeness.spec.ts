@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { featureOptions } from "../src/app/create-features";
+import { createScheduledOperations, featureOptions } from "../src/app/create-features";
 import { createAnalyticsOperations } from "../src/modules/analytics";
 import { createCollectionOperations } from "../src/modules/collection";
 import { ApplicationError } from "../src/shared/application/application-error";
@@ -476,7 +476,7 @@ describe("audience windows and account-wide comments", () => {
 });
 
 describe("bounded background comment progress", () => {
-  it("advances several comment pages per tick while still servicing the account schedule", async () => {
+  it("performs one collection step per tick and gives both background jobs and the schedule a turn", async () => {
     const f = await ready(true);
     vi.mocked(f.transport.comments).mockImplementation(async (_token, _id, _replies, cursor) => ({
       items: [],
@@ -485,59 +485,63 @@ describe("bounded background comment progress", () => {
     const jobId = crypto.randomUUID();
     await f.request(`/api/accounts/${accountId}/comments/collect`, "POST", { operationId: jobId });
     await f.request(`/api/accounts/${accountId}/collection/schedule`, "PATCH", { enabled: true });
-    const collector = createCollectionOperations(
-      env,
-      featureOptions({ transport: () => f.transport }, f.now).collectionOptions,
-    );
+    // Start at a schedule-preferred slot.
+    f.advance(600_000 - (f.now() % 600_000));
+    const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
     await collector.tick();
-    expect(await collector.job(jobId)).toMatchObject({ status: "running", pages: 12 });
-    expect(f.transport.comments).toHaveBeenCalledTimes(12);
+    expect(f.transport.comments).not.toHaveBeenCalled();
+    expect(f.transport.stories).not.toHaveBeenCalled();
     expect(await collector.status(accountId)).toMatchObject({
       schedule: { nextStoriesAt: f.now() + 60 * 60_000 },
-      policy: { cronMinutes: 5, runBudget: 13 },
+      policy: { cronMinutes: 5, runBudget: 1 },
     });
-    f.advance(15 * 60_000);
+    f.advance(5 * 60_000);
     await collector.tick();
-    expect(await collector.job(jobId)).toMatchObject({ status: "running", pages: 23 });
     expect(f.transport.stories).toHaveBeenCalledTimes(1);
+    expect(f.transport.comments).not.toHaveBeenCalled();
+    f.advance(5 * 60_000);
+    await collector.tick();
+    expect(await collector.job(jobId)).toMatchObject({ status: "running", pages: 1 });
+    expect(f.transport.structuredInsights).not.toHaveBeenCalled();
+    f.advance(10 * 60_000);
+    await collector.tick();
     expect(f.transport.structuredInsights).toHaveBeenCalled();
+    expect(await collector.job(jobId)).toMatchObject({ pages: 1 });
     expect((await collector.status(accountId)).schedule.nextInsightsAt).toBeGreaterThan(f.now());
   });
   it("stops the affected job at source backoff and resumes its saved cursor later", async () => {
     const f = await ready(true);
     vi.mocked(f.transport.comments).mockImplementation(async (_token, _id, _replies, cursor) => ({
       items: [],
-      nextCursor: Number(cursor ?? 0) >= 19 ? null : String(Number(cursor ?? 0) + 1),
+      nextCursor: cursor ? null : "next-page",
     }));
     const jobId = crypto.randomUUID();
     await f.request(`/api/accounts/${accountId}/comments/collect`, "POST", { operationId: jobId });
-    const collector = createCollectionOperations(
-      env,
-      featureOptions({ transport: () => f.transport }, f.now).collectionOptions,
-    );
+    const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
     await collector.tick();
     vi.mocked(f.transport.comments).mockRejectedValueOnce(
-      new ApplicationError("INSTAGRAM_UNAVAILABLE", "Temporary source failure"),
+      new ApplicationError("INSTAGRAM_RATE_LIMITED", "Temporary source failure"),
     );
     await collector.tick();
     expect(await collector.job(jobId)).toMatchObject({
-      pages: 12,
+      pages: 1,
       status: "running",
-      errorCode: "INSTAGRAM_UNAVAILABLE",
+      errorCode: "INSTAGRAM_RATE_LIMITED",
       nextAttemptAt: f.now() + 30 * 60_000,
     });
-    expect(f.transport.comments).toHaveBeenCalledTimes(13);
+    expect(f.transport.comments).toHaveBeenCalledTimes(2);
     await collector.tick();
-    expect(f.transport.comments).toHaveBeenCalledTimes(13);
+    expect(f.transport.comments).toHaveBeenCalledTimes(2);
     f.advance(30 * 60_000);
     await collector.tick();
     expect(await collector.job(jobId)).toMatchObject({
       status: "completed",
-      pages: 20,
+      pages: 2,
       mediaProcessed: 1,
       errorCode: null,
     });
-    expect(f.transport.comments).toHaveBeenCalledTimes(21);
+    expect(f.transport.comments).toHaveBeenCalledTimes(3);
+    expect(vi.mocked(f.transport.comments).mock.calls.at(-1)?.[3]).toBe("next-page");
     expect((await collector.status(accountId)).schedule.enabled).toBe(false);
   });
   it("does not let another worker's lease prevent a different due job from progressing", async () => {

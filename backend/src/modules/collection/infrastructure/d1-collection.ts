@@ -1,4 +1,4 @@
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt, lt, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { collectionJobs, collectionSchedules } from "../../../platform/database/schema";
 import type { CollectionStore } from "../application/ports";
@@ -33,6 +33,22 @@ export class D1Collection implements CollectionStore {
   async create(job: CollectionJob) {
     await this.db.insert(collectionJobs).values(job).onConflictDoNothing();
   }
+  async nextJob(now: number) {
+    // A small head start for short-lived Stories and discovery, with aging so
+    // older catalogue/comments work still progresses. Leased jobs cannot hide
+    // available work behind the status endpoint's 100-row display limit.
+    const row = await this.database
+      .prepare(
+        `SELECT id FROM collection_jobs
+         WHERE status='running' AND next_attempt_at<=?
+           AND (lease_expires_at IS NULL OR lease_expires_at<=?)
+         ORDER BY next_attempt_at - CASE origin WHEN 'stories' THEN 900000 WHEN 'scheduled' THEN 300000 ELSE 0 END,
+           started_at,id LIMIT 1`,
+      )
+      .bind(now, now)
+      .first<{ id: string }>();
+    return row?.id ?? null;
+  }
   async latestJob(accountId: string, origin: CollectionJob["origin"]) {
     return (
       ((
@@ -60,13 +76,19 @@ export class D1Collection implements CollectionStore {
     ).first<CataloguePosition>();
   }
   async claim(id: string, token: string, now: number) {
-    const result = await this.database
-      .prepare(
-        "UPDATE collection_jobs SET lease_token=?,lease_expires_at=? WHERE id=? AND status='running' AND next_attempt_at<=? AND (lease_expires_at IS NULL OR lease_expires_at<=?)",
+    const rows = await this.db
+      .update(collectionJobs)
+      .set({ leaseToken: token, leaseExpiresAt: now + 15 * 60_000 })
+      .where(
+        and(
+          eq(collectionJobs.id, id),
+          eq(collectionJobs.status, "running"),
+          lte(collectionJobs.nextAttemptAt, now),
+          sql`(${collectionJobs.leaseExpiresAt} IS NULL OR ${collectionJobs.leaseExpiresAt}<=${now})`,
+        ),
       )
-      .bind(token, now + 15 * 60_000, id, now, now)
-      .run();
-    return result.meta.changes === 1;
+      .returning();
+    return (rows[0] as CollectionJob | undefined) ?? null;
   }
   async save(job: CollectionJob, token: string, now: number) {
     await this.db
@@ -100,13 +122,20 @@ export class D1Collection implements CollectionStore {
       )[0] ?? null
     );
   }
-  async schedules() {
-    return this.db
+  async nextSchedule(now: number) {
+    const rows = await this.db
       .select()
       .from(collectionSchedules)
-      .where(eq(collectionSchedules.enabled, true))
+      .where(
+        and(
+          eq(collectionSchedules.enabled, true),
+          lt(collectionSchedules.failures, 5),
+          lte(collectionSchedules.retryAt, now),
+        ),
+      )
       .orderBy(collectionSchedules.retryAt, collectionSchedules.nextDiscoveryAt)
-      .limit(100);
+      .limit(1);
+    return rows[0] ?? null;
   }
   async saveSchedule(schedule: CollectionSchedule) {
     await this.db

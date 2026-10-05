@@ -12,12 +12,15 @@ export type CommentOptions = {
   clock?: () => number;
 };
 export function createCommentOperations(env: RuntimeBindings, options: CommentOptions) {
+  let reader: InstagramReader | undefined;
   return new Comments(
     new D1Comments(env.DB),
     {
       media: (id) => options.media(env, id),
-      read: (accountId, objectId, replies, cursor, limit) =>
-        options.reader(env).comments(accountId, objectId, replies, cursor, limit),
+      read: (accountId, objectId, replies, cursor, limit) => {
+        reader ??= options.reader(env);
+        return reader.comments(accountId, objectId, replies, cursor, limit);
+      },
     },
     options.clock ?? Date.now,
   );

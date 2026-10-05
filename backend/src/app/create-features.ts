@@ -5,10 +5,17 @@ import { createCommentOperations } from "../modules/community";
 import { createContentOperations } from "../modules/content";
 import { createInstagramOperations, type InstagramModuleOptions } from "../modules/instagram";
 import type { RuntimeBindings } from "../platform/config/runtime-config";
+import { incompleteOperationError } from "../shared/application/application-error";
 
-export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: () => number) {
-  const reader = (env: RuntimeBindings) =>
-    createInstagramOperations(env, { ...instagram, clock: clock ?? instagram.clock });
+export function featureOptions(
+  instagram: InstagramModuleOptions = {},
+  clock?: () => number,
+  scopedReader?: (env: RuntimeBindings) => ReturnType<typeof createInstagramOperations>,
+) {
+  const reader =
+    scopedReader ??
+    ((env: RuntimeBindings) =>
+      createInstagramOperations(env, { ...instagram, clock: clock ?? instagram.clock }));
   const analyticsOptions = { reader, clock };
   const analytics = (env: RuntimeBindings) => createAnalyticsOperations(env, analyticsOptions);
   const insightsOptions = {
@@ -73,6 +80,8 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
               metrics: ["follower_demographics", "engaged_audience_demographics"],
             },
           );
+          if (result.status !== "completed")
+            throw incompleteOperationError(result.status, result.errorCode);
           return result.values.reduce(
             (total, value) =>
               total + value.breakdowns.reduce((sum, group) => sum + group.results.length, 0),
@@ -81,26 +90,32 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
         },
         activity: async (accountId: string, operationId: string, now: number) => {
           const to = Math.floor(now / 86_400_000) * 86_400_000;
-          await createInsightOperations(env, insightsOptions).collect(accountId, operationId, {
-            kind: "activity",
-            from: to - 3 * 86_400_000,
-            to,
-            timeZone: "UTC",
-            metricType: "total_value",
-            metrics: [
-              "views",
-              "reach",
-              "accounts_engaged",
-              "total_interactions",
-              "likes",
-              "comments",
-              "saves",
-              "shares",
-              "replies",
-              "profile_links_taps",
-              "follows_and_unfollows",
-            ],
-          });
+          const result = await createInsightOperations(env, insightsOptions).collect(
+            accountId,
+            operationId,
+            {
+              kind: "activity",
+              from: to - 3 * 86_400_000,
+              to,
+              timeZone: "UTC",
+              metricType: "total_value",
+              metrics: [
+                "views",
+                "reach",
+                "accounts_engaged",
+                "total_interactions",
+                "likes",
+                "comments",
+                "saves",
+                "shares",
+                "replies",
+                "profile_links_taps",
+                "follows_and_unfollows",
+              ],
+            },
+          );
+          if (result.status !== "completed")
+            throw incompleteOperationError(result.status, result.errorCode);
         },
         refresh: async (id: string, operationId: string) => {
           const media = await operations.queries.media(id);
@@ -164,6 +179,20 @@ export function featureOptions(instagram: InstagramModuleOptions = {}, clock?: (
     reviewOptions,
   };
 }
-export function createScheduledOperations(env: RuntimeBindings) {
-  return createCollectionOperations(env, featureOptions().collectionOptions);
+export function createScheduledOperations(
+  env: RuntimeBindings,
+  instagram: InstagramModuleOptions = {},
+  clock?: () => number,
+) {
+  // This scope is created anew by each scheduled invocation. Credentials and
+  // in-flight promises are never shared between Worker invocations.
+  let reader: ReturnType<typeof createInstagramOperations> | undefined;
+  const options = featureOptions(instagram, clock, () => {
+    reader ??= createInstagramOperations(env, {
+      ...instagram,
+      clock: clock ?? instagram.clock,
+    });
+    return reader;
+  });
+  return createCollectionOperations(env, options.collectionOptions);
 }

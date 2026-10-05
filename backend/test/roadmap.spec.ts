@@ -146,6 +146,9 @@ describe("single-media refresh and durable collection", () => {
     });
     f.advance(1000);
     await collector.tick();
+    expect(f.transport.stories).not.toHaveBeenCalled();
+    f.advance(5 * 60_000);
+    await collector.tick();
     expect(f.transport.stories).toHaveBeenCalledTimes(1);
     f.advance(15 * 60_000);
     await collector.tick();
@@ -158,8 +161,10 @@ describe("single-media refresh and durable collection", () => {
       media: [sampleMedia],
       nextCursor: "would-continue",
     });
-    f.advance(15 * 60_000);
-    await collector.tick();
+    for (let tick = 0; tick < 6; tick++) {
+      f.advance(5 * 60_000);
+      await collector.tick();
+    }
     const status = (await (await f.request(`/api/accounts/${accountId}/collection`)).json()) as {
       jobs: { origin: string; status: string; pages: number }[];
     };

@@ -1,4 +1,7 @@
-import { ApplicationError } from "../../../shared/application/application-error";
+import {
+  ApplicationError,
+  incompleteOperationError,
+} from "../../../shared/application/application-error";
 import type { CollectionJob, CommentPosition } from "../domain/model";
 import type { CollectionComments, CollectionStore } from "./ports";
 
@@ -30,8 +33,7 @@ export async function advanceComments(
       cursor,
       limit: 50,
     });
-    if (page.status !== "completed")
-      throw new ApplicationError("INSTAGRAM_UNAVAILABLE", "The comment page did not complete.");
+    if (page.status !== "completed") throw incompleteOperationError(page.status, page.errorCode);
     if (page.nextCursor && page.nextCursor === cursor)
       throw new ApplicationError("INSTAGRAM_UNAVAILABLE", "Instagram repeated its comment cursor.");
     collected = page.collected;

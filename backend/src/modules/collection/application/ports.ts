@@ -5,12 +5,13 @@ import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../do
 export interface CollectionStore {
   job(id: string): Promise<CollectionJob | null>;
   jobs(accountId?: string): Promise<CollectionJob[]>;
+  nextJob(now: number): Promise<string | null>;
   create(job: CollectionJob): Promise<void>;
-  claim(id: string, token: string, now: number): Promise<boolean>;
+  claim(id: string, token: string, now: number): Promise<CollectionJob | null>;
   save(job: CollectionJob, token: string, now: number): Promise<void>;
   control(id: string, status: "running" | "cancelled", now: number): Promise<void>;
   schedule(accountId: string): Promise<CollectionSchedule | null>;
-  schedules(): Promise<CollectionSchedule[]>;
+  nextSchedule(now: number): Promise<CollectionSchedule | null>;
   saveSchedule(schedule: CollectionSchedule): Promise<void>;
   dueMedia(accountId: string, now: number): Promise<string | null>;
   sawKnownMedia(operationId: string, startedAt: number): Promise<boolean>;

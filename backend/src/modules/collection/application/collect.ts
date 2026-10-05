@@ -1,9 +1,12 @@
-import { ApplicationError } from "../../../shared/application/application-error";
+import {
+  ApplicationError,
+  incompleteOperationError,
+} from "../../../shared/application/application-error";
 import { type CollectionJob, type CollectionSchedule, retryDelay } from "../domain/model";
 import { advanceComments } from "./bulk-comments";
 import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
 
-const maximumJobAdvances = 12;
+const cronIntervalMs = 5 * 60_000;
 
 export class Collect {
   constructor(
@@ -73,12 +76,10 @@ export class Collect {
     }
   }
   async advance(id: string) {
-    let job = await this.job(id);
     const now = this.clock();
     const token = this.randomId();
-    if (!(await this.store.claim(id, token, now))) return this.job(id);
-    job = await this.job(id);
-    if (job.status !== "running") return job;
+    const job = await this.store.claim(id, token, now);
+    if (!job) return this.job(id);
     try {
       const operationId = await this.operationId(`${id}:${job.pages}:${job.attempt}`);
       let cursor: string | null;
@@ -105,10 +106,7 @@ export class Collect {
           job.origin === "stories",
         );
         if (result.status !== "completed")
-          throw new ApplicationError(
-            "INSTAGRAM_UNAVAILABLE",
-            "The page failed; resume collection after retry backoff.",
-          );
+          throw incompleteOperationError(result.status, result.errorCode);
         if (result.nextCursor && result.nextCursor === job.cursor)
           throw new ApplicationError(
             "INSTAGRAM_UNAVAILABLE",
@@ -145,7 +143,8 @@ export class Collect {
     } catch (error) {
       const code = error instanceof ApplicationError ? error.code : "INTERNAL_ERROR";
       const waiting = code === "SYNC_IN_PROGRESS";
-      const failures = job.failures + (waiting ? 0 : 1);
+      const interrupted = code === "SYNC_LEASE_EXPIRED" || code === "COLLECTION_EXPIRED";
+      const failures = job.failures + (waiting || interrupted ? 0 : 1);
       await this.store.save(
         {
           ...job,
@@ -153,7 +152,8 @@ export class Collect {
           failures,
           status: failures >= 5 ? "failed" : "running",
           errorCode: code,
-          nextAttemptAt: this.clock() + retryDelay(failures),
+          nextAttemptAt:
+            this.clock() + (waiting || interrupted ? cronIntervalMs : retryDelay(failures)),
         },
         token,
         this.clock(),
@@ -172,7 +172,7 @@ export class Collect {
       schedule: await this.schedule(accountId),
       jobs: await this.store.jobs(accountId),
       policy: {
-        runBudget: maximumJobAdvances + 1,
+        runBudget: 1,
         pageSize: 1,
         storyPageSize: 5,
         commentPageSize: 50,
@@ -217,27 +217,21 @@ export class Collect {
     return this.schedule(accountId);
   }
   async tick() {
-    const skipped = new Set<string>();
-    let advances = 0;
-    let advancedOtherJob = false;
-    while (advances < maximumJobAdvances) {
-      const active = (await this.store.jobs()).find(
-        (job) =>
-          job.status === "running" &&
-          job.nextAttemptAt <= this.clock() &&
-          !skipped.has(job.id) &&
-          (job.origin === "comments" || !advancedOtherJob),
-      );
-      if (!active) break;
-      const result = await this.advance(active.id);
-      advances++;
-      // Other pages may gather several metrics; retain their one-page budget.
-      if (active.origin !== "comments") advancedOtherJob = true;
-      if (result.pages === active.pages) skipped.add(active.id);
+    const now = this.clock();
+    // Alternate preference across Cron slots without global state or another
+    // storage table. Either branch consumes the entire one-step run budget.
+    const preferSchedule = Math.floor(now / cronIntervalMs) % 2 === 0;
+    let schedule = preferSchedule ? await this.store.nextSchedule(now) : null;
+    if (!schedule) {
+      const id = await this.store.nextJob(now);
+      if (id) {
+        await this.advance(id);
+        return;
+      }
+      if (!preferSchedule) schedule = await this.store.nextSchedule(now);
     }
-    const schedules = await this.store.schedules();
-    const schedule = schedules.find((item) => item.failures < 5 && item.retryAt <= this.clock());
     if (!schedule) return;
+    let collectingInsights = false;
     try {
       const now = this.clock();
       let lastSuccessAt = schedule.lastSuccessAt;
@@ -245,18 +239,11 @@ export class Collect {
         const id = await this.operationId(
           `stories:${schedule.accountId}:${schedule.nextStoriesAt}`,
         );
-        const job = await this.start(schedule.accountId, id, "stories", true);
-        if (advances === 0) {
-          const result = await this.advance(job.id);
-          lastSuccessAt = result.lastSuccessAt ?? lastSuccessAt;
-          if (result.errorCode)
-            throw new ApplicationError(
-              "INSTAGRAM_UNAVAILABLE",
-              "Scheduled Stories collection failed; inspect its job.",
-            );
-        }
+        if ((await this.store.latestJob(schedule.accountId, "stories"))?.status !== "running")
+          await this.start(schedule.accountId, id, "stories", true);
         schedule.nextStoriesAt = now + 60 * 60_000;
       } else if (schedule.nextInsightsAt <= now) {
+        collectingInsights = true;
         const key = `account-insights:${schedule.accountId}:${schedule.nextInsightsAt}`;
         await this.analytics.activity(schedule.accountId, await this.operationId(key), now);
         await this.supporting(schedule.accountId, key, true);
@@ -266,7 +253,8 @@ export class Collect {
         const id = await this.operationId(
           `discovery:${schedule.accountId}:${schedule.nextDiscoveryAt}`,
         );
-        await this.start(schedule.accountId, id, "scheduled");
+        if ((await this.store.latestJob(schedule.accountId, "scheduled"))?.status !== "running")
+          await this.start(schedule.accountId, id, "scheduled");
         schedule.nextDiscoveryAt = now + schedule.discoveryMinutes * 60_000;
       } else {
         const mediaId = await this.store.dueMedia(schedule.accountId, now);
@@ -276,37 +264,40 @@ export class Collect {
             await this.operationId(`refresh:${mediaId}:${Math.floor(now / 900_000)}`),
           );
           if (result.status !== "completed")
-            throw new ApplicationError(
-              "INSTAGRAM_UNAVAILABLE",
-              "Scheduled refresh failed; inspect its sync operation.",
-            );
+            throw incompleteOperationError(result.status, result.errorCode);
           lastSuccessAt = result.completedAt;
         }
       }
-      const current = await this.store.schedule(schedule.accountId);
-      if (current?.enabled && current.updatedAt === schedule.updatedAt)
-        await this.store.finishSchedule(
-          {
-            ...schedule,
-            lastSuccessAt,
-            errorCode: null,
-            failures: 0,
-            retryAt: this.clock() + 15 * 60_000,
-          },
-          schedule.updatedAt,
-        );
+      await this.store.finishSchedule(
+        {
+          ...schedule,
+          lastSuccessAt,
+          errorCode: null,
+          failures: 0,
+          retryAt: this.clock() + 15 * 60_000,
+        },
+        schedule.updatedAt,
+      );
     } catch (error) {
-      const current = await this.store.schedule(schedule.accountId);
-      if (current?.enabled && current.updatedAt === schedule.updatedAt)
-        await this.store.finishSchedule(
-          {
-            ...schedule,
-            errorCode: error instanceof ApplicationError ? error.code : "INTERNAL_ERROR",
-            failures: schedule.failures + 1,
-            retryAt: this.clock() + retryDelay(schedule.failures + 1),
-          },
-          schedule.updatedAt,
-        );
+      const code = error instanceof ApplicationError ? error.code : "INTERNAL_ERROR";
+      const recoverable =
+        code === "SYNC_IN_PROGRESS" ||
+        code === "SYNC_LEASE_EXPIRED" ||
+        code === "COLLECTION_EXPIRED";
+      const retryAt =
+        this.clock() + (recoverable ? cronIntervalMs : retryDelay(schedule.failures + 1));
+      // A running insight operation keeps its identity until it completes or
+      // expires. Only a failed operation gets a new identity for the retry.
+      if (collectingInsights && code !== "SYNC_IN_PROGRESS") schedule.nextInsightsAt = retryAt;
+      await this.store.finishSchedule(
+        {
+          ...schedule,
+          errorCode: code,
+          failures: schedule.failures + (recoverable ? 0 : 1),
+          retryAt,
+        },
+        schedule.updatedAt,
+      );
     }
   }
 }

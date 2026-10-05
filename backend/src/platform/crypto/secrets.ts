@@ -20,9 +20,15 @@ export function randomState(): string {
 }
 
 export class TokenCipher {
+  private importedKey: Promise<CryptoKey> | undefined;
   constructor(private readonly secret: string) {}
 
-  private async key() {
+  private key() {
+    this.importedKey ??= this.importKey();
+    return this.importedKey;
+  }
+
+  private async importKey() {
     let bytes: Uint8Array<ArrayBuffer>;
     try {
       bytes = decode(this.secret);

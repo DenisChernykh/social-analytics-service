@@ -58,6 +58,50 @@ const shortSchema = z.object({
   permissions: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
+const valueSchema = z.object({ value: z.unknown() });
+const structuredInsightsSchema = z.object({
+  data: z.array(
+    z.object({
+      name: z.string(),
+      period: z.string().optional(),
+      description: z.string().optional(),
+      values: z.array(valueSchema.extend({ end_time: z.string().optional() })).optional(),
+      total_value: z
+        .object({
+          value: z.unknown().optional(),
+          breakdowns: z
+            .array(
+              z.object({
+                dimension_keys: z.array(z.string()),
+                results: z
+                  .array(z.object({ dimension_values: z.array(z.string()), value: z.unknown() }))
+                  .nullish(),
+              }),
+            )
+            .optional(),
+        })
+        .optional(),
+    }),
+  ),
+});
+
+const commentsPageSchema = z.object({
+  data: z.array(
+    z.object({
+      id: identifier,
+      text: z.string(),
+      timestamp: z.string(),
+      parent_id: identifier.nullish(),
+    }),
+  ),
+  paging: z
+    .object({
+      next: z.string().optional(),
+      cursors: z.object({ after: z.string().optional() }).optional(),
+    })
+    .optional(),
+});
+
 class MetricUnavailable extends Error {
   constructor(
     readonly reason: "not_supported" | "permission_required",
@@ -482,38 +526,10 @@ export class MetaClient implements InstagramTransport {
     if (query.until !== undefined) parameters.until = String(Math.floor(query.until / 1000));
     if (query.breakdown) parameters.breakdown = query.breakdown;
     if (query.timeframe) parameters.timeframe = query.timeframe;
-    const valueSchema = z.object({ value: z.unknown() });
-    const schema = z.object({
-      data: z.array(
-        z.object({
-          name: z.string(),
-          period: z.string().optional(),
-          description: z.string().optional(),
-          values: z.array(valueSchema.extend({ end_time: z.string().optional() })).optional(),
-          total_value: z
-            .object({
-              value: z.unknown().optional(),
-              breakdowns: z
-                .array(
-                  z.object({
-                    dimension_keys: z.array(z.string()),
-                    results: z
-                      .array(
-                        z.object({ dimension_values: z.array(z.string()), value: z.unknown() }),
-                      )
-                      .nullish(),
-                  }),
-                )
-                .optional(),
-            })
-            .optional(),
-        }),
-      ),
-    });
-    let data: z.infer<typeof schema>;
+    let data: z.infer<typeof structuredInsightsSchema>;
     try {
       data = this.parsed(
-        schema,
+        structuredInsightsSchema,
         await this.json(
           this.graph(`${encodeURIComponent(objectId)}/insights`, parameters),
           "insights",
@@ -578,24 +594,8 @@ export class MetaClient implements InstagramTransport {
       limit: String(limit),
     };
     if (cursor) parameters.after = cursor;
-    const schema = z.object({
-      data: z.array(
-        z.object({
-          id: identifier,
-          text: z.string(),
-          timestamp: z.string(),
-          parent_id: identifier.nullish(),
-        }),
-      ),
-      paging: z
-        .object({
-          next: z.string().optional(),
-          cursors: z.object({ after: z.string().optional() }).optional(),
-        })
-        .optional(),
-    });
     const page = this.parsed(
-      schema,
+      commentsPageSchema,
       await this.json(
         this.graph(
           `${encodeURIComponent(objectId)}/${replies ? "replies" : "comments"}`,
