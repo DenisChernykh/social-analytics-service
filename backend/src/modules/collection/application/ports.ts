@@ -1,5 +1,6 @@
 import type { SyncRun } from "../../analytics/public-contracts";
 import type { CommentCollection } from "../../community";
+import type { DueAgeSnapshot } from "../domain/age-policy";
 import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../domain/model";
 
 export interface CollectionStore {
@@ -14,6 +15,7 @@ export interface CollectionStore {
   nextSchedule(now: number): Promise<CollectionSchedule | null>;
   saveSchedule(schedule: CollectionSchedule): Promise<void>;
   dueMedia(accountId: string, now: number): Promise<string | null>;
+  dueAgeMedia(accountId: string, now: number): Promise<DueAgeSnapshot | null>;
   sawKnownMedia(operationId: string, startedAt: number): Promise<boolean>;
   finishSchedule(schedule: CollectionSchedule, version: number): Promise<void>;
   latestJob(accountId: string, origin: CollectionJob["origin"]): Promise<CollectionJob | null>;

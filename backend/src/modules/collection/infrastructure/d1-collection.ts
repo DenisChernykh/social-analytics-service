@@ -2,6 +2,7 @@ import { and, eq, gt, lt, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { collectionJobs, collectionSchedules } from "../../../platform/database/schema";
 import type { CollectionStore } from "../application/ports";
+import { ageSnapshotWindows, type DueAgeSnapshot } from "../domain/age-policy";
 import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../domain/model";
 
 export class D1Collection implements CollectionStore {
@@ -151,6 +152,29 @@ export class D1Collection implements CollectionStore {
       .bind(accountId, now, now, now, now)
       .first<{ id: string }>();
     return row?.id ?? null;
+  }
+  async dueAgeMedia(accountId: string, now: number) {
+    return this.database
+      .prepare(
+        `WITH targets(hours,tolerance) AS (VALUES ${ageSnapshotWindows.map(() => "(?,?)").join(",")})
+         SELECT m.id AS mediaId,t.hours AS targetHours,
+           m.published_at+(t.hours+t.tolerance)*3600000 AS deadline
+         FROM media m CROSS JOIN targets t
+         WHERE m.account_id=? AND m.product_type!='STORY'
+           AND m.published_at+t.hours*3600000<=?
+           AND m.published_at+(t.hours+t.tolerance)*3600000>=?
+           AND NOT EXISTS (SELECT 1 FROM media_snapshots s WHERE s.media_id=m.id
+             AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000
+               AND m.published_at+(t.hours+t.tolerance)*3600000)
+         ORDER BY deadline,m.published_at,m.id,t.hours LIMIT 1`,
+      )
+      .bind(
+        ...ageSnapshotWindows.flatMap((t) => [t.targetHours, t.toleranceHours]),
+        accountId,
+        now,
+        now,
+      )
+      .first<DueAgeSnapshot>();
   }
   async sawKnownMedia(operationId: string, startedAt: number) {
     const row = await this.database

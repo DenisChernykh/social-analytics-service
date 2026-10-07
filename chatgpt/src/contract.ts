@@ -370,6 +370,7 @@ export const collectionStatusResponse = z.object({
     commentPageSize: z.number(),
     cronMinutes: z.number(),
     ageIntervalsHours: z.array(z.number()),
+    ageSnapshotWindows: z.array(z.object({ targetHours: z.number(), toleranceHours: z.number() })),
     maximumConsecutiveFailures: z.number(),
   }),
   note: z.string(),

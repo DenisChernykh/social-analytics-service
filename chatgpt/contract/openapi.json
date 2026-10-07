@@ -4788,6 +4788,24 @@
                             "type": "number"
                           }
                         },
+                        "ageSnapshotWindows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "targetHours": {
+                                "type": "number"
+                              },
+                              "toleranceHours": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "targetHours",
+                              "toleranceHours"
+                            ]
+                          }
+                        },
                         "maximumConsecutiveFailures": {
                           "type": "number"
                         }
@@ -4799,6 +4817,7 @@
                         "commentPageSize",
                         "cronMinutes",
                         "ageIntervalsHours",
+                        "ageSnapshotWindows",
                         "maximumConsecutiveFailures"
                       ]
                     },

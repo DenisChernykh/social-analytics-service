@@ -2,6 +2,7 @@ import {
   ApplicationError,
   incompleteOperationError,
 } from "../../../shared/application/application-error";
+import { ageSnapshotWindows } from "../domain/age-policy";
 import { type CollectionJob, type CollectionSchedule, retryDelay } from "../domain/model";
 import { advanceComments } from "./bulk-comments";
 import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
@@ -177,7 +178,8 @@ export class Collect {
         storyPageSize: 5,
         commentPageSize: 50,
         cronMinutes: 5,
-        ageIntervalsHours: [1, 6, 24, 168],
+        ageIntervalsHours: ageSnapshotWindows.map((window) => window.targetHours),
+        ageSnapshotWindows: [...ageSnapshotWindows],
         maximumConsecutiveFailures: 5,
       },
       note: "A manual catalogue pass queues separate audience and, when permission was granted, account-wide comments jobs. Comments exhaust source pages and replies, including empty intermediate pages; mediaProcessed counts finished publications, collected counts comment observations, not distinct comments. Audience refresh covers all four dimensions in this_month. Scheduled discovery stops at previously observed media; daily insights queue audience and comments refresh. Jobs are bounded and resumable. Scheduling is opt-in; reads never collect data.",
@@ -232,10 +234,23 @@ export class Collect {
     }
     if (!schedule) return;
     let collectingInsights = false;
+    let collectingAge = false;
     try {
       const now = this.clock();
       let lastSuccessAt = schedule.lastSuccessAt;
-      if (schedule.nextStoriesAt <= now) {
+      const age = await this.store.dueAgeMedia(schedule.accountId, now);
+      if (age) {
+        collectingAge = true;
+        const result = await this.analytics.refresh(
+          age.mediaId,
+          await this.operationId(
+            `age:${age.mediaId}:${age.targetHours}:${Math.floor(now / cronIntervalMs)}`,
+          ),
+        );
+        if (result.status !== "completed")
+          throw incompleteOperationError(result.status, result.errorCode);
+        lastSuccessAt = result.completedAt;
+      } else if (schedule.nextStoriesAt <= now) {
         const id = await this.operationId(
           `stories:${schedule.accountId}:${schedule.nextStoriesAt}`,
         );
@@ -274,7 +289,7 @@ export class Collect {
           lastSuccessAt,
           errorCode: null,
           failures: 0,
-          retryAt: this.clock() + 15 * 60_000,
+          retryAt: this.clock() + (collectingAge ? cronIntervalMs : 15 * 60_000),
         },
         schedule.updatedAt,
       );
@@ -285,7 +300,10 @@ export class Collect {
         code === "SYNC_LEASE_EXPIRED" ||
         code === "COLLECTION_EXPIRED";
       const retryAt =
-        this.clock() + (recoverable ? cronIntervalMs : retryDelay(schedule.failures + 1));
+        this.clock() +
+        (recoverable || (collectingAge && code === "INSTAGRAM_UNAVAILABLE")
+          ? cronIntervalMs
+          : retryDelay(schedule.failures + 1));
       // A running insight operation keeps its identity until it completes or
       // expires. Only a failed operation gets a new identity for the retry.
       if (collectingInsights && code !== "SYNC_IN_PROGRESS") schedule.nextInsightsAt = retryAt;
