@@ -8,6 +8,22 @@ Site: https://social-analytics.scary-rustles-7p.chatgpt.site
 Плагин: https://chatgpt.com/plugins/plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01
 Исходники и инструкции: [chatgpt/README.md](../chatgpt/README.md).
 
+2026-10-07 (UTC) опубликована версия Sites 11, адаптер `0.3.5`,
+45 MCP-инструментов; добавлен `subscribe_comment_webhook`, актуализированы
+возрастные точки и статус свежести комментариев. Sites подтвердил `succeeded`,
+`has_mcp: true`, runtime env revision 1; публикация использовала существующий
+приватный Site и сохранила доступ владельца.
+Служебный источник: `407bef406eee55fa27561586c84ea7b62ecf7033`.
+Публикация: `appgdep_6ac6b54a20548191ae636f9e95cd4f0f`.
+Canonical source адаптера: `65a6a41`; изменение backend `3484d5e` не меняет
+исходники адаптера или OpenAPI. Все 18 MCP/UI тестов и build прошли;
+22 инструмента чтения проверены против production backend `0.2.12`.
+Установленный плагин возвращает новую policy, комментарии со свежестью
+и честное `webhook.active=false`. Настройка Meta и реальная доставка ещё
+требуются; успешный deploy не означает активный webhook.
+
+## Публикация 0.3.4
+
 2026-10-03 опубликована версия Sites 10, адаптер `0.3.4`, 44 MCP-инструмента
 и UI resource `ui://social-analytics/control-v3.html`.
 Sites подтвердил `succeeded`, `has_mcp: true`, runtime env revision 1.
@@ -119,7 +135,7 @@ Root `pnpm check` прошёл: 45 backend и 15 MCP/UI тестов, типы, 
 iframe «Выбрать публикацию» и запросил выбор. Первый результат и отчёт не
 выбраны автоматически; сбор и расписание не вызывались.
 
-Новый переносимый архив: `chatgpt/dist/social-analytics-plugin.zip`, `0.3.4`.
+Текущий переносимый архив: `chatgpt/dist/social-analytics-plugin.zip`, `0.3.5`.
 Пакет обновления текущего личного плагина:
 `chatgpt/dist/social-analytics-sites-plugin.zip`, `1.1.0`.
 Сборка Worker и экспорт исходников не содержат ключей или данных владельца.
