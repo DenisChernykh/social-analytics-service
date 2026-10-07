@@ -40,6 +40,7 @@ export function fixture() {
     reels_skip_rate: 25,
   };
   const transport: InstagramTransport = {
+    subscribeComments: vi.fn(async () => {}),
     authorizationUrl: (state) => `https://www.instagram.com/oauth/authorize?state=${state}`,
     exchangeCode: vi.fn(async () => ({
       accessToken: "fake-short-token",

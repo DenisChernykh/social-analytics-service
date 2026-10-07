@@ -107,13 +107,17 @@ pnpm --dir backend exec wrangler whoami
 `INSTAGRAM_CLIENT_ID`, `INSTAGRAM_CLIENT_SECRET`. Значения читаются из закрытого
 локального файла и передаются Wrangler через stdin; не помещайте секреты в
 аргументы команд, вывод, документацию или репозиторий.
+Для callback комментариев нужен также `INSTAGRAM_WEBHOOK_VERIFY_TOKEN`;
+его создаёт `pnpm setup:local`. Настройка и критерии реальной доставки описаны в
+[comment-collection-optimization.md](comment-collection-optimization.md).
 
 Локальные `.dev.vars`, Wrangler state/logs и сборка исключены из Git.
 Отсутствующие секреты не заменяются открытыми значениями в конфигурации Worker.
 Объявленный в конфигурации список секретов делает генерацию типов независимой
 от содержимого локального файла.
 
-`pnpm secrets:upload` загружает четыре значения из `.dev.vars` через stdin,
+`pnpm secrets:upload` загружает четыре обязательных значения и настроенный
+verify token из `.dev.vars` через stdin,
 используя только профиль `social-analytics` и Worker из конфигурации. Команда
 не выводит значения или вывод Wrangler. При первом запуске Wrangler может
 создать Worker для сохранения секретов; затем следует deploy проверенного кода.

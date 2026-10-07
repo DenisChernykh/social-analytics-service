@@ -1,8 +1,13 @@
 import { and, desc, eq, inArray, isNull, lt, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
-import { commentCollections, comments } from "../../../platform/database/schema";
+import {
+  commentCollections,
+  commentMediaState,
+  comments,
+  commentWebhookEvents,
+} from "../../../platform/database/schema";
 import type { CommentStore } from "../application/ports";
-import type { CommentCollection, SavedComment } from "../domain/model";
+import type { CommentCollection, CommentOwnership, SavedComment } from "../domain/model";
 
 export class D1Comments implements CommentStore {
   private readonly db;
@@ -34,12 +39,38 @@ export class D1Comments implements CommentStore {
       .returning({ id: commentCollections.id });
     return result.length === 1;
   }
-  async finish(collection: CommentCollection, items: SavedComment[]) {
-    await this.database.batch([
+  async repeatedPage(collection: CommentCollection) {
+    if (!collection.jobId || !collection.pageFingerprint) return false;
+    return (
+      (await this.database
+        .prepare(
+          "SELECT 1 FROM comment_collections WHERE media_id=? AND id!=? AND json_extract(result_json,'$.jobId')=? AND json_extract(result_json,'$.parentId') IS ? AND json_extract(result_json,'$.pageFingerprint')=? AND json_extract(result_json,'$.status')='completed' LIMIT 1",
+        )
+        .bind(
+          collection.mediaId,
+          collection.id,
+          collection.jobId,
+          collection.parentId,
+          collection.pageFingerprint,
+        )
+        .first()) !== null
+    );
+  }
+  async finish(
+    collection: CommentCollection,
+    items: SavedComment[],
+    now: number,
+    ownership?: CommentOwnership,
+  ) {
+    const fence = ownership
+      ? " AND EXISTS (SELECT 1 FROM collection_jobs WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?)"
+      : "";
+    const fenceValues = ownership ? [ownership.jobId, ownership.leaseToken, now] : [];
+    const results = await this.database.batch([
       ...items.map((item) =>
         this.database
           .prepare(
-            "INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT ?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?) ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at",
+            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT ?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
           )
           .bind(
             item.id,
@@ -49,16 +80,19 @@ export class D1Comments implements CommentStore {
             item.publishedAt,
             item.observedAt,
             collection.id,
+            ...fenceValues,
           ),
       ),
       this.database
-        .prepare("UPDATE comment_collections SET result_json=?,observed_at=? WHERE id=?")
+        .prepare(`UPDATE comment_collections SET result_json=?,observed_at=? WHERE id=?${fence}`)
         .bind(
           JSON.stringify(collection),
           collection.observedAt ?? collection.startedAt,
           collection.id,
+          ...fenceValues,
         ),
     ]);
+    return (results.at(-1)?.meta.changes ?? 0) > 0;
   }
   async list(mediaId: string, cursor: { time: number; id: string } | null, limit: number) {
     return this.db
@@ -96,6 +130,34 @@ export class D1Comments implements CommentStore {
     await this.db.batch([
       this.db.delete(comments).where(eq(comments.mediaId, mediaId)),
       this.db.delete(commentCollections).where(eq(commentCollections.mediaId, mediaId)),
+      this.db.delete(commentMediaState).where(eq(commentMediaState.mediaId, mediaId)),
+      this.db.delete(commentWebhookEvents).where(eq(commentWebhookEvents.mediaId, mediaId)),
     ]);
+  }
+  async freshness(mediaId: string) {
+    const count = await this.database
+      .prepare("SELECT COUNT(*) AS total FROM comments WHERE media_id=?")
+      .bind(mediaId)
+      .first<{ total: number }>();
+    const row = await this.database
+      .prepare(
+        "SELECT last_attempt_at AS lastAttemptAt,last_complete_at AS lastCompleteAt,next_refresh_at AS nextRefreshAt,omitted_branches AS omittedReplyBranches,error_code AS errorCode FROM comment_media_state WHERE media_id=?",
+      )
+      .bind(mediaId)
+      .first<{
+        lastAttemptAt: number | null;
+        lastCompleteAt: number | null;
+        nextRefreshAt: number;
+        omittedReplyBranches: number;
+        errorCode: string | null;
+      }>();
+    return {
+      uniqueSaved: count?.total ?? 0,
+      lastAttemptAt: row?.lastAttemptAt ?? null,
+      lastCompleteAt: row?.lastCompleteAt ?? null,
+      nextRefreshAt: row?.nextRefreshAt ?? null,
+      omittedReplyBranches: row?.omittedReplyBranches ?? 0,
+      errorCode: row?.errorCode ?? null,
+    };
   }
 }

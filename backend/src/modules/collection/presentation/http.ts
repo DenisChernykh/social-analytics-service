@@ -10,7 +10,8 @@ const jobParams = z.object({ jobId: z.uuid() });
 export const jobSchema = z.object({
   id: z.uuid(),
   accountId: id,
-  origin: z.enum(["manual", "scheduled", "stories", "comments", "audience"]),
+  origin: z.enum(["manual", "scheduled", "stories", "comments", "comments_refresh", "audience"]),
+  targetMediaId: id.nullable().optional(),
   automatic: z.boolean(),
   status: z.enum(["running", "completed", "failed", "cancelled"]),
   cursor: z.string().nullable(),
@@ -62,11 +63,48 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
   const statusSchema = z.object({
     schedule: scheduleSchema,
     jobs: z.array(jobSchema),
+    comments: z
+      .object({
+        lastFullPassAt: z.number().nullable(),
+        publications: z.number(),
+        uniqueComments: z.number(),
+        stalePublications: z.number(),
+        partialPublications: z.number(),
+        pendingReplyBranches: z.number(),
+        currentPass: z
+          .object({
+            id: z.string(),
+            status: z.string(),
+            mediaProcessed: z.number(),
+            remainingPublications: z.number(),
+            observations: z.number(),
+            errorCode: z.string().nullable(),
+          })
+          .nullable(),
+        webhook: z.object({
+          subscriptionConfirmedAt: z.number().nullable(),
+          lastReceivedAt: z.number().nullable(),
+          lastEventAt: z.number().nullable(),
+          active: z.boolean(),
+        }),
+      })
+      .optional(),
     policy: z.object({
       runBudget: z.number(),
       pageSize: z.number(),
       storyPageSize: z.number(),
       commentPageSize: z.number(),
+      commentPolicy: z
+        .object({
+          outerPageSize: z.number(),
+          replyPageSize: z.number(),
+          recentHours: z.number(),
+          recentRefreshHours: z.number(),
+          monthRefreshHours: z.number(),
+          archiveRefreshHours: z.number(),
+          fullReconciliationDays: z.number(),
+        })
+        .optional(),
       cronMinutes: z.number(),
       ageIntervalsHours: z.array(z.number()),
       ageSnapshotWindows: z.array(

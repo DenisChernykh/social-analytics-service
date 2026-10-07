@@ -74,10 +74,20 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "get_collection_status",
     "Полнота и расписание сбора",
-    "Покажи прогресс страниц, ошибки, lastSuccessAt и включённость расписания. Чтение не запускает сбор.",
+    "Покажи возрастные точки, прогресс, последний полный проход комментариев, свежесть, уникальные тексты отдельно от наблюдений, ошибки и состояние webhook. Чтение не запускает сбор.",
     z.object({ accountId: id }),
     contract.collectionStatusResponse,
     (args) => `${account(args)}/collection`,
+  );
+  register(
+    "subscribe_comment_webhook",
+    "Подключить уведомления комментариев",
+    "Только по явной просьбе владельца после настройки callback Meta: подписать подключённый аккаунт на comments webhook. Успех подписки не подтверждает реальную доставку; её статус проверяй get_collection_status. Расписание включается отдельно.",
+    z.object({ accountId: id, body: contract.subscribeInstagramCommentsWebhookInput }),
+    contract.commentWebhookSubscriptionResponse,
+    (args) => `${account(args)}/comments/webhook/subscribe`,
+    "POST",
+    (args) => args.body,
   );
   register(
     "collect_all",

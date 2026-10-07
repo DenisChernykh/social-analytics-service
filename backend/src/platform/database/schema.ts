@@ -123,6 +123,7 @@ export const collectionJobs = sqliteTable(
       .notNull()
       .references(() => accounts.id, { onDelete: "cascade" }),
     origin: text("origin").notNull(),
+    targetMediaId: text("target_media_id"),
     automatic: integer("automatic", { mode: "boolean" }).notNull().default(false),
     status: text("status").notNull(),
     cursor: text("cursor"),
@@ -139,7 +140,16 @@ export const collectionJobs = sqliteTable(
     leaseToken: text("lease_token"),
     leaseExpiresAt: integer("lease_expires_at"),
   },
-  (table) => [index("collection_due").on(table.status, table.nextAttemptAt)],
+  (table) => [
+    index("collection_due").on(table.status, table.nextAttemptAt),
+    index("collection_comment_target").on(table.targetMediaId, table.status),
+    index("collection_account_origin").on(
+      table.accountId,
+      table.origin,
+      table.status,
+      table.startedAt,
+    ),
+  ],
 );
 
 export const collectionSchedules = sqliteTable("collection_schedules", {
@@ -189,14 +199,52 @@ export const comments = sqliteTable(
   (table) => [index("comments_media_time").on(table.mediaId, table.publishedAt)],
 );
 
-export const commentCollections = sqliteTable("comment_collections", {
-  id: text("id").primaryKey(),
+export const commentCollections = sqliteTable(
+  "comment_collections",
+  {
+    id: text("id").primaryKey(),
+    mediaId: text("media_id")
+      .notNull()
+      .references(() => media.id, { onDelete: "cascade" }),
+    signature: text("signature").notNull(),
+    observedAt: integer("observed_at").notNull(),
+    resultJson: text("result_json").notNull(),
+  },
+  (table) => [index("comment_collections_media_time").on(table.mediaId, table.observedAt)],
+);
+
+export const commentMediaState = sqliteTable("comment_media_state", {
   mediaId: text("media_id")
-    .notNull()
+    .primaryKey()
     .references(() => media.id, { onDelete: "cascade" }),
-  signature: text("signature").notNull(),
-  observedAt: integer("observed_at").notNull(),
-  resultJson: text("result_json").notNull(),
+  lastAttemptAt: integer("last_attempt_at"),
+  lastCompleteAt: integer("last_complete_at"),
+  nextRefreshAt: integer("next_refresh_at").notNull().default(0),
+  lastCommentsCount: integer("last_comments_count"),
+  eventGeneration: integer("event_generation").notNull().default(0),
+  processedGeneration: integer("processed_generation").notNull().default(0),
+  lastWebhookAt: integer("last_webhook_at"),
+  omittedBranches: integer("omitted_branches").notNull().default(0),
+  errorCode: text("error_code"),
+});
+
+export const commentWebhookState = sqliteTable("comment_webhook_state", {
+  accountId: text("account_id")
+    .primaryKey()
+    .references(() => accounts.id, { onDelete: "cascade" }),
+  subscriptionConfirmedAt: integer("subscription_confirmed_at"),
+  lastReceivedAt: integer("last_received_at"),
+  lastEventAt: integer("last_event_at"),
+});
+
+export const commentWebhookEvents = sqliteTable("comment_webhook_events", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id")
+    .notNull()
+    .references(() => accounts.id, { onDelete: "cascade" }),
+  externalMediaId: text("external_media_id").notNull(),
+  mediaId: text("media_id").references(() => media.id, { onDelete: "cascade" }),
+  receivedAt: integer("received_at").notNull(),
 });
 
 export const businessRecords = sqliteTable("business_records", {

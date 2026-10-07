@@ -347,7 +347,15 @@ export const collectionStatusResponse = z.object({
     z.object({
       id: z.string().uuid(),
       accountId: z.string().min(1).max(150),
-      origin: z.enum(["manual", "scheduled", "stories", "comments", "audience"]),
+      origin: z.enum([
+        "manual",
+        "scheduled",
+        "stories",
+        "comments",
+        "comments_refresh",
+        "audience",
+      ]),
+      targetMediaId: z.string().min(1).max(150).nullable().optional(),
       automatic: z.boolean(),
       status: z.enum(["running", "completed", "failed", "cancelled"]),
       cursor: z.string().nullable(),
@@ -363,11 +371,48 @@ export const collectionStatusResponse = z.object({
       errorCode: z.string().nullable(),
     }),
   ),
+  comments: z
+    .object({
+      lastFullPassAt: z.number().nullable(),
+      publications: z.number(),
+      uniqueComments: z.number(),
+      stalePublications: z.number(),
+      partialPublications: z.number(),
+      pendingReplyBranches: z.number(),
+      currentPass: z
+        .object({
+          id: z.string(),
+          status: z.string(),
+          mediaProcessed: z.number(),
+          remainingPublications: z.number(),
+          observations: z.number(),
+          errorCode: z.string().nullable(),
+        })
+        .nullable(),
+      webhook: z.object({
+        subscriptionConfirmedAt: z.number().nullable(),
+        lastReceivedAt: z.number().nullable(),
+        lastEventAt: z.number().nullable(),
+        active: z.boolean(),
+      }),
+    })
+    .optional(),
   policy: z.object({
     runBudget: z.number(),
     pageSize: z.number(),
     storyPageSize: z.number(),
     commentPageSize: z.number(),
+    commentPolicy: z
+      .object({
+        outerPageSize: z.number(),
+        replyPageSize: z.number(),
+        recentHours: z.number(),
+        recentRefreshHours: z.number(),
+        monthRefreshHours: z.number(),
+        archiveRefreshHours: z.number(),
+        fullReconciliationDays: z.number(),
+      })
+      .optional(),
     cronMinutes: z.number(),
     ageIntervalsHours: z.array(z.number()),
     ageSnapshotWindows: z.array(z.object({ targetHours: z.number(), toleranceHours: z.number() })),
@@ -378,7 +423,8 @@ export const collectionStatusResponse = z.object({
 export const collectionJobResponse = z.object({
   id: z.string().uuid(),
   accountId: z.string().min(1).max(150),
-  origin: z.enum(["manual", "scheduled", "stories", "comments", "audience"]),
+  origin: z.enum(["manual", "scheduled", "stories", "comments", "comments_refresh", "audience"]),
+  targetMediaId: z.string().min(1).max(150).nullable().optional(),
   automatic: z.boolean(),
   status: z.enum(["running", "completed", "failed", "cancelled"]),
   cursor: z.string().nullable(),
@@ -1209,9 +1255,20 @@ export const commentsResponse = z.object({
     method: z.string(),
     untrustedData: z.boolean(),
   }),
-  coverage: z.object({ sampled: z.number(), truncated: z.boolean(), completeHistory: z.boolean() }),
+  coverage: z.object({
+    sampled: z.number(),
+    truncated: z.boolean(),
+    completeHistory: z.boolean(),
+    uniqueSaved: z.number().optional(),
+    lastAttemptAt: z.number().nullable().optional(),
+    lastCompleteAt: z.number().nullable().optional(),
+    nextRefreshAt: z.number().nullable().optional(),
+    omittedReplyBranches: z.number().optional(),
+    errorCode: z.string().nullable().optional(),
+  }),
   limitations: z.array(z.string()),
 });
+export const commentWebhookSubscriptionResponse = z.object({ subscribed: z.literal(true) });
 export const commentCollectionResponse = z.object({
   id: z.string().uuid(),
   mediaId: z.string().min(1).max(150),
@@ -1225,6 +1282,16 @@ export const commentCollectionResponse = z.object({
   collected: z.number(),
   commentIds: z.array(z.string().min(1).max(150)).optional(),
   errorCode: z.string().nullable(),
+  expandedReplies: z.boolean().optional(),
+  replyBranches: z
+    .array(
+      z.object({
+        parentId: z.string().min(1).max(150),
+        nextCursor: z.string().nullable(),
+        status: z.enum(["exhausted", "partial", "omitted"]),
+      }),
+    )
+    .optional(),
 });
 export const erasedCommentsResponse = z.object({
   erased: z.literal(true),
@@ -1521,6 +1588,7 @@ export const reviewResponse = z.object({
   }),
   limitations: z.array(z.string()),
 });
+export const subscribeInstagramCommentsWebhookInput = z.object({});
 export const updateMediaMetadataInput = z.object({
   title: z.string().min(1).max(200).nullable().optional(),
   durationSeconds: z.number().max(86400).nullable().optional(),
@@ -1648,4 +1716,5 @@ export const collectCommentsInput = z.object({
   parentId: z.string().min(1).max(150).nullable().optional(),
   cursor: z.string().min(1).max(4096).nullable().optional(),
   limit: z.number().int().min(1).max(50).optional(),
+  expandReplies: z.boolean().optional(),
 });

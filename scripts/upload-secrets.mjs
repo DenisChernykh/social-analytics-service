@@ -8,6 +8,8 @@ if (names.some((name) => !config[name])) {
   throw new Error("Configure the four required values in backend/.dev.vars first.");
 }
 const values = Object.fromEntries(names.map((name) => [name, config[name]]));
+if (config.INSTAGRAM_WEBHOOK_VERIFY_TOKEN)
+  values.INSTAGRAM_WEBHOOK_VERIFY_TOKEN = config.INSTAGRAM_WEBHOOK_VERIFY_TOKEN;
 const child = spawn(
   "pnpm",
   ["exec", "wrangler", "secret", "bulk", "--profile", "social-analytics"],
@@ -31,6 +33,4 @@ await new Promise((resolve, reject) => {
         ),
   );
 });
-console.log(
-  "The four backend secrets were uploaded to the configured Worker; no values were printed.",
-);
+console.log("Backend secrets were uploaded to the configured Worker; no values were printed.");

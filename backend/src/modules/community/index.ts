@@ -17,9 +17,9 @@ export function createCommentOperations(env: RuntimeBindings, options: CommentOp
     new D1Comments(env.DB),
     {
       media: (id) => options.media(env, id),
-      read: (accountId, objectId, replies, cursor, limit) => {
+      read: (accountId, objectId, replies, cursor, limit, expandReplies) => {
         reader ??= options.reader(env);
-        return reader.comments(accountId, objectId, replies, cursor, limit);
+        return reader.comments(accountId, objectId, replies, cursor, limit, expandReplies);
       },
     },
     options.clock ?? Date.now,

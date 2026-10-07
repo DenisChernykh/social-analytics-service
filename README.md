@@ -35,7 +35,7 @@ pnpm db:migrate:local
 pnpm check
 ```
 
-`setup:local` создаёт личный ключ API и ключ шифрования в `backend/.dev.vars`
+`setup:local` создаёт личный ключ API, ключ шифрования и verify token webhook в `backend/.dev.vars`
 с правами `0600`, сохраняет существующие значения и не выводит секреты.
 Instagram App ID и App Secret задаются в этом файле отдельно. Нужны именно
 идентификатор и секрет Instagram-продукта, а не родительского Meta-приложения.
@@ -127,6 +127,8 @@ JSON-запросы ограничены 32 KiB. Ошибки — RFC 9457 с к
 | `GET /api/story-sequences/{sequenceId}` | Метрики последовательности без выдуманного досмотра |
 | `POST /api/media/{mediaId}/comments/collect` | Страница комментариев/ответов с отдельным разрешением |
 | `GET/DELETE /api/media/{mediaId}/comments` | Чтение/удаление сохранённых текстов |
+| `POST /api/accounts/{accountId}/comments/webhook/subscribe` | Подписка аккаунта; доставка проверяется отдельно |
+| `GET/POST /webhooks/instagram/comments` | Callback Meta: verify token / подписанное уведомление |
 | `GET /api/comment-collections/{operationId}` | Статус сбора комментариев |
 | `GET /api/insight-collections/{operationId}` | Статус сбора Account Insights |
 | `GET /api/accounts/{accountId}/review` | Объяснимый разбор периода по сохранённым данным |

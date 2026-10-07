@@ -26,6 +26,16 @@ const collectionSchema = z.object({
   collected: z.number(),
   commentIds: z.array(id).default([]),
   errorCode: z.string().nullable(),
+  expandedReplies: z.boolean().optional(),
+  replyBranches: z
+    .array(
+      z.object({
+        parentId: id,
+        nextCursor: z.string().nullable(),
+        status: z.enum(["exhausted", "partial", "omitted"]),
+      }),
+    )
+    .optional(),
 });
 const listSchema = z.object({
   items: z.array(commentSchema),
@@ -44,7 +54,17 @@ const listSchema = z.object({
     method: z.string(),
     untrustedData: z.boolean(),
   }),
-  coverage: z.object({ sampled: z.number(), truncated: z.boolean(), completeHistory: z.boolean() }),
+  coverage: z.object({
+    sampled: z.number(),
+    truncated: z.boolean(),
+    completeHistory: z.boolean(),
+    uniqueSaved: z.number().optional(),
+    lastAttemptAt: z.number().nullable().optional(),
+    lastCompleteAt: z.number().nullable().optional(),
+    nextRefreshAt: z.number().nullable().optional(),
+    omittedReplyBranches: z.number().optional(),
+    errorCode: z.string().nullable().optional(),
+  }),
   limitations: z.array(z.string()),
 });
 const responses = <T extends z.ZodType>(schema: T) => ({
@@ -83,8 +103,13 @@ export function createCommentsHttp(operations: (env: RuntimeBindings) => Comment
                   parentId: id.nullable().default(null),
                   cursor: z.string().min(1).max(4096).nullable().default(null),
                   limit: z.number().int().min(1).max(50).default(25),
+                  expandReplies: z.boolean().default(false),
                 })
-                .strict(),
+                .strict()
+                .refine(
+                  (input) => !input.expandReplies || input.parentId !== null || input.limit <= 5,
+                  "Expanded comments require an outer limit of at most 5.",
+                ),
             },
           },
         },

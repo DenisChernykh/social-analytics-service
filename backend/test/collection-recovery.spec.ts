@@ -102,6 +102,14 @@ describe("one-step scheduling and atomic ownership", () => {
       .bind(farFuture, farFuture, farFuture, accountId)
       .run();
     await env.DB.prepare("DELETE FROM media_snapshots").run();
+    // This case exercises media-sync conflicts; comment refresh does not use
+    // the media sync lease.
+    await env.DB.prepare("UPDATE instagram_connections SET scopes=? WHERE account_id=?")
+      .bind(
+        JSON.stringify(["instagram_business_basic", "instagram_business_manage_insights"]),
+        accountId,
+      )
+      .run();
     await env.DB.prepare(
       "INSERT INTO sync_leases (account_id,run_id,expires_at) VALUES (?,'active',?)",
     )

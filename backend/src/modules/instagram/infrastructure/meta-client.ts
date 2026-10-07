@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { InstagramTransport } from "../application/ports";
 import type {
+  CommentPage,
   InsightQuery,
   InstagramInsight,
   InstagramMedia,
@@ -85,21 +86,29 @@ const structuredInsightsSchema = z.object({
   ),
 });
 
+const commentItemSchema = z.object({
+  id: identifier,
+  text: z.string(),
+  timestamp: z.string(),
+  parent_id: identifier.nullish(),
+});
+const commentPagingSchema = z
+  .object({
+    next: z.string().optional(),
+    cursors: z.object({ after: z.string().optional() }).optional(),
+  })
+  .optional();
 const commentsPageSchema = z.object({
-  data: z.array(
-    z.object({
-      id: identifier,
-      text: z.string(),
-      timestamp: z.string(),
-      parent_id: identifier.nullish(),
-    }),
-  ),
-  paging: z
-    .object({
-      next: z.string().optional(),
-      cursors: z.object({ after: z.string().optional() }).optional(),
-    })
-    .optional(),
+  data: z
+    .array(
+      commentItemSchema.extend({
+        replies: z
+          .object({ data: z.array(commentItemSchema).max(50), paging: commentPagingSchema })
+          .optional(),
+      }),
+    )
+    .max(50),
+  paging: commentPagingSchema,
 });
 
 class MetricUnavailable extends Error {
@@ -133,6 +142,23 @@ export class MetaClient implements InstagramTransport {
     private readonly config: MetaClientConfig,
     private readonly request: typeof fetch = fetch,
   ) {}
+  async subscribeComments(token: string, userId: string) {
+    this.parsed(
+      z.object({ success: z.literal(true) }),
+      await this.json(
+        this.graph(`${encodeURIComponent(userId)}/subscribed_apps`, {}),
+        "media_catalog",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ subscribed_fields: "comments" }),
+        },
+      ),
+    );
+  }
 
   authorizationUrl(state: string, comments = false): string {
     const url = new URL("https://www.instagram.com/oauth/authorize");
@@ -588,9 +614,13 @@ export class MetaClient implements InstagramTransport {
     replies: boolean,
     cursor: string | null,
     limit: number,
-  ) {
+    expandReplies = false,
+  ): Promise<CommentPage> {
+    const expanded = expandReplies && !replies;
     const parameters: Record<string, string> = {
-      fields: "id,text,timestamp,parent_id",
+      fields: expanded
+        ? "id,text,timestamp,parent_id,replies.limit(50){id,text,timestamp,parent_id}"
+        : "id,text,timestamp,parent_id",
       limit: String(limit),
     };
     if (cursor) parameters.after = cursor;
@@ -605,28 +635,62 @@ export class MetaClient implements InstagramTransport {
         { headers: { Authorization: `Bearer ${token}` } },
       ),
     );
-    const nextCursor = page.paging?.next ? (page.paging.cursors?.after ?? null) : null;
-    if (page.paging?.next && !nextCursor)
+    if (expanded && page.data.length > limit)
       throw new ApplicationError(
         "INSTAGRAM_UNAVAILABLE",
-        "Instagram pagination did not contain a cursor.",
+        "Instagram exceeded the bounded expanded comment page size.",
       );
-    return {
-      items: page.data.map((item) => {
-        const publishedAt = Date.parse(item.timestamp);
-        if (!Number.isFinite(publishedAt))
+    const next = (paging: z.infer<typeof commentPagingSchema>) => {
+      const cursor = paging?.next ? (paging.cursors?.after ?? null) : null;
+      if (paging?.next && !cursor)
+        throw new ApplicationError(
+          "INSTAGRAM_UNAVAILABLE",
+          "Instagram pagination did not contain a cursor.",
+        );
+      return cursor;
+    };
+    const map = (item: z.infer<typeof commentItemSchema>, parentId: string | null) => {
+      const publishedAt = Date.parse(item.timestamp);
+      if (!Number.isFinite(publishedAt))
+        throw new ApplicationError(
+          "INSTAGRAM_UNAVAILABLE",
+          "Instagram returned an invalid comment timestamp.",
+        );
+      return {
+        id: item.id,
+        text: item.text,
+        publishedAt,
+        parentId: item.parent_id ?? parentId,
+      };
+    };
+    const items = new Map<string, CommentPage["items"][number]>();
+    const branches: NonNullable<CommentPage["replyBranches"]> = [];
+    for (const root of page.data) {
+      const mapped = map(root, replies ? objectId : null);
+      const previous = items.get(root.id);
+      items.set(root.id, { ...mapped, parentId: mapped.parentId ?? previous?.parentId ?? null });
+      if (!expanded || mapped.parentId) continue;
+      const cursor = root.replies ? next(root.replies.paging) : null;
+      branches.push({
+        parentId: root.id,
+        nextCursor: cursor,
+        status: !root.replies ? "omitted" : cursor ? "partial" : "exhausted",
+      });
+      for (const reply of root.replies?.data ?? []) {
+        if (reply.id === root.id || (reply.parent_id && reply.parent_id !== root.id))
           throw new ApplicationError(
             "INSTAGRAM_UNAVAILABLE",
-            "Instagram returned an invalid comment timestamp.",
+            "Instagram returned an inconsistent reply parent.",
           );
-        return {
-          id: item.id,
-          text: item.text,
-          publishedAt,
-          parentId: item.parent_id ?? (replies ? objectId : null),
-        };
-      }),
-      nextCursor,
+        items.set(reply.id, map(reply, root.id));
+      }
+    }
+    return {
+      items: [...items.values()],
+      nextCursor: next(page.paging),
+      ...(expanded
+        ? { replyBranches: branches.filter((branch) => !items.get(branch.parentId)?.parentId) }
+        : {}),
     };
   }
 }

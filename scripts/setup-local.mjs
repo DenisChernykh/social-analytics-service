@@ -7,6 +7,7 @@ values.API_KEY ||= randomBytes(32).toString("base64url");
 values.TOKEN_ENCRYPTION_KEY ||= randomBytes(32).toString("base64");
 values.INSTAGRAM_CLIENT_ID ||= "";
 values.INSTAGRAM_CLIENT_SECRET ||= "";
+values.INSTAGRAM_WEBHOOK_VERIFY_TOKEN ||= randomBytes(32).toString("base64url");
 await writeFile(
   variablesPath,
   `${Object.entries(values)

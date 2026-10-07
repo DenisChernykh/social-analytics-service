@@ -19,7 +19,16 @@ export type CommentCollection = {
   collected: number;
   commentIds: string[];
   errorCode: string | null;
+  expandedReplies?: boolean;
+  replyBranches?: {
+    parentId: string;
+    nextCursor: string | null;
+    status: "exhausted" | "partial" | "omitted";
+  }[];
+  jobId?: string;
+  pageFingerprint?: string;
 };
+export type CommentOwnership = { jobId: string; leaseToken: string };
 export function commentSignals(comments: SavedComment[]) {
   const questions = comments.filter((item) => item.text.includes("?"));
   const words = new Map<string, SavedComment[]>();

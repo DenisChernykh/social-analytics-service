@@ -1662,6 +1662,509 @@
         }
       }
     },
+    "/webhooks/instagram/comments": {
+      "get": {
+        "operationId": "verifyInstagramCommentsWebhook",
+        "tags": [
+          "Instagram webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Meta callback challenge after verify-token validation.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "receiveInstagramCommentsWebhook",
+        "tags": [
+          "Instagram webhooks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object": {
+                    "type": "string",
+                    "enum": [
+                      "instagram"
+                    ]
+                  },
+                  "entry": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^\\d{1,80}$"
+                        },
+                        "time": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 10000000000
+                        },
+                        "changes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "field": {
+                                "type": "string"
+                              },
+                              "value": {}
+                            },
+                            "required": [
+                              "field"
+                            ]
+                          },
+                          "maxItems": 100
+                        },
+                        "field": {
+                          "type": "string"
+                        },
+                        "value": {}
+                      },
+                      "required": [
+                        "id",
+                        "time"
+                      ]
+                    },
+                    "maxItems": 100
+                  }
+                },
+                "required": [
+                  "object",
+                  "entry"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed notification accepted; schedules reconciliation without saving text or claiming a publication timestamp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "received": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "required": [
+                    "received"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/comments/webhook/subscribe": {
+      "post": {
+        "operationId": "subscribeInstagramCommentsWebhook",
+        "tags": [
+          "Instagram webhooks"
+        ],
+        "security": [
+          {
+            "personalKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "required": true,
+            "name": "accountId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account comments subscription accepted by Meta; real delivery must still be confirmed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "subscribed": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "required": [
+                    "subscribed"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts": {
       "get": {
         "operationId": "listSocialAccounts",
@@ -4683,8 +5186,17 @@
                               "scheduled",
                               "stories",
                               "comments",
+                              "comments_refresh",
                               "audience"
                             ]
+                          },
+                          "targetMediaId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "minLength": 1,
+                            "maxLength": 150
                           },
                           "automatic": {
                             "type": "boolean"
@@ -4764,6 +5276,111 @@
                         ]
                       }
                     },
+                    "comments": {
+                      "type": "object",
+                      "properties": {
+                        "lastFullPassAt": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "publications": {
+                          "type": "number"
+                        },
+                        "uniqueComments": {
+                          "type": "number"
+                        },
+                        "stalePublications": {
+                          "type": "number"
+                        },
+                        "partialPublications": {
+                          "type": "number"
+                        },
+                        "pendingReplyBranches": {
+                          "type": "number"
+                        },
+                        "currentPass": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string"
+                            },
+                            "mediaProcessed": {
+                              "type": "number"
+                            },
+                            "remainingPublications": {
+                              "type": "number"
+                            },
+                            "observations": {
+                              "type": "number"
+                            },
+                            "errorCode": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "status",
+                            "mediaProcessed",
+                            "remainingPublications",
+                            "observations",
+                            "errorCode"
+                          ]
+                        },
+                        "webhook": {
+                          "type": "object",
+                          "properties": {
+                            "subscriptionConfirmedAt": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "lastReceivedAt": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "lastEventAt": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "active": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "subscriptionConfirmedAt",
+                            "lastReceivedAt",
+                            "lastEventAt",
+                            "active"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "lastFullPassAt",
+                        "publications",
+                        "uniqueComments",
+                        "stalePublications",
+                        "partialPublications",
+                        "pendingReplyBranches",
+                        "currentPass",
+                        "webhook"
+                      ]
+                    },
                     "policy": {
                       "type": "object",
                       "properties": {
@@ -4778,6 +5395,41 @@
                         },
                         "commentPageSize": {
                           "type": "number"
+                        },
+                        "commentPolicy": {
+                          "type": "object",
+                          "properties": {
+                            "outerPageSize": {
+                              "type": "number"
+                            },
+                            "replyPageSize": {
+                              "type": "number"
+                            },
+                            "recentHours": {
+                              "type": "number"
+                            },
+                            "recentRefreshHours": {
+                              "type": "number"
+                            },
+                            "monthRefreshHours": {
+                              "type": "number"
+                            },
+                            "archiveRefreshHours": {
+                              "type": "number"
+                            },
+                            "fullReconciliationDays": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "outerPageSize",
+                            "replyPageSize",
+                            "recentHours",
+                            "recentRefreshHours",
+                            "monthRefreshHours",
+                            "archiveRefreshHours",
+                            "fullReconciliationDays"
+                          ]
                         },
                         "cronMinutes": {
                           "type": "number"
@@ -5017,8 +5669,17 @@
                         "scheduled",
                         "stories",
                         "comments",
+                        "comments_refresh",
                         "audience"
                       ]
+                    },
+                    "targetMediaId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "minLength": 1,
+                      "maxLength": 150
                     },
                     "automatic": {
                       "type": "boolean"
@@ -5280,8 +5941,17 @@
                         "scheduled",
                         "stories",
                         "comments",
+                        "comments_refresh",
                         "audience"
                       ]
+                    },
+                    "targetMediaId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "minLength": 1,
+                      "maxLength": 150
                     },
                     "automatic": {
                       "type": "boolean"
@@ -5750,8 +6420,17 @@
                         "scheduled",
                         "stories",
                         "comments",
+                        "comments_refresh",
                         "audience"
                       ]
+                    },
+                    "targetMediaId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "minLength": 1,
+                      "maxLength": 150
                     },
                     "automatic": {
                       "type": "boolean"
@@ -6013,8 +6692,17 @@
                         "scheduled",
                         "stories",
                         "comments",
+                        "comments_refresh",
                         "audience"
                       ]
+                    },
+                    "targetMediaId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "minLength": 1,
+                      "maxLength": 150
                     },
                     "automatic": {
                       "type": "boolean"
@@ -6267,8 +6955,17 @@
                         "scheduled",
                         "stories",
                         "comments",
+                        "comments_refresh",
                         "audience"
                       ]
+                    },
+                    "targetMediaId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "minLength": 1,
+                      "maxLength": 150
                     },
                     "automatic": {
                       "type": "boolean"
@@ -14974,6 +15671,10 @@
                     "minimum": 1,
                     "maximum": 50,
                     "default": 25
+                  },
+                  "expandReplies": {
+                    "type": "boolean",
+                    "default": false
                   }
                 },
                 "required": [
@@ -15058,6 +15759,41 @@
                         "string",
                         "null"
                       ]
+                    },
+                    "expandedReplies": {
+                      "type": "boolean"
+                    },
+                    "replyBranches": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "parentId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 150
+                          },
+                          "nextCursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "exhausted",
+                              "partial",
+                              "omitted"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "parentId",
+                          "nextCursor",
+                          "status"
+                        ]
+                      }
                     }
                   },
                   "required": [
@@ -15286,6 +16022,41 @@
                         "string",
                         "null"
                       ]
+                    },
+                    "expandedReplies": {
+                      "type": "boolean"
+                    },
+                    "replyBranches": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "parentId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 150
+                          },
+                          "nextCursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "exhausted",
+                              "partial",
+                              "omitted"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "parentId",
+                          "nextCursor",
+                          "status"
+                        ]
+                      }
                     }
                   },
                   "required": [
@@ -15636,6 +16407,36 @@
                         },
                         "completeHistory": {
                           "type": "boolean"
+                        },
+                        "uniqueSaved": {
+                          "type": "number"
+                        },
+                        "lastAttemptAt": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "lastCompleteAt": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "nextRefreshAt": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "omittedReplyBranches": {
+                          "type": "number"
+                        },
+                        "errorCode": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [

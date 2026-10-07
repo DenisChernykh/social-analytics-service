@@ -43,7 +43,7 @@ test("MCP discovery lists focused tools, optional UI and correct mutation annota
   });
   try {
     const { tools } = await client.listTools();
-    assert.equal(tools.length, 44);
+    assert.equal(tools.length, 45);
     const panelTool = tools.find((t) => t.name === "open_social_analytics");
     assert.ok(panelTool?._meta?.ui);
     assert.equal(
@@ -67,6 +67,10 @@ test("MCP discovery lists focused tools, optional UI and correct mutation annota
     assert.ok(!JSON.stringify(resource).includes(env.SOCIAL_API_KEY));
     assert.equal(
       tools.find((t) => t.name === "set_collection_schedule")?.annotations?.readOnlyHint,
+      false,
+    );
+    assert.equal(
+      tools.find((t) => t.name === "subscribe_comment_webhook")?.annotations?.readOnlyHint,
       false,
     );
     assert.equal(
@@ -113,6 +117,27 @@ test("Ambiguous/not-found results preserve candidates without silently selecting
     assert.equal(calls.length, 2);
     assert.equal(calls[0].headers.get("Authorization"), `Bearer ${env.SOCIAL_API_KEY}`);
     assert.equal(new URL(calls[0].url).origin, BACKEND_ORIGIN);
+  } finally {
+    await client.close();
+  }
+});
+test("Webhook subscription forwards only an explicit owner request and does not claim delivery", async () => {
+  const requests: Request[] = [];
+  const client = await connect(async (request) => {
+    requests.push(request);
+    assert.equal(request.method, "POST");
+    assert.equal(new URL(request.url).pathname, "/api/accounts/ig_1/comments/webhook/subscribe");
+    assert.deepEqual(await request.json(), {});
+    return Response.json({ subscribed: true });
+  });
+  try {
+    const result = await client.callTool({
+      name: "subscribe_comment_webhook",
+      arguments: { accountId: "ig_1", body: {} },
+    });
+    assert.notEqual(result.isError, true);
+    assert.deepEqual(result.structuredContent, { data: { subscribed: true } });
+    assert.equal(requests.length, 1);
   } finally {
     await client.close();
   }

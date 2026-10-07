@@ -96,6 +96,7 @@ const routes = {
   experimentReport: ["/api/experiments/{experimentId}", "get"],
   storySequence: ["/api/story-sequences/{sequenceId}", "get"],
   comments: ["/api/media/{mediaId}/comments", "get"],
+  commentWebhookSubscription: ["/api/accounts/{accountId}/comments/webhook/subscribe", "post"],
   commentCollection: ["/api/media/{mediaId}/comments/collect", "post"],
   erasedComments: ["/api/media/{mediaId}/comments", "delete"],
   review: ["/api/accounts/{accountId}/review", "get"],
@@ -109,7 +110,7 @@ for (const [name, [path, method]] of Object.entries(routes)) {
 for (const [path, operations] of Object.entries(contract.paths))
   for (const operation of Object.values(operations)) {
     const schema = operation.requestBody?.content?.["application/json"]?.schema;
-    if (schema && !path.includes("/instagram/"))
+    if (schema && path.startsWith("/api/") && !path.includes("/instagram/"))
       source += `export const ${operation.operationId}Input = ${expression(schema)};\n`;
   }
 source = source.replace(

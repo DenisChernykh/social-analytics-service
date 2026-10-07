@@ -5,6 +5,7 @@ export type RuntimeBindings = CloudflareBindings & {
   TOKEN_ENCRYPTION_KEY?: string;
   INSTAGRAM_CLIENT_ID?: string;
   INSTAGRAM_CLIENT_SECRET?: string;
+  INSTAGRAM_WEBHOOK_VERIFY_TOKEN?: string;
 };
 
 export function instagramConfig(env: RuntimeBindings) {

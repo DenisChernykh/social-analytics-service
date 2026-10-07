@@ -121,6 +121,7 @@ export class InstagramConnections implements InstagramReader {
     replies: boolean,
     cursor: string | null,
     limit: number,
+    expandReplies = false,
   ) {
     const connection = await this.repository.get(accountId);
     if (!connection?.scopes.includes("instagram_business_manage_comments"))
@@ -128,6 +129,23 @@ export class InstagramConnections implements InstagramReader {
         "INSTAGRAM_PERMISSION_REQUIRED",
         "Reconnect Instagram with instagram_business_manage_comments to read comment texts.",
       );
-    return this.transport.comments(await this.token(accountId), objectId, replies, cursor, limit);
+    return this.transport.comments(
+      await this.token(accountId),
+      objectId,
+      replies,
+      cursor,
+      limit,
+      expandReplies,
+    );
+  }
+  async subscribeComments(accountId: string) {
+    const connection = await this.repository.get(accountId);
+    const externalId = accountId.match(/^ig_(\d+)$/)?.[1];
+    if (!externalId || !connection?.scopes.includes("instagram_business_manage_comments"))
+      throw new ApplicationError(
+        "INSTAGRAM_PERMISSION_REQUIRED",
+        "Grant manage_comments before subscribing to comment notifications.",
+      );
+    await this.transport.subscribeComments(await this.token(accountId), externalId);
   }
 }

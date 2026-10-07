@@ -1,7 +1,8 @@
 export type CollectionJob = {
   id: string;
   accountId: string;
-  origin: "manual" | "scheduled" | "stories" | "comments" | "audience";
+  origin: "manual" | "scheduled" | "stories" | "comments" | "comments_refresh" | "audience";
+  targetMediaId?: string | null;
   automatic: boolean;
   status: "running" | "completed" | "failed" | "cancelled";
   cursor: string | null;
@@ -18,11 +19,15 @@ export type CollectionJob = {
 };
 export type CataloguePosition = { id: string; publishedAt: number };
 export type CommentPosition = {
+  version?: 2;
   afterMedia: CataloguePosition | null;
   current: CataloguePosition | null;
   commentCursor: string | null;
   parents: string[];
   replyCursor: string | null;
+  branchCursors?: Record<string, string | null>;
+  omittedBranches?: number;
+  eventGeneration?: number;
 };
 export type CollectionSchedule = {
   accountId: string;

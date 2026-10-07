@@ -4,3 +4,4 @@ TOKEN_ENCRYPTION_KEY=
 # These are the Instagram App ID and Instagram App Secret, not the Facebook App ID.
 INSTAGRAM_CLIENT_ID=
 INSTAGRAM_CLIENT_SECRET=
+INSTAGRAM_WEBHOOK_VERIFY_TOKEN=

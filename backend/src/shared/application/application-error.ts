@@ -7,6 +7,7 @@ export type ErrorCode =
   | "INSTAGRAM_PERMISSION_REQUIRED"
   | "INSTAGRAM_RATE_LIMITED"
   | "INSTAGRAM_UNAVAILABLE"
+  | "INSTAGRAM_PAGINATION_STALLED"
   | "INVALID_OAUTH_STATE"
   | "OAUTH_DENIED"
   | "SYNC_IN_PROGRESS"
@@ -37,6 +38,7 @@ export function incompleteOperationError(status: string, code: string | null): A
     case "INSTAGRAM_PERMISSION_REQUIRED":
     case "INSTAGRAM_RATE_LIMITED":
     case "INSTAGRAM_UNAVAILABLE":
+    case "INSTAGRAM_PAGINATION_STALLED":
     case "SYNC_IN_PROGRESS":
     case "SYNC_LEASE_EXPIRED":
     case "COLLECTION_EXPIRED":

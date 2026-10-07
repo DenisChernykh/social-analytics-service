@@ -3,7 +3,14 @@ import {
   incompleteOperationError,
 } from "../../../shared/application/application-error";
 import { ageSnapshotWindows } from "../domain/age-policy";
-import { type CollectionJob, type CollectionSchedule, retryDelay } from "../domain/model";
+import { type CommentCheckpoint, commentPolicy } from "../domain/comment-policy";
+import {
+  type CataloguePosition,
+  type CollectionJob,
+  type CollectionSchedule,
+  type CommentPosition,
+  retryDelay,
+} from "../domain/model";
 import { advanceComments } from "./bulk-comments";
 import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
 
@@ -28,6 +35,7 @@ export class Collect {
     id: string,
     origin: CollectionJob["origin"] = "manual",
     automatic = origin === "scheduled",
+    target?: CataloguePosition,
   ) {
     await this.analytics.account(accountId);
     const previous = await this.store.job(id);
@@ -35,7 +43,8 @@ export class Collect {
       if (
         previous.accountId !== accountId ||
         previous.origin !== origin ||
-        previous.automatic !== automatic
+        previous.automatic !== automatic ||
+        (previous.targetMediaId ?? null) !== (target?.id ?? null)
       )
         throw new ApplicationError(
           "OPERATION_CONFLICT",
@@ -43,7 +52,10 @@ export class Collect {
         );
       return previous;
     }
-    if (origin === "comments" && !(await this.comments.enabled(accountId)))
+    if (
+      (origin === "comments" || origin === "comments_refresh") &&
+      !(await this.comments.enabled(accountId))
+    )
       throw new ApplicationError(
         "INSTAGRAM_PERMISSION_REQUIRED",
         "Grant instagram_business_manage_comments before collecting account comments.",
@@ -55,7 +67,17 @@ export class Collect {
       origin,
       automatic,
       status: "running",
-      cursor: null,
+      cursor: target
+        ? JSON.stringify({
+            version: 2,
+            afterMedia: null,
+            current: target,
+            commentCursor: null,
+            parents: [],
+            replyCursor: null,
+          })
+        : null,
+      targetMediaId: target?.id ?? null,
       pages: 0,
       collected: 0,
       mediaProcessed: 0,
@@ -72,7 +94,16 @@ export class Collect {
   private async supporting(accountId: string, key: string, automatic: boolean) {
     for (const origin of ["audience", "comments"] as const) {
       if (origin === "comments" && !(await this.comments.enabled(accountId))) continue;
-      if ((await this.store.latestJob(accountId, origin))?.status === "running") continue;
+      const latest = await this.store.latestJob(accountId, origin);
+      if (latest?.status === "running") continue;
+      if (
+        origin === "comments" &&
+        automatic &&
+        latest?.status === "completed" &&
+        latest.completedAt != null &&
+        this.clock() - latest.completedAt < commentPolicy.fullReconciliationDays * 86_400_000
+      )
+        continue;
       await this.start(accountId, await this.operationId(`${key}:${origin}`), origin, automatic);
     }
   }
@@ -81,16 +112,18 @@ export class Collect {
     const token = this.randomId();
     const job = await this.store.claim(id, token, now);
     if (!job) return this.job(id);
+    let checkpoint: CommentCheckpoint | undefined;
     try {
       const operationId = await this.operationId(`${id}:${job.pages}:${job.attempt}`);
       let cursor: string | null;
       let collected: number;
       let mediaProcessed: number;
-      if (job.origin === "comments") {
-        const result = await advanceComments(job, operationId, this.store, this.comments);
+      if (job.origin === "comments" || job.origin === "comments_refresh") {
+        const result = await advanceComments(job, operationId, this.store, this.comments, token);
         cursor = result.cursor;
         collected = result.collected;
         mediaProcessed = result.mediaProcessed;
+        checkpoint = result.checkpoint;
       } else if (job.origin === "audience") {
         const dimensions = ["age", "gender", "country", "city"] as const;
         const dimension = dimensions[job.pages];
@@ -140,12 +173,24 @@ export class Collect {
         },
         token,
         completedAt,
+        checkpoint,
       );
     } catch (error) {
       const code = error instanceof ApplicationError ? error.code : "INTERNAL_ERROR";
       const waiting = code === "SYNC_IN_PROGRESS";
       const interrupted = code === "SYNC_LEASE_EXPIRED" || code === "COLLECTION_EXPIRED";
       const failures = job.failures + (waiting || interrupted ? 0 : 1);
+      if ((job.origin === "comments" || job.origin === "comments_refresh") && job.cursor) {
+        const position = JSON.parse(job.cursor) as CommentPosition;
+        if (position.current)
+          checkpoint = {
+            mediaId: position.current.id,
+            publishedAt: position.current.publishedAt,
+            complete: false,
+            omittedBranches: position.omittedBranches ?? 0,
+            eventGeneration: position.eventGeneration ?? 0,
+          };
+      }
       await this.store.save(
         {
           ...job,
@@ -158,6 +203,7 @@ export class Collect {
         },
         token,
         this.clock(),
+        checkpoint,
       );
     }
     return this.job(id);
@@ -172,18 +218,26 @@ export class Collect {
     return {
       schedule: await this.schedule(accountId),
       jobs: await this.store.jobs(accountId),
+      comments: await this.store.commentStatus(accountId, this.clock()),
       policy: {
         runBudget: 1,
         pageSize: 1,
         storyPageSize: 5,
-        commentPageSize: 50,
+        commentPageSize: commentPolicy.outerPageSize,
+        commentPolicy,
         cronMinutes: 5,
         ageIntervalsHours: ageSnapshotWindows.map((window) => window.targetHours),
         ageSnapshotWindows: [...ageSnapshotWindows],
         maximumConsecutiveFailures: 5,
       },
-      note: "A manual catalogue pass queues separate audience and, when permission was granted, account-wide comments jobs. Comments exhaust source pages and replies, including empty intermediate pages; mediaProcessed counts finished publications, collected counts comment observations, not distinct comments. Audience refresh covers all four dimensions in this_month. Scheduled discovery stops at previously observed media; daily insights queue audience and comments refresh. Jobs are bounded and resumable. Scheduling is opt-in; reads never collect data.",
+      note: "Full comment passes and selected-media refresh are separate, bounded, resumable jobs. Requested reply expansion avoids empty per-parent requests; omitted branches remain visible as a source limitation, and partial branches keep their own continuations. Pagination exhaustion does not guarantee equality with Meta comments_count. collected counts observations; comments.uniqueComments counts saved unique IDs. Daily insights refresh audience; full comment reconciliation is due every 30 days. Recent publications and verified webhook notifications receive separate refresh jobs. Webhook is active only after subscription and a verified delivery; event time is not comment publication time. Scheduling is opt-in; reads never collect data.",
     };
+  }
+  receiveCommentEvent(accountId: string, externalMediaId: string, id: string, sentAt: number) {
+    return this.store.receiveCommentEvent(accountId, externalMediaId, id, sentAt, this.clock());
+  }
+  confirmCommentSubscription(accountId: string) {
+    return this.store.confirmCommentSubscription(accountId, this.clock());
   }
   async schedule(accountId: string): Promise<CollectionSchedule> {
     await this.analytics.account(accountId);
@@ -272,8 +326,22 @@ export class Collect {
           await this.start(schedule.accountId, id, "scheduled");
         schedule.nextDiscoveryAt = now + schedule.discoveryMinutes * 60_000;
       } else {
+        const commentMedia = (await this.comments.enabled(schedule.accountId))
+          ? await this.store.nextCommentRefresh(schedule.accountId, now)
+          : null;
         const mediaId = await this.store.dueMedia(schedule.accountId, now);
-        if (mediaId) {
+        const preferComments = Math.floor(now / (15 * 60_000)) % 2 === 0;
+        if (commentMedia && (!mediaId || preferComments)) {
+          await this.start(
+            schedule.accountId,
+            await this.operationId(
+              `comments-refresh:${commentMedia.id}:${Math.floor(now / cronIntervalMs)}`,
+            ),
+            "comments_refresh",
+            true,
+            commentMedia,
+          );
+        } else if (mediaId) {
           const result = await this.analytics.refresh(
             mediaId,
             await this.operationId(`refresh:${mediaId}:${Math.floor(now / 900_000)}`),

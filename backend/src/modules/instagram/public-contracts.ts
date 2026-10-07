@@ -20,6 +20,7 @@ export type InstagramInsight = {
   reason: "not_returned" | "not_supported" | "permission_required" | "invalid_value" | null;
 };
 export interface InstagramReader {
+  subscribeComments(accountId: string): Promise<void>;
   profile(accountId: string): Promise<InstagramProfile>;
   mediaPage(
     accountId: string,
@@ -50,6 +51,7 @@ export interface InstagramReader {
     replies: boolean,
     cursor: string | null,
     limit: number,
+    expandReplies?: boolean,
   ): Promise<CommentPage>;
 }
 
@@ -78,4 +80,9 @@ export type StructuredInsight = {
 export type CommentPage = {
   items: { id: string; text: string; publishedAt: number; parentId?: string | null }[];
   nextCursor: string | null;
+  replyBranches?: {
+    parentId: string;
+    nextCursor: string | null;
+    status: "exhausted" | "partial" | "omitted";
+  }[];
 };

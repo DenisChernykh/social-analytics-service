@@ -33,7 +33,7 @@ async function call(name, args = {}) {
 }
 try {
   const discovery = await client.listTools();
-  assert.equal(discovery.tools.length, 44);
+  assert.equal(discovery.tools.length, 45);
   const health = await fetch(`${BACKEND_ORIGIN}/health`, { redirect: "error" }).then((r) =>
     r.json(),
   );
@@ -66,6 +66,13 @@ try {
   await call("describe_metrics");
   const collection = await call("get_collection_status", { accountId });
   assert.equal(typeof collection.schedule.enabled, "boolean");
+  assert.equal(collection.policy.runBudget, 1);
+  assert.equal(collection.policy.commentPageSize, 5);
+  assert.equal(collection.policy.commentPolicy.fullReconciliationDays, 30);
+  assert.deepEqual(collection.policy.ageIntervalsHours, [1, 6, 24, 72, 168, 336, 720]);
+  assert.equal(typeof collection.comments.uniqueComments, "number");
+  assert.equal(typeof collection.comments.pendingReplyBranches, "number");
+  assert.equal(typeof collection.comments.webhook.active, "boolean");
   const panel = await call("open_social_analytics", { accountId });
   assert.equal(panel.selectedAccountId, accountId);
   assert.equal(typeof panel.history.beginningKnown, "boolean");

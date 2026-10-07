@@ -55,6 +55,7 @@ export function featureOptions(
           ),
         isRootComment: (mediaId: string, id: string) => operations.isRootComment(mediaId, id),
         rootCommentIds: (mediaId: string, ids: string[]) => operations.rootCommentIds(mediaId, ids),
+        savedCollection: (id: string) => operations.savedCollection(id),
         collect: (mediaId: string, input: Parameters<typeof operations.collect>[1]) =>
           operations.collect(mediaId, input),
       };
@@ -170,6 +171,28 @@ export function featureOptions(
       };
     },
   };
+  const commentWebhookOptions = {
+    port: (env: RuntimeBindings) => ({
+      connectedAccounts: async () =>
+        (await reader(env).list())
+          .filter(
+            (connection) =>
+              connection.scopes.includes("instagram_business_manage_comments") &&
+              connection.expiresAt > (clock ?? Date.now)(),
+          )
+          .map((connection) => connection.accountId),
+      receive: (accountId: string, mediaId: string, id: string, sentAt: number) =>
+        createCollectionOperations(env, collectionOptions).receiveCommentEvent(
+          accountId,
+          mediaId,
+          id,
+          sentAt,
+        ),
+      subscribed: (accountId: string) =>
+        createCollectionOperations(env, collectionOptions).confirmCommentSubscription(accountId),
+      subscribe: (accountId: string) => reader(env).subscribeComments(accountId),
+    }),
+  };
   return {
     analyticsOptions,
     insightsOptions,
@@ -177,6 +200,7 @@ export function featureOptions(
     collectionOptions,
     commentOptions,
     reviewOptions,
+    commentWebhookOptions,
   };
 }
 export function createScheduledOperations(

@@ -22,7 +22,7 @@ Account Insights и демография, контекст, сопоставим
 Имена и описания доступны через MCP tools/list; источник реализации —
 `src/roadmap-tools.ts`.
 Два дополнительных инструмента `open_social_analytics` и `choose_media`
-возвращают необязательную карточку MCP Apps. Всего — 44 инструмента.
+возвращают необязательную карточку MCP Apps. Всего — 45 инструментов.
 
 `open_social_analytics` также объявляет global entrypoint с названием
 **Social Analytics**. Приложение можно открыть из левого меню ChatGPT и

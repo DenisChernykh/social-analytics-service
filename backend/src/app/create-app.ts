@@ -7,6 +7,7 @@ import { createCollectionModule } from "../modules/collection";
 import { createCommentModule } from "../modules/community";
 import { createContentModule } from "../modules/content";
 import {
+  createCommentWebhookModule,
   createInstagramModule,
   createInstagramOperations,
   type InstagramModuleOptions,
@@ -85,6 +86,7 @@ export function createApp(
   registerPublicInformation(app);
   app.route("/", createInstagramModule(instagramOptions).router);
   const features = featureOptions(instagramOptions, options.clock);
+  app.route("/", createCommentWebhookModule(features.commentWebhookOptions).router);
   app.route(
     "/",
     createAnalyticsModule({

@@ -33,6 +33,7 @@ export interface TokenProtection {
   decrypt(value: string, accountId: string): Promise<string>;
 }
 export interface InstagramTransport {
+  subscribeComments(token: string, userId: string): Promise<void>;
   authorizationUrl(state: string, comments?: boolean): string;
   exchangeCode(code: string): Promise<{ accessToken: string; scopes: string[] }>;
   extendToken(token: string): Promise<{ accessToken: string; expiresIn: number }>;
@@ -67,5 +68,6 @@ export interface InstagramTransport {
     replies: boolean,
     cursor: string | null,
     limit: number,
+    expandReplies?: boolean,
   ): Promise<CommentPage>;
 }
