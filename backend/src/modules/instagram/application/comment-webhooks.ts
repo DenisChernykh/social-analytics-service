@@ -10,7 +10,9 @@ export type CommentNotification = {
 };
 export type CommentWebhookPort = {
   connectedAccounts(): Promise<string[]>;
-  receive(accountId: string, mediaExternalId: string, id: string, sentAt: number): Promise<void>;
+  receive(
+    events: { accountId: string; externalMediaId: string; id: string; sentAt: number }[],
+  ): Promise<void>;
   subscribed(accountId: string): Promise<void>;
   subscribe(accountId: string): Promise<void>;
   digest(value: string): Promise<string>;
@@ -25,6 +27,7 @@ export class InstagramCommentWebhooks {
 
   async receive(notifications: CommentNotification[]) {
     const connected = new Set(await this.port.connectedAccounts());
+    const events = new Map<string, Parameters<CommentWebhookPort["receive"]>[0][number]>();
     for (const event of notifications) {
       const accountId = `ig_${event.accountExternalId}`;
       if (!connected.has(accountId)) continue;
@@ -40,8 +43,14 @@ export class InstagramCommentWebhooks {
           event.text,
         ]),
       );
-      await this.port.receive(accountId, event.mediaExternalId, id, event.sentAt);
+      events.set(id, {
+        accountId,
+        externalMediaId: event.mediaExternalId,
+        id,
+        sentAt: event.sentAt,
+      });
     }
+    if (events.size) await this.port.receive([...events.values()]);
     return { received: true as const };
   }
 

@@ -8,6 +8,7 @@ import {
   type CataloguePosition,
   type CollectionJob,
   type CollectionSchedule,
+  type CommentEvent,
   type CommentPosition,
   retryDelay,
 } from "../domain/model";
@@ -234,7 +235,10 @@ export class Collect {
     };
   }
   receiveCommentEvent(accountId: string, externalMediaId: string, id: string, sentAt: number) {
-    return this.store.receiveCommentEvent(accountId, externalMediaId, id, sentAt, this.clock());
+    return this.receiveCommentEvents([{ accountId, externalMediaId, id, sentAt }]);
+  }
+  receiveCommentEvents(events: CommentEvent[]) {
+    return this.store.receiveCommentEvents(events, this.clock());
   }
   confirmCommentSubscription(accountId: string) {
     return this.store.confirmCommentSubscription(accountId, this.clock());

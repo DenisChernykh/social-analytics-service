@@ -3,7 +3,11 @@ import { createAnalyticsOperations } from "../modules/analytics";
 import { createCollectionOperations } from "../modules/collection";
 import { createCommentOperations } from "../modules/community";
 import { createContentOperations } from "../modules/content";
-import { createInstagramOperations, type InstagramModuleOptions } from "../modules/instagram";
+import {
+  type CommentWebhookPort,
+  createInstagramOperations,
+  type InstagramModuleOptions,
+} from "../modules/instagram";
 import type { RuntimeBindings } from "../platform/config/runtime-config";
 import { incompleteOperationError } from "../shared/application/application-error";
 
@@ -181,13 +185,8 @@ export function featureOptions(
               connection.expiresAt > (clock ?? Date.now)(),
           )
           .map((connection) => connection.accountId),
-      receive: (accountId: string, mediaId: string, id: string, sentAt: number) =>
-        createCollectionOperations(env, collectionOptions).receiveCommentEvent(
-          accountId,
-          mediaId,
-          id,
-          sentAt,
-        ),
+      receive: (events: Parameters<CommentWebhookPort["receive"]>[0]) =>
+        createCollectionOperations(env, collectionOptions).receiveCommentEvents(events),
       subscribed: (accountId: string) =>
         createCollectionOperations(env, collectionOptions).confirmCommentSubscription(accountId),
       subscribe: (accountId: string) => reader(env).subscribeComments(accountId),

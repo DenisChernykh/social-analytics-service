@@ -48,6 +48,42 @@ async function ready(request?: typeof fetch) {
 }
 
 describe("bounded expanded comment collection (#18)", () => {
+  it("saves the maximum 255-text expansion within D1's 50-query and 100-parameter limits", async () => {
+    const f = await ready(async () =>
+      Response.json({
+        data: Array.from({ length: 5 }, (_, root) => ({
+          ...comment(String(100 + root)),
+          replies: {
+            data: Array.from({ length: 50 }, (_, reply) =>
+              comment(String(10000 + root * 100 + reply)),
+            ),
+          },
+        })),
+      }),
+    );
+    const job = await f.collector.start(accountId, crypto.randomUUID(), "comments");
+    const prepare = vi.spyOn(env.DB, "prepare");
+    try {
+      const result = await f.collector.advance(job.id);
+      expect(result).toMatchObject({
+        status: "completed",
+        collected: 255,
+        pages: 1,
+        errorCode: null,
+      });
+      expect(prepare.mock.calls.length).toBeLessThanOrEqual(50);
+      expect(prepare.mock.calls.every(([sql]) => (sql.match(/\?/g)?.length ?? 0) <= 100)).toBe(
+        true,
+      );
+    } finally {
+      prepare.mockRestore();
+    }
+    expect((await f.collector.status(accountId)).comments.uniqueComments).toBe(255);
+    const saved = await env.DB.prepare(
+      "SELECT COUNT(*) AS total FROM comments WHERE parent_id IS NOT NULL",
+    ).first<{ total: number }>();
+    expect(saved?.total).toBe(250);
+  });
   it("saves the same 62 unique texts and parents with ten requests instead of 51 and measures payloads and D1 writes", async () => {
     let requests = 0;
     let bytes = 0;

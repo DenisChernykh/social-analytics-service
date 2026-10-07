@@ -4,7 +4,12 @@ import { collectionJobs, collectionSchedules } from "../../../platform/database/
 import type { CollectionStore } from "../application/ports";
 import { ageSnapshotWindows, type DueAgeSnapshot } from "../domain/age-policy";
 import { type CommentCheckpoint, commentRefreshDelay } from "../domain/comment-policy";
-import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../domain/model";
+import type {
+  CataloguePosition,
+  CollectionJob,
+  CollectionSchedule,
+  CommentEvent,
+} from "../domain/model";
 
 export class D1Collection implements CollectionStore {
   private readonly db;
@@ -245,42 +250,35 @@ export class D1Collection implements CollectionStore {
       )?.generation ?? 0
     );
   }
-  async receiveCommentEvent(
-    accountId: string,
-    externalMediaId: string,
-    id: string,
-    sentAt: number,
-    now: number,
-  ) {
-    if (
-      (await this.database
-        .prepare("SELECT 1 FROM media WHERE external_id=? AND account_id!=? LIMIT 1")
-        .bind(externalMediaId, accountId)
-        .first()) !== null
-    )
-      return;
+  async receiveCommentEvents(events: CommentEvent[], now: number) {
+    if (!events.length) return;
+    // A single signed batch consumes four queries, independently of event count.
+    // All statements see the same unseen events; insert dedupe records last.
+    const incoming = JSON.stringify(events);
+    const eligible = `WITH incoming AS (SELECT DISTINCT json_extract(value,'$.id') AS id,json_extract(value,'$.accountId') AS account_id,json_extract(value,'$.externalMediaId') AS external_media_id,json_extract(value,'$.sentAt') AS sent_at FROM json_each(?)),
+      eligible AS (SELECT e.* FROM incoming e WHERE NOT EXISTS (SELECT 1 FROM comment_webhook_events WHERE id=e.id) AND NOT EXISTS (SELECT 1 FROM media WHERE external_id=e.external_media_id AND account_id!=e.account_id))`;
     await this.database.batch([
       this.database
         .prepare(
-          `INSERT INTO comment_media_state (media_id,event_generation,last_webhook_at) SELECT m.id,1,? FROM media m WHERE m.account_id=? AND m.external_id=? AND m.product_type!='STORY' AND NOT EXISTS (SELECT 1 FROM comment_webhook_events WHERE id=?)
-         ON CONFLICT(media_id) DO UPDATE SET event_generation=comment_media_state.event_generation+1,last_webhook_at=MAX(COALESCE(comment_media_state.last_webhook_at,0),excluded.last_webhook_at)`,
+          `${eligible} INSERT INTO comment_media_state (media_id,event_generation,last_webhook_at) SELECT m.id,COUNT(*),? FROM eligible e JOIN media m ON m.account_id=e.account_id AND m.external_id=e.external_media_id WHERE m.product_type!='STORY' GROUP BY m.id
+         ON CONFLICT(media_id) DO UPDATE SET event_generation=comment_media_state.event_generation+excluded.event_generation,last_webhook_at=MAX(COALESCE(comment_media_state.last_webhook_at,0),excluded.last_webhook_at)`,
         )
-        .bind(now, accountId, externalMediaId, id),
+        .bind(incoming, now),
       this.database
         .prepare(
-          "UPDATE collection_schedules SET next_discovery_at=MIN(next_discovery_at,?) WHERE account_id=? AND enabled=1 AND NOT EXISTS (SELECT 1 FROM media WHERE account_id=? AND external_id=?) AND NOT EXISTS (SELECT 1 FROM comment_webhook_events WHERE id=?)",
+          `${eligible} UPDATE collection_schedules SET next_discovery_at=MIN(next_discovery_at,?) WHERE enabled=1 AND EXISTS (SELECT 1 FROM eligible e WHERE e.account_id=collection_schedules.account_id AND NOT EXISTS (SELECT 1 FROM media WHERE account_id=e.account_id AND external_id=e.external_media_id))`,
         )
-        .bind(now, accountId, accountId, externalMediaId, id),
+        .bind(incoming, now),
       this.database
         .prepare(
-          "INSERT INTO comment_webhook_state (account_id,last_received_at,last_event_at) VALUES (?,?,?) ON CONFLICT(account_id) DO UPDATE SET last_received_at=MAX(COALESCE(comment_webhook_state.last_received_at,0),excluded.last_received_at),last_event_at=MAX(COALESCE(comment_webhook_state.last_event_at,0),excluded.last_event_at)",
+          `${eligible} INSERT INTO comment_webhook_state (account_id,last_received_at,last_event_at) SELECT account_id,?,MAX(sent_at) FROM eligible GROUP BY account_id ON CONFLICT(account_id) DO UPDATE SET last_received_at=MAX(COALESCE(comment_webhook_state.last_received_at,0),excluded.last_received_at),last_event_at=MAX(COALESCE(comment_webhook_state.last_event_at,0),excluded.last_event_at)`,
         )
-        .bind(accountId, now, sentAt),
+        .bind(incoming, now),
       this.database
         .prepare(
-          "INSERT INTO comment_webhook_events (id,account_id,external_media_id,media_id,received_at) VALUES (?,?,?,(SELECT id FROM media WHERE account_id=? AND external_id=?),?) ON CONFLICT(id) DO NOTHING",
+          `${eligible} INSERT INTO comment_webhook_events (id,account_id,external_media_id,media_id,received_at) SELECT e.id,e.account_id,e.external_media_id,m.id,? FROM eligible e LEFT JOIN media m ON m.account_id=e.account_id AND m.external_id=e.external_media_id WHERE 1 ON CONFLICT(id) DO NOTHING`,
         )
-        .bind(id, accountId, externalMediaId, accountId, externalMediaId, now),
+        .bind(incoming, now),
     ]);
   }
   async confirmCommentSubscription(accountId: string, now: number) {

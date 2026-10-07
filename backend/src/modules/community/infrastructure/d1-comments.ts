@@ -66,19 +66,27 @@ export class D1Comments implements CommentStore {
       ? " AND EXISTS (SELECT 1 FROM collection_jobs WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?)"
       : "";
     const fenceValues = ownership ? [ownership.jobId, ownership.leaseToken, now] : [];
+    // D1 allows 100 parameters per statement. Six fields × 16 rows plus the
+    // operation/ownership fence use at most 100; a 255-text expansion needs
+    // sixteen insert statements rather than one statement per text.
+    const chunks: SavedComment[][] = [];
+    for (let offset = 0; offset < items.length; offset += 16)
+      chunks.push(items.slice(offset, offset + 16));
     const results = await this.database.batch([
-      ...items.map((item) =>
+      ...chunks.map((chunk) =>
         this.database
           .prepare(
-            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT ?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
+            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT column1,column2,column3,column4,column5,column6 FROM (VALUES ${chunk.map(() => "(?,?,?,?,?,?)").join(",")}) WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
           )
           .bind(
-            item.id,
-            item.mediaId,
-            item.parentId,
-            item.text,
-            item.publishedAt,
-            item.observedAt,
+            ...chunk.flatMap((item) => [
+              item.id,
+              item.mediaId,
+              item.parentId,
+              item.text,
+              item.publishedAt,
+              item.observedAt,
+            ]),
             collection.id,
             ...fenceValues,
           ),

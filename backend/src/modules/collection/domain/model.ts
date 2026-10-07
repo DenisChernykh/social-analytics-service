@@ -18,6 +18,12 @@ export type CollectionJob = {
   errorCode: string | null;
 };
 export type CataloguePosition = { id: string; publishedAt: number };
+export type CommentEvent = {
+  accountId: string;
+  externalMediaId: string;
+  id: string;
+  sentAt: number;
+};
 export type CommentPosition = {
   version?: 2;
   afterMedia: CataloguePosition | null;

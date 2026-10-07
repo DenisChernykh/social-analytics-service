@@ -74,6 +74,36 @@ async function ready(comments = true) {
 }
 
 describe("signed minimal comment notifications (#18)", () => {
+  it("accepts a 100-event batch within the D1 query limit and deduplicates identical replay", async () => {
+    const f = await ready();
+    const batch = {
+      object: "instagram",
+      entry: Array.from(
+        { length: 100 },
+        (_, i) => event(1_790_999_000 + i, String(1000 + i)).entry[0],
+      ),
+    };
+    const prepare = vi.spyOn(env.DB, "prepare");
+    try {
+      expect((await f.post(batch)).status).toBe(200);
+      expect((await f.post(batch)).status).toBe(200);
+      expect(prepare.mock.calls.length).toBeLessThanOrEqual(50);
+    } finally {
+      prepare.mockRestore();
+    }
+    expect(await f.store.commentGeneration(mediaId)).toBe(100);
+    const records = await env.DB.prepare(
+      "SELECT COUNT(*) AS total FROM comment_webhook_events",
+    ).first<{ total: number }>();
+    expect(records?.total).toBe(100);
+    expect((await f.collector.status(accountId)).comments.webhook.lastEventAt).toBe(
+      (1_790_999_000 + 99) * 1000,
+    );
+    expect(
+      (await f.post({ object: "instagram", entry: [...batch.entry, batch.entry[0]] })).status,
+    ).toBe(400);
+    expect(await f.store.commentGeneration(mediaId)).toBe(100);
+  });
   it("verifies the callback without a personal API key and never reflects a rejected verify token", async () => {
     const f = await ready();
     const query = new URLSearchParams({

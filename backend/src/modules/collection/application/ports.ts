@@ -2,7 +2,12 @@ import type { SyncRun } from "../../analytics/public-contracts";
 import type { CommentCollection } from "../../community";
 import type { DueAgeSnapshot } from "../domain/age-policy";
 import type { CommentCheckpoint } from "../domain/comment-policy";
-import type { CataloguePosition, CollectionJob, CollectionSchedule } from "../domain/model";
+import type {
+  CataloguePosition,
+  CollectionJob,
+  CollectionSchedule,
+  CommentEvent,
+} from "../domain/model";
 
 export interface CollectionStore {
   job(id: string): Promise<CollectionJob | null>;
@@ -27,13 +32,7 @@ export interface CollectionStore {
   ): Promise<CataloguePosition | null>;
   nextCommentRefresh(accountId: string, now: number): Promise<CataloguePosition | null>;
   commentGeneration(mediaId: string): Promise<number>;
-  receiveCommentEvent(
-    accountId: string,
-    externalMediaId: string,
-    id: string,
-    sentAt: number,
-    now: number,
-  ): Promise<void>;
+  receiveCommentEvents(events: CommentEvent[], now: number): Promise<void>;
   confirmCommentSubscription(accountId: string, now: number): Promise<void>;
   commentStatus(
     accountId: string,
@@ -44,6 +43,7 @@ export interface CollectionStore {
     uniqueComments: number;
     stalePublications: number;
     partialPublications: number;
+    pendingReplyBranches: number;
     currentPass: {
       id: string;
       status: string;
