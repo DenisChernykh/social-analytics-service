@@ -146,13 +146,21 @@ token и отказ неверной подписи проверены на оп
 не объявляют webhook активным. Подробные deployment receipts —
 [deployment.md](deployment.md).
 
-Локальные фикстуры не подтверждают реальную доставку Meta или CPU Worker.
-Для закрытия #18 нужны подтверждение Dashboard/account subscription и реальное
-событие, затем минимум 24 часа после публикации без регрессии Stories/метрик.
-Сравнить с 0.2.10 CPU p50/p99, exceededResources, HTTP/API-запросы,
-latency/размер payload и D1 writes. Invocation logs остаются отключены.
-Пока этих свидетельств нет, webhook не объявляется работающим, а #18 остаётся
-открытым. Реальная ветка длиннее 50 ответов пока также не наблюдалась.
+2026-10-08 callback и comments subscription настроены в Dashboard; официальный
+API подтвердил подписку аккаунта. Реальный новый комментарий владельца доставлен
+Meta в 04:08:30.519 UTC, `webhook.active=true`; создан отдельный refresh job.
+Штатный Cron сохранил новый текст в 04:16:09.691 UTC; точное совпадение digest
+подтверждено без вывода текста. Время публикации получено из официального API.
+Снято сравнение Cloudflare за первые 6,5 часа: ошибок нет, subrequests меньше,
+но CPU p99 и D1 rows written выросли. Это ещё не суточная проверка и не
+подтверждение общего снижения нагрузки. Подробные значения и границы измерений —
+[comment-collection-production-check.md](comment-collection-production-check.md).
+
+Для закрытия #18 остаётся минимум 24 часа наблюдения после публикации без
+регрессии Stories/метрик; повторить сравнение CPU p50/p99,
+exceededResources, HTTP/API-запросов, latency/размера payload и D1 writes.
+Invocation logs остаются отключены. #18 остаётся открыт до завершения этой
+проверки. Реальная ветка длиннее 50 ответов пока также не наблюдалась.
 
 Официальные источники:
 [IG Media /comments](https://developers.facebook.com/documentation/instagram-platform/instagram-graph-api/reference/ig-media/comments),

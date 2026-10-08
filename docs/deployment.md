@@ -27,11 +27,19 @@ expansion-страница сохранила пять текстов; повт�
 45 инструментов. Установленное подключение возвращает новый статус и policy.
 После повторной проверки GitHub #1–#17 закрыты как completed; их реализация
 и свидетельства сведены в [backend-roadmap.md](backend-roadmap.md).
-#18 остаётся открыт: реальная доставка Meta ещё не подтверждена,
-`webhook.active=false`; требуется настройка Dashboard/account subscription
-и минимум 24 часа наблюдения после последней публикации с CPU p50/p99,
-exceededResources, запросами, latency и D1 writes. Сравнение возможно не ранее
-2026-10-08 21:30 UTC. Локальные benchmarks и оставшиеся критерии —
+#18 остаётся открыт до завершения production-приёмки. 2026-10-08 callback и
+подписка comments подтверждены в Meta Dashboard и официальном API; новый
+комментарий владельца доставлен в 04:08:30.519 UTC, `webhook.active=true`.
+Scheduler создал отдельный refresh job; в 04:16:09.691 UTC первая страница
+сохранила пять наблюдений, включая проверенный по digest новый комментарий.
+Refresh продолжает пагинацию без ошибки; старый полный проход сохранён.
+Сравнение первых 6,5 часа не выявило ошибок Worker, но CPU p99 и D1 rows written
+выросли. Требуется минимум 24 часа наблюдения
+после последней публикации с CPU p50/p99, exceededResources, запросами,
+latency и D1 writes. Суточный интервал заканчивается не ранее
+2026-10-08 21:30 UTC. Значения и ограничения —
+[comment-collection-production-check.md](comment-collection-production-check.md);
+локальные benchmarks —
 [comment-collection-optimization.md](comment-collection-optimization.md).
 
 ## Публикация 0.2.10
