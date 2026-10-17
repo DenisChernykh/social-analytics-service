@@ -1,0 +1,174 @@
+{
+  "checkedAt": "2026-10-17T06:24:07.842Z",
+  "source": "Cloudflare GraphQL introspection",
+  "types": {
+    "invDimensions": {
+      "fields": [
+        {
+          "description": "IATA airport code for the Cloudflare datacenter where the Durable Object invocation was handled.",
+          "name": "coloCode"
+        },
+        {
+          "description": "Request datetime, truncated to start of a day",
+          "name": "date"
+        },
+        {
+          "description": "Request datetime",
+          "name": "datetime"
+        },
+        {
+          "description": "Request datetime, truncated to start of a minute",
+          "name": "datetimeFifteenMinutes"
+        },
+        {
+          "description": "Request datetime, truncated to start of a minute",
+          "name": "datetimeFiveMinutes"
+        },
+        {
+          "description": "Request datetime, truncated to start of an hour",
+          "name": "datetimeHour"
+        },
+        {
+          "description": "Request datetime, truncated to start of a minute",
+          "name": "datetimeMinute"
+        },
+        {
+          "description": "Request datetime, truncated to start of six hour window",
+          "name": "datetimeSixHours"
+        },
+        {
+          "description": "The name of the script environment",
+          "name": "environmentName"
+        },
+        {
+          "description": "Whether this invocation is for a preview. 1 if preview, 0 if not.",
+          "name": "isPreview"
+        },
+        {
+          "description": "The name the Durable Object was created with",
+          "name": "name"
+        },
+        {
+          "description": "Durable Object namespace ID",
+          "name": "namespaceId"
+        },
+        {
+          "description": "Durable Object ID as a hex string",
+          "name": "objectId"
+        },
+        {
+          "description": "The name (slug) of the preview script. Requires an exact scriptName filter.",
+          "name": "previewSlug"
+        },
+        {
+          "description": "The name of the script",
+          "name": "scriptName"
+        },
+        {
+          "description": "The version of the Worker",
+          "name": "scriptVersion"
+        },
+        {
+          "description": "Status of the worker invocation",
+          "name": "status"
+        },
+        {
+          "description": "Type of invocation",
+          "name": "type"
+        }
+      ]
+    },
+    "invSum": {
+      "fields": [
+        {
+          "description": "Sum of errors",
+          "name": "errors"
+        },
+        {
+          "description": "Sum of requests",
+          "name": "requests"
+        },
+        {
+          "description": "Sum of response body sizes",
+          "name": "responseBodySize"
+        },
+        {
+          "description": "Sum of wall time",
+          "name": "wallTime"
+        }
+      ]
+    },
+    "periodicMax": {
+      "fields": [
+        {
+          "description": "Maximum active websocket connections in the time window",
+          "name": "activeWebsocketConnections"
+        },
+        {
+          "description": "Maximum isolate memory usage reported by Durable Object periodic metrics - bytes",
+          "name": "memoryUsageBytes"
+        }
+      ]
+    },
+    "periodicSum": {
+      "fields": [
+        {
+          "description": "Sum of active time - microseconds",
+          "name": "activeTime"
+        },
+        {
+          "description": "Sum of CPU time - microseconds",
+          "name": "cpuTime"
+        },
+        {
+          "description": "Sum of Duration - GB*s",
+          "name": "duration"
+        },
+        {
+          "description": "Sum of CPU exceeded errors",
+          "name": "exceededCpuErrors"
+        },
+        {
+          "description": "Sum of memory exceeded errors",
+          "name": "exceededMemoryErrors"
+        },
+        {
+          "description": "Sum of fatal internal server errors",
+          "name": "fatalInternalErrors"
+        },
+        {
+          "description": "Sum of incoming websocket messages",
+          "name": "inboundWebsocketMsgCount"
+        },
+        {
+          "description": "Sum of outbound websocket messages",
+          "name": "outboundWebsocketMsgCount"
+        },
+        {
+          "description": "Sum of rows read (by sqlite backed DOs)",
+          "name": "rowsRead"
+        },
+        {
+          "description": "Sum of rows written (by sqlite backed DOs)",
+          "name": "rowsWritten"
+        },
+        {
+          "description": "Sum of storage deletes (by non-sqlite backed DOs)",
+          "name": "storageDeletes"
+        },
+        {
+          "description": "Sum of storage reads - in 4KB units (by non-sqlite backed DOs)",
+          "name": "storageReadUnits"
+        },
+        {
+          "description": "Sum of storage writes - in 4KB units (by non-sqlite backed DOs)",
+          "name": "storageWriteUnits"
+        },
+        {
+          "description": "Sum of subrequests",
+          "name": "subrequests"
+        }
+      ]
+    }
+  }
+}

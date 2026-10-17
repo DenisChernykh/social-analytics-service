@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-17T06:23:26.605Z",
+  "mode": "GET_only",
+  "health": {
+    "status": "ok",
+    "revision": "0.3.0"
+  },
+  "unauthenticatedCode": "UNAUTHENTICATED",
+  "openapiMatchesCheckedContract": true,
+  "collection": {
+    "accountCount": 1,
+    "returnedJobs": 1,
+    "capacity": {
+      "dueJobs": 0,
+      "atRiskFreshJobs": 0,
+      "scope": "All jobs within cutoff; freshDue is a lower bound of steps for this account, excluding undiscovered objects and other accounts.",
+      "maximumHttpAttemptsPerTick": 6,
+      "tickWorkMs": 90000,
+      "persistenceReserveMs": 15000,
+      "pressureIndicator": false,
+      "overload": "not_measured",
+      "assumptions": "Durable Object alarms continue ready portions without a fixed Cron slot quota. Throughput depends on source latency, access, leases and quota; capacity is not measured by counting due jobs."
+    }
+  },
+  "job": {
+    "id": "67ea9249-0f8b-5975-a66f-5a0a0825c1ee",
+    "status": "completed",
+    "pages": 1
+  }
+}

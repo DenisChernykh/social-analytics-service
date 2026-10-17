@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-17T06:27:17.369Z",
+  "mode": "GraphQL_read_only",
+  "namespace": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+  "version": "3ef5494b-79a6-4adc-a325-44b66e34d723",
+  "window": {
+    "start": "2026-10-17T06:19:22.524482Z",
+    "end": "2026-10-17T06:27:17.369Z",
+    "complete": false,
+    "note": "Recent metrics may still be ingesting. Cron and periodic datasets use namespace/script and time; verify no intervening deployment."
+  },
+  "units": {
+    "periodicCpuTime": "microseconds (sum over periodic samples, not CPU per alarm)",
+    "periodicActiveTime": "microseconds",
+    "periodicDuration": "GB*s",
+    "cronCpuTimeUs": "microseconds"
+  },
+  "queries": {
+    "invocations": "durableObjectsInvocationsAdaptiveGroups(limit:1000,filter:{datetime_geq:\"2026-10-17T06:19:22.524482Z\",datetime_lt:\"2026-10-17T06:27:17.369Z\",scriptName:\"api\",namespaceId:\"fa3aad98034e4c3abdedc4ddc69f0ef5\",scriptVersion:\"3ef5494b-79a6-4adc-a325-44b66e34d723\"}){dimensions{datetimeMinute type status namespaceId scriptVersion} sum{requests errors wallTime}}",
+    "periodic": "durableObjectsPeriodicGroups(limit:1000,filter:{datetime_geq:\"2026-10-17T06:19:22.524482Z\",datetime_lt:\"2026-10-17T06:27:17.369Z\",namespaceId:\"fa3aad98034e4c3abdedc4ddc69f0ef5\"}){dimensions{datetimeMinute namespaceId} count sum{cpuTime activeTime duration exceededCpuErrors exceededMemoryErrors fatalInternalErrors subrequests} max{memoryUsageBytes}}",
+    "cron": "workersInvocationsScheduled(limit:1000,filter:{datetime_geq:\"2026-10-17T06:19:22.524482Z\",datetime_lt:\"2026-10-17T06:27:17.369Z\",scriptName:\"api\"},orderBy:[scheduledDatetime_ASC]){cpuTimeUs cron datetime scheduledDatetime status}"
+  },
+  "results": {
+    "cron": {
+      "workersInvocationsScheduled": [
+        {
+          "cpuTimeUs": 410,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-17T06:20:20Z",
+          "scheduledDatetime": "2026-10-17T06:20:20Z",
+          "status": "success"
+        },
+        {
+          "cpuTimeUs": 429,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-17T06:25:20Z",
+          "scheduledDatetime": "2026-10-17T06:25:20Z",
+          "status": "success"
+        }
+      ]
+    },
+    "periodic": {
+      "durableObjectsPeriodicGroups": []
+    },
+    "invocations": {
+      "durableObjectsInvocationsAdaptiveGroups": []
+    }
+  },
+  "failures": []
+}

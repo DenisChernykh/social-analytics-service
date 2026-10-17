@@ -43,7 +43,7 @@ const [settings, scriptSettings, schedules, deployments, migrations, counts, col
     (SELECT MAX(received_at) FROM instagram_http_attempts) lastHttpResponse`),
   query("SELECT account_id,enabled,next_discovery_at,next_stories_at,next_insights_at,next_catalogue_at,retry_at,failures,error_code,claim_expires_at,last_success_at FROM collection_schedules ORDER BY account_id"),
   query("SELECT id,origin,status,pages,collected,media_processed,attempt,failures,next_attempt_at,last_success_at,error_code,lease_expires_at,last_step_duration_ms,last_step_http_attempts FROM collection_jobs ORDER BY started_at DESC,id DESC LIMIT 20"),
-  query("SELECT requested_at,received_at,json_extract(payload_json,'$.httpStatus') httpStatus,json_extract(payload_json,'$.result') result FROM instagram_http_attempts ORDER BY requested_at DESC LIMIT 12"),
+  query("SELECT requested_at,received_at,json_extract(payload_json,'$.endpointFamily') family,json_extract(payload_json,'$.httpStatus') httpStatus,json_extract(payload_json,'$.result') result,json_extract(payload_json,'$.graphCode') graphCode,json_extract(payload_json,'$.graphSubcode') graphSubcode FROM instagram_http_attempts ORDER BY requested_at DESC LIMIT 12"),
 ]);
 const contentResponse = await fetch(`https://api.cloudflare.com/client/v4${worker}/content/v2`, {
   headers: { Authorization: `Bearer ${credential}` }, redirect: "manual", signal: AbortSignal.timeout(30000),

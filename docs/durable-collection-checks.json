@@ -13,11 +13,14 @@
     "backendTests": 167,
     "backendTestFiles": 15,
     "mcpTests": 25,
-    "workerDeploy": "dry-run only",
+    "workerDeploy": "dry-run and authorized production deployment passed",
     "localMigrations": "No migrations to apply",
-    "productionDeployment": "not performed",
+    "productionDeployment": "deployed and initial production reads passed; source error remains",
     "recheckedBeforeRelease": "2026-10-17",
-    "remoteD1Migrations": "No pending migrations; SELECT only"
+    "remoteD1Migrations": "No pending migrations; SELECT only",
+    "rootPnpmCheckCompletedAt": "2026-10-17T06:15:33Z",
+    "productionGetApi": "passed; OpenAPI identical to checked MCP contract",
+    "historicalPreservation": "12 pinned snapshots, policy history and schedule settings unchanged"
   },
   "changedFiles": {
     "AGENTS.md": "a8773dee21418ce93fda86a17f5ef6113152b8099f6f9525814618a442e86d79",
@@ -55,12 +58,14 @@
     "chatgpt/contract/openapi.json": "659f32c4af9890d1c2065a786eff13dcc0f0b54f2544ab12212204fbd1ab1d86",
     "chatgpt/src/contract.ts": "9b9d3340b3a99ada05fcc34c42048d7b351bf88a8fa4734096fc1561f4d5573e",
     "docs/architecture.md": "dbac02772d99c79bed766db2ea589d4d60bf21151a0d51b956c15d2d3cfa577d",
-    "docs/deployment.md": "affc3ca08b1809d64972445a89c3a28c5a61338e567709a5c70c83180b650226",
-    "docs/durable-collection-migration.md": "a2ce31213f1225e6d8c057e7d314e0a98dbac3fd711dc1d358aeb27be02bbc4e"
+    "docs/deployment.md": "9349ecf988013a22e505418fa773ebcf9f0a9706d786f4a4304a0584f5024acb",
+    "docs/durable-collection-migration.md": "e1945e1695e58cae937642367d777442bed5417c8ee2ef69e27943e7a7ea0802"
   },
   "limitations": [
-    "Free plan CPU enforcement and production reliability require an authorized deployment and observation.",
-    "Pre-existing backend/MCP work is required to reproduce this source tree; it is not represented by Git HEAD alone."
+    "24-48h reliability and at least two daily planning cycles remain unverified.",
+    "DO GraphQL datasets returned no rows in the initial ingestion window; per-alarm production CPU is not measured.",
+    "The pre-existing Instagram insights HTTP 400 (100/2108006) recurred and triggered a 30-minute backoff; no new metrics snapshot was saved in this window.",
+    "No jobs were running immediately before deploy; checkpoint recovery of existing running work is covered locally, not demonstrated by this production release."
   ],
   "releaseArtifact": {
     "path": "/private/tmp/social-analytics-durable-release-20261017",
@@ -70,5 +75,57 @@
       "worker/index.js.map": "2217b6030418456b0e4b38991f767c899911ce61815364dd373604cb26f01136",
       "wrangler.jsonc": "2a878376500616e77c469cd1a819a86bfd44e58b15cdbeadae34a58ff1bf0ac0"
     }
+  },
+  "production": {
+    "sourceCommit": "2a8b4f4279d202927feded14c21b3f44d3fad79b",
+    "baselineCommit": "4cd5af0",
+    "origin": "https://api.social-insights.workers.dev",
+    "deployment": {
+      "id": "e2eee5ad-0f96-4f06-92ce-fc258bab602f",
+      "created_on": "2026-10-17T06:19:22.524482Z",
+      "versions": [
+        {
+          "version_id": "3ef5494b-79a6-4adc-a325-44b66e34d723",
+          "percentage": 100
+        }
+      ]
+    },
+    "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+    "bundleSha256": "9441a180b2df8539a0eb1496068f2bbbab47e921e1d4d3b9577bad1f838c483f",
+    "lastReadAt": "2026-10-17T06:26:31.321Z",
+    "initialCronCpuUs": 410,
+    "httpAttemptsBefore": 3843,
+    "httpAttemptsAfter": 3847,
+    "newCompletedJobs": [
+      {
+        "id": "67ea9249-0f8b-5975-a66f-5a0a0825c1ee",
+        "origin": "comments_refresh",
+        "pages": 1
+      }
+    ],
+    "preReleaseRunningJobs": 0,
+    "currentSourceError": {
+      "code": "INSTAGRAM_SOURCE_ERROR",
+      "httpStatus": 400,
+      "graphCode": 100,
+      "graphSubcode": 2108006,
+      "alsoPresentBeforeRelease": true,
+      "retryAt": "2026-10-17T06:51:26.017Z"
+    },
+    "privateSitesRepublished": false
+  },
+  "releaseEvidence": {
+    "docs/durable-collection-release/README.md": "2c14da219fe00830adc57901acf13995402c926beb7ec383ec978af7b5335ede",
+    "docs/durable-collection-release/api-read.json": "d1cec17f5a120c3b2346d97aca1f7ddedbeb0706102181a199cad110aa70b723",
+    "docs/durable-collection-release/api-read.mjs": "76abbc105a1693da624ccdf6a58862aa710db29005e9bf2b2e3f21f6817c2f07",
+    "docs/durable-collection-release/metric-definitions.json": "d603c34ca2713b3240e681b0e38185953cfd0e4f0977bf67b0c554080166e3df",
+    "docs/durable-collection-release/metrics.json": "6af41108e435612104ca16342998775fa2fcf7e30d5c93fa51f5aafd28ebd574",
+    "docs/durable-collection-release/metrics.mjs": "d0eaefc72d1423025309c0ec4caf14199583fb335e1e02237cc5c1b68d0176b9",
+    "docs/durable-collection-release/natural-progress.json": "6bdebac4740fcb3af3010ff8793683cfd1cbf9aabb12bb0d6ea186f9f07c1c2f",
+    "docs/durable-collection-release/post-preservation.json": "d3899a17fe3d3203a5c7e1bd7afbe12c741ff3950d447ac174cf379617867fc5",
+    "docs/durable-collection-release/post-release.json": "7d68fb53ede8f7abf1399f40b8b75eb9bb510826c9d73fc3bf69c9225fcdfef7",
+    "docs/durable-collection-release/pre-preservation.json": "c701a541cb96e00c9d22247574df1ebde8028332396f23d781d638ec281fd0e1",
+    "docs/durable-collection-release/pre-release.json": "88402a17172cec98b36467aae6d3f8bfe8bbc326a034bf070ee5d28f5f0fb2f0",
+    "docs/durable-collection-release/read.mjs": "db0f813abb12738053c0be7d38ffc74a4ab48a510132eca98cbabf0a17f57ea6"
   }
 }
