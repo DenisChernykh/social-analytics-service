@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import { vi } from "vitest";
 import { createApp } from "../src/app/create-app";
+import { createCollectionExecutor } from "../src/app/create-features";
 import type { InstagramTransport } from "../src/modules/instagram/application/ports";
 import type { InstagramMedia } from "../src/modules/instagram/public-contracts";
 
@@ -78,7 +79,12 @@ export function fixture() {
       ),
     ),
   };
-  const app = createApp({ instagram: { transport: () => transport }, clock: () => now });
+  const app = createApp({
+    instagram: { transport: () => transport },
+    clock: () => now,
+    collectionCommands: (bindings) =>
+      createCollectionExecutor(bindings, { transport: () => transport }, () => now),
+  });
   const request = (path: string, method = "GET", body?: unknown, authenticated = true) =>
     app.request(
       path,

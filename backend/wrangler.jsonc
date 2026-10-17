@@ -19,7 +19,8 @@
     "ENVIRONMENT": "production",
     "INSTAGRAM_API_VERSION": "v26.0",
     "INSTAGRAM_REDIRECT_URI": "https://api.social-insights.workers.dev/api/instagram/oauth/callback",
-    "BUILD_REVISION": "0.2.16"
+    "BUILD_REVISION": "0.3.0",
+    "COLLECTION_RUNNER_ENABLED": "true"
   },
   "d1_databases": [
     {
@@ -29,6 +30,10 @@
       "migrations_dir": "migrations"
     }
   ],
+  "durable_objects": {
+    "bindings": [{ "name": "COLLECTION_RUNNER", "class_name": "CollectionRunner" }]
+  },
+  "migrations": [{ "tag": "collection-runner-v1", "new_sqlite_classes": ["CollectionRunner"] }],
   "triggers": { "crons": ["*/5 * * * *"] },
   "observability": {
     "enabled": false,

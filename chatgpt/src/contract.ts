@@ -616,8 +616,8 @@ export const collectionStatusResponse = z.object({
       persistenceReserveMs: z.number(),
       pressureIndicator: z.boolean(),
       overload: z.enum(["not_measured", "estimated_deficit"]),
-      capacityDeficit: z.number(),
-      availableStepsIn15m: z.number(),
+      capacityDeficit: z.number().optional(),
+      availableStepsIn15m: z.number().optional(),
       assumptions: z.string(),
     })
     .optional(),

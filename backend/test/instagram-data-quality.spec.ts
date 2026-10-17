@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src/app/create-app";
-import { createScheduledOperations } from "../src/app/create-features";
+import { createCollectionExecutor } from "../src/app/create-features";
 import { periodMaturity } from "../src/modules/account-insights/domain/maturity";
 import { calculateGrowth } from "../src/modules/analytics/domain/calculations";
 import type { Metrics, Snapshot } from "../src/modules/analytics/domain/model";
@@ -411,7 +411,7 @@ describe("P1 genuine observations and obligations", () => {
     expect(status.status).toBe(200);
     expect(await status.json()).toMatchObject({
       jobsPage: { total: 138, hasMore: true, limit: 20 },
-      capacity: { overload: "estimated_deficit" },
+      capacity: { overload: "not_measured" },
     });
   });
 });
@@ -443,7 +443,7 @@ describe("P0 bounded scheduling and retry", () => {
   });
   it("performs the first useful discovery in its creation tick and serializes competing schedule claims", async () => {
     const f = await ready(),
-      collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
+      collector = createCollectionExecutor(env, { transport: () => f.transport }, f.now);
     await collector.configure(accountId, { enabled: true, discoveryMinutes: 60 });
     await env.DB.prepare(
       "UPDATE collection_schedules SET next_stories_at=?,next_insights_at=?,next_catalogue_at=? WHERE account_id=?",
@@ -453,7 +453,7 @@ describe("P0 bounded scheduling and retry", () => {
     vi.mocked(f.transport.mediaPage).mockClear();
     await Promise.all([
       collector.tick(),
-      createScheduledOperations(env, { transport: () => f.transport }, f.now).tick(),
+      createCollectionExecutor(env, { transport: () => f.transport }, f.now).tick(),
     ]);
     expect(f.transport.mediaPage).toHaveBeenCalledTimes(1);
     const jobs = await f.store.jobs(accountId);
@@ -768,7 +768,7 @@ describe("P0/P1 full bounded portions and observation times", () => {
         { "x-app-usage": '{"call_volume":2,"cpu_time":1}' },
       );
     });
-    const collector = createScheduledOperations(
+    const collector = createCollectionExecutor(
       env,
       {
         transport: () =>
@@ -1114,7 +1114,7 @@ describe("P0 reserving useful work before optional metadata", () => {
           .map((name) => ({ name, values: [{ value: name === "reach" ? 100 : 0 }] })),
       });
     });
-    const collector = createScheduledOperations(
+    const collector = createCollectionExecutor(
       env,
       {
         transport: () =>

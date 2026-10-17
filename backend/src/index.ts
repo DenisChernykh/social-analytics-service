@@ -1,5 +1,8 @@
 import type { createApp } from "./app/create-app";
-import { createScheduledOperations } from "./app/create-features";
+import { collectionRunner } from "./app/durable-collection";
+
+export { CollectionRunner } from "./app/collection-runner";
+
 import type { RuntimeBindings } from "./platform/config/runtime-config";
 
 // HTTP schema construction is deferred until an HTTP request reaches this isolate.
@@ -12,6 +15,6 @@ export default {
     return app.fetch(request, env, ctx);
   },
   scheduled(_controller: ScheduledController, env: RuntimeBindings, ctx: ExecutionContext) {
-    ctx.waitUntil(createScheduledOperations(env).tick());
+    ctx.waitUntil(collectionRunner(env).ensureAwake());
   },
 };

@@ -2,6 +2,7 @@
 
 Личный backend для статистики соцсетей. Первая интеграция — официальный
 Instagram API с Instagram Login. Один Cloudflare Worker, Hono, D1 и Drizzle;
+фоновый сбор выполняет Durable Object с сохраняемыми alarms.
 архитектура следует модульному backend проекта `planner`.
 
 Social Analytics и его плагин предназначены для всех соцсетей владельца.
@@ -29,7 +30,7 @@ Instagram `tanyastrelchuk` подключён. Первичный обход 202
 Node 24, pnpm 11.15.1. Все команды выполняются из корня проекта.
 
 ```sh
-pnpm install --frozen-lockfile
+pnpm install
 pnpm setup:local
 pnpm db:migrate:local
 pnpm check
@@ -60,7 +61,8 @@ pnpm api report 'Кино курьер' ACCOUNT_ID
 `connect` открывает официальный экран согласия Instagram. `collect` создаёт
 сохраняемое задание полного обхода, печатает его ID и продвигает страницы.
 После обрыва: `pnpm api collect ACCOUNT_ID JOB_ID`. Задание также продолжает
-существующий Worker Cron; новый UUID не нужен для возобновления. Старый `sync`
+Durable Object через alarms; Cron восстанавливает пропущенное пробуждение.
+Новый UUID не нужен для возобновления. Старый `sync`
 остаётся доступен для постраничного сбора.
 Поиск читает сохранённый каталог. Повторный обход создаёт новый снимок.
 Автоматическое расписание изначально выключено; включение требует явного

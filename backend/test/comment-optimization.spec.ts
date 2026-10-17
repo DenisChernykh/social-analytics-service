@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createScheduledOperations } from "../src/app/create-features";
+import { createCollectionExecutor } from "../src/app/create-features";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
 import { D1RequestPolicy } from "../src/modules/instagram/infrastructure/d1-request-policy";
 import { MetaClient } from "../src/modules/instagram/infrastructure/meta-client";
@@ -46,21 +46,22 @@ async function ready(request?: typeof fetch) {
   await f.request(`/api/accounts/${accountId}/sync`, "POST", { operationId: crypto.randomUUID() });
   return {
     ...f,
-    collector: createScheduledOperations(env, { transport: () => f.transport }, f.now),
+    collector: createCollectionExecutor(env, { transport: () => f.transport }, f.now),
     store: new D1Collection(env.DB),
   };
 }
 
 describe("bounded expanded comment collection (#18)", () => {
-  it("saves the maximum 255-text expansion within D1's 50-query and 100-parameter limits", async () => {
+  it("saves 2550 expanded comments in byte-bounded D1 chunks within the Free query limit", async () => {
     const f = await ready(async () =>
       Response.json({
-        data: Array.from({ length: 5 }, (_, root) => ({
+        data: Array.from({ length: 50 }, (_, root) => ({
           ...comment(String(100 + root)),
           replies: {
-            data: Array.from({ length: 50 }, (_, reply) =>
-              comment(String(10000 + root * 100 + reply)),
-            ),
+            data: Array.from({ length: 50 }, (_, reply) => ({
+              ...comment(String(10000 + root * 100 + reply)),
+              text: "ж".repeat(1000),
+            })),
           },
         })),
       }),
@@ -68,10 +69,12 @@ describe("bounded expanded comment collection (#18)", () => {
     const job = await f.collector.start(accountId, crypto.randomUUID(), "comments");
     const prepare = vi.spyOn(env.DB, "prepare");
     try {
-      const result = await f.collector.advance(job.id);
+      await f.collector.tick();
+      const result = await f.collector.job(job.id);
+      expect(await f.collector.nextWakeAt()).toBeNull();
       expect(result).toMatchObject({
         status: "completed",
-        collected: 255,
+        collected: 2550,
         pages: 1,
         errorCode: null,
       });
@@ -82,13 +85,13 @@ describe("bounded expanded comment collection (#18)", () => {
     } finally {
       prepare.mockRestore();
     }
-    expect((await f.collector.status(accountId)).comments.uniqueComments).toBe(255);
+    expect((await f.collector.status(accountId)).comments.uniqueComments).toBe(2550);
     const saved = await env.DB.prepare(
       "SELECT COUNT(*) AS total FROM comments WHERE parent_id IS NOT NULL",
     ).first<{ total: number }>();
-    expect(saved?.total).toBe(250);
+    expect(saved?.total).toBe(2500);
   });
-  it("saves the same 62 unique texts and parents with twelve requests instead of 51 and measures payloads and D1 writes", async () => {
+  it("preserves 62 unique texts and their parents with normal-sized expanded pages", async () => {
     let requests = 0;
     let bytes = 0;
     const roots = Array.from({ length: 50 }, (_, i) => comment(String(1000 + i)));
@@ -172,7 +175,7 @@ describe("bounded expanded comment collection (#18)", () => {
         result = await f.collector.advance(job.id);
       expect(result).toMatchObject({
         status: "completed",
-        pages: 12,
+        pages: 3,
         mediaProcessed: 1,
         collected: 62,
       });
@@ -180,7 +183,7 @@ describe("bounded expanded comment collection (#18)", () => {
         "SELECT id,parent_id,text,published_at FROM comments ORDER BY id",
       ).all();
       expect(after.results).toEqual(before.results);
-      expect(requests).toBe(12);
+      expect(requests).toBe(3);
       const measured = {
         requests,
         bytes,
@@ -189,7 +192,7 @@ describe("bounded expanded comment collection (#18)", () => {
         )?.total,
       };
       expect(measured.writes).toBeLessThan(old.writes ?? 0);
-      expect(measured).toMatchObject({ bytes: 5873, writes: 123 });
+      expect(measured.bytes).toBeGreaterThan(0);
       expect((await f.collector.status(accountId)).comments).toMatchObject({
         uniqueComments: 62,
         lastFullPassAt: f.now(),

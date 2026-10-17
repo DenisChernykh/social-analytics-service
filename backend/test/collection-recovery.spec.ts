@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createScheduledOperations } from "../src/app/create-features";
+import { createCollectionExecutor } from "../src/app/create-features";
 import { activityPeriodPlan } from "../src/modules/account-insights/domain/periods";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
 import { ApplicationError } from "../src/shared/application/application-error";
@@ -23,7 +23,7 @@ async function ready() {
   });
   await connect(f);
   await f.request(`/api/accounts/${accountId}/sync`, "POST", { operationId: crypto.randomUUID() });
-  const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
+  const collector = createCollectionExecutor(env, { transport: () => f.transport }, f.now);
   return { ...f, collector, store: new D1Collection(env.DB) };
 }
 
@@ -48,15 +48,15 @@ describe("one-step scheduling and atomic ownership", () => {
     );
     const backoff = await f.collector.start(accountId, crypto.randomUUID(), "stories", true);
     await env.DB.prepare("UPDATE collection_jobs SET next_attempt_at=? WHERE id=?")
-      .bind(f.now() + 1, backoff.id)
+      .bind(f.now() + 60_000, backoff.id)
       .run();
-    expect(await f.store.nextJob(f.now())).toBe(template.id);
+    expect(await f.collector.nextWakeAt()).toBe(f.now() + 1000);
     const claims = await Promise.all([
       f.store.claim(template.id, "owner-a", f.now()),
       f.store.claim(template.id, "owner-b", f.now()),
     ]);
     expect(claims.filter(Boolean)).toHaveLength(1);
-    expect(await f.store.nextJob(f.now())).toBeNull();
+    expect(await f.collector.nextWakeAt()).toBe(f.now() + 60_000);
     const owner = claims[0] ? "owner-a" : "owner-b";
     await f.store.save({ ...template, pages: 99 }, "not-the-owner", f.now());
     expect((await f.collector.job(template.id)).pages).toBe(0);
@@ -71,11 +71,11 @@ describe("one-step scheduling and atomic ownership", () => {
     const f = await ready();
     const comments = await f.collector.start(accountId, crypto.randomUUID(), "comments", true);
     const story = await f.collector.start(accountId, crypto.randomUUID(), "stories", true);
-    expect(await f.store.nextJob(f.now())).toBe(story.id);
+    expect((await f.collector.tick())?.decision.selected?.id).toBe(story.id);
     await env.DB.prepare("UPDATE collection_jobs SET next_attempt_at=? WHERE id=?")
       .bind(f.now() - 16 * 60_000, comments.id)
       .run();
-    expect((await f.store.workHeads(f.now())).archiveId).toBe(comments.id);
+    expect((await f.collector.tick())?.decision.selected?.id).toBe(comments.id);
   });
 
   it("does not create duplicate automatic Stories jobs when an earlier pass is still running", async () => {
@@ -272,7 +272,7 @@ describe("recovery without inventing upstream failures", () => {
     const f = await ready();
     const factory = vi.fn(() => f.transport);
     for (let i = 0; i < 2; i++) {
-      const collector = createScheduledOperations(env, { transport: factory }, f.now);
+      const collector = createCollectionExecutor(env, { transport: factory }, f.now);
       const job = await collector.start(accountId, crypto.randomUUID(), "comments", true);
       await collector.advance(job.id);
     }

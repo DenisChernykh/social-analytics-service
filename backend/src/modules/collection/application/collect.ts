@@ -16,11 +16,13 @@ import {
 } from "../domain/model";
 import { selectWork, type WorkCandidate } from "../domain/selection";
 import { advanceComments } from "./bulk-comments";
+import { collectionExecution } from "./execution-policy";
 import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
 
-const cronIntervalMs = 5 * 60_000;
+const retryIntervalMs = 5 * 60_000;
 
 export class Collect {
+  private selectionSequence = 0;
   constructor(
     private readonly store: CollectionStore,
     private readonly analytics: CollectionAnalytics,
@@ -290,7 +292,7 @@ export class Collect {
               code === "INSTAGRAM_RATE_LIMITED"
                 ? 15 * 60_000
                 : waiting || interrupted
-                  ? cronIntervalMs
+                  ? retryIntervalMs
                   : retryDelay(failures),
               error instanceof ApplicationError ? (error.retryAfterMs ?? 0) : 0,
             ),
@@ -344,18 +346,13 @@ export class Collect {
         atRiskFreshJobs: page.aggregates.reduce((n, a) => n + a.atRiskFresh, 0),
         scope:
           "All jobs within cutoff; freshDue is a lower bound of steps for this account, excluding undiscovered objects and other accounts.",
-        maximumHttpAttemptsPerTick: 6,
-        tickWorkMs: 90_000,
-        persistenceReserveMs: 15_000,
-        pressureIndicator: page.aggregates.reduce((n, a) => n + a.freshDue, 0) > 3,
-        overload:
-          page.aggregates.reduce((n, a) => n + a.freshDue, 0) > 3
-            ? ("estimated_deficit" as const)
-            : ("not_measured" as const),
-        capacityDeficit: Math.max(0, page.aggregates.reduce((n, a) => n + a.freshDue, 0) - 3),
-        availableStepsIn15m: 3,
+        maximumHttpAttemptsPerTick: collectionExecution.maximumHttpAttempts,
+        tickWorkMs: collectionExecution.workBudgetMs,
+        persistenceReserveMs: collectionExecution.persistenceReserveMs,
+        pressureIndicator: page.aggregates.some((a) => a.freshDue > 0),
+        overload: "not_measured" as const,
         assumptions:
-          "One atomic portion per 5-minute Cron, available access/lease/quota; further pages and other accounts increase demand. Deadlines preempt the archive reserve. No production capacity guarantee.",
+          "Durable Object alarms continue ready portions without a fixed Cron slot quota. Throughput depends on source latency, access, leases and quota; capacity is not measured by counting due jobs.",
       },
       comments: await this.store.commentStatus(accountId, this.clock()),
       coverage: {
@@ -365,12 +362,12 @@ export class Collect {
       api: await this.analytics.apiStatus(accountId),
       policy: {
         runBudget: 1,
-        maximumHttpAttempts: 6,
-        workBudgetMs: 90_000,
-        persistenceReserveMs: 15_000,
+        maximumHttpAttempts: collectionExecution.maximumHttpAttempts,
+        workBudgetMs: collectionExecution.workBudgetMs,
+        persistenceReserveMs: collectionExecution.persistenceReserveMs,
         version: "collection-v2",
-        pageSize: 1,
-        storyPageSize: 1,
+        pageSize: collectionExecution.pageSize,
+        storyPageSize: collectionExecution.pageSize,
         commentPageSize: commentPolicy.outerPageSize,
         commentPolicy,
         cronMinutes: 5,
@@ -452,16 +449,21 @@ export class Collect {
           await this.store.control(job.id, "cancelled", this.clock());
     return this.schedule(accountId);
   }
-  async tick() {
-    const now = this.clock();
-    const schedule = await this.store.nextSchedule(now);
-    const { jobId, archiveId } = await this.store.workHeads(now);
+  private async workPlan(now: number) {
+    const jobs = await this.store.pendingJobs();
+    const schedules = await this.store.enabledSchedules();
     const candidates: WorkCandidate[] = [];
-    let age: Awaited<ReturnType<CollectionStore["dueAgeMedia"]>> = null;
-    let storyExpiry: number | null = null;
-    if (schedule) {
-      age = await this.store.dueAgeMedia(schedule.accountId, now);
-      storyExpiry = await this.store.nextStoryExpiry(schedule.accountId, now);
+    const contexts = new Map<
+      string,
+      {
+        schedule: CollectionSchedule;
+        age: Awaited<ReturnType<CollectionStore["dueAgeMedia"]>>;
+        storyExpiry: number | null;
+      }
+    >();
+    for (const schedule of schedules) {
+      const age = await this.store.dueAgeMedia(schedule.accountId, now);
+      const storyExpiry = await this.store.nextStoryExpiry(schedule.accountId, now);
       const deadline = Math.min(
         schedule.nextDiscoveryAt + 900_000,
         schedule.nextStoriesAt + 1_800_000,
@@ -488,14 +490,13 @@ export class Collect {
       candidates.push({
         kind: "schedule",
         id: schedule.accountId,
-        dueAt: Math.max(schedule.retryAt, dueAt),
+        dueAt: Math.max(schedule.retryAt, schedule.claimExpiresAt ?? 0, dueAt),
         deadline,
-        cost: 3,
         archive: false,
       });
+      contexts.set(schedule.accountId, { schedule, age, storyExpiry });
     }
-    for (const id of [...new Set([jobId, archiveId].filter((v): v is string => v !== null))]) {
-      const job = await this.job(id);
+    for (const job of jobs) {
       let deadline = ["stories", "scheduled", "comments_refresh"].includes(job.origin)
         ? job.nextAttemptAt + 900_000
         : Number.MAX_SAFE_INTEGER;
@@ -506,13 +507,23 @@ export class Collect {
       candidates.push({
         kind: "job",
         id: job.id,
-        dueAt: job.nextAttemptAt,
+        dueAt: Math.max(job.nextAttemptAt, job.leaseExpiresAt ?? 0),
         deadline,
-        cost: job.origin === "activity" ? 3 : 5,
         archive: !["stories", "scheduled", "comments_refresh"].includes(job.origin),
+        lastAttemptAt: job.lastAttemptAt,
       });
     }
-    const decision = selectWork(candidates, now, Math.floor(now / cronIntervalMs));
+    return { candidates, contexts };
+  }
+  async nextWakeAt() {
+    const now = this.clock();
+    const next = await this.store.nextWakeAt(now, collectionExecution.idleCheckMs);
+    return next === null ? null : Math.max(now + collectionExecution.continuationDelayMs, next);
+  }
+  async tick(sequence = this.selectionSequence++) {
+    const now = this.clock();
+    const { candidates, contexts } = await this.workPlan(now);
+    const decision = selectWork(candidates, now, sequence);
     if (!decision.selected) return { decision, httpAttempts: 0, durationMs: 0 };
     if (decision.selected.kind === "job") {
       const job = await this.advance(decision.selected.id);
@@ -522,11 +533,13 @@ export class Collect {
         durationMs: this.clock() - now,
       };
     }
-    if (!schedule) return;
+    const context = contexts.get(decision.selected.id);
+    if (!context) return;
+    const { schedule, age, storyExpiry } = context;
     const scheduleToken = this.randomId();
     if (!(await this.store.claimSchedule(schedule.accountId, scheduleToken, now)))
       return { decision, deferred: "lease_contention" };
-    (schedule as CollectionSchedule & { claimToken?: string }).claimToken = scheduleToken;
+    schedule.claimToken = scheduleToken;
     let refreshingMedia: string | null = null;
     try {
       const now = this.clock();
@@ -559,7 +572,7 @@ export class Collect {
         const result = await this.analytics.refresh(
           age.mediaId,
           await this.operationId(
-            `age:${age.mediaId}:${age.targetHours}:${Math.floor(now / cronIntervalMs)}`,
+            `age:${age.mediaId}:${age.targetHours}:${Math.floor(now / retryIntervalMs)}`,
           ),
         );
         if (result.status !== "completed")
@@ -628,12 +641,12 @@ export class Collect {
           ? await this.store.nextCommentRefresh(schedule.accountId, now)
           : null;
         const mediaId = await this.store.dueMedia(schedule.accountId, now);
-        const preferComments = Math.floor(now / (15 * 60_000)) % 2 === 0;
+        const preferComments = sequence % 2 === 0;
         if (commentMedia && (!mediaId || preferComments)) {
           await this.start(
             schedule.accountId,
             await this.operationId(
-              `comments-refresh:${commentMedia.id}:${Math.floor(now / cronIntervalMs)}`,
+              `comments-refresh:${commentMedia.id}:${Math.floor(now / retryIntervalMs)}`,
             ),
             "comments_refresh",
             true,
@@ -658,7 +671,7 @@ export class Collect {
           lastSuccessAt,
           errorCode: null,
           failures: 0,
-          retryAt: this.clock() + cronIntervalMs,
+          retryAt: this.clock() + collectionExecution.continuationDelayMs,
         },
         schedule.updatedAt,
       );
@@ -667,7 +680,7 @@ export class Collect {
       if (code === "INSTAGRAM_OBJECT_UNAVAILABLE" && refreshingMedia) {
         await this.store.markUnavailable(refreshingMedia, this.clock() + 24 * 3_600_000, code);
         await this.store.finishSchedule(
-          { ...schedule, errorCode: code, retryAt: this.clock() + cronIntervalMs },
+          { ...schedule, errorCode: code, retryAt: this.clock() + retryIntervalMs },
           schedule.updatedAt,
         );
         return;
@@ -688,7 +701,7 @@ export class Collect {
           code === "INSTAGRAM_RATE_LIMITED"
             ? 15 * 60_000
             : recoverable || (age !== null && code === "INSTAGRAM_UNAVAILABLE")
-              ? cronIntervalMs
+              ? retryIntervalMs
               : retryDelay(schedule.failures + 1),
           error instanceof ApplicationError ? (error.retryAfterMs ?? 0) : 0,
         );

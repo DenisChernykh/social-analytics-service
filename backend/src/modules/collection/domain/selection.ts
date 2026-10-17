@@ -3,16 +3,20 @@ export type WorkCandidate = {
   id: string;
   dueAt: number;
   deadline: number;
-  cost: number;
   archive: boolean;
+  lastAttemptAt?: number | null;
 };
-export function selectWork(candidates: WorkCandidate[], now: number, slot: number) {
+export function selectWork(candidates: WorkCandidate[], now: number, sequence: number) {
   const due = candidates.filter((c) => c.dueAt <= now);
   const urgent = due.filter((c) => c.deadline <= now + 15 * 60_000);
-  const reserve = slot % 3 === 2 && !urgent.length ? due.filter((c) => c.archive) : [];
+  const reserve =
+    sequence % 3 === 2 && urgent.every((c) => c.archive) ? due.filter((c) => c.archive) : [];
   const ranked = (reserve.length ? reserve : due).sort(
     (a, b) =>
-      a.deadline - b.deadline || a.dueAt - b.dueAt || a.cost - b.cost || a.id.localeCompare(b.id),
+      (reserve.length ? (a.lastAttemptAt ?? 0) - (b.lastAttemptAt ?? 0) : 0) ||
+      a.deadline - b.deadline ||
+      a.dueAt - b.dueAt ||
+      a.id.localeCompare(b.id),
   );
   return {
     selected: ranked[0] ?? null,
@@ -23,6 +27,5 @@ export function selectWork(candidates: WorkCandidate[], now: number, slot: numbe
         : "earliest_deadline",
     dueActions: due.length,
     atRisk: urgent.length,
-    capacityDeficit: urgent.reduce((n, c) => n + c.cost, 0) > 6,
   };
 }

@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createScheduledOperations } from "../src/app/create-features";
+import { createCollectionExecutor } from "../src/app/create-features";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
 import { accountId, connect, fixture, sampleMedia } from "./helpers";
 
@@ -68,7 +68,7 @@ async function ready(comments = true) {
   return {
     ...f,
     post,
-    collector: createScheduledOperations(env, { transport: () => f.transport }, f.now),
+    collector: createCollectionExecutor(env, { transport: () => f.transport }, f.now),
     store: new D1Collection(env.DB),
   };
 }

@@ -9,7 +9,11 @@
   Do not redeploy the backend or add storage for this follow-up.
 
 - Node 24 and pnpm 11.15.1. Install at the workspace root; one lockfile.
-- Backend only: one Cloudflare Worker, Hono, D1/Drizzle, OpenAPI 3.1.
+- Backend: one Cloudflare Worker, Hono, D1/Drizzle, OpenAPI 3.1, and one
+  SQLite-backed Durable Object for background collection. The DO retains only
+  alarm/recovery state; analytics, jobs and checkpoints remain in D1.
+- Cron only wakes the collection DO. Keep source access and collection commands
+  inside the DO, serialized with alarms. Preserve D1 leases and operation IDs.
 - Use the official Instagram API with Instagram Login. No scraping, browser
   sessions, unofficial Instagram API, MCP server or ChatGPT plugin in this task.
 - Keep the feature-first modular monolith in `backend/src/modules`.
@@ -18,7 +22,7 @@
   coordinates capability-specific ports; infrastructure implements them;
   presentation invokes use cases. Compose modules through root factories.
 - Do not add a DI framework, generic repositories, paid infrastructure,
-  frontend, extra Worker, database, Queue, KV, R2, Redis or Docker.
+  frontend, extra Worker, additional analytics database, Queue, KV, R2, Redis or Docker.
 - API values retain their source and collection time. Missing metrics are null,
   never invented zeroes. Document derived formulas and data limitations.
 - Never print or commit OAuth codes, state, access tokens, API keys, credentials

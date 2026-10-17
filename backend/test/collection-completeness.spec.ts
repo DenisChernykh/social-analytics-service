@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createScheduledOperations, featureOptions } from "../src/app/create-features";
+import { createCollectionExecutor, featureOptions } from "../src/app/create-features";
 import { createAnalyticsOperations } from "../src/modules/analytics";
 import { createCollectionOperations } from "../src/modules/collection";
 import { ApplicationError } from "../src/shared/application/application-error";
@@ -491,7 +491,7 @@ describe("bounded background comment progress", () => {
       .run();
     // Creation and its first atomic Story page now share the same tick.
     f.advance(600_000 - (f.now() % 600_000));
-    const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
+    const collector = createCollectionExecutor(env, { transport: () => f.transport }, f.now);
     await collector.tick();
     expect(f.transport.stories).toHaveBeenCalledTimes(1);
     expect(f.transport.comments).not.toHaveBeenCalled();
@@ -518,7 +518,7 @@ describe("bounded background comment progress", () => {
     }));
     const jobId = crypto.randomUUID();
     await f.request(`/api/accounts/${accountId}/comments/collect`, "POST", { operationId: jobId });
-    const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
+    const collector = createCollectionExecutor(env, { transport: () => f.transport }, f.now);
     await collector.tick();
     vi.mocked(f.transport.comments).mockRejectedValueOnce(
       new ApplicationError("INSTAGRAM_RATE_LIMITED", "Temporary source failure"),

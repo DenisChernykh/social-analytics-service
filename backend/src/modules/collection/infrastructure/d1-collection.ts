@@ -222,41 +222,30 @@ export class D1Collection implements CollectionStore {
   async create(job: CollectionJob) {
     await this.db.insert(collectionJobs).values(job).onConflictDoNothing();
   }
-  async nextJob(now: number, archiveOnly = false) {
-    // A small head start for short-lived Stories and discovery, with aging so
-    // older catalogue/comments work still progresses. Leased jobs cannot hide
-    // available work behind the status endpoint's 100-row display limit.
-    const row = await this.database
-      .prepare(
-        `SELECT id FROM collection_jobs
-         WHERE status='running' AND next_attempt_at<=?
-           ${archiveOnly ? "AND origin IN ('comments','catalogue','manual','audience','activity')" : ""}
-           AND (lease_expires_at IS NULL OR lease_expires_at<=?)
-         ORDER BY CASE WHEN (CASE WHEN origin='activity' THEN json_extract(cursor,'$[0].from') END)+7776000000<=?+900000 THEN 0 WHEN origin IN ('stories','scheduled','comments_refresh') THEN 1 WHEN origin='stories' AND EXISTS (SELECT 1 FROM media m WHERE m.account_id=collection_jobs.account_id AND m.product_type='STORY' AND m.published_at+86400000 BETWEEN ? AND ?+900000) THEN 1 ELSE 2 END,
-           next_attempt_at - CASE origin WHEN 'stories' THEN 900000 WHEN 'comments_refresh' THEN 600000 WHEN 'scheduled' THEN 300000 ELSE 0 END,
-           started_at,id LIMIT 1`,
-      )
-      .bind(now, now, now, now, now)
-      .first<{ id: string }>();
-    return row?.id ?? null;
+  async pendingJobs() {
+    return (await this.db
+      .select()
+      .from(collectionJobs)
+      .where(eq(collectionJobs.status, "running"))
+      .orderBy(
+        collectionJobs.nextAttemptAt,
+        collectionJobs.startedAt,
+        collectionJobs.id,
+      )) as CollectionJob[];
   }
-  async workHeads(now: number) {
-    // Both candidates in one D1 read. The archive head rotates by last attempt;
-    // deadline-critical activity still outranks the reserve.
-    return (
-      (await this.database
-        .prepare(`WITH eligible AS (
-      SELECT *,CASE WHEN origin='activity' AND json_extract(cursor,'$[0].from')+7776000000<=?+900000 THEN 0 WHEN origin IN ('stories','scheduled','comments_refresh') THEN 1 ELSE 2 END AS urgency
-      FROM collection_jobs WHERE status='running' AND next_attempt_at<=? AND (lease_expires_at IS NULL OR lease_expires_at<=?)
-    ) SELECT
-      (SELECT id FROM eligible ORDER BY urgency,next_attempt_at,started_at,id LIMIT 1) jobId,
-      (SELECT id FROM eligible WHERE origin NOT IN ('stories','scheduled','comments_refresh') ORDER BY CASE WHEN urgency=0 THEN 0 ELSE 1 END,COALESCE(last_attempt_at,0),started_at,id LIMIT 1) archiveId`)
-        .bind(now, now, now)
-        .first<{ jobId: string | null; archiveId: string | null }>()) ?? {
-        jobId: null,
-        archiveId: null,
-      }
-    );
+  async nextWakeAt(now: number, idleCheckMs: number) {
+    const row = await this.database
+      .prepare(`SELECT MIN(next_at) AS nextAt FROM (
+      SELECT MAX(next_attempt_at,COALESCE(lease_expires_at,0)) AS next_at
+        FROM collection_jobs WHERE status='running'
+      UNION ALL
+      SELECT MAX(retry_at,COALESCE(claim_expires_at,0),
+        MIN(next_discovery_at,next_stories_at,next_insights_at,next_catalogue_at,?))
+        FROM collection_schedules WHERE enabled=1
+    )`)
+      .bind(now + idleCheckMs)
+      .first<{ nextAt: number | null }>();
+    return row?.nextAt ?? null;
   }
   async latestJob(accountId: string, origin: CollectionJob["origin"]) {
     return (
@@ -409,14 +398,12 @@ export class D1Collection implements CollectionStore {
       )[0] ?? null
     );
   }
-  async nextSchedule(now: number) {
-    const rows = await this.db
+  async enabledSchedules() {
+    return this.db
       .select()
       .from(collectionSchedules)
-      .where(and(eq(collectionSchedules.enabled, true), lte(collectionSchedules.retryAt, now)))
-      .orderBy(collectionSchedules.retryAt, collectionSchedules.nextDiscoveryAt)
-      .limit(1);
-    return rows[0] ?? null;
+      .where(eq(collectionSchedules.enabled, true))
+      .orderBy(collectionSchedules.retryAt, collectionSchedules.accountId);
   }
   async saveSchedule(schedule: CollectionSchedule) {
     await this.db
@@ -703,12 +690,7 @@ export class D1Collection implements CollectionStore {
           eq(collectionSchedules.accountId, schedule.accountId),
           eq(collectionSchedules.enabled, true),
           eq(collectionSchedules.updatedAt, version),
-          (schedule as CollectionSchedule & { claimToken?: string }).claimToken
-            ? eq(
-                collectionSchedules.claimToken,
-                (schedule as CollectionSchedule & { claimToken: string }).claimToken,
-              )
-            : undefined,
+          schedule.claimToken ? eq(collectionSchedules.claimToken, schedule.claimToken) : undefined,
         ),
       );
   }

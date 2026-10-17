@@ -72,18 +72,31 @@ export class D1Comments implements CommentStore {
       ? " AND EXISTS (SELECT 1 FROM collection_jobs WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?)"
       : "";
     const fenceValues = ownership ? [ownership.jobId, ownership.leaseToken, now] : [];
-    // A bounded JSON chunk keeps transport receipts plus the largest expansion
-    // within D1's request/query limits. Fields and ownership remain explicit.
-    const chunks: SavedComment[][] = [];
-    for (let offset = 0; offset < items.length; offset += 25)
-      chunks.push(items.slice(offset, offset + 25));
+    // Bound by D1's 2 MB string limit instead of creating a query per 25
+    // comments. One expanded page can contain up to 2550 roots and replies.
+    const chunks: string[] = [];
+    const encoder = new TextEncoder();
+    let values: string[] = [],
+      bytes = 2;
+    for (const item of items) {
+      const value = JSON.stringify(item);
+      const size = encoder.encode(value).byteLength + 1;
+      if (values.length && bytes + size > 1_500_000) {
+        chunks.push(`[${values.join(",")}]`);
+        values = [];
+        bytes = 2;
+      }
+      values.push(value);
+      bytes += size;
+    }
+    if (values.length) chunks.push(`[${values.join(",")}]`);
     const results = await this.database.batch([
       ...chunks.map((chunk) =>
         this.database
           .prepare(
             `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at,author_id,author_username,like_count,hidden) SELECT json_extract(value,'$.id'),json_extract(value,'$.mediaId'),json_extract(value,'$.parentId'),json_extract(value,'$.text'),json_extract(value,'$.publishedAt'),json_extract(value,'$.observedAt'),json_extract(value,'$.authorId'),json_extract(value,'$.authorUsername'),json_extract(value,'$.likeCount'),json_extract(value,'$.hidden') FROM json_each(?) WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=? AND json_extract(result_json,'$.startedAt')=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at,author_id=excluded.author_id,author_username=excluded.author_username,like_count=excluded.like_count,hidden=excluded.hidden WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
           )
-          .bind(JSON.stringify(chunk), collection.id, collection.startedAt, ...fenceValues),
+          .bind(chunk, collection.id, collection.startedAt, ...fenceValues),
       ),
       this.database
         .prepare(

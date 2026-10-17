@@ -9,30 +9,30 @@ const calls = vi.hoisted(() => ({
   fetch: vi.fn<
     (request: Request, env: RuntimeBindings, ctx: ExecutionContext) => Promise<Response>
   >(async () => new Response("ok")),
-  createScheduledOperations: vi.fn(),
-  tick: vi.fn(async () => undefined),
+  runner: vi.fn(),
+  ensureAwake: vi.fn(async () => undefined),
 }));
 vi.mock("../src/app/create-app", () => {
   calls.httpImports++;
   calls.createApp.mockReturnValue({ fetch: calls.fetch });
   return { createApp: calls.createApp };
 });
-vi.mock("../src/app/create-features", () => {
-  calls.createScheduledOperations.mockReturnValue({ tick: calls.tick });
-  return { createScheduledOperations: calls.createScheduledOperations };
+vi.mock("../src/app/durable-collection", () => {
+  calls.runner.mockReturnValue({ ensureAwake: calls.ensureAwake });
+  return { collectionRunner: calls.runner };
 });
 
-it("runs Cron without initializing HTTP and shares only the router across concurrent HTTP requests", async () => {
+it("only wakes the Durable Object from Cron without initializing HTTP and shares only the router across concurrent HTTP requests", async () => {
   vi.resetModules();
   const { default: worker } = await import("../src/index");
   const ctx = createExecutionContext();
   const waitUntil = vi.spyOn(ctx, "waitUntil");
   const controller = createScheduledController({ cron: "*/5 * * * *", scheduledTime: 0 });
   worker.scheduled(controller, env, ctx);
-  expect(calls.createScheduledOperations).toHaveBeenCalledOnce();
-  expect(calls.createScheduledOperations.mock.calls[0]?.[0]).toBe(env);
-  expect(calls.tick).toHaveBeenCalledOnce();
-  expect(waitUntil).toHaveBeenCalledExactlyOnceWith(calls.tick.mock.results[0]?.value);
+  expect(calls.runner).toHaveBeenCalledOnce();
+  expect(calls.runner.mock.calls[0]?.[0]).toBe(env);
+  expect(calls.ensureAwake).toHaveBeenCalledOnce();
+  expect(waitUntil).toHaveBeenCalledExactlyOnceWith(calls.ensureAwake.mock.results[0]?.value);
   expect(calls.httpImports).toBe(0);
   expect(calls.createApp).not.toHaveBeenCalled();
 
@@ -56,7 +56,7 @@ it("runs Cron without initializing HTTP and shares only the router across concur
   expect(calls.fetch.mock.calls[1]?.[2]).toBe(secondCtx);
 
   worker.scheduled(controller, secondEnv, secondCtx);
-  expect(calls.createScheduledOperations.mock.lastCall?.[0]).toBe(secondEnv);
-  expect(calls.tick).toHaveBeenCalledTimes(2);
+  expect(calls.runner.mock.lastCall?.[0]).toBe(secondEnv);
+  expect(calls.ensureAwake).toHaveBeenCalledTimes(2);
   expect(calls.createApp).toHaveBeenCalledOnce();
 });

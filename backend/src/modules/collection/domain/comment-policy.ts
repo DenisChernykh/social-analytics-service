@@ -1,5 +1,5 @@
 export const commentPolicy = {
-  outerPageSize: 5,
+  outerPageSize: 50,
   replyPageSize: 50,
   recentHours: 72,
   recentRefreshHours: 1,

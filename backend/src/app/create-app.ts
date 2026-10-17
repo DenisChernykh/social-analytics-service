@@ -10,6 +10,7 @@ import {
   createAnalyticsModule,
   summarySchema,
 } from "../modules/analytics/public-contracts";
+import type { CollectionCommands } from "../modules/collection";
 import { createCollectionModule } from "../modules/collection/public-contracts";
 import { createCommentModule } from "../modules/community/public-contracts";
 import { createContentModule } from "../modules/content/public-contracts";
@@ -19,15 +20,21 @@ import {
   createInstagramModule,
 } from "../modules/instagram/public-contracts";
 import { createReviewModule } from "../modules/reviews";
+import type { RuntimeBindings } from "../platform/config/runtime-config";
 import { authenticate } from "../platform/http/authentication";
 import type { HttpEnv } from "../platform/http/environment";
 import { applicationProblem, errorResponses, problem } from "../platform/http/problem";
 import { ApplicationError } from "../shared/application/application-error";
 import { featureOptions } from "./create-features";
+import { durableCollectionCommands } from "./durable-collection";
 import { registerPublicInformation } from "./public-information";
 
 export function createApp(
-  options: { instagram?: InstagramModuleOptions; clock?: () => number } = {},
+  options: {
+    instagram?: InstagramModuleOptions;
+    clock?: () => number;
+    collectionCommands?: (env: RuntimeBindings) => CollectionCommands;
+  } = {},
 ) {
   const app = new OpenAPIHono<HttpEnv>();
   const instagramOptions = {
@@ -100,7 +107,13 @@ export function createApp(
       clock: options.clock,
     }).router,
   );
-  app.route("/", createCollectionModule(features.collectionOptions).router);
+  app.route(
+    "/",
+    createCollectionModule(
+      features.collectionOptions,
+      options.collectionCommands ?? durableCollectionCommands,
+    ).router,
+  );
   app.route("/", createInsightModule(features.insightsOptions).router);
   app.route("/", createContentModule(features.contentOptions).router);
   app.route("/", createCommentModule(features.commentOptions).router);

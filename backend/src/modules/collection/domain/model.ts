@@ -59,6 +59,8 @@ export type CommentPosition = {
   eventGeneration?: number;
 };
 export type CollectionSchedule = {
+  claimToken?: string | null;
+  claimExpiresAt?: number | null;
   accountId: string;
   enabled: boolean;
   discoveryMinutes: number;

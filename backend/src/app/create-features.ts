@@ -4,7 +4,7 @@ import {
   type InsightCollection,
 } from "../modules/account-insights";
 import { createAnalyticsOperations } from "../modules/analytics";
-import { createCollectionOperations } from "../modules/collection";
+import { collectionExecution, createCollectionOperations } from "../modules/collection";
 import { createCommentOperations } from "../modules/community";
 import { createContentOperations } from "../modules/content";
 import {
@@ -190,7 +190,7 @@ export function featureOptions(
             accountId,
             operationId,
             cursor,
-            pageSize: 1,
+            pageSize: collectionExecution.pageSize,
             kind: stories ? "stories" : "page",
           }),
       };
@@ -254,26 +254,21 @@ export function featureOptions(
     commentWebhookOptions,
   };
 }
-export function createScheduledOperations(
+export function createCollectionExecutor(
   env: RuntimeBindings,
   instagram: InstagramModuleOptions = {},
   clock?: () => number,
 ) {
-  // This scope is created anew by each scheduled invocation. Credentials and
-  // in-flight promises are never shared between Worker invocations.
-  let reader: ReturnType<typeof createInstagramOperations> | undefined;
-  const options = featureOptions(instagram, clock, () => {
-    reader ??= createInstagramOperations(env, {
-      ...instagram,
-      clock: clock ?? instagram.clock,
-      requestBudget: {
-        maxAttempts: 6,
-        attempts: 0,
-        deadlineAt: (clock ?? instagram.clock ?? Date.now)() + 90_000,
-        reserveMs: 15_000,
-      },
-    });
-    return reader;
+  const reader = createInstagramOperations(env, {
+    ...instagram,
+    clock: clock ?? instagram.clock,
+    requestBudget: {
+      maxAttempts: collectionExecution.maximumHttpAttempts,
+      attempts: 0,
+      deadlineAt: (clock ?? instagram.clock ?? Date.now)() + collectionExecution.workBudgetMs,
+      reserveMs: collectionExecution.persistenceReserveMs,
+    },
   });
+  const options = featureOptions(instagram, clock, () => reader);
   return createCollectionOperations(env, options.collectionOptions);
 }

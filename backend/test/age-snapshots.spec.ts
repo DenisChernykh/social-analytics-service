@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createScheduledOperations } from "../src/app/create-features";
+import { createCollectionExecutor } from "../src/app/create-features";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
 import { ApplicationError } from "../src/shared/application/application-error";
 import { accountId, connect, fixture, sampleMedia } from "./helpers";
@@ -26,7 +26,7 @@ async function ready() {
   }));
   const publishedAt = f.now();
   await f.request(`/api/accounts/${accountId}/sync`, "POST", { operationId: crypto.randomUUID() });
-  const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
+  const collector = createCollectionExecutor(env, { transport: () => f.transport }, f.now);
   await collector.configure(accountId, { enabled: true, discoveryMinutes: 360 });
   await env.DB.prepare(
     "UPDATE collection_schedules SET next_stories_at=?,next_insights_at=?,next_discovery_at=?,next_catalogue_at=? WHERE account_id=?",

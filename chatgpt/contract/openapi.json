@@ -6328,8 +6328,6 @@
                         "persistenceReserveMs",
                         "pressureIndicator",
                         "overload",
-                        "capacityDeficit",
-                        "availableStepsIn15m",
                         "assumptions"
                       ]
                     },

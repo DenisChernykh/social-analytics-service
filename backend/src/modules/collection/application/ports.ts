@@ -61,14 +61,14 @@ export interface CollectionStore {
   claimSchedule(accountId: string, token: string, now: number): Promise<boolean>;
   releaseSchedule(accountId: string, token: string): Promise<void>;
   recordPolicy(accountId: string, enabled: boolean, now: number, policy: unknown): Promise<void>;
-  nextJob(now: number, archiveOnly?: boolean): Promise<string | null>;
-  workHeads(now: number): Promise<{ jobId: string | null; archiveId: string | null }>;
+  pendingJobs(): Promise<CollectionJob[]>;
+  nextWakeAt(now: number, idleCheckMs: number): Promise<number | null>;
   create(job: CollectionJob): Promise<void>;
   claim(id: string, token: string, now: number): Promise<CollectionJob | null>;
   save(job: CollectionJob, token: string, now: number, comment?: CommentCheckpoint): Promise<void>;
   control(id: string, status: "running" | "cancelled", now: number): Promise<void>;
   schedule(accountId: string): Promise<CollectionSchedule | null>;
-  nextSchedule(now: number): Promise<CollectionSchedule | null>;
+  enabledSchedules(): Promise<CollectionSchedule[]>;
   saveSchedule(schedule: CollectionSchedule): Promise<void>;
   dueMedia(accountId: string, now: number): Promise<string | null>;
   dueAgeMedia(accountId: string, now: number): Promise<DueAgeSnapshot | null>;

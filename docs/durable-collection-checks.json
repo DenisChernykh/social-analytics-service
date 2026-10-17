@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-17",
+  "revision": "0.3.0",
+  "baseline": {
+    "gitHead": "365bf86",
+    "checkpoint": "/private/tmp/social-analytics-before-durable-objects-20261017",
+    "archiveSha256": "c0244d8ef99e30fb7bf2bb638ef38626e4da6c8674b7dc4ba5b881de4d95c10a",
+    "priorUncommittedWorkPreserved": true,
+    "commit": "4cd5af0"
+  },
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 167,
+    "backendTestFiles": 15,
+    "mcpTests": 25,
+    "workerDeploy": "dry-run only",
+    "localMigrations": "No migrations to apply",
+    "productionDeployment": "not performed",
+    "recheckedBeforeRelease": "2026-10-17",
+    "remoteD1Migrations": "No pending migrations; SELECT only"
+  },
+  "changedFiles": {
+    "AGENTS.md": "a8773dee21418ce93fda86a17f5ef6113152b8099f6f9525814618a442e86d79",
+    "README.md": "87a2301f67377c9ef77c9745aa6f6775bbce76e75e3ddb879c444fe8ae6addca",
+    "backend/scripts/check-module-boundaries.mjs": "0d2530289f60be19a1eb8956e4ca8ba0e8fd3bb63bb70d638ce85ecc5718e96e",
+    "backend/src/app/collection-runner.ts": "2f66d783641737eaeb2f95803002990e2083a5c22238e409aee21a217f3f5670",
+    "backend/src/app/create-app.ts": "70b32aabe58f3a0aef49996551926f02869d948bfd3c487c5c6fafb09a6cd932",
+    "backend/src/app/create-features.ts": "abde006be727b61fa14da88a13786b7d0aa0634e12dc81a279a4b9b8f83ea831",
+    "backend/src/app/durable-collection.ts": "cb05e3b2214224f5690af502c642604a641d60aa3a08d5dda7e6839d02155ff7",
+    "backend/src/index.ts": "c4efa93b3fa5b56661d99756bee6d4e53638c8dc4bc8a8277d346df8538bf461",
+    "backend/src/modules/collection/application/collect.ts": "86c5eed5b000324df76a10dc1d824988093d8b1498603354aaedf98aafae53f0",
+    "backend/src/modules/collection/application/execution-policy.ts": "bbc48c60a6cf996d2d88ef4e7dce2928529b385eb2bea66d715134137acf7c9d",
+    "backend/src/modules/collection/application/ports.ts": "c38209803b070634b2eb422e811951542a580cf376c190f39e3f8a37aed41230",
+    "backend/src/modules/collection/domain/comment-policy.ts": "920d7c6ba5a62d8d671be6e9e9cceb2029bdb67e00ead04089cf1e38bcc50a31",
+    "backend/src/modules/collection/domain/model.ts": "92dcf33fdc2a4209eb29f0c60bf1d7d88f34e2e103e82f05d426d2dfef1c8a92",
+    "backend/src/modules/collection/domain/selection.ts": "66bfa149be4f417113b57fea924f07eb1de1e3083439f916bb644ad81d6466da",
+    "backend/src/modules/collection/index.ts": "f2cd35df4b0d0bc451c0432c7b6ca9b8cc078f7b9db68ecdd7c24566800fc7b9",
+    "backend/src/modules/collection/infrastructure/d1-collection.ts": "bea8930371b67934396349b9abdd84e337100445563764cd17d40ed00788446f",
+    "backend/src/modules/collection/presentation/http.ts": "6c71a9eaf8efe48c858c718d6fb6533683502c4522cc95b86e3a73106b3f7685",
+    "backend/src/modules/collection/public-contracts.ts": "19eaea736f5db8267e713232a1ee0b8a4fc51a3fe614de5e272fc3b34b41d7ec",
+    "backend/src/modules/community/infrastructure/d1-comments.ts": "1dce9ed61d01d0125f2286c53d7e611c25c16746f10bf623b0cb591db88662ab",
+    "backend/src/worker-configuration.d.ts": "8130240f2ed7612923f112d630a8c3e4da86e24012be7ffa9055710d72fcf91a",
+    "backend/test/age-snapshots.spec.ts": "ea2e33776e422719a62ddc31699fc86bbaf3b91ad06ba95881c512bc839d4ddc",
+    "backend/test/collection-completeness.spec.ts": "6df8b92a475f7654fdd67532f63b774bf928bd0d214d5f89f04093bc88a20f8f",
+    "backend/test/collection-recovery.spec.ts": "fe1ee3e271192b79f3420cb88c4c24092b26df9c3a81fb4ed2822135910ef1c6",
+    "backend/test/collection-runner.spec.ts": "5de174d1ed2f2ecb53d82a823478b3de58140fd35ab73f5c3127cf87b5b400df",
+    "backend/test/collection-upgrades.spec.ts": "b220c843aa3bfe82726f7e3bfe151d4f36b1218ac42ef384e525e697001de5d1",
+    "backend/test/comment-optimization.spec.ts": "f05a2d3c40dd885612bf528147afca14d5044b5eb3dc14f1396b5f51e0f6ef3b",
+    "backend/test/comment-scheduling.spec.ts": "0f4140bd6a0547429e6f3216db8bf184e966e136e29180b97cd616c57608789d",
+    "backend/test/comment-webhooks.spec.ts": "7ef72248788c344768a74e0fd4f555b22130a5b71afcb935aaf8a9be198530f3",
+    "backend/test/helpers.ts": "3453777041b4871e9a6ea09523f816b14096e513d43c85df6df2f5db10dce476",
+    "backend/test/instagram-data-quality.spec.ts": "28cecdc3da668847a8421e2f2b99e17b709bcb84952683006919d16f4c125d2e",
+    "backend/test/worker-entry.spec.ts": "5aa39a1fbbe23426654be5af226a42e5ff09c5ca58eb976194907426aa5c553c",
+    "backend/wrangler.jsonc": "2a878376500616e77c469cd1a819a86bfd44e58b15cdbeadae34a58ff1bf0ac0",
+    "chatgpt/contract/openapi.json": "659f32c4af9890d1c2065a786eff13dcc0f0b54f2544ab12212204fbd1ab1d86",
+    "chatgpt/src/contract.ts": "9b9d3340b3a99ada05fcc34c42048d7b351bf88a8fa4734096fc1561f4d5573e",
+    "docs/architecture.md": "dbac02772d99c79bed766db2ea589d4d60bf21151a0d51b956c15d2d3cfa577d",
+    "docs/deployment.md": "affc3ca08b1809d64972445a89c3a28c5a61338e567709a5c70c83180b650226",
+    "docs/durable-collection-migration.md": "a2ce31213f1225e6d8c057e7d314e0a98dbac3fd711dc1d358aeb27be02bbc4e"
+  },
+  "limitations": [
+    "Free plan CPU enforcement and production reliability require an authorized deployment and observation.",
+    "Pre-existing backend/MCP work is required to reproduce this source tree; it is not represented by Git HEAD alone."
+  ],
+  "releaseArtifact": {
+    "path": "/private/tmp/social-analytics-durable-release-20261017",
+    "files": {
+      "worker/README.md": "e70745e167e6fd92d7fc45b59978c5c0ca90c38ae732cb86161367b6fcda0bd2",
+      "worker/index.js": "9441a180b2df8539a0eb1496068f2bbbab47e921e1d4d3b9577bad1f838c483f",
+      "worker/index.js.map": "2217b6030418456b0e4b38991f767c899911ce61815364dd373604cb26f01136",
+      "wrangler.jsonc": "2a878376500616e77c469cd1a819a86bfd44e58b15cdbeadae34a58ff1bf0ac0"
+    }
+  }
+}

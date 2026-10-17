@@ -3,7 +3,7 @@ import type { RuntimeBindings } from "../../../platform/config/runtime-config";
 import type { HttpEnv } from "../../../platform/http/environment";
 import { errorResponses, problem } from "../../../platform/http/problem";
 import { windowCoverageSchema } from "../../../shared/presentation/measurement";
-import type { Collect } from "../application/collect";
+import type { CollectionCommands, CollectionReads } from "../index";
 
 const id = z.string().min(1).max(150);
 const params = z.object({ accountId: id });
@@ -78,7 +78,10 @@ const responses = <T extends z.ZodType>(schema: T) => ({
   ...errorResponses,
 });
 
-export function createCollectionHttp(operations: (env: RuntimeBindings) => Collect) {
+export function createCollectionHttp(
+  operations: (env: RuntimeBindings) => CollectionReads,
+  commands: (env: RuntimeBindings) => CollectionCommands,
+) {
   const router = new OpenAPIHono<HttpEnv>({
     defaultHook: (result, c) => {
       if (!result.success)
@@ -163,8 +166,8 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
         persistenceReserveMs: z.number(),
         pressureIndicator: z.boolean(),
         overload: z.enum(["not_measured", "estimated_deficit"]),
-        capacityDeficit: z.number(),
-        availableStepsIn15m: z.number(),
+        capacityDeficit: z.number().optional(),
+        availableStepsIn15m: z.number().optional(),
         assumptions: z.string(),
       })
       .optional(),
@@ -350,7 +353,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
     async (c) =>
       c.json(
         jobSchema.parse(
-          await operations(c.env).start(
+          await commands(c.env).start(
             c.req.valid("param").accountId,
             c.req.valid("json").operationId,
             c.req.valid("json").stories ? "stories" : "manual",
@@ -375,7 +378,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
     async (c) =>
       c.json(
         jobSchema.parse(
-          await operations(c.env).start(
+          await commands(c.env).start(
             c.req.valid("param").accountId,
             c.req.valid("json").operationId,
             "comments",
@@ -408,7 +411,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
     async (c) =>
       c.json(
         scheduleSchema.parse(
-          await operations(c.env).configure(c.req.valid("param").accountId, c.req.valid("json")),
+          await commands(c.env).configure(c.req.valid("param").accountId, c.req.valid("json")),
         ),
         200,
       ),
@@ -437,7 +440,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
       responses: responses(jobSchema),
     }),
     async (c) =>
-      c.json(jobSchema.parse(await operations(c.env).advance(c.req.valid("param").jobId)), 200),
+      c.json(jobSchema.parse(await commands(c.env).advance(c.req.valid("param").jobId)), 200),
   );
   router.openapi(
     createRoute({
@@ -455,7 +458,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
     async (c) =>
       c.json(
         jobSchema.parse(
-          await operations(c.env).control(c.req.valid("param").jobId, c.req.valid("json").action),
+          await commands(c.env).control(c.req.valid("param").jobId, c.req.valid("json").action),
         ),
         200,
       ),

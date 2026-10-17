@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createScheduledOperations } from "../src/app/create-features";
+import { createCollectionExecutor } from "../src/app/create-features";
 import { activityPeriodPlan } from "../src/modules/account-insights/domain/periods";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
 import { quotaObservation } from "../src/modules/instagram/domain/request-policy";
@@ -39,7 +39,7 @@ async function ready() {
   await f.request(`/api/accounts/${accountId}/sync`, "POST", { operationId: crypto.randomUUID() });
   return {
     ...f,
-    collector: createScheduledOperations(env, { transport: () => f.transport }, f.now),
+    collector: createCollectionExecutor(env, { transport: () => f.transport }, f.now),
     store: new D1Collection(env.DB),
   };
 }
@@ -661,7 +661,7 @@ describe("Story expiry scheduling", () => {
     await env.DB.prepare("UPDATE collection_jobs SET next_attempt_at=? WHERE id=?")
       .bind(f.now() - 24 * 3600_000, comments.id)
       .run();
-    expect(await f.store.nextJob(f.now())).toBe(story.id);
+    expect((await f.collector.tick())?.decision.selected?.id).toBe(story.id);
     expect(await f.store.nextStoryExpiry(accountId, f.now())).toBe(f.now() + 5 * 60_000);
     await env.DB.prepare("UPDATE media_snapshots SET observed_at=? WHERE media_id=?")
       .bind(f.now(), mediaId)
