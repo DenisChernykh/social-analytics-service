@@ -1,0 +1,451 @@
+{
+  "method": "Same CDP statistical estimator as workerd-profile.mjs; wait is deliberately 50 ms; busy is 10M sqrt operations, not a wall-clock timer",
+  "result": [
+    {
+      "kind": "noop",
+      "samples": [
+        {
+          "activeMs": 0.703,
+          "idleMs": 2.373,
+          "wallMs": 1.509334000000024,
+          "longDeltas": [
+            {
+              "us": 2373,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.481,
+          "wallMs": 0.9607500000000186,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.492,
+          "wallMs": 0.77800000000002,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.48,
+          "wallMs": 0.7650840000000017,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.459,
+          "wallMs": 0.6671670000000063,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.468,
+          "wallMs": 0.7783749999999827,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.483,
+          "wallMs": 0.8338749999999777,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.574,
+          "wallMs": 0.7401669999999854,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0.421,
+          "idleMs": 0.474,
+          "wallMs": 0.6527909999999792,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.468,
+          "wallMs": 0.5245000000000459,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.48,
+          "wallMs": 0.5393750000000068,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.467,
+          "wallMs": 0.6683749999999691,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.441,
+          "wallMs": 0.5882910000000265,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.459,
+          "wallMs": 0.5491250000000036,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.527,
+          "wallMs": 0.5972080000000233,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.487,
+          "wallMs": 0.5376250000000482,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.457,
+          "wallMs": 0.4800840000000335,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.477,
+          "wallMs": 0.5004170000000272,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.453,
+          "wallMs": 0.504209000000003,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.451,
+          "wallMs": 0.5100419999999986,
+          "longDeltas": []
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 0,
+        "p95": 0.421,
+        "max": 0.703
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 0.5972080000000233,
+        "p95": 0.9607500000000186,
+        "max": 1.509334000000024
+      }
+    },
+    {
+      "kind": "wait",
+      "samples": [
+        {
+          "activeMs": 0,
+          "idleMs": 51.556,
+          "wallMs": 51.38958400000001,
+          "longDeltas": [
+            {
+              "us": 50838,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.603,
+          "wallMs": 51.296167000000025,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.583,
+          "wallMs": 51.39079200000003,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.561,
+          "wallMs": 51.21308299999998,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 50.665,
+          "idleMs": 0.562,
+          "wallMs": 51.16429199999993,
+          "longDeltas": [
+            {
+              "us": 50665,
+              "frame": "(program)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.532,
+          "wallMs": 50.93799999999999,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.488,
+          "wallMs": 50.77374999999995,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.499,
+          "wallMs": 51.18904199999997,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.504,
+          "wallMs": 50.6439170000001,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.471,
+          "wallMs": 50.710249999999974,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 51.056,
+          "wallMs": 50.59087499999998,
+          "longDeltas": [
+            {
+              "us": 50384,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 50.854,
+          "wallMs": 50.60429199999999,
+          "longDeltas": [
+            {
+              "us": 50383,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 51.436,
+          "wallMs": 50.80945900000006,
+          "longDeltas": [
+            {
+              "us": 50944,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.628,
+          "wallMs": 51.216666999999916,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.533,
+          "wallMs": 50.95579099999986,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.561,
+          "wallMs": 50.796333000000004,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.513,
+          "wallMs": 50.79624999999987,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.531,
+          "wallMs": 51.028166000000056,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 50.935,
+          "wallMs": 50.68320800000015,
+          "longDeltas": [
+            {
+              "us": 50415,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.502,
+          "wallMs": 50.81625000000008,
+          "longDeltas": []
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 0,
+        "p95": 0,
+        "max": 50.665
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 50.81625000000008,
+        "p95": 51.38958400000001,
+        "max": 51.39079200000003
+      }
+    },
+    {
+      "kind": "busy",
+      "samples": [
+        {
+          "activeMs": 5.974,
+          "idleMs": 0.72,
+          "wallMs": 6.2221250000000055,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.912,
+          "idleMs": 0.66,
+          "wallMs": 6.492792000000009,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.702,
+          "idleMs": 0.66,
+          "wallMs": 5.985708000000159,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.726,
+          "idleMs": 0.643,
+          "wallMs": 6.096709000000146,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.742,
+          "idleMs": 1.162,
+          "wallMs": 6.13474999999994,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.594,
+          "idleMs": 0.622,
+          "wallMs": 5.950250000000096,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.706,
+          "idleMs": 0.686,
+          "wallMs": 6.0446660000000065,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.599,
+          "idleMs": 1.481,
+          "wallMs": 6.2472080000000005,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.667,
+          "idleMs": 0.636,
+          "wallMs": 5.983249999999998,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.652,
+          "idleMs": 0.627,
+          "wallMs": 5.995584000000008,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.597,
+          "idleMs": 0.611,
+          "wallMs": 5.944792000000007,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.68,
+          "idleMs": 0.711,
+          "wallMs": 6.0039580000000115,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.766,
+          "idleMs": 0.649,
+          "wallMs": 6.114165999999841,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.17,
+          "idleMs": 1.183,
+          "wallMs": 6.085207999999966,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.675,
+          "idleMs": 0.663,
+          "wallMs": 6.077125000000024,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.75,
+          "idleMs": 0.653,
+          "wallMs": 6.328875000000153,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.701,
+          "idleMs": 0.679,
+          "wallMs": 6.063833000000159,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.218,
+          "idleMs": 1.241,
+          "wallMs": 6.353166999999985,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.81,
+          "idleMs": 0.653,
+          "wallMs": 6.195249999999987,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 5.747,
+          "idleMs": 1.204,
+          "wallMs": 6.117665999999872,
+          "longDeltas": []
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 5.701,
+        "p95": 5.912,
+        "max": 5.974
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 6.085207999999966,
+        "p95": 6.353166999999985,
+        "max": 6.492792000000009
+      }
+    }
+  ]
+}

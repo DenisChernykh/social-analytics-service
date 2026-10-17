@@ -8,6 +8,53 @@ Site: https://social-analytics.scary-rustles-7p.chatgpt.site
 Плагин: https://chatgpt.com/plugins/plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01
 Исходники и инструкции: [chatgpt/README.md](../chatgpt/README.md).
 
+## Публикация 0.4.0
+
+2026-10-08 в 15:29:33 UTC опубликована версия Sites 13, адаптер `0.4.0`.
+Существующие Site, plugin ID, подключение и доступ только владельца сохранены;
+новая инфраструктура, storage и Sites automations не добавлены.
+Native deployment `appgdep_6ac7b6a89a8081918ab53fb76730d986` имеет состояние
+`succeeded`, `has_mcp=true`, runtime env revision 1. Сохранённая версия связана
+с source commit `0bda71f779fff2ce07895bbf02f28b21481003bf`; hash MCP bundle
+совпадает с проверенной локальной сборкой.
+
+Контракты согласованы для quota parsing/freshness, continuation списка jobs,
+analysis/collection coverage, receipt provenance, календарных ревизий,
+lastAttempt/lastKnownGood и relative ranking. Прошли 24 MCP-теста и сборка.
+Реальные read-only вызовы установленного плагина подтвердили accounts/status
+со старым backend `0.2.14`. Relative ranking с ним возвращает явный
+`FEATURE_UNAVAILABLE`/409: старый абсолютный рейтинг не выдаётся за относительный.
+
+После отдельного разрешения владельца backend `0.2.15` и production migrations
+0009–0012 выпущены. Установленный MCP подтверждает новые status/coverage fields,
+полный обход177jobs за9pages и относительный рейтинг пяти реальных30d пар;
+календарная observation обычного Cron сохраняет12values/receipt links.
+Private Site/plugin/access не пересоздавались. Доказательства и порядок выпуска:
+[implementation report](instagram-data-implementation.md),
+[Sites release evidence](instagram-data-sites-release-evidence.json),
+[backend production evidence](instagram-data-production-evidence.json).
+
+## Публикация 0.3.6
+
+2026-10-08 опубликована версия Sites 12, адаптер `0.3.6`, 45 MCP-инструментов.
+Контракт обновлён для календарного покрытия, metadata, profileActivity, авторов
+комментариев, лимитов API и недоступных объектов. Новые activity/catalogue origins
+сохраняются при чтении задания. Названия продукта остаются Social Analytics.
+
+Sites подтвердил `succeeded`, `has_mcp=true`, runtime env revision 1.
+Публикация использовала существующий Site с доступом владельца и без групп.
+Точный служебный источник: `1e197c7fca7914dd5552cbc5520c1775fb06705d`;
+версия создана из архива этого SHA.
+Публикация: `appgdep_6ac735af20a48191a5fd84b789416327`.
+Все 18 MCP/UI тестов и build прошли, 22 инструмента чтения проверены против
+production backend `0.2.13`. Установленный приватный плагин вернул новые поля
+статуса и успешно продвинул автоматический activity и полный каталог.
+Backend и миграция опубликованы в рамках отдельной задачи улучшения сбора API;
+исходники основного рабочего дерева пока не закоммичены.
+Подробности и оставшийся backfill — [collection-improvements.md](collection-improvements.md).
+
+## Публикация 0.3.5
+
 2026-10-07 (UTC) опубликована версия Sites 11, адаптер `0.3.5`,
 45 MCP-инструментов; добавлен `subscribe_comment_webhook`, актуализированы
 возрастные точки и статус свежести комментариев. Sites подтвердил `succeeded`,
@@ -135,7 +182,7 @@ Root `pnpm check` прошёл: 45 backend и 15 MCP/UI тестов, типы, 
 iframe «Выбрать публикацию» и запросил выбор. Первый результат и отчёт не
 выбраны автоматически; сбор и расписание не вызывались.
 
-Текущий переносимый архив: `chatgpt/dist/social-analytics-plugin.zip`, `0.3.5`.
+Текущий переносимый архив: `chatgpt/dist/social-analytics-plugin.zip`, `0.4.0`.
 Пакет обновления текущего личного плагина:
 `chatgpt/dist/social-analytics-sites-plugin.zip`, `1.1.0`.
 Сборка Worker и экспорт исходников не содержат ключей или данных владельца.

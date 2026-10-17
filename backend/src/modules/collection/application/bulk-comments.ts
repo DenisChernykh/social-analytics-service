@@ -12,6 +12,7 @@ export async function advanceComments(
   store: CollectionStore,
   comments: CollectionComments,
   leaseToken: string,
+  now: number,
 ) {
   const position: CommentPosition = job.cursor
     ? JSON.parse(job.cursor)
@@ -27,12 +28,14 @@ export async function advanceComments(
     job.accountId,
     position.afterMedia,
     job.startedAt,
+    now,
   );
-  if (!position.current) return { cursor: null, collected: 0, mediaProcessed: 0 };
+  if (!position.current) return { cursor: null, collected: 0, mediaProcessed: 0, skippedMedia: 0 };
   position.eventGeneration ??= await store.commentGeneration(position.current.id);
   position.omittedBranches ??= 0;
-  // Save the selected publication even if the source call fails on its first page.
-  // On interruption the completed page operation supplies the atomic checkpoint.
+  position.omittedProbeCount ??= 0;
+  position.unverifiedParents ??= [];
+  // Preserve the selected publication on a first-page failure or interruption.
   job.cursor = JSON.stringify(position);
   const checkpoint: CommentCheckpoint = {
     ...position.current,
@@ -42,50 +45,81 @@ export async function advanceComments(
     eventGeneration: position.eventGeneration,
   };
   const parentId = position.parents[0] ?? null;
-  let collected = 0;
-  if (parentId && !(await comments.isRootComment(position.current.id, parentId))) {
+  const finishBranch = () => {
     position.parents.shift();
     position.replyCursor = position.branchCursors?.[position.parents[0] ?? ""] ?? null;
+  };
+  let collected = 0,
+    skippedMedia = 0;
+  if (parentId && !(await comments.isRootComment(position.current.id, parentId))) {
+    finishBranch();
   } else {
     const cursor = parentId ? position.replyCursor : position.commentCursor;
-    const saved = await comments.savedCollection(operationId);
-    const page = await comments.collect(position.current.id, {
-      operationId,
-      parentId,
-      cursor,
-      limit: saved?.limit ?? (parentId ? commentPolicy.replyPageSize : commentPolicy.outerPageSize),
-      expandReplies: saved ? (saved.expandedReplies ?? false) : !parentId,
-      ownership: { jobId: job.id, leaseToken },
-    });
-    if (page.status !== "completed") throw incompleteOperationError(page.status, page.errorCode);
-    if (page.nextCursor && page.nextCursor === cursor)
-      throw new ApplicationError(
-        "INSTAGRAM_PAGINATION_STALLED",
-        "Instagram repeated its comment cursor.",
-      );
-    collected = page.collected;
-    if (parentId) {
-      position.replyCursor = page.nextCursor;
-      if (!page.nextCursor) {
-        position.parents.shift();
-        position.replyCursor = position.branchCursors?.[position.parents[0] ?? ""] ?? null;
-      }
-    } else {
-      position.commentCursor = page.nextCursor;
-      if (page.replyBranches) {
-        position.version = 2;
-        position.omittedBranches += page.replyBranches.filter(
-          (branch) => branch.status === "omitted",
-        ).length;
-        position.parents = page.replyBranches
-          .filter((branch) => branch.status === "partial")
-          .map((branch) => branch.parentId);
-        position.branchCursors = Object.fromEntries(
-          page.replyBranches.map((branch) => [branch.parentId, branch.nextCursor]),
+    try {
+      const saved = await comments.savedCollection(operationId);
+      const page = await comments.collect(position.current.id, {
+        operationId,
+        parentId,
+        cursor,
+        limit:
+          saved?.limit ?? (parentId ? commentPolicy.replyPageSize : commentPolicy.outerPageSize),
+        expandReplies: saved ? (saved.expandedReplies ?? false) : !parentId,
+        ownership: { jobId: job.id, leaseToken },
+      });
+      if (page.status !== "completed") throw incompleteOperationError(page.status, page.errorCode);
+      if (page.nextCursor && page.nextCursor === cursor)
+        throw new ApplicationError(
+          "INSTAGRAM_PAGINATION_STALLED",
+          "Instagram repeated its comment cursor.",
         );
-        position.replyCursor = position.branchCursors[position.parents[0] ?? ""] ?? null;
+      collected = page.collected;
+      if (parentId) {
+        position.replyCursor = page.nextCursor;
+        if (!page.nextCursor) {
+          if (position.unverifiedParents.includes(parentId)) {
+            position.omittedBranches = Math.max(0, position.omittedBranches - 1);
+            position.unverifiedParents = position.unverifiedParents.filter((id) => id !== parentId);
+          }
+          finishBranch();
+        }
       } else {
-        position.parents = await comments.rootCommentIds(position.current.id, page.commentIds);
+        position.commentCursor = page.nextCursor;
+        if (page.replyBranches) {
+          position.version = 2;
+          const omitted = page.replyBranches.filter((branch) => branch.status === "omitted");
+          position.omittedBranches += omitted.length;
+          const probes = omitted.slice(
+            0,
+            Math.max(0, commentPolicy.omittedProbeLimit - position.omittedProbeCount),
+          );
+          position.omittedProbeCount += probes.length;
+          position.unverifiedParents.push(...probes.map((branch) => branch.parentId));
+          position.parents = [
+            ...page.replyBranches.filter((branch) => branch.status === "partial"),
+            ...probes,
+          ].map((branch) => branch.parentId);
+          position.branchCursors = Object.fromEntries(
+            page.replyBranches.map((branch) => [branch.parentId, branch.nextCursor]),
+          );
+          position.replyCursor = position.branchCursors[position.parents[0] ?? ""] ?? null;
+        } else {
+          // Legacy page operations did not request expansion. Keep their saved
+          // continuations usable instead of silently skipping reply history.
+          position.parents = await comments.rootCommentIds(position.current.id, page.commentIds);
+        }
+      }
+    } catch (error) {
+      if (!(error instanceof ApplicationError) || error.code !== "INSTAGRAM_OBJECT_UNAVAILABLE")
+        throw error;
+      if (parentId) {
+        if (!position.unverifiedParents.includes(parentId)) position.omittedBranches++;
+        finishBranch();
+      } else {
+        checkpoint.unavailableUntil = now + 24 * 3_600_000;
+        checkpoint.errorCode = error.code;
+        position.parents = [];
+        position.commentCursor = null;
+        skippedMedia = 1;
       }
     }
   }
@@ -93,14 +127,15 @@ export async function advanceComments(
   checkpoint.omittedBranches = position.omittedBranches;
   if (!position.parents.length && !position.commentCursor) {
     mediaProcessed = 1;
-    checkpoint.complete = true;
+    checkpoint.complete = !skippedMedia;
     position.afterMedia = position.current;
     position.current = job.targetMediaId
       ? null
-      : await store.nextCommentMedia(job.accountId, position.afterMedia, job.startedAt);
+      : await store.nextCommentMedia(job.accountId, position.afterMedia, job.startedAt, now);
     position.eventGeneration = undefined;
-    checkpoint.omittedBranches = position.omittedBranches;
     position.omittedBranches = 0;
+    position.omittedProbeCount = 0;
+    position.unverifiedParents = [];
     position.replyCursor = null;
     position.branchCursors = {};
   }
@@ -108,6 +143,7 @@ export async function advanceComments(
     cursor: position.current ? JSON.stringify(position) : null,
     collected,
     mediaProcessed,
+    skippedMedia,
     checkpoint,
   };
 }

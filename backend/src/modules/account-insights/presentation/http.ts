@@ -2,8 +2,13 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import type { RuntimeBindings } from "../../../platform/config/runtime-config";
 import type { HttpEnv } from "../../../platform/http/environment";
 import { errorResponses, problem } from "../../../platform/http/problem";
+import {
+  maturitySchema,
+  measurementProvenanceSchema,
+  receiptReferenceSchema,
+} from "../../../shared/presentation/measurement";
 import type { AccountInsights } from "../application/insights";
-import { activityMetrics } from "../domain/model";
+import { activityMetrics, supportsActivityMetric } from "../domain/model";
 
 const id = z.string().min(1).max(150);
 const date = z.iso.datetime({ offset: true }).transform(Date.parse);
@@ -19,7 +24,9 @@ const timeframe = z.enum([
 ]);
 const collectionTimeframe = z.enum(["this_month", "this_week"]).default("this_month");
 const dimension = z.enum(["age", "gender", "country", "city"]);
-const activityBreakdown = z.enum(["media_product_type", "follow_type"]).optional();
+const activityBreakdown = z
+  .enum(["media_product_type", "follow_type", "follower_type", "contact_button_type"])
+  .optional();
 const inputSchema = z.object({
   kind: z.enum(["activity", "demographics"]),
   from: z.number().optional(),
@@ -32,6 +39,8 @@ const inputSchema = z.object({
 });
 const reason = z.string().nullable();
 export const insightValueSchema = z.object({
+  provenance: measurementProvenanceSchema.optional(),
+  receipt: receiptReferenceSchema.optional(),
   unit: z.literal("count"),
   sourceField: z.string(),
   metric: z.string(),
@@ -55,6 +64,23 @@ export const insightCollectionSchema = z.object({
   accountId: id,
   input: inputSchema,
   status: z.enum(["running", "completed", "failed"]),
+  persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+  effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+  expiredAt: z.number().nullable().optional(),
+  periodKey: z.string().optional(),
+  definitionVersion: z.string().optional(),
+  coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+  requestBounds: z
+    .object({
+      from: z.number(),
+      to: z.number(),
+      timeZone: z.string(),
+      semantics: z.literal("[from,to)"),
+      sourceSince: z.number(),
+      sourceUntil: z.number(),
+      sourceBoundaryContract: z.string(),
+    })
+    .optional(),
   requestedAt: z.number(),
   observedAt: z.number().nullable(),
   apiVersion: z.string(),
@@ -111,6 +137,12 @@ export const activityReportSchema = z.object({
     previousAvailable: z.boolean(),
     truncated: z.boolean(),
     requestedWindowComplete: z.boolean(),
+    maturity: maturitySchema.optional(),
+    usefulMetrics: z.number().optional(),
+    maturityTimeBasis: z
+      .enum(["earliest_useful_response", "legacy_or_collection_timestamp"])
+      .optional(),
+    requestedMetrics: z.number().optional(),
     observedAt: z.number().nullable(),
   }),
   note: z.string(),
@@ -183,29 +215,34 @@ export function createInsightsHttp(operations: (env: RuntimeBindings) => Account
               to: date,
               timeZone,
               metricType,
-              metrics: z
-                .array(z.enum(activityMetrics))
-                .min(1)
-                .max(11)
-                .default([...activityMetrics]),
+              metrics: z.array(z.enum(activityMetrics)).min(1).max(12).optional(),
               breakdown: activityBreakdown,
             })
             .strict()
             .refine(
               (input) =>
                 input.from < input.to &&
-                (input.metricType !== "time_series" || input.breakdown === undefined),
+                (input.metricType !== "time_series" || input.breakdown === undefined) &&
+                (input.metrics === undefined ||
+                  input.metrics.every((metric) =>
+                    supportsActivityMetric(metric, input.metricType, input.breakdown),
+                  )),
             ),
         ),
       },
       responses: responses(insightCollectionSchema),
     }),
     async (c) => {
-      const { operationId, ...input } = c.req.valid("json");
+      const { operationId, metrics, ...input } = c.req.valid("json");
       return c.json(
         insightCollectionSchema.parse(
           await operations(c.env).collect(c.req.valid("param").accountId, operationId, {
             ...input,
+            metrics:
+              metrics ??
+              activityMetrics.filter((metric) =>
+                supportsActivityMetric(metric, input.metricType, input.breakdown),
+              ),
             kind: "activity",
           }),
         ),

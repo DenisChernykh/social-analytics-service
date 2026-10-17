@@ -1,0 +1,517 @@
+{
+  "production": [
+    {
+      "revision": "0.2.15",
+      "start": "2026-10-08T16:20:00Z",
+      "end": "2026-10-09T06:20:00Z",
+      "scheduled": {
+        "n": 168,
+        "p50": 40.877,
+        "p95": 76.488,
+        "max": 116.736,
+        "mean": 44.086136904761915
+      },
+      "success": {
+        "n": 155,
+        "p50": 42.249,
+        "p95": 77.442,
+        "max": 116.736,
+        "mean": 46.696045161290336
+      },
+      "failed": [
+        {
+          "cpuTimeUs": 48584,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T04:30:55Z",
+          "scheduledDatetime": "2026-10-09T04:30:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T04:36:03Z",
+          "scheduledDatetime": "2026-10-09T04:35:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T04:41:00Z",
+          "scheduledDatetime": "2026-10-09T04:40:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T04:45:58Z",
+          "scheduledDatetime": "2026-10-09T04:45:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T04:50:56Z",
+          "scheduledDatetime": "2026-10-09T04:50:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T04:55:59Z",
+          "scheduledDatetime": "2026-10-09T04:55:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:01:02Z",
+          "scheduledDatetime": "2026-10-09T05:00:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:05:55Z",
+          "scheduledDatetime": "2026-10-09T05:05:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:11:01Z",
+          "scheduledDatetime": "2026-10-09T05:10:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:16:11Z",
+          "scheduledDatetime": "2026-10-09T05:15:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:21:01Z",
+          "scheduledDatetime": "2026-10-09T05:20:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:26:00Z",
+          "scheduledDatetime": "2026-10-09T05:25:42Z",
+          "status": "exceededResources"
+        },
+        {
+          "cpuTimeUs": 10000,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T05:31:02Z",
+          "scheduledDatetime": "2026-10-09T05:30:42Z",
+          "status": "exceededResources"
+        }
+      ],
+      "ordinary": null,
+      "daily": [],
+      "dailyClassification": "Only 0.2.16 06:30 is independently known as replanning from prior production report and next_insights_at; others have no direct origin dimension",
+      "exactCronMatches": 156,
+      "cronWallMs": {
+        "n": 156,
+        "p50": 7023.304,
+        "p95": 10387.565,
+        "max": 12151.404,
+        "mean": 6787.362012820512
+      },
+      "cronMemoryMiB": {
+        "n": 156,
+        "p50": 9.731088638305664,
+        "p95": 9.988873481750488,
+        "max": 13.230971336364746,
+        "mean": 9.774315198262533
+      },
+      "cronSubrequests": {
+        "n": 156,
+        "p50": 3,
+        "p95": 6,
+        "max": 6,
+        "mean": 2.608974358974359
+      },
+      "maxAllTypesMemoryMiB": 29.035167694091797,
+      "pureHttpGroups": 17,
+      "pureHttpRequests": 96,
+      "pureHttpCPUmeanMs": 33.224572916666666,
+      "inferredHttpRequests": 189,
+      "inferredHttpCPUmeanMs": 30.907433862433862,
+      "failedMetrics": [
+        {
+          "scheduledDatetime": "2026-10-09T04:30:42Z",
+          "cpuMs": 48.584,
+          "wallMs": 6525.347,
+          "memoryMiB": 9.988873481750488,
+          "subrequests": 1
+        },
+        {
+          "scheduledDatetime": "2026-10-09T04:35:42Z",
+          "cpuMs": 10,
+          "wallMs": 1096.891,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T04:40:42Z",
+          "cpuMs": 10,
+          "wallMs": 1272.211,
+          "memoryMiB": 9.238292694091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T04:45:42Z",
+          "cpuMs": 10,
+          "wallMs": 1063.138,
+          "memoryMiB": 9.238292694091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T04:50:42Z",
+          "cpuMs": 10,
+          "wallMs": 1058.039,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T04:55:42Z",
+          "cpuMs": 10,
+          "wallMs": 1063.695,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:00:42Z",
+          "cpuMs": 10,
+          "wallMs": 1341.768,
+          "memoryMiB": 9.238292694091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:05:42Z",
+          "cpuMs": 10,
+          "wallMs": 1075.387,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:10:42Z",
+          "cpuMs": 10,
+          "wallMs": 1073.214,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:15:42Z",
+          "cpuMs": 10,
+          "wallMs": 1091.69,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:20:42Z",
+          "cpuMs": 10,
+          "wallMs": 1058.572,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:25:42Z",
+          "cpuMs": 10,
+          "wallMs": 1100.133,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        },
+        {
+          "scheduledDatetime": "2026-10-09T05:30:42Z",
+          "cpuMs": 10,
+          "wallMs": 1130.574,
+          "memoryMiB": 9.230480194091797,
+          "subrequests": 0
+        }
+      ],
+      "inferenceAssumption": "Scheduled dataset complete; adaptive data not sampled/truncated; backend entrypoints only fetch and scheduled. Pure HTTP groups exclude any minute/status with Scheduled. No HTTP percentile inferred from mixed groups."
+    },
+    {
+      "revision": "0.2.16",
+      "start": "2026-10-09T06:30:00Z",
+      "end": "2026-10-09T08:03:58.935Z",
+      "scheduled": {
+        "n": 19,
+        "p50": 40.768,
+        "p95": 155.473,
+        "max": 155.473,
+        "mean": 49.57263157894736
+      },
+      "success": {
+        "n": 19,
+        "p50": 40.768,
+        "p95": 155.473,
+        "max": 155.473,
+        "mean": 49.57263157894736
+      },
+      "failed": [],
+      "ordinary": {
+        "n": 18,
+        "p50": 40.677,
+        "p95": 96.552,
+        "max": 96.552,
+        "mean": 43.689277777777775
+      },
+      "daily": [
+        {
+          "cpuTimeUs": 155473,
+          "cron": "*/5 * * * *",
+          "datetime": "2026-10-09T06:30:53Z",
+          "scheduledDatetime": "2026-10-09T06:30:42Z",
+          "status": "success"
+        }
+      ],
+      "dailyClassification": "Only 0.2.16 06:30 is independently known as replanning from prior production report and next_insights_at; others have no direct origin dimension",
+      "exactCronMatches": 18,
+      "cronWallMs": {
+        "n": 18,
+        "p50": 5574.012,
+        "p95": 10003.557,
+        "max": 10003.557,
+        "mean": 6342.174499999999
+      },
+      "cronMemoryMiB": {
+        "n": 18,
+        "p50": 8.191908836364746,
+        "p95": 10.192093849182129,
+        "max": 10.192093849182129,
+        "mean": 8.30289962556627
+      },
+      "cronSubrequests": {
+        "n": 18,
+        "p50": 2,
+        "p95": 6,
+        "max": 6,
+        "mean": 2.8333333333333335
+      },
+      "maxAllTypesMemoryMiB": 22.628917694091797,
+      "pureHttpGroups": 2,
+      "pureHttpRequests": 8,
+      "pureHttpCPUmeanMs": 65.77575,
+      "inferredHttpRequests": 44,
+      "inferredHttpCPUmeanMs": 32.96247727272727,
+      "failedMetrics": [],
+      "inferenceAssumption": "Scheduled dataset complete; adaptive data not sampled/truncated; backend entrypoints only fetch and scheduled. Pure HTTP groups exclude any minute/status with Scheduled. No HTTP percentile inferred from mixed groups."
+    }
+  ],
+  "profiles": [
+    {
+      "name": "startup-production-bundle",
+      "activeMs": 14.271,
+      "attributedMs": {
+        "native/program": 0.527,
+        "unattributed/helpers": 1.942,
+        "Drizzle": 2.283,
+        "application": 0.769,
+        "GC": 0.643,
+        "Zod": 8.107
+      },
+      "method": "One statistical sample trace; disjoint leaf time attributed to nearest source-mapped ancestor. Not an invocation-stage production decomposition."
+    },
+    {
+      "name": "cold-empty",
+      "activeMs": 23.137,
+      "attributedMs": {
+        "native/program": 0.991,
+        "unattributed/helpers": 1.444,
+        "application": 2.401,
+        "Drizzle": 4.815,
+        "Zod": 10.089,
+        "GC": 1.7,
+        "D1 binding": 0.784,
+        "runtime JS binding": 0.913
+      },
+      "method": "One statistical sample trace; disjoint leaf time attributed to nearest source-mapped ancestor. Not an invocation-stage production decomposition."
+    },
+    {
+      "name": "daily-1x",
+      "activeMs": 14.529,
+      "attributedMs": {
+        "application": 2.52,
+        "D1 binding": 4.642,
+        "GC": 1.138,
+        "Drizzle": 2.487,
+        "native/program": 0.905,
+        "calendar": 2.578,
+        "runtime JS binding": 0.259
+      },
+      "method": "One statistical sample trace; disjoint leaf time attributed to nearest source-mapped ancestor. Not an invocation-stage production decomposition."
+    },
+    {
+      "name": "daily-10x",
+      "activeMs": 31.918,
+      "attributedMs": {
+        "native/program": 1.506,
+        "application": 4.133,
+        "calendar": 19.913,
+        "Drizzle": 4.152,
+        "D1 binding": 2.214
+      },
+      "method": "One statistical sample trace; disjoint leaf time attributed to nearest source-mapped ancestor. Not an invocation-stage production decomposition."
+    },
+    {
+      "name": "comments-1x",
+      "activeMs": 4.554,
+      "attributedMs": {
+        "Drizzle": 1.979,
+        "application": 1.805,
+        "unattributed/helpers": 0.383,
+        "D1 binding": 0.387
+      },
+      "method": "One statistical sample trace; disjoint leaf time attributed to nearest source-mapped ancestor. Not an invocation-stage production decomposition."
+    },
+    {
+      "name": "discovery_new-1x",
+      "activeMs": 9.043,
+      "attributedMs": {
+        "harness": 0.713,
+        "D1 binding": 4.377,
+        "Drizzle": 1.548,
+        "application": 2.013,
+        "native/program": 0.392
+      },
+      "method": "One statistical sample trace; disjoint leaf time attributed to nearest source-mapped ancestor. Not an invocation-stage production decomposition."
+    }
+  ],
+  "runtimeImports": [
+    "backend/src/app/create-features.ts",
+    "backend/src/index.ts",
+    "backend/src/modules/account-insights/application/insights.ts",
+    "backend/src/modules/account-insights/domain/maturity.ts",
+    "backend/src/modules/account-insights/domain/model.ts",
+    "backend/src/modules/account-insights/domain/periods.ts",
+    "backend/src/modules/account-insights/index.ts",
+    "backend/src/modules/account-insights/infrastructure/d1-insights.ts",
+    "backend/src/modules/analytics/application/queries.ts",
+    "backend/src/modules/analytics/application/sync-account.ts",
+    "backend/src/modules/analytics/domain/calculations.ts",
+    "backend/src/modules/analytics/domain/metric-definitions.ts",
+    "backend/src/modules/analytics/domain/model.ts",
+    "backend/src/modules/analytics/domain/search.ts",
+    "backend/src/modules/analytics/index.ts",
+    "backend/src/modules/analytics/infrastructure/d1-analytics.ts",
+    "backend/src/modules/analytics/infrastructure/instagram-source.ts",
+    "backend/src/modules/collection/application/bulk-comments.ts",
+    "backend/src/modules/collection/application/collect.ts",
+    "backend/src/modules/collection/domain/activity-policy.ts",
+    "backend/src/modules/collection/domain/age-policy.ts",
+    "backend/src/modules/collection/domain/comment-policy.ts",
+    "backend/src/modules/collection/domain/coverage.ts",
+    "backend/src/modules/collection/domain/model.ts",
+    "backend/src/modules/collection/domain/selection.ts",
+    "backend/src/modules/collection/index.ts",
+    "backend/src/modules/collection/infrastructure/d1-collection.ts",
+    "backend/src/modules/community/application/comments.ts",
+    "backend/src/modules/community/domain/model.ts",
+    "backend/src/modules/community/index.ts",
+    "backend/src/modules/community/infrastructure/d1-comments.ts",
+    "backend/src/modules/content/application/content.ts",
+    "backend/src/modules/content/domain/analysis.ts",
+    "backend/src/modules/content/domain/business.ts",
+    "backend/src/modules/content/domain/model.ts",
+    "backend/src/modules/content/index.ts",
+    "backend/src/modules/content/infrastructure/d1-content.ts",
+    "backend/src/modules/instagram/application/connections.ts",
+    "backend/src/modules/instagram/domain/request-policy.ts",
+    "backend/src/modules/instagram/index.ts",
+    "backend/src/modules/instagram/infrastructure/d1-connections.ts",
+    "backend/src/modules/instagram/infrastructure/d1-request-policy.ts",
+    "backend/src/modules/instagram/infrastructure/meta-client.ts",
+    "backend/src/platform/config/runtime-config.ts",
+    "backend/src/platform/crypto/secrets.ts",
+    "backend/src/platform/database/schema.ts",
+    "backend/src/shared/application/application-error.ts",
+    "backend/src/shared/domain/measurement.ts"
+  ],
+  "instrumentation": [
+    {
+      "scenario": "empty_enabled",
+      "scale": 1,
+      "instrumentedP50": 2.218,
+      "uninstrumentedP50": 2.197,
+      "differenceP50": 0.020999999999999908,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "insights",
+      "scale": 1,
+      "instrumentedP50": 1.788,
+      "uninstrumentedP50": 1.33,
+      "differenceP50": 0.45799999999999996,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "comments",
+      "scale": 1,
+      "instrumentedP50": 1.661,
+      "uninstrumentedP50": 1.301,
+      "differenceP50": 0.3600000000000001,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "daily",
+      "scale": 1,
+      "instrumentedP50": 5.912,
+      "uninstrumentedP50": 5.465,
+      "differenceP50": 0.44700000000000006,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "empty_enabled",
+      "scale": 10,
+      "instrumentedP50": 21.53,
+      "uninstrumentedP50": 22.852,
+      "differenceP50": -1.3219999999999992,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "insights",
+      "scale": 10,
+      "instrumentedP50": 2.073,
+      "uninstrumentedP50": 1.769,
+      "differenceP50": 0.30400000000000005,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "comments",
+      "scale": 10,
+      "instrumentedP50": 1.913,
+      "uninstrumentedP50": 1.971,
+      "differenceP50": -0.05800000000000005,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    },
+    {
+      "scenario": "daily",
+      "scale": 10,
+      "instrumentedP50": 21.709,
+      "uninstrumentedP50": 22.067,
+      "differenceP50": -0.35800000000000054,
+      "nEach": 40,
+      "limitation": "Sequential control, JIT/GC/order not paired; negative differences are noise, not a negative overhead."
+    }
+  ],
+  "externalStaticImports": [
+    "drizzle-orm",
+    "drizzle-orm/d1",
+    "drizzle-orm/sqlite-core",
+    "zod"
+  ]
+}

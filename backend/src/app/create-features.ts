@@ -1,4 +1,8 @@
-import { createInsightOperations } from "../modules/account-insights";
+import {
+  type ActivityPeriod,
+  createInsightOperations,
+  type InsightCollection,
+} from "../modules/account-insights";
 import { createAnalyticsOperations } from "../modules/analytics";
 import { createCollectionOperations } from "../modules/collection";
 import { createCommentOperations } from "../modules/community";
@@ -10,6 +14,23 @@ import {
 } from "../modules/instagram";
 import type { RuntimeBindings } from "../platform/config/runtime-config";
 import { incompleteOperationError } from "../shared/application/application-error";
+
+function usefulPortion(result: InsightCollection, collected: number) {
+  const times = result.values
+    .filter(
+      (v) =>
+        v.value !== null ||
+        v.points.some((p) => p.value !== null) ||
+        v.breakdowns.some((b) => b.results.some((r) => r.value !== null)),
+    )
+    .map((v) => v.provenance?.responseReceivedAt ?? result.observedAt)
+    .filter((time): time is number => typeof time === "number");
+  return {
+    collected,
+    firstUsefulAt: times.length ? Math.min(...times) : null,
+    lastUsefulAt: times.length ? Math.max(...times) : null,
+  };
+}
 
 export function featureOptions(
   instagram: InstagramModuleOptions = {},
@@ -36,7 +57,11 @@ export function featureOptions(
         media: (id: string) => queries.media(id),
         selection: (ids: string[]) => queries.mediaSelection(ids),
         search: (filter: Parameters<typeof queries.search>[0]) => queries.search(filter),
-        snapshots: (ids: string[], ageDays?: number) => queries.observations(ids, ageDays),
+        snapshots: (
+          ids: string[],
+          ageDays?: number,
+          selection?: Parameters<typeof queries.observations>[2],
+        ) => queries.observations(ids, ageDays, selection),
         history: (id: string) => queries.savedHistory(id),
       };
     },
@@ -51,6 +76,7 @@ export function featureOptions(
     comments: (env: RuntimeBindings) => {
       const operations = createCommentOperations(env, commentOptions);
       return {
+        requestStats: () => operations.requestStats(),
         enabled: async (accountId: string) =>
           (await reader(env).list()).some(
             (connection) =>
@@ -65,15 +91,21 @@ export function featureOptions(
       };
     },
     analytics: (env: RuntimeBindings) => {
-      const operations = analytics(env);
+      const collectionReader = reader(env);
+      const localInsightOptions = { ...insightsOptions, reader: () => collectionReader };
+      const operations = createAnalyticsOperations(env, {
+        ...analyticsOptions,
+        reader: () => collectionReader,
+      });
       return {
+        requestStats: () => collectionReader.requestStats(),
         account: (id: string) => operations.queries.account(id),
         audience: async (
           accountId: string,
           operationId: string,
           dimension: "age" | "gender" | "country" | "city",
         ) => {
-          const result = await createInsightOperations(env, insightsOptions).collect(
+          const result = await createInsightOperations(env, localInsightOptions).collect(
             accountId,
             operationId,
             {
@@ -87,22 +119,32 @@ export function featureOptions(
           );
           if (result.status !== "completed")
             throw incompleteOperationError(result.status, result.errorCode);
-          return result.values.reduce(
-            (total, value) =>
-              total + value.breakdowns.reduce((sum, group) => sum + group.results.length, 0),
-            0,
+          return usefulPortion(
+            result,
+            result.values.reduce(
+              (total, value) =>
+                total +
+                value.breakdowns.reduce(
+                  (sum, group) =>
+                    sum + group.results.filter((entry) => entry.value !== null).length,
+                  0,
+                ),
+              0,
+            ),
           );
         },
-        activity: async (accountId: string, operationId: string, now: number) => {
-          const to = Math.floor(now / 86_400_000) * 86_400_000;
-          const result = await createInsightOperations(env, insightsOptions).collect(
+        apiStatus: (id: string) => reader(env).apiStatus(id),
+        activityPlan: (accountId: string, timeZone: string, now: number) =>
+          createInsightOperations(env, localInsightOptions).automaticPlan(accountId, timeZone, now),
+        activity: async (accountId: string, operationId: string, period: ActivityPeriod) => {
+          const result = await createInsightOperations(env, localInsightOptions).collect(
             accountId,
             operationId,
             {
               kind: "activity",
-              from: to - 3 * 86_400_000,
-              to,
-              timeZone: "UTC",
+              from: period.from,
+              to: period.to,
+              timeZone: period.timeZone,
               metricType: "total_value",
               metrics: [
                 "views",
@@ -116,11 +158,21 @@ export function featureOptions(
                 "replies",
                 "profile_links_taps",
                 "follows_and_unfollows",
+                "reposts",
               ],
             },
           );
           if (result.status !== "completed")
             throw incompleteOperationError(result.status, result.errorCode);
+          return usefulPortion(
+            result,
+            result.values.filter(
+              (v) =>
+                v.value !== null ||
+                v.points.some((p) => p.value !== null) ||
+                v.breakdowns.some((b) => b.results.some((r) => r.value !== null)),
+            ).length,
+          );
         },
         refresh: async (id: string, operationId: string) => {
           const media = await operations.queries.media(id);
@@ -138,7 +190,7 @@ export function featureOptions(
             accountId,
             operationId,
             cursor,
-            pageSize: stories ? 5 : 1,
+            pageSize: 1,
             kind: stories ? "stories" : "page",
           }),
       };
@@ -214,6 +266,12 @@ export function createScheduledOperations(
     reader ??= createInstagramOperations(env, {
       ...instagram,
       clock: clock ?? instagram.clock,
+      requestBudget: {
+        maxAttempts: 6,
+        attempts: 0,
+        deadlineAt: (clock ?? instagram.clock ?? Date.now)() + 90_000,
+        reserveMs: 15_000,
+      },
     });
     return reader;
   });

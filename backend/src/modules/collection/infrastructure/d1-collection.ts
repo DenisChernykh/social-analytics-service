@@ -1,9 +1,12 @@
-import { and, eq, lt, lte, sql } from "drizzle-orm";
+import { and, eq, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { collectionJobs, collectionSchedules } from "../../../platform/database/schema";
+import { ApplicationError } from "../../../shared/application/application-error";
+import type { ActivityPeriod } from "../../account-insights";
 import type { CollectionStore } from "../application/ports";
 import { ageSnapshotWindows, type DueAgeSnapshot } from "../domain/age-policy";
 import { type CommentCheckpoint, commentRefreshDelay } from "../domain/comment-policy";
+import { ageCoverage, type PolicyInterval } from "../domain/coverage";
 import type {
   CataloguePosition,
   CollectionJob,
@@ -34,13 +37,192 @@ export class D1Collection implements CollectionStore {
         sql`CASE WHEN ${collectionJobs.status}='running' THEN 0 ELSE 1 END`,
         collectionJobs.nextAttemptAt,
         collectionJobs.startedAt,
+      )) as CollectionJob[];
+  }
+  async jobPage(accountId: string, input: { limit: number; cursor?: string }, now: number) {
+    let cutoff = now,
+      position: { createdAt: number; id: string } | null = null;
+    if (input.cursor)
+      try {
+        const c = JSON.parse(atob(input.cursor));
+        if (
+          c.accountId !== accountId ||
+          !Number.isSafeInteger(c.cutoff) ||
+          !Number.isSafeInteger(c.createdAt) ||
+          typeof c.id !== "string" ||
+          c.id.length > 150
+        )
+          throw new Error("cursor");
+        cutoff = c.cutoff;
+        position = { createdAt: c.createdAt, id: c.id };
+      } catch {
+        throw new ApplicationError(
+          "VALIDATION_FAILED",
+          "Invalid collection jobs cursor or account.",
+        );
+      }
+    const rows = await this.db
+      .select()
+      .from(collectionJobs)
+      .where(
+        and(
+          eq(collectionJobs.accountId, accountId),
+          lte(collectionJobs.startedAt, cutoff),
+          position
+            ? sql`(${collectionJobs.startedAt}<${position.createdAt} OR (${collectionJobs.startedAt}=${position.createdAt} AND ${collectionJobs.id}<${position.id}))`
+            : undefined,
+        ),
       )
-      .limit(100)) as CollectionJob[];
+      .orderBy(sql`${collectionJobs.startedAt} DESC`, sql`${collectionJobs.id} DESC`)
+      .limit(input.limit + 1);
+    const aggregates = await this.database
+      .prepare(
+        "SELECT origin,status,COUNT(*) count,SUM(status='running' AND next_attempt_at<=?) due,MIN(CASE WHEN status='running' THEN next_attempt_at END) oldestDue,SUM(status='running' AND origin IN ('scheduled','stories') AND started_at+900000<? AND first_attempt_at IS NULL) atRiskFresh,SUM(status='running' AND origin IN ('scheduled','stories','comments_refresh') AND next_attempt_at<=?) freshDue,MAX(last_attempt_at) lastAttempt,MAX(last_success_at) lastSuccess,MAX(last_useful_observation_at) lastUsefulObservation FROM collection_jobs WHERE account_id=? AND started_at<=? GROUP BY origin,status",
+      )
+      .bind(now, now, now, accountId, cutoff)
+      .all<{
+        origin: string;
+        status: string;
+        count: number;
+        due: number;
+        oldestDue: number | null;
+        atRiskFresh: number;
+        freshDue: number;
+        lastAttempt: number | null;
+        lastSuccess: number | null;
+        lastUsefulObservation: number | null;
+      }>();
+    const items = rows.slice(0, input.limit) as CollectionJob[],
+      last = items.at(-1),
+      hasMore = rows.length > input.limit;
+    return {
+      items,
+      hasMore,
+      limit: input.limit,
+      cutoff,
+      total: aggregates.results.reduce((n, a) => n + a.count, 0),
+      aggregates: aggregates.results,
+      nextCursor:
+        hasMore && last
+          ? btoa(JSON.stringify({ accountId, cutoff, createdAt: last.startedAt, id: last.id }))
+          : null,
+    };
+  }
+  async dataFreshness(accountId: string) {
+    const rows = await this.database
+      .prepare(`WITH observed AS (
+      SELECT s.media_id,MAX(s.observed_at) lastSuccess,
+        MAX(CASE WHEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) v WHERE json_extract(v.value,'$.value') IS NOT NULL) OR json_extract(s.story_insights_json,'$.navigationTotal.value') IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.story_insights_json,'$.navigation') v WHERE json_extract(v.value,'$.value') IS NOT NULL) THEN s.observed_at END) lastUsefulObservation,
+        SUM(s.provenance_json IS NULL) legacyProvenanceUnknown
+      FROM media_snapshots s JOIN media m ON m.id=s.media_id WHERE m.account_id=? GROUP BY s.media_id
+    ),attempted AS (
+      SELECT object_id,MAX(requested_at) lastAttempt,MAX(CASE WHEN json_extract(payload_json,'$.result')='success' THEN received_at END) lastCheck FROM instagram_http_attempts WHERE account_id=? GROUP BY object_id
+    ) SELECT m.product_type kind,COUNT(*) objects,MAX(a.lastAttempt) lastAttempt,MAX(a.lastCheck) lastCheck,MAX(o.lastSuccess) lastSuccess,MAX(o.lastUsefulObservation) lastUsefulObservation,COALESCE(SUM(o.legacyProvenanceUnknown),0) legacyProvenanceUnknown
+      FROM media m LEFT JOIN observed o ON o.media_id=m.id LEFT JOIN attempted a ON a.object_id=m.external_id WHERE m.account_id=? GROUP BY m.product_type`)
+      .bind(accountId, accountId, accountId)
+      .all<{
+        kind: string;
+        objects: number;
+        lastAttempt: number | null;
+        lastCheck: number | null;
+        lastSuccess: number | null;
+        lastUsefulObservation: number | null;
+        legacyProvenanceUnknown: number;
+      }>();
+    return rows.results;
+  }
+  async diagnostics(accountId: string, now: number) {
+    const row = await this.database
+      .prepare(`SELECT
+      (SELECT COUNT(*) FROM sync_runs WHERE account_id=? AND status='running' AND lease_expires_at<=?) expiredSyncAttempts,
+      (SELECT COUNT(*) FROM account_insights WHERE account_id=? AND json_extract(payload_json,'$.status')='running' AND json_extract(payload_json,'$.requestedAt')<=?) expiredInsightAttempts,
+      (SELECT COUNT(*) FROM comment_collections c JOIN media m ON m.id=c.media_id WHERE m.account_id=? AND json_extract(c.result_json,'$.status')='running' AND json_extract(c.result_json,'$.startedAt')<=?) expiredCommentAttempts,
+      (SELECT COUNT(*) FROM collection_jobs WHERE account_id=? AND lease_expires_at>?) leasesInUse`)
+      .bind(accountId, now, accountId, now - 900_000, accountId, now - 900_000, accountId, now)
+      .first<{
+        expiredSyncAttempts: number;
+        expiredInsightAttempts: number;
+        expiredCommentAttempts: number;
+        leasesInUse: number;
+      }>();
+    return (
+      row ?? {
+        expiredSyncAttempts: 0,
+        expiredInsightAttempts: 0,
+        expiredCommentAttempts: 0,
+        leasesInUse: 0,
+      }
+    );
+  }
+  async claimSchedule(accountId: string, token: string, now: number) {
+    return (
+      (
+        await this.database
+          .prepare(
+            "UPDATE collection_schedules SET claim_token=?,claim_expires_at=? WHERE account_id=? AND enabled=1 AND retry_at<=? AND (claim_expires_at IS NULL OR claim_expires_at<=?)",
+          )
+          .bind(token, now + 900_000, accountId, now, now)
+          .run()
+      ).meta.changes === 1
+    );
+  }
+  async releaseSchedule(accountId: string, token: string) {
+    await this.database
+      .prepare(
+        "UPDATE collection_schedules SET claim_token=NULL,claim_expires_at=NULL WHERE account_id=? AND claim_token=?",
+      )
+      .bind(accountId, token)
+      .run();
+  }
+  async recordPolicy(accountId: string, enabled: boolean, now: number, policy: unknown) {
+    const previous = await this.database
+      .prepare(
+        `SELECT
+ (SELECT enabled FROM collection_policy_history WHERE account_id=? AND effective_to IS NULL ORDER BY effective_from DESC LIMIT 1) enabled,
+ (SELECT policy_json FROM collection_policy_history WHERE account_id=? AND effective_to IS NULL ORDER BY effective_from DESC LIMIT 1) policy_json,
+ (SELECT expires_at FROM instagram_connections WHERE account_id=?) grantExpiresAt,
+ (SELECT scopes FROM instagram_connections WHERE account_id=?) scopes,
+ (SELECT json_extract(payload_json,'$.result') FROM instagram_http_attempts WHERE account_id=? ORDER BY requested_at DESC,id DESC LIMIT 1) lastResult`,
+      )
+      .bind(accountId, accountId, accountId, accountId, accountId)
+      .first<{
+        enabled: number | null;
+        policy_json: string | null;
+        grantExpiresAt: number | null;
+        scopes: string | null;
+        lastResult: string | null;
+      }>();
+    const availability =
+      previous?.grantExpiresAt &&
+      previous.grantExpiresAt > now &&
+      JSON.parse(previous.scopes ?? "[]").includes("instagram_business_manage_insights")
+        ? previous.lastResult === "permission_required"
+          ? "unavailable"
+          : "configured"
+        : "unavailable";
+    const policyJson = JSON.stringify({
+      ...(policy as object),
+      availability,
+      grantExpiresAt: previous?.grantExpiresAt ?? null,
+    });
+    if (previous?.enabled === Number(enabled) && previous.policy_json === policyJson) return;
+    await this.database.batch([
+      this.database
+        .prepare(
+          "UPDATE collection_policy_history SET effective_to=? WHERE account_id=? AND effective_to IS NULL",
+        )
+        .bind(now, accountId),
+      this.database
+        .prepare(
+          "INSERT INTO collection_policy_history(id,account_id,effective_from,effective_to,version,enabled,policy_json) VALUES(?,?,?,NULL,'collection-v2',?,?) ON CONFLICT(id) DO NOTHING",
+        )
+        .bind(crypto.randomUUID(), accountId, now, Number(enabled), policyJson),
+    ]);
   }
   async create(job: CollectionJob) {
     await this.db.insert(collectionJobs).values(job).onConflictDoNothing();
   }
-  async nextJob(now: number) {
+  async nextJob(now: number, archiveOnly = false) {
     // A small head start for short-lived Stories and discovery, with aging so
     // older catalogue/comments work still progresses. Leased jobs cannot hide
     // available work behind the status endpoint's 100-row display limit.
@@ -48,13 +230,33 @@ export class D1Collection implements CollectionStore {
       .prepare(
         `SELECT id FROM collection_jobs
          WHERE status='running' AND next_attempt_at<=?
+           ${archiveOnly ? "AND origin IN ('comments','catalogue','manual','audience','activity')" : ""}
            AND (lease_expires_at IS NULL OR lease_expires_at<=?)
-         ORDER BY next_attempt_at - CASE origin WHEN 'stories' THEN 900000 WHEN 'comments_refresh' THEN 600000 WHEN 'scheduled' THEN 300000 ELSE 0 END,
+         ORDER BY CASE WHEN (CASE WHEN origin='activity' THEN json_extract(cursor,'$[0].from') END)+7776000000<=?+900000 THEN 0 WHEN origin IN ('stories','scheduled','comments_refresh') THEN 1 WHEN origin='stories' AND EXISTS (SELECT 1 FROM media m WHERE m.account_id=collection_jobs.account_id AND m.product_type='STORY' AND m.published_at+86400000 BETWEEN ? AND ?+900000) THEN 1 ELSE 2 END,
+           next_attempt_at - CASE origin WHEN 'stories' THEN 900000 WHEN 'comments_refresh' THEN 600000 WHEN 'scheduled' THEN 300000 ELSE 0 END,
            started_at,id LIMIT 1`,
       )
-      .bind(now, now)
+      .bind(now, now, now, now, now)
       .first<{ id: string }>();
     return row?.id ?? null;
+  }
+  async workHeads(now: number) {
+    // Both candidates in one D1 read. The archive head rotates by last attempt;
+    // deadline-critical activity still outranks the reserve.
+    return (
+      (await this.database
+        .prepare(`WITH eligible AS (
+      SELECT *,CASE WHEN origin='activity' AND json_extract(cursor,'$[0].from')+7776000000<=?+900000 THEN 0 WHEN origin IN ('stories','scheduled','comments_refresh') THEN 1 ELSE 2 END AS urgency
+      FROM collection_jobs WHERE status='running' AND next_attempt_at<=? AND (lease_expires_at IS NULL OR lease_expires_at<=?)
+    ) SELECT
+      (SELECT id FROM eligible ORDER BY urgency,next_attempt_at,started_at,id LIMIT 1) jobId,
+      (SELECT id FROM eligible WHERE origin NOT IN ('stories','scheduled','comments_refresh') ORDER BY CASE WHEN urgency=0 THEN 0 ELSE 1 END,COALESCE(last_attempt_at,0),started_at,id LIMIT 1) archiveId`)
+        .bind(now, now, now)
+        .first<{ jobId: string | null; archiveId: string | null }>()) ?? {
+        jobId: null,
+        archiveId: null,
+      }
+    );
   }
   async latestJob(accountId: string, origin: CollectionJob["origin"]) {
     return (
@@ -72,20 +274,41 @@ export class D1Collection implements CollectionStore {
       )[0] as CollectionJob | undefined) ?? null
     );
   }
-  async nextCommentMedia(accountId: string, after: CataloguePosition | null, before: number) {
+  async replanActivity(job: CollectionJob, periods: ActivityPeriod[], now: number) {
+    const result = await this.database
+      .prepare(
+        `UPDATE collection_jobs SET cursor=? WHERE id=? AND origin='activity' AND status='running'
+         AND pages=? AND attempt=? AND cursor IS ?
+         AND (lease_expires_at IS NULL OR lease_expires_at<=?)`,
+      )
+      .bind(JSON.stringify(periods), job.id, job.pages, job.attempt, job.cursor, now)
+      .run();
+    return result.meta.changes > 0;
+  }
+  async nextCommentMedia(
+    accountId: string,
+    after: CataloguePosition | null,
+    before: number,
+    now = before,
+  ) {
     const statement = this.database.prepare(
-      `SELECT id,published_at AS publishedAt FROM media WHERE account_id=? AND product_type!='STORY' AND published_at<=? ${after ? "AND (published_at<? OR (published_at=? AND id<?))" : ""} ORDER BY published_at DESC,id DESC LIMIT 1`,
+      `SELECT id,published_at AS publishedAt FROM media WHERE account_id=? AND product_type!='STORY' AND published_at<=? AND NOT EXISTS (SELECT 1 FROM comment_media_state s WHERE s.media_id=media.id AND s.unavailable_until>?) ${after ? "AND (published_at<? OR (published_at=? AND id<?))" : ""} ORDER BY published_at DESC,id DESC LIMIT 1`,
     );
     return (
       after
-        ? statement.bind(accountId, before, after.publishedAt, after.publishedAt, after.id)
-        : statement.bind(accountId, before)
+        ? statement.bind(accountId, before, now, after.publishedAt, after.publishedAt, after.id)
+        : statement.bind(accountId, before, now)
     ).first<CataloguePosition>();
   }
   async claim(id: string, token: string, now: number) {
     const rows = await this.db
       .update(collectionJobs)
-      .set({ leaseToken: token, leaseExpiresAt: now + 15 * 60_000 })
+      .set({
+        leaseToken: token,
+        leaseExpiresAt: now + 15 * 60_000,
+        firstAttemptAt: sql`CASE WHEN ${collectionJobs.latencyOrigin}='recorded_from_creation' THEN COALESCE(${collectionJobs.firstAttemptAt},${now}) ELSE NULL END`,
+        lastAttemptAt: now,
+      })
       .where(
         and(
           eq(collectionJobs.id, id),
@@ -103,15 +326,15 @@ export class D1Collection implements CollectionStore {
       statements.push(
         this.database
           .prepare(
-            `INSERT INTO comment_media_state (media_id,last_attempt_at,last_complete_at,next_refresh_at,last_comments_count,processed_generation,omitted_branches,error_code)
-       SELECT ?,?,?,?,(SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=? ORDER BY observed_at DESC,id DESC LIMIT 1),?,?,?
+            `INSERT INTO comment_media_state (media_id,last_attempt_at,last_complete_at,next_refresh_at,last_comments_count,processed_generation,omitted_branches,error_code,unavailable_until)
+       SELECT ?,?,?,?,(SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=? ORDER BY observed_at DESC,id DESC LIMIT 1),?,?,?,?
        WHERE EXISTS (SELECT 1 FROM collection_jobs WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?)
        ON CONFLICT(media_id) DO UPDATE SET last_attempt_at=excluded.last_attempt_at,
          last_complete_at=COALESCE(excluded.last_complete_at,comment_media_state.last_complete_at),
          next_refresh_at=CASE WHEN excluded.last_complete_at IS NOT NULL THEN excluded.next_refresh_at ELSE comment_media_state.next_refresh_at END,
          last_comments_count=CASE WHEN excluded.last_complete_at IS NOT NULL THEN excluded.last_comments_count ELSE comment_media_state.last_comments_count END,
          processed_generation=MAX(comment_media_state.processed_generation,excluded.processed_generation),
-         omitted_branches=excluded.omitted_branches,error_code=excluded.error_code`,
+         omitted_branches=excluded.omitted_branches,error_code=excluded.error_code,unavailable_until=excluded.unavailable_until`,
           )
           .bind(
             comment.mediaId,
@@ -121,16 +344,24 @@ export class D1Collection implements CollectionStore {
             comment.mediaId,
             comment.complete ? comment.eventGeneration : 0,
             comment.omittedBranches,
-            job.errorCode,
+            comment.errorCode ?? job.errorCode,
+            comment.unavailableUntil ?? 0,
             job.id,
             token,
             now,
           ),
       );
+    if (job.automatic && job.lastSuccessAt !== null && job.errorCode === null)
+      statements.push(
+        this.database
+          .prepare(`UPDATE collection_schedules SET last_success_at=MAX(COALESCE(last_success_at,0),?)
+        WHERE account_id=? AND enabled=1 AND EXISTS (SELECT 1 FROM collection_jobs WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?)`)
+          .bind(job.lastSuccessAt, job.accountId, job.id, token, now),
+      );
     statements.push(
       this.database
         .prepare(
-          "UPDATE collection_jobs SET status=?,cursor=?,pages=?,collected=?,media_processed=?,attempt=?,failures=?,next_attempt_at=?,completed_at=?,last_success_at=?,error_code=?,lease_token=NULL,lease_expires_at=NULL WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?",
+          "UPDATE collection_jobs SET status=?,cursor=?,pages=?,collected=?,media_processed=?,skipped_media=?,skipped_periods=?,attempt=?,failures=?,next_attempt_at=?,completed_at=?,last_success_at=?,error_code=?,first_useful_observation_at=?,last_useful_observation_at=?,http_attempts=?,http_attempts_since_at=?,last_step_duration_ms=?,last_step_http_attempts=?,lease_token=NULL,lease_expires_at=NULL WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?",
         )
         .bind(
           job.status,
@@ -138,12 +369,20 @@ export class D1Collection implements CollectionStore {
           job.pages,
           job.collected,
           job.mediaProcessed,
+          job.skippedMedia,
+          job.skippedPeriods,
           job.attempt,
           job.failures,
           job.nextAttemptAt,
           job.completedAt,
           job.lastSuccessAt,
           job.errorCode,
+          job.firstUsefulObservationAt ?? null,
+          job.lastUsefulObservationAt ?? null,
+          job.httpAttempts ?? 0,
+          job.httpAttemptsSinceAt ?? null,
+          job.lastStepDurationMs ?? null,
+          job.lastStepHttpAttempts ?? null,
           job.id,
           token,
           now,
@@ -174,13 +413,7 @@ export class D1Collection implements CollectionStore {
     const rows = await this.db
       .select()
       .from(collectionSchedules)
-      .where(
-        and(
-          eq(collectionSchedules.enabled, true),
-          lt(collectionSchedules.failures, 5),
-          lte(collectionSchedules.retryAt, now),
-        ),
-      )
+      .where(and(eq(collectionSchedules.enabled, true), lte(collectionSchedules.retryAt, now)))
       .orderBy(collectionSchedules.retryAt, collectionSchedules.nextDiscoveryAt)
       .limit(1);
     return rows[0] ?? null;
@@ -193,10 +426,10 @@ export class D1Collection implements CollectionStore {
   }
   async dueMedia(accountId: string, now: number) {
     const row = await this.database
-      .prepare(`SELECT m.id FROM media m LEFT JOIN (SELECT media_id,MAX(observed_at) observed_at FROM media_snapshots GROUP BY media_id) s ON m.id=s.media_id
-      WHERE m.account_id=? AND m.product_type!='STORY' AND COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END
+      .prepare(`SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
+      WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=? AND (EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)
       ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1`)
-      .bind(accountId, now, now, now, now)
+      .bind(accountId, now, now, now, now, now)
       .first<{ id: string }>();
     return row?.id ?? null;
   }
@@ -207,17 +440,18 @@ export class D1Collection implements CollectionStore {
          SELECT m.id AS mediaId,t.hours AS targetHours,
            m.published_at+(t.hours+t.tolerance)*3600000 AS deadline
          FROM media m CROSS JOIN targets t
-         WHERE m.account_id=? AND m.product_type!='STORY'
+         WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=?
            AND m.published_at+t.hours*3600000<=?
            AND m.published_at+(t.hours+t.tolerance)*3600000>=?
            AND NOT EXISTS (SELECT 1 FROM media_snapshots s WHERE s.media_id=m.id
              AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000
-               AND m.published_at+(t.hours+t.tolerance)*3600000)
+               AND m.published_at+(t.hours+t.tolerance)*3600000 AND json_extract(s.metrics_json,'$.reach.value') IS NOT NULL)
          ORDER BY deadline,m.published_at,m.id,t.hours LIMIT 1`,
       )
       .bind(
         ...ageSnapshotWindows.flatMap((t) => [t.targetHours, t.toleranceHours]),
         accountId,
+        now,
         now,
         now,
       )
@@ -228,6 +462,7 @@ export class D1Collection implements CollectionStore {
       .prepare(
         `SELECT m.id,m.published_at AS publishedAt FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id
        WHERE m.account_id=? AND m.product_type!='STORY' AND m.published_at<=?
+         AND COALESCE(s.unavailable_until,0)<=?
          AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='comments' AND status='running'))
          AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1)))
          AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='comments_refresh' AND status='running')
@@ -235,7 +470,7 @@ export class D1Collection implements CollectionStore {
        ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,
          CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1`,
       )
-      .bind(accountId, now, now, now, now, now)
+      .bind(accountId, now, now, now, now, now, now)
       .first<CataloguePosition>();
   }
   async commentGeneration(mediaId: string) {
@@ -295,11 +530,13 @@ export class D1Collection implements CollectionStore {
         `SELECT (SELECT MAX(completed_at) FROM collection_jobs WHERE account_id=? AND origin='comments' AND status='completed') AS lastFullPassAt,
        COUNT(*) AS publications,(SELECT COUNT(*) FROM comments c JOIN media cm ON cm.id=c.media_id WHERE cm.account_id=?) AS uniqueComments,
        SUM(CASE WHEN s.last_complete_at IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation THEN 1 ELSE 0 END) AS stalePublications,
-       SUM(CASE WHEN s.error_code IS NOT NULL THEN 1 ELSE 0 END) AS partialPublications,
+       SUM(CASE WHEN s.error_code IS NOT NULL OR s.omitted_branches>0 THEN 1 ELSE 0 END) AS partialPublications,
+       COALESCE(SUM(s.omitted_branches),0) AS unverifiedReplyBranches,
+       SUM(CASE WHEN s.unavailable_until>? THEN 1 ELSE 0 END) AS unavailablePublications,
        (SELECT COALESCE(SUM(json_array_length(cursor,'$.parents')),0) FROM collection_jobs WHERE account_id=? AND origin IN ('comments','comments_refresh') AND status IN ('running','failed')) AS pendingReplyBranches
        FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id WHERE m.account_id=? AND m.product_type!='STORY'`,
       )
-      .bind(accountId, accountId, now, accountId, accountId)
+      .bind(accountId, accountId, now, now, accountId, accountId)
       .first<{
         lastFullPassAt: number | null;
         publications: number;
@@ -307,6 +544,8 @@ export class D1Collection implements CollectionStore {
         stalePublications: number | null;
         partialPublications: number | null;
         pendingReplyBranches: number;
+        unverifiedReplyBranches: number;
+        unavailablePublications: number;
       }>();
     const currentPass = await this.database
       .prepare(
@@ -339,6 +578,8 @@ export class D1Collection implements CollectionStore {
       stalePublications: row?.stalePublications ?? 0,
       partialPublications: row?.partialPublications ?? 0,
       pendingReplyBranches: row?.pendingReplyBranches ?? 0,
+      unverifiedReplyBranches: row?.unverifiedReplyBranches ?? 0,
+      unavailablePublications: row?.unavailablePublications ?? 0,
       webhook: {
         subscriptionConfirmedAt: webhook?.subscriptionConfirmedAt ?? null,
         lastReceivedAt: webhook?.lastReceivedAt ?? null,
@@ -350,21 +591,124 @@ export class D1Collection implements CollectionStore {
   async sawKnownMedia(operationId: string, startedAt: number) {
     const row = await this.database
       .prepare(
-        "SELECT 1 AS found FROM media_snapshots current WHERE substr(current.id,1,36)=? AND EXISTS (SELECT 1 FROM media_snapshots previous WHERE previous.media_id=current.media_id AND previous.id!=current.id AND previous.observed_at<=?) LIMIT 1",
+        "SELECT 1 AS found FROM media_snapshots current WHERE current.operation_id=? AND EXISTS (SELECT 1 FROM media_snapshots previous WHERE previous.media_id=current.media_id AND previous.id!=current.id AND previous.observed_at<=?) LIMIT 1",
       )
       .bind(operationId, startedAt)
       .first();
     return row !== null;
   }
+  async markUnavailable(mediaId: string, until: number, code: string) {
+    await this.database
+      .prepare("UPDATE media SET unavailable_until=?,unavailable_code=? WHERE id=?")
+      .bind(until, code, mediaId)
+      .run();
+  }
+  async nextStoryExpiry(accountId: string, now: number) {
+    const row = await this.database
+      .prepare(`SELECT MIN(m.published_at+86400000) AS expiry FROM media m
+      WHERE m.account_id=? AND m.product_type='STORY' AND m.published_at+86400000>?
+        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT 1),0)<m.published_at+86400000-900000`)
+      .bind(accountId, now)
+      .first<{ expiry: number | null }>();
+    return row?.expiry ?? null;
+  }
+  async coverage(accountId: string, now: number) {
+    const discovery = await this.database
+      .prepare(`SELECT
+      SUM(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN 1 ELSE 0 END) AS measuredPublications,
+      SUM(CASE WHEN m.discovery_source='history_inferred' THEN 1 ELSE 0 END) AS inferredPublications,
+      AVG(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN MAX(0,m.first_discovered_at-m.published_at)/60000.0 END) AS averageLagMinutes,
+      MAX(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN MAX(0,m.first_discovered_at-m.published_at)/60000.0 END) AS maximumLagMinutes,
+      SUM(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at AND m.first_discovered_at-m.published_at>3600000 THEN 1 ELSE 0 END) AS overOneHour
+      FROM media m JOIN accounts a ON a.id=m.account_id WHERE m.account_id=?`)
+      .bind(accountId)
+      .first<{
+        measuredPublications: number | null;
+        inferredPublications: number | null;
+        averageLagMinutes: number | null;
+        maximumLagMinutes: number | null;
+        overOneHour: number | null;
+      }>();
+    const catalogue = await this.database
+      .prepare(
+        `SELECT MAX(CASE WHEN status='completed' THEN completed_at END) AS lastFullPassAt,MAX(CASE WHEN status='running' THEN id END) AS currentJobId FROM collection_jobs WHERE account_id=? AND origin IN ('manual','catalogue')`,
+      )
+      .bind(accountId)
+      .first<{ lastFullPassAt: number | null; currentJobId: string | null }>();
+    const objects = await this.database
+      .prepare(
+        "SELECT m.id,m.published_at publishedAt,m.product_type productType,a.connected_at connectedAt FROM media m JOIN accounts a ON a.id=m.account_id WHERE m.account_id=?",
+      )
+      .bind(accountId)
+      .all<{ id: string; publishedAt: number; productType: string; connectedAt: number }>();
+    const observations = await this.database
+      .prepare(
+        "SELECT media_id mediaId,observed_at observedAt,json_extract(metrics_json,'$.reach.value') IS NOT NULL usable FROM media_snapshots WHERE media_id IN (SELECT id FROM media WHERE account_id=?) AND observed_at<=?",
+      )
+      .bind(accountId, now)
+      .all<{ mediaId: string; observedAt: number; usable: boolean }>();
+    const policies = await this.database
+      .prepare(
+        "SELECT effective_from effectiveFrom,effective_to effectiveTo,enabled,version,json_extract(policy_json,'$.availability') availability,json_extract(policy_json,'$.grantExpiresAt') grantExpiresAt FROM collection_policy_history WHERE account_id=? ORDER BY effective_from",
+      )
+      .bind(accountId)
+      .all<PolicyInterval>();
+    const windows = ageSnapshotWindows.map((w) => ({
+      ...ageCoverage(
+        objects.results,
+        observations.results,
+        policies.results,
+        now,
+        w.targetHours,
+        w.toleranceHours,
+      ),
+      metric: "reach",
+      rankingMode: "absolute",
+    }));
+    return {
+      analysisCoverage: windows,
+      collectionCoverage: windows,
+      discovery: {
+        measurementState: discovery?.measuredPublications
+          ? ("measured" as const)
+          : ("not_measured" as const),
+        denominator: discovery?.measuredPublications ?? 0,
+        measuredPublications: discovery?.measuredPublications ?? 0,
+        inferredPublications: discovery?.inferredPublications ?? 0,
+        averageLagMinutes: discovery?.averageLagMinutes ?? null,
+        maximumLagMinutes: discovery?.maximumLagMinutes ?? null,
+        overOneHour: discovery?.overOneHour ?? 0,
+      },
+      ageSnapshots: windows.map((w) => ({
+        targetHours: w.targetHours,
+        ...w.collectionObligations,
+      })),
+      catalogue: catalogue ?? { lastFullPassAt: null, currentJobId: null },
+    };
+  }
   async finishSchedule(schedule: CollectionSchedule, version: number) {
     await this.db
       .update(collectionSchedules)
-      .set(schedule)
+      .set({
+        ...schedule,
+        claimToken: sql`${collectionSchedules.claimToken}`,
+        claimExpiresAt: sql`${collectionSchedules.claimExpiresAt}`,
+        lastSuccessAt:
+          schedule.lastSuccessAt === null
+            ? sql`${collectionSchedules.lastSuccessAt}`
+            : sql`MAX(COALESCE(${collectionSchedules.lastSuccessAt},0),${schedule.lastSuccessAt})`,
+      })
       .where(
         and(
           eq(collectionSchedules.accountId, schedule.accountId),
           eq(collectionSchedules.enabled, true),
           eq(collectionSchedules.updatedAt, version),
+          (schedule as CollectionSchedule & { claimToken?: string }).claimToken
+            ? eq(
+                collectionSchedules.claimToken,
+                (schedule as CollectionSchedule & { claimToken: string }).claimToken,
+              )
+            : undefined,
         ),
       );
   }

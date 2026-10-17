@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../../shared/application/application-error";
 import type { Account, Media, Snapshot } from "../../analytics/public-contracts";
 import { growthIntervals, resurgence } from "../domain/signals";
 export type ReviewInput = {
@@ -7,6 +8,7 @@ export type ReviewInput = {
   compareTo?: number;
   timeZone: string;
   ageDays: 1 | 7 | 30;
+  rankingMode?: "absolute" | "per_100_reach" | "per_100_views";
 };
 export interface ReviewEvidence {
   account(id: string): Promise<Account>;
@@ -34,6 +36,11 @@ export class Review {
     private readonly clock: () => number,
   ) {}
   async execute(accountId: string, input: ReviewInput) {
+    if (input.rankingMode !== undefined && input.rankingMode !== "absolute")
+      throw new ApplicationError(
+        "FEATURE_UNAVAILABLE",
+        "review_account supports rankingMode=absolute only. Relative review metrics are not defined; use content-analysis with saves or shares for per_100_reach/per_100_views.",
+      );
     const account = await this.evidence.account(accountId);
     const [activity, lifetime, ranking] = await Promise.all([
       this.evidence.activity(accountId, input),
@@ -83,7 +90,8 @@ export class Review {
           sampleSize: entry.sampleSize,
           observedAt: entry.snapshot.observedAt,
           source: "instagram_api",
-          formula: "reach at matched age / median reach of same-product/API peers",
+          formula:
+            "reach at matched age / median reach of same product/media type, API/definition/scope/context peers",
           cause: "hypothesis_required",
         });
         actions.push({
@@ -134,7 +142,7 @@ export class Review {
         semantics: "[from,to)",
       },
       generatedAt: this.clock(),
-      formulaVersion: "review-v1",
+      formulaVersion: "review-v2",
       accountActivity: activity,
       publicationLifetime: lifetime,
       snapshotChanges: growth,

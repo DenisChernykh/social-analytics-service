@@ -1,8 +1,9 @@
+import { compatibleMeasurements } from "../../../shared/domain/measurement";
 import type { Media, MetricKey, Metrics, Snapshot } from "./model";
 
 export type CalculatedMetric = {
   value: number | null;
-  unit: "percent" | "ratio" | "count_per_hour" | "count";
+  unit: "actions_per_100" | "percent" | "ratio" | "count_per_hour" | "count";
   formula: string;
   inputs: Record<string, number | null>;
   reason:
@@ -10,6 +11,7 @@ export type CalculatedMetric = {
     | "zero_denominator"
     | "no_baseline"
     | "invalid_interval"
+    | "incompatible_measurements"
     | "counter_decreased"
     | null;
 };
@@ -19,7 +21,7 @@ function ratio(
   denominator: number | null,
   formula: string,
   inputs: Record<string, number | null>,
-  unit: CalculatedMetric["unit"] = "percent",
+  unit: CalculatedMetric["unit"] = "actions_per_100",
 ): CalculatedMetric {
   const reason =
     numerator === null || denominator === null
@@ -30,7 +32,8 @@ function ratio(
   return {
     value: reason
       ? null
-      : ((numerator as number) / (denominator as number)) * (unit === "percent" ? 100 : 1),
+      : ((numerator as number) / (denominator as number)) *
+        (["percent", "actions_per_100"].includes(unit) ? 100 : 1),
     unit,
     formula,
     inputs,
@@ -55,35 +58,73 @@ export function calculateMetrics(metrics: Metrics, media: Media) {
       ? components.reduce<number>((sum, v) => sum + (v as number), 0)
       : null);
   const durationMs = media.durationSeconds === null ? null : media.durationSeconds * 1000;
+  const checked = (value: CalculatedMetric, keys: MetricKey[]) =>
+    keys.every((k) => compatibleMeasurements(metrics[keys[0] as MetricKey], metrics[k]))
+      ? value
+      : { ...value, value: null, reason: "incompatible_measurements" as const };
+  const interactionKeys: MetricKey[] =
+    values.totalInteractions !== null
+      ? ["totalInteractions"]
+      : ["likes", "comments", "saves", "shares"];
   return {
-    engagementByReach: ratio(interactions, values.reach, "interactions / reach * 100", {
-      interactions,
-      reach: values.reach,
-    }),
-    engagementByViews: ratio(interactions, values.views, "interactions / views * 100", {
-      interactions,
-      views: values.views,
-    }),
-    saveRate: ratio(values.saves, values.reach, "saves / reach * 100", {
-      saves: values.saves,
-      reach: values.reach,
-    }),
-    shareRate: ratio(values.shares, values.reach, "shares / reach * 100", {
-      shares: values.shares,
-      reach: values.reach,
-    }),
-    viewsPerReachedAccount: ratio(
-      values.views,
-      values.reach,
-      "views / reach",
-      { views: values.views, reach: values.reach },
-      "ratio",
+    interactionBasis:
+      values.totalInteractions !== null
+        ? ("native_total_interactions" as const)
+        : ("derived_component_sum" as const),
+    engagementByReach: checked(
+      ratio(
+        interactions,
+        values.reach,
+        `${values.totalInteractions !== null ? "native total_interactions" : "(likes + comments + saves + shares)"} / reach * 100`,
+        {
+          interactions,
+          reach: values.reach,
+        },
+      ),
+      [...interactionKeys, "reach"],
+    ),
+    engagementByViews: checked(
+      ratio(
+        interactions,
+        values.views,
+        `${values.totalInteractions !== null ? "native total_interactions" : "(likes + comments + saves + shares)"} / views * 100`,
+        {
+          interactions,
+          views: values.views,
+        },
+      ),
+      [...interactionKeys, "views"],
+    ),
+    saveRate: checked(
+      ratio(values.saves, values.reach, "saves / reach * 100", {
+        saves: values.saves,
+        reach: values.reach,
+      }),
+      ["saves", "reach"],
+    ),
+    shareRate: checked(
+      ratio(values.shares, values.reach, "shares / reach * 100", {
+        shares: values.shares,
+        reach: values.reach,
+      }),
+      ["shares", "reach"],
+    ),
+    viewsPerReachedAccount: checked(
+      ratio(
+        values.views,
+        values.reach,
+        "views / reach",
+        { views: values.views, reach: values.reach },
+        "ratio",
+      ),
+      ["views", "reach"],
     ),
     averageWatchRatio: ratio(
       values.averageWatchTimeMs,
       durationMs,
       "averageWatchTimeMs / durationMs * 100",
       { averageWatchTimeMs: values.averageWatchTimeMs, durationMs },
+      "percent",
     ),
   };
 }
@@ -114,25 +155,29 @@ export function calculateGrowth(
     to: after?.observedAt ?? null,
     netChange: change,
     gain: {
-      value: reason ? null : change,
+      value: reason && reason !== "counter_decreased" ? null : change,
       unit: "count" as const,
       formula: "latest - initial",
       inputs,
       reason,
     },
     perHour: {
-      value: reason ? null : (change as number) / (elapsedHours as number),
+      value:
+        reason && reason !== "counter_decreased"
+          ? null
+          : (change as number) / (elapsedHours as number),
       unit: "count_per_hour" as const,
       formula: "(latest - initial) / elapsedHours",
       inputs,
       reason,
     },
     percent: {
-      value: reason
-        ? null
-        : initial === 0
+      value:
+        reason && reason !== "counter_decreased"
           ? null
-          : ((change as number) / (initial as number)) * 100,
+          : initial === 0
+            ? null
+            : ((change as number) / (initial as number)) * 100,
       unit: "percent" as const,
       formula: "(latest - initial) / initial * 100",
       inputs,

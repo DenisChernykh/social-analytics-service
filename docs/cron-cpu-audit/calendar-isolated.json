@@ -1,0 +1,648 @@
+{
+  "method": "Each invocation synchronously computes 50 calendars, no D1 or other awaits; activeMs/50 estimates average calendar time including amortized harness",
+  "result": [
+    {
+      "kind": "0",
+      "samples": [
+        {
+          "activeMs": 21.126,
+          "idleMs": 4.309,
+          "wallMs": 21.96754199999998,
+          "longDeltas": [
+            {
+              "us": 3050,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 20.566,
+          "idleMs": 0.773,
+          "wallMs": 21.769749999999988,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.336,
+          "idleMs": 2.049,
+          "wallMs": 21.109000000000037,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.075,
+          "idleMs": 1.612,
+          "wallMs": 20.883459000000016,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.034,
+          "idleMs": 1.353,
+          "wallMs": 20.68483399999991,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.986,
+          "idleMs": 1.015,
+          "wallMs": 20.76791700000001,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.197,
+          "idleMs": 0.666,
+          "wallMs": 20.936915999999997,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.741,
+          "idleMs": 0.656,
+          "wallMs": 20.39791600000001,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 26.127,
+          "idleMs": 2.123,
+          "wallMs": 27.585958000000005,
+          "longDeltas": [
+            {
+              "us": 2001,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 20.516,
+          "idleMs": 1.757,
+          "wallMs": 21.3951669999999,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.64,
+          "idleMs": 1.568,
+          "wallMs": 22.402500000000032,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.808,
+          "idleMs": 1.074,
+          "wallMs": 21.24754100000007,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.39,
+          "idleMs": 0.693,
+          "wallMs": 23.260417000000075,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 26.327,
+          "idleMs": 0.92,
+          "wallMs": 28.087666999999897,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.941,
+          "idleMs": 2.799,
+          "wallMs": 24.575833999999986,
+          "longDeltas": [
+            {
+              "us": 2670,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 19.709,
+          "idleMs": 2.402,
+          "wallMs": 20.954250000000002,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.192,
+          "idleMs": 1.459,
+          "wallMs": 20.758000000000038,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.644,
+          "idleMs": 1.087,
+          "wallMs": 20.399999999999977,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.245,
+          "idleMs": 0.671,
+          "wallMs": 21.039207999999917,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.243,
+          "idleMs": 1.398,
+          "wallMs": 20.84491700000001,
+          "longDeltas": []
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 20.336,
+        "p95": 26.127,
+        "max": 26.327
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 21.039207999999917,
+        "p95": 27.585958000000005,
+        "max": 28.087666999999897
+      }
+    },
+    {
+      "kind": "52",
+      "samples": [
+        {
+          "activeMs": 20.01,
+          "idleMs": 0.639,
+          "wallMs": 20.49924999999996,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.068,
+          "idleMs": 1.176,
+          "wallMs": 20.428957999999966,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.543,
+          "idleMs": 0.651,
+          "wallMs": 19.906541999999945,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.435,
+          "idleMs": 0.572,
+          "wallMs": 19.958791999999903,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.627,
+          "idleMs": 0.777,
+          "wallMs": 20.189374999999927,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.029,
+          "idleMs": 0.637,
+          "wallMs": 21.9164159999998,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.957,
+          "idleMs": 2.188,
+          "wallMs": 20.5346669999999,
+          "longDeltas": [
+            {
+              "us": 2188,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 22.23,
+          "idleMs": 2.149,
+          "wallMs": 23.091499999999996,
+          "longDeltas": [
+            {
+              "us": 2149,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 20.047,
+          "idleMs": 2.128,
+          "wallMs": 20.666458000000148,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.449,
+          "idleMs": 2.691,
+          "wallMs": 20.9704999999999,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.164,
+          "idleMs": 1.791,
+          "wallMs": 20.846249999999827,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.299,
+          "idleMs": 2.369,
+          "wallMs": 20.883124999999836,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.398,
+          "idleMs": 2.579,
+          "wallMs": 20.953791999999794,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 19.549,
+          "idleMs": 2.101,
+          "wallMs": 20.843000000000075,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.414,
+          "idleMs": 1.284,
+          "wallMs": 21.078125,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.04,
+          "idleMs": 1.252,
+          "wallMs": 20.648749999999836,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.159,
+          "idleMs": 1.192,
+          "wallMs": 20.806125000000065,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.967,
+          "idleMs": 1.103,
+          "wallMs": 21.59479199999987,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.796,
+          "idleMs": 1.855,
+          "wallMs": 21.611499999999978,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 20.239,
+          "idleMs": 1.482,
+          "wallMs": 20.82725000000005,
+          "longDeltas": []
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 20.068,
+        "p95": 21.029,
+        "max": 22.23
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 20.82725000000005,
+        "p95": 21.9164159999998,
+        "max": 23.091499999999996
+      }
+    },
+    {
+      "kind": "520",
+      "samples": [
+        {
+          "activeMs": 23.556,
+          "idleMs": 0.977,
+          "wallMs": 24.32487500000002,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 26.017,
+          "idleMs": 1.04,
+          "wallMs": 26.94879100000003,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.687,
+          "idleMs": 0.838,
+          "wallMs": 24.40020800000002,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.553,
+          "idleMs": 0.911,
+          "wallMs": 23.295290999999906,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.204,
+          "idleMs": 0.881,
+          "wallMs": 22.882624999999962,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.833,
+          "idleMs": 0.794,
+          "wallMs": 22.541791999999987,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.006,
+          "idleMs": 0.834,
+          "wallMs": 22.780207999999902,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 25.897,
+          "idleMs": 0.865,
+          "wallMs": 26.77079200000003,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.864,
+          "idleMs": 2.137,
+          "wallMs": 23.618208000000095,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.49,
+          "idleMs": 1.864,
+          "wallMs": 23.318750000000136,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.601,
+          "idleMs": 0.858,
+          "wallMs": 23.303750000000036,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.757,
+          "idleMs": 0.841,
+          "wallMs": 22.54033400000003,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.279,
+          "idleMs": 0.746,
+          "wallMs": 22.827999999999975,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.943,
+          "idleMs": 0.838,
+          "wallMs": 22.727082999999993,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.409,
+          "idleMs": 0.732,
+          "wallMs": 23.00670799999989,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 22.093,
+          "idleMs": 0.704,
+          "wallMs": 22.752665999999863,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 21.825,
+          "idleMs": 0.828,
+          "wallMs": 22.478458000000046,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.199,
+          "idleMs": 0.856,
+          "wallMs": 24.253000000000156,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.628,
+          "idleMs": 0.911,
+          "wallMs": 24.626625000000104,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 47.244,
+          "idleMs": 0.995,
+          "wallMs": 48.61258399999974,
+          "longDeltas": []
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 22.409,
+        "p95": 26.017,
+        "max": 47.244
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 23.295290999999906,
+        "p95": 26.94879100000003,
+        "max": 48.61258399999974
+      }
+    },
+    {
+      "kind": "1030",
+      "samples": [
+        {
+          "activeMs": 43.941,
+          "idleMs": 1.807,
+          "wallMs": 45.11645899999985,
+          "longDeltas": [
+            {
+              "us": 2450,
+              "frame": "activityPeriodPlan"
+            }
+          ]
+        },
+        {
+          "activeMs": 46,
+          "idleMs": 2.129,
+          "wallMs": 47.031124999999975,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 29.051,
+          "idleMs": 1.968,
+          "wallMs": 29.881083000000217,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 24.438,
+          "idleMs": 1.673,
+          "wallMs": 24.945541999999932,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.976,
+          "idleMs": 1.766,
+          "wallMs": 24.40445899999986,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.558,
+          "idleMs": 2.118,
+          "wallMs": 24.092209000000366,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 23.6,
+          "idleMs": 2.051,
+          "wallMs": 24.28133300000036,
+          "longDeltas": []
+        },
+        {
+          "activeMs": 24.289,
+          "idleMs": 2.154,
+          "wallMs": 24.806790999999976,
+          "longDeltas": [
+            {
+              "us": 2154,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 23.956,
+          "idleMs": 2.33,
+          "wallMs": 24.4751669999996,
+          "longDeltas": [
+            {
+              "us": 2203,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 23.987,
+          "idleMs": 2.282,
+          "wallMs": 24.413500000000113,
+          "longDeltas": [
+            {
+              "us": 2282,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 23.837,
+          "idleMs": 2.657,
+          "wallMs": 24.36675000000014,
+          "longDeltas": [
+            {
+              "us": 2528,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 23.979,
+          "idleMs": 2.681,
+          "wallMs": 24.62308299999995,
+          "longDeltas": [
+            {
+              "us": 2681,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 24.217,
+          "idleMs": 2.968,
+          "wallMs": 24.885625000000346,
+          "longDeltas": [
+            {
+              "us": 2839,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 25.07,
+          "idleMs": 3.009,
+          "wallMs": 25.732833000000028,
+          "longDeltas": [
+            {
+              "us": 3009,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 25.71,
+          "idleMs": 3.324,
+          "wallMs": 26.320208000000093,
+          "longDeltas": [
+            {
+              "us": 3324,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 26.544,
+          "idleMs": 3.452,
+          "wallMs": 27.302459,
+          "longDeltas": [
+            {
+              "us": 3323,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 25.161,
+          "idleMs": 4.556,
+          "wallMs": 25.765665999999783,
+          "longDeltas": [
+            {
+              "us": 3648,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 24.926,
+          "idleMs": 3.704,
+          "wallMs": 25.460833000000093,
+          "longDeltas": [
+            {
+              "us": 3704,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 25.541,
+          "idleMs": 3.734,
+          "wallMs": 26.113124999999854,
+          "longDeltas": [
+            {
+              "us": 3734,
+              "frame": "(idle)"
+            }
+          ]
+        },
+        {
+          "activeMs": 26.103,
+          "idleMs": 4.389,
+          "wallMs": 26.80987499999992,
+          "longDeltas": [
+            {
+              "us": 4105,
+              "frame": "(idle)"
+            }
+          ]
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 24.438,
+        "p95": 43.941,
+        "max": 46
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 24.945541999999932,
+        "p95": 45.11645899999985,
+        "max": 47.031124999999975
+      }
+    }
+  ]
+}

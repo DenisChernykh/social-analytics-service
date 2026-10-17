@@ -106,6 +106,9 @@ try {
         (item) =>
           item.id !== current.id &&
           item.apiVersion === current.apiVersion &&
+          (item.definitionVersion ?? null) === (current.definitionVersion ?? null) &&
+          [...item.input.metrics].sort().join(",") ===
+            [...current.input.metrics].sort().join(",") &&
           item.input.timeZone === current.input.timeZone &&
           item.input.to <= current.input.from &&
           item.input.to - item.input.from === current.input.to - current.input.from,

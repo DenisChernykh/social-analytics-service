@@ -3,6 +3,7 @@ import type {
   AccountSnapshot,
   Media,
   Metrics,
+  ProfileActivity,
   Snapshot,
   StoryInsights,
   SyncRun,
@@ -35,8 +36,15 @@ export interface AnalyticsRepository {
   selectedMedia(ids: string[]): Promise<Media[]>;
   search(filter: MediaFilter): Promise<{ items: Media[]; nextCursor: string | null }>;
   snapshots(mediaId: string, limit: number): Promise<Snapshot[]>;
+  metricFreshness(
+    mediaId: string,
+  ): Promise<Record<import("../domain/model").MetricKey, import("../domain/model").FieldFreshness>>;
   latest(mediaIds: string[]): Promise<Map<string, Snapshot>>;
-  atAge(mediaIds: string[], ageDays: number): Promise<Map<string, Snapshot>>;
+  atAge(
+    mediaIds: string[],
+    ageDays: number,
+    selection?: { metric: import("../domain/model").MetricKey; denominator?: "reach" | "views" },
+  ): Promise<Map<string, Snapshot>>;
   history(
     mediaId: string,
     from: number | undefined,
@@ -64,6 +72,8 @@ export interface AnalyticsRepository {
   finish(
     run: SyncRun,
     profile: {
+      observedAt?: number;
+      receipt?: import("../../instagram/public-contracts").ReceiptReference;
       username: string;
       accountType: string;
       followersCount: number | null;
@@ -75,12 +85,24 @@ export interface AnalyticsRepository {
   fail(run: SyncRun, code: string, now: number): Promise<void>;
 }
 
+export type MediaStatistics = {
+  provenance?: import("../../../shared/domain/measurement").ObservationProvenance | null;
+  metrics: Metrics;
+  observedAt: number;
+  apiVersion: string;
+  storyInsights?: StoryInsights | null;
+  profileActivity?: ProfileActivity | null;
+};
 export interface AnalyticsSource {
+  requestStats?(): { attempts: number };
+  beginOperation?(operationId: string): void;
   media(
     account: Account,
     externalId: string,
   ): Promise<{ media: Media; initialMetrics: Partial<Metrics> }>;
   profile(accountId: string): Promise<{
+    receipt?: import("../../instagram/public-contracts").ReceiptReference;
+    observedAt?: number;
     userId: string;
     username: string;
     accountType: string;
@@ -98,12 +120,12 @@ export interface AnalyticsSource {
   metrics(
     accountId: string,
     item: { media: Media; initialMetrics: Partial<Metrics> },
-  ): Promise<{
-    metrics: Metrics;
-    observedAt: number;
-    apiVersion: string;
-    storyInsights?: StoryInsights | null;
-  }>;
+  ): Promise<MediaStatistics>;
+  additionalMetrics?(
+    accountId: string,
+    item: { media: Media; initialMetrics: Partial<Metrics> },
+    current: MediaStatistics,
+  ): Promise<MediaStatistics>;
   stories(
     account: Account,
     cursor: string | null,

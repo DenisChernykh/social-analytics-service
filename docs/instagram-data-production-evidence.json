@@ -1,0 +1,734 @@
+{
+  "checkedAt": "2026-10-08T16:26:12.144Z",
+  "startedAt": "2026-10-08T16:26:01.126Z",
+  "backendRevision": "0.2.15",
+  "deploymentStatus": "succeeded",
+  "cloudflareVersionId": "6ebe6029-74e1-4551-b68a-0b1c30a56f68",
+  "createdAt": "2026-10-08T16:16:47.859319Z",
+  "activeVersionConfirmed": true,
+  "sourceInventorySha256": "9b65885c973c212ad9c1f71f41380aa08b366cd2d2ae7092b40cbc0f171b01de",
+  "versionAnnotationVerified": true,
+  "bundleSha256": "98d616b2fe7d96cba1472ae208972391fdd906487490c02577cd5d2fb1be032b",
+  "activeModuleDownload": {
+    "matched": true,
+    "modules": [
+      {
+        "name": "index.js",
+        "bytes": 1543808,
+        "sha256": "98d616b2fe7d96cba1472ae208972391fdd906487490c02577cd5d2fb1be032b"
+      }
+    ],
+    "providerEtag": "af51ee669970d98229d680710b98e825b80916b1c1e2f64e9e7cd4e231559046"
+  },
+  "migrations": [
+    {
+      "name": "0009_common_jocasta.sql",
+      "applied_at": "2026-10-08 16:15:48"
+    },
+    {
+      "name": "0010_clean_talon.sql",
+      "applied_at": "2026-10-08 16:15:49"
+    },
+    {
+      "name": "0011_unique_black_widow.sql",
+      "applied_at": "2026-10-08 16:15:49"
+    },
+    {
+      "name": "0012_hesitant_northstar.sql",
+      "applied_at": "2026-10-08 16:15:49"
+    }
+  ],
+  "counts": {
+    "accounts": 1,
+    "media": 247,
+    "mediaSnapshots": 676,
+    "jobs": 178,
+    "receipts": 5
+  },
+  "jobsPaginationSql": {
+    "cutoff": 1791476318330,
+    "count": 177
+  },
+  "relativeRankingSql": {
+    "observations": 5,
+    "values": [
+      {
+        "observedAt": 1791372637924,
+        "saves": 34,
+        "reach": 1684,
+        "rankingValue": 2.019002375296912
+      },
+      {
+        "observedAt": 1791055560543,
+        "saves": 39,
+        "reach": 4961,
+        "rankingValue": 0.7861318282604314
+      },
+      {
+        "observedAt": 1790952587932,
+        "saves": 3,
+        "reach": 396,
+        "rankingValue": 0.7575757575757576
+      },
+      {
+        "observedAt": 1791199559444,
+        "saves": 2,
+        "reach": 445,
+        "rankingValue": 0.449438202247191
+      },
+      {
+        "observedAt": 1790934321530,
+        "saves": 1,
+        "reach": 348,
+        "rankingValue": 0.28735632183908044
+      }
+    ],
+    "numeratorSum": 79,
+    "denominatorSum": 7834
+  },
+  "duplicateSnapshots": 0,
+  "foreignKeyIssues": 0,
+  "cron": {
+    "manualCollectionCommands": 0,
+    "firstRecordedAttempts": [
+      {
+        "requested_at": 1791476425757,
+        "received_at": 1791476426133,
+        "endpointFamily": "profile",
+        "requestedApiVersion": "v26.0",
+        "actualApiVersion": "v26.0",
+        "login": "instagram_login",
+        "httpStatus": 200,
+        "result": "success"
+      },
+      {
+        "requested_at": 1791476426565,
+        "received_at": 1791476426801,
+        "endpointFamily": "media_catalog",
+        "requestedApiVersion": "v26.0",
+        "actualApiVersion": "v26.0",
+        "login": "instagram_login",
+        "httpStatus": 200,
+        "result": "success"
+      },
+      {
+        "requested_at": 1791476757300,
+        "received_at": 1791476758051,
+        "endpointFamily": "profile",
+        "requestedApiVersion": "v26.0",
+        "actualApiVersion": "v26.0",
+        "login": "instagram_login",
+        "httpStatus": 200,
+        "result": "success"
+      },
+      {
+        "requested_at": 1791476758672,
+        "received_at": 1791476759738,
+        "endpointFamily": "insights",
+        "requestedApiVersion": "v26.0",
+        "actualApiVersion": "v26.0",
+        "login": "instagram_login",
+        "httpStatus": 200,
+        "result": "success"
+      },
+      {
+        "requested_at": 1791476760144,
+        "received_at": 1791476760654,
+        "endpointFamily": "insights",
+        "requestedApiVersion": "v26.0",
+        "actualApiVersion": "v26.0",
+        "login": "instagram_login",
+        "httpStatus": 200,
+        "result": "success"
+      }
+    ],
+    "jobs": [
+      {
+        "origin": "activity",
+        "status": "running",
+        "pages": 21,
+        "firstAttemptAt": null,
+        "lastAttemptAt": 1791476755821,
+        "lastUsefulObservationAt": 1791476760654,
+        "lastStepHttpAttempts": 3,
+        "lastStepDurationMs": 5278,
+        "errorCode": null
+      },
+      {
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "firstAttemptAt": 1791476424586,
+        "lastAttemptAt": 1791476424586,
+        "lastUsefulObservationAt": null,
+        "lastStepHttpAttempts": 2,
+        "lastStepDurationMs": 2531,
+        "errorCode": null
+      }
+    ],
+    "policies": [
+      {
+        "effectiveFrom": 1791476423452,
+        "effectiveTo": null,
+        "version": "collection-v2",
+        "enabled": 1,
+        "availability": "configured"
+      }
+    ],
+    "observation24h": "pending"
+  },
+  "diagnostics": {
+    "readOnlySqlQueries": 13,
+    "sqlRowsWritten": 0,
+    "preMigrationCountError": {
+      "code": 7500,
+      "reason": "D1 rejected seven-term compound SELECT; replaced with scalar subqueries. No pre-migration count baseline was obtained."
+    }
+  },
+  "limits": [
+    "No new manual Meta calls or collection commands. Source receipt rows here are produced by normal Cron.",
+    "No live Story was available in earlier bounded source check.",
+    "This is initial post-release evidence, not 24-hour acceptance or complete historical coverage."
+  ],
+  "mcp": {
+    "checkedAt": "2026-10-08T16:31:22.902Z",
+    "jobsPagination": {
+      "cutoff": 1791476318330,
+      "total": 177,
+      "pages": 9,
+      "unique": 177,
+      "duplicates": 0,
+      "finished": true,
+      "aggregateTotal": 177,
+      "statusIsLive": true
+    },
+    "relativeRanking": {
+      "n": 5,
+      "numeratorSum": 79,
+      "denominatorSum": 7834,
+      "medianIndividualPer100": 0.7575757575757576,
+      "ratioOfSumsPer100": 1.0084248149093693,
+      "sorted": true,
+      "analysisCoverage": {
+        "examined": 126,
+        "usable": 5,
+        "missingEligible": 0,
+        "excludedByReason": {
+          "too_early": 13,
+          "connected_after_window": 108
+        },
+        "metric": "saves",
+        "rankingMode": "per_100_reach",
+        "open": 1,
+        "closed": 112
+      },
+      "oldSnapshotPreserved": true,
+      "oldSnapshot": {
+        "observedAt": 1791199559444,
+        "actualAgeDays": 30.02988939814815,
+        "saves": 2,
+        "reach": 445,
+        "rankingValue": 0.449438202247191
+      }
+    },
+    "status": {
+      "checkedAt": "2026-10-08T16:28:51.678Z",
+      "usagePercent": null,
+      "quotaState": "unknown_schema",
+      "quotaFreshness": "unknown",
+      "http": {
+        "attempts": 5,
+        "responses": 5,
+        "failuresBeforeResponse": 0,
+        "timeouts": 0,
+        "rateLimitedResponses": 0,
+        "sinceAt": 1791476425757
+      },
+      "analysisCoverage": [
+        {
+          "targetHours": 1,
+          "toleranceHours": 0.5,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 2,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 6,
+          "toleranceHours": 1,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 24,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 2,
+            "closed": 237
+          },
+          "collectionObligations": {
+            "expected": 1,
+            "captured": 1,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 2,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 2
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 72,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "open": 0,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "policy_history_unknown_or_insufficient_opportunity": 3,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 168,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 4,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "open": 0,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 4,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "policy_history_unknown_or_insufficient_opportunity": 4,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 336,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "too_early": 7,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 232
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 1,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "policy_history_unknown_or_insufficient_opportunity": 1,
+              "too_early": 7,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 720,
+          "toleranceHours": 24,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 6,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "too_early": 13,
+              "inapplicable_story": 8
+            },
+            "open": 2,
+            "closed": 224
+          },
+          "collectionObligations": {
+            "expected": 1,
+            "captured": 1,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 5,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "policy_history_unknown_or_insufficient_opportunity": 5,
+              "too_early": 13,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        }
+      ],
+      "collectionCoverage": [
+        {
+          "targetHours": 1,
+          "toleranceHours": 0.5,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 2,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 6,
+          "toleranceHours": 1,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 24,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 2,
+            "closed": 237
+          },
+          "collectionObligations": {
+            "expected": 1,
+            "captured": 1,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 2,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 2
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 72,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "open": 0,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "policy_history_unknown_or_insufficient_opportunity": 3,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 168,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 4,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "open": 0,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 4,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "policy_history_unknown_or_insufficient_opportunity": 4,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 336,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "too_early": 7,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 232
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 1,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "policy_history_unknown_or_insufficient_opportunity": 1,
+              "too_early": 7,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 720,
+          "toleranceHours": 24,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 6,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "too_early": 13,
+              "inapplicable_story": 8
+            },
+            "open": 2,
+            "closed": 224
+          },
+          "collectionObligations": {
+            "expected": 1,
+            "captured": 1,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 5,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "policy_history_unknown_or_insufficient_opportunity": 5,
+              "too_early": 13,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        }
+      ]
+    },
+    "calendar": {
+      "observedAt": 1791476760654,
+      "apiVersion": "v26.0",
+      "definitionVersion": "instagram-measurement-v2",
+      "scope": "instagram_account_period",
+      "metricType": "total_value",
+      "requestBounds": {
+        "from": 1784919600000,
+        "to": 1785006000000,
+        "timeZone": "Asia/Yekaterinburg",
+        "semantics": "[from,to)",
+        "sourceSince": 1784919600,
+        "sourceUntil": 1785005999,
+        "sourceBoundaryContract": "integer-second since/until adapter v1; requested range does not establish effective source buckets"
+      },
+      "matchedValues": 12,
+      "numericValues": 11,
+      "receiptLinkedValues": 12,
+      "reasonCounts": {
+        "value": 11,
+        "not_returned": 1
+      },
+      "periodKeyPreserved": true
+    },
+    "tools": [
+      "get_collection_status",
+      "analyze_content",
+      "get_account_activity"
+    ],
+    "manualCollectionCommands": 0,
+    "note": "Actual connected owner-only Social Analytics MCP calls. Counts refer to named cutoff; state may change during ordinary Cron. One initial calendar call used numeric dates and was rejected before retry with the documented ISO datetime input."
+  }
+}

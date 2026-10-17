@@ -6,6 +6,7 @@ export const commentPolicy = {
   monthRefreshHours: 6,
   archiveRefreshHours: 168,
   fullReconciliationDays: 30,
+  omittedProbeLimit: 2,
 } as const;
 
 export function commentRefreshDelay(publishedAt: number, now: number): number {
@@ -25,4 +26,6 @@ export type CommentCheckpoint = {
   complete: boolean;
   omittedBranches: number;
   eventGeneration: number;
+  unavailableUntil?: number;
+  errorCode?: string | null;
 };

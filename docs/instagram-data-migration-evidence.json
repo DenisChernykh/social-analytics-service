@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-08T15:41:35.933Z",
+  "baseline": "0008",
+  "applied": [
+    "0009_common_jocasta.sql",
+    "0010_clean_talon.sql",
+    "0011_unique_black_widow.sql",
+    "0012_hesitant_northstar.sql"
+  ],
+  "preservedTables": [
+    "accounts",
+    "media",
+    "media_snapshots",
+    "account_snapshots",
+    "sync_runs",
+    "collection_jobs",
+    "instagram_api_state",
+    "account_insights"
+  ],
+  "preservedRows": 8,
+  "legacyProvenance": "unknown",
+  "legacyPolicyHistory": "unknown",
+  "legacyCounterEpoch": "unknown",
+  "foreignKeyErrors": 0,
+  "legacyFactsSha256": "d35b5e340599657ce9181c57ba23520b407a371586d534ab8b3ff0b5ab10d32d"
+}

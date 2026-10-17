@@ -1,0 +1,198 @@
+{
+  "checkedAt": "2026-10-09T07:45:15.380Z",
+  "settings": {
+    "usage_model": "standard",
+    "logpush": false,
+    "bindings": [
+      {
+        "name": "BUILD_REVISION",
+        "text": "0.2.16",
+        "type": "plain_text"
+      }
+    ]
+  },
+  "deployments": {
+    "deployments": [
+      {
+        "id": "231496e2-70ef-4f0b-aff3-8dc3adffc123",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/message": "Defer HTTP schemas and routing from Cron cold starts; preserve API and storage contracts.",
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "e659a098-741f-47ba-891f-ad25274efa70",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-09T06:29:40.443513Z"
+      },
+      {
+        "id": "5c8df31f-79fe-4bb9-8379-0197124b9404",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/message": "Instagram data quality P0/P1; sourceInventorySha256=9b65885c973c212ad9c1f71f41380aa08b366cd2d2ae7092b40cbc0f171b01de",
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "6ebe6029-74e1-4551-b68a-0b1c30a56f68",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-08T16:16:49.065082Z"
+      },
+      {
+        "id": "40e5545d-d8a5-475f-a2b7-bd701704cf8f",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "58eead44-746c-4f50-a26e-037d702964ba",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-08T07:14:44.967788Z"
+      },
+      {
+        "id": "03dad0d1-e969-4b31-8efb-8df4c10e9d10",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "c0cffcb3-525b-47aa-88bf-a1b21164a739",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-08T06:39:34.467406Z"
+      },
+      {
+        "id": "8140e28e-c01a-4ad5-a392-fd3b5c439a6b",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "a5e664bf-e0c1-42c6-9826-6fabc74ebd37",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-08T06:17:26.923071Z"
+      },
+      {
+        "id": "8fcca25b-4d1d-4481-ae5f-865927387ad5",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "694c32b6-4f8e-4094-8367-2229705d9731",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-07T21:24:02.33073Z"
+      },
+      {
+        "id": "dd77fbdd-6ac0-4d39-88f7-42c060c87688",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "8f7327a9-d752-4fba-acb8-bb88b9b4ed21",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-07T21:09:59.456832Z"
+      },
+      {
+        "id": "abda9dcf-6252-468f-a8fb-dd61af7599f0",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "secret"
+        },
+        "versions": [
+          {
+            "version_id": "ac5ae13b-07cc-45b6-b9c1-ff8d33b772b0",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-07T21:09:37.588967Z"
+      },
+      {
+        "id": "29abddf2-732e-4fbc-8560-aed7bbe16d73",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "d4308f77-b36d-42b2-9954-6f3b01dfb092",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-05T18:52:50.416623Z"
+      },
+      {
+        "id": "0ab82751-c90d-44fb-890e-4e3550e9d7f6",
+        "source": "wrangler",
+        "strategy": "percentage",
+        "annotations": {
+          "workers/triggered_by": "deployment"
+        },
+        "versions": [
+          {
+            "version_id": "c44a5d62-6748-4df8-bde8-7e77c81f42ee",
+            "percentage": 100
+          }
+        ],
+        "created_on": "2026-10-03T09:27:23.45185Z"
+      }
+    ]
+  },
+  "subscriptions": {
+    "error": "Cloudflare HTTP 403: [{\"code\":10000,\"message\":\"Authentication error\"}]"
+  },
+  "sourceMatch": {},
+  "bundleCheck": {
+    "checkedAt": "2026-10-09T08:19:03.055Z",
+    "name": "index.js",
+    "bytes": 1716875,
+    "remoteSHA256": "a6034b1536f348711a692e9c9c5b16cfb7b01700e199faeb78a9444b6036eda8",
+    "localSHA256": "a6034b1536f348711a692e9c9c5b16cfb7b01700e199faeb78a9444b6036eda8",
+    "equal": true
+  },
+  "runtimeCheck": {
+    "checkedAt": "2026-10-09T08:29:08.130Z",
+    "version": {
+      "id": "e659a098-741f-47ba-891f-ad25274efa70",
+      "scriptKeys": [
+        "etag",
+        "handlers",
+        "last_deployed_from"
+      ]
+    },
+    "scriptSettings": {
+      "logpush": false,
+      "observability": null,
+      "tailConsumers": null
+    }
+  }
+}

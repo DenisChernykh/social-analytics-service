@@ -1,10 +1,16 @@
-import { createApp } from "./app/create-app";
+import type { createApp } from "./app/create-app";
 import { createScheduledOperations } from "./app/create-features";
 import type { RuntimeBindings } from "./platform/config/runtime-config";
 
-const app = createApp();
+// HTTP schema construction is deferred until an HTTP request reaches this isolate.
+// Cron imports only the operation factories, so a background cold start avoids it.
+let appPromise: Promise<ReturnType<typeof createApp>> | undefined;
 export default {
-  fetch: app.fetch,
+  async fetch(request: Request, env: RuntimeBindings, ctx: ExecutionContext) {
+    appPromise ??= import("./app/create-app").then(({ createApp }) => createApp());
+    const app = await appPromise;
+    return app.fetch(request, env, ctx);
+  },
   scheduled(_controller: ScheduledController, env: RuntimeBindings, ctx: ExecutionContext) {
     ctx.waitUntil(createScheduledOperations(env).tick());
   },

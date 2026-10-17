@@ -1,3 +1,5 @@
+import type { ReceiptReference } from "../../../shared/domain/measurement";
+
 export type SavedComment = {
   id: string;
   mediaId: string;
@@ -5,8 +7,14 @@ export type SavedComment = {
   text: string;
   publishedAt: number;
   observedAt: number;
+  authorId?: string | null;
+  authorUsername?: string | null;
+  likeCount?: number | null;
+  hidden?: boolean | null;
 };
 export type CommentCollection = {
+  receipt?: ReceiptReference;
+  definitionVersion?: string;
   id: string;
   mediaId: string;
   parentId: string | null;

@@ -1,4 +1,7 @@
-import { ApplicationError } from "../../../shared/application/application-error";
+import {
+  ApplicationError,
+  retryableOperation,
+} from "../../../shared/application/application-error";
 import type { Snapshot, SyncRun } from "../domain/model";
 import type { AnalyticsRepository, AnalyticsSource } from "./ports";
 
@@ -9,6 +12,9 @@ export class SyncAccount {
     private readonly clock: () => number,
   ) {}
 
+  requestStats() {
+    return this.source.requestStats?.() ?? { attempts: 0 };
+  }
   async execute(input: {
     accountId: string;
     operationId: string;
@@ -31,20 +37,19 @@ export class SyncAccount {
           "This operation ID was already used for different sync parameters.",
         );
       }
-      if (previous.status !== "running") return previous;
-      if (this.clock() - previous.startedAt >= 15 * 60_000) {
+      if (
+        previous.status === "completed" ||
+        (previous.status === "failed" && !retryableOperation(previous.errorCode))
+      )
+        return previous;
+      if (previous.status === "running" && this.clock() - previous.startedAt >= 15 * 60_000) {
         await this.repository.fail(previous, "SYNC_LEASE_EXPIRED", this.clock());
-        return {
-          ...previous,
-          status: "failed",
-          completedAt: this.clock(),
-          errorCode: "SYNC_LEASE_EXPIRED",
-        };
+      } else if (previous.status === "running") {
+        throw new ApplicationError(
+          "SYNC_IN_PROGRESS",
+          "This sync operation is still running; retrieve its status.",
+        );
       }
-      throw new ApplicationError(
-        "SYNC_IN_PROGRESS",
-        "This sync operation is still running; retrieve its status.",
-      );
     }
     const account = await this.repository.account(input.accountId);
     if (!account) throw new ApplicationError("NOT_FOUND", "The account was not found.");
@@ -84,6 +89,7 @@ export class SyncAccount {
           "This operation ID was already used for different sync parameters.",
         );
       }
+      this.source.beginOperation?.(run.id);
       const profile = await this.source.profile(account.id);
       if (profile.userId !== account.externalId)
         throw new ApplicationError(
@@ -111,12 +117,50 @@ export class SyncAccount {
         };
         items.push({ media: item.media, snapshot });
       }
+      // Every publication gets its core pass before optional fields can spend the shared budget.
+      // Continuations belong to this operation, retain field receipts, and never read old snapshots.
+      if (this.source.additionalMetrics) {
+        for (const [index, item] of page.items.entries()) {
+          const collected = items[index];
+          if (!collected) throw new Error("Missing core observation");
+          const statistics = await this.source.additionalMetrics(
+            account.id,
+            item,
+            collected.snapshot,
+          );
+          collected.snapshot = { ...collected.snapshot, ...statistics };
+        }
+      }
       const completedAt = this.clock();
+      const facts = items.flatMap(({ snapshot }) => [
+        ...Object.values(snapshot.metrics),
+        ...Object.values(snapshot.storyInsights?.navigation ?? {}),
+        ...(snapshot.storyInsights ? [snapshot.storyInsights.replies] : []),
+        ...Object.values(snapshot.profileActivity?.actions ?? {}),
+      ]);
+      const useful = facts.filter((m) => m.value !== null);
       const completed: SyncRun = {
         ...run,
         status: "completed",
         completedAt,
         mediaCount: items.length,
+        usefulValues: useful.length,
+        lastUsefulAt: useful.length
+          ? Math.max(...useful.map((m) => m.provenance?.responseReceivedAt ?? completedAt))
+          : null,
+        firstUsefulAt: useful.length
+          ? Math.min(...useful.map((m) => m.provenance?.responseReceivedAt ?? completedAt))
+          : null,
+        coverageState:
+          useful.length === 0
+            ? "empty"
+            : facts.some(
+                  (m) =>
+                    m.value === null &&
+                    !["not_supported", "not_requested"].includes(m.reason ?? ""),
+                )
+              ? "partial"
+              : "complete",
         nextCursor: page.nextCursor,
       };
       await this.repository.finish(completed, profile, items, completedAt);

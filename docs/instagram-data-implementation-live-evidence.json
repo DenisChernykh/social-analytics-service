@@ -1,0 +1,1447 @@
+{
+  "mode": "bounded-live-GET-local-D1-and-MCP",
+  "checkedAt": "2026-10-08T15:34:48.542Z",
+  "requestedApiVersion": "v26.0",
+  "login": "instagram_login",
+  "verifiedBuild": {
+    "backendRevision": "0.2.15",
+    "mcpVersion": "0.4.0",
+    "bundleSha256": "b44b7c3692e2301f906b6cb25ae387d4e739e9242460e637bd9474b8e0ec3e70",
+    "deployment": "local ephemeral D1/backend/MCP; production code not deployed by this check"
+  },
+  "migrations": [
+    "0000_tough_swarm.sql",
+    "0001_panoramic_the_captain.sql",
+    "0002_amused_titanium_man.sql",
+    "0003_cold_captain_midlands.sql",
+    "0004_many_phantom_reporter.sql",
+    "0005_brainy_sasquatch.sql",
+    "0006_fancy_the_enforcers.sql",
+    "0007_unusual_speed_demon.sql",
+    "0008_strong_brother_voodoo.sql",
+    "0009_common_jocasta.sql",
+    "0010_clean_talon.sql",
+    "0011_unique_black_widow.sql",
+    "0012_hesitant_northstar.sql"
+  ],
+  "objects": [
+    {
+      "alias": "R-recent",
+      "productType": "REELS",
+      "mediaType": "VIDEO",
+      "publicationAgeDays": 0.9,
+      "verified": [
+        "views",
+        "reach",
+        "likes",
+        "comments",
+        "saves",
+        "shares",
+        "totalInteractions",
+        "totalWatchTimeMs",
+        "averageWatchTimeMs",
+        "skipRate"
+      ],
+      "fieldEvidence": [
+        {
+          "metric": "views",
+          "sourceField": "views",
+          "value": 2,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "reach",
+          "sourceField": "reach",
+          "value": 108,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "likes",
+          "sourceField": "likes",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "comments",
+          "sourceField": "comments",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "saves",
+          "sourceField": "saved",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "shares",
+          "sourceField": "shares",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "totalInteractions",
+          "sourceField": "total_interactions",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "totalWatchTimeMs",
+          "sourceField": "ig_reels_video_view_total_time",
+          "value": 428476,
+          "unit": "milliseconds",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "averageWatchTimeMs",
+          "sourceField": "ig_reels_avg_watch_time",
+          "value": 3967,
+          "unit": "milliseconds",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "skipRate",
+          "sourceField": "reels_skip_rate",
+          "value": 100,
+          "unit": "percent",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473680248,
+          "responseReceivedAt": 1791473681217,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        }
+      ],
+      "views": 2,
+      "reach": 108,
+      "nativeInteractions": 0,
+      "componentSum": 0,
+      "definition": "instagram-measurement-v2",
+      "sourceVersions": [
+        "v26.0"
+      ],
+      "structuredNavigation": null
+    },
+    {
+      "alias": "R-old",
+      "productType": "REELS",
+      "mediaType": "VIDEO",
+      "publicationAgeDays": 1927.3,
+      "verified": [
+        "views",
+        "reach",
+        "likes",
+        "comments",
+        "saves",
+        "shares",
+        "totalInteractions",
+        "totalWatchTimeMs",
+        "averageWatchTimeMs",
+        "skipRate"
+      ],
+      "fieldEvidence": [
+        {
+          "metric": "views",
+          "sourceField": "views",
+          "value": 1595,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "reach",
+          "sourceField": "reach",
+          "value": 13,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "likes",
+          "sourceField": "likes",
+          "value": 137,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "comments",
+          "sourceField": "comments",
+          "value": 17,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "saves",
+          "sourceField": "saved",
+          "value": 4,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "shares",
+          "sourceField": "shares",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "totalInteractions",
+          "sourceField": "total_interactions",
+          "value": 158,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "totalWatchTimeMs",
+          "sourceField": "ig_reels_video_view_total_time",
+          "value": 91315,
+          "unit": "milliseconds",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "averageWatchTimeMs",
+          "sourceField": "ig_reels_avg_watch_time",
+          "value": 3382,
+          "unit": "milliseconds",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "skipRate",
+          "sourceField": "reels_skip_rate",
+          "value": 0.5,
+          "unit": "percent",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,ig_reels_video_view_total_time,ig_reels_avg_watch_time,reels_skip_rate"
+          },
+          "requestStartedAt": 1791473683902,
+          "responseReceivedAt": 1791473684518,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        }
+      ],
+      "views": 1595,
+      "reach": 13,
+      "nativeInteractions": 158,
+      "componentSum": 158,
+      "definition": "instagram-measurement-v2",
+      "sourceVersions": [
+        "v26.0"
+      ],
+      "structuredNavigation": null
+    },
+    {
+      "alias": "C-parent",
+      "productType": "FEED",
+      "mediaType": "CAROUSEL_ALBUM",
+      "publicationAgeDays": 29.2,
+      "verified": [
+        "views",
+        "reach",
+        "likes",
+        "comments",
+        "saves",
+        "shares",
+        "totalInteractions",
+        "follows",
+        "profileVisits"
+      ],
+      "fieldEvidence": [
+        {
+          "metric": "views",
+          "sourceField": "views",
+          "value": 756,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "reach",
+          "sourceField": "reach",
+          "value": 263,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "likes",
+          "sourceField": "likes",
+          "value": 25,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "comments",
+          "sourceField": "comments",
+          "value": 9,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "saves",
+          "sourceField": "saved",
+          "value": 1,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "shares",
+          "sourceField": "shares",
+          "value": 0,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "totalInteractions",
+          "sourceField": "total_interactions",
+          "value": 36,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "organic",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "follows",
+          "sourceField": "follows",
+          "value": 1,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        },
+        {
+          "metric": "profileVisits",
+          "sourceField": "profile_visits",
+          "value": 11,
+          "unit": "count",
+          "parameters": {
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+          },
+          "requestStartedAt": 1791473686710,
+          "responseReceivedAt": 1791473687409,
+          "httpStatus": 200,
+          "actualApiVersion": "v26.0",
+          "definitionVersion": "instagram-measurement-v2",
+          "surface": "instagram",
+          "distribution": "unknown",
+          "receiptVerified": true,
+          "d1EqualsMcp": true
+        }
+      ],
+      "views": 756,
+      "reach": 263,
+      "nativeInteractions": 36,
+      "componentSum": 35,
+      "definition": "instagram-measurement-v2",
+      "sourceVersions": [
+        "v26.0"
+      ],
+      "structuredNavigation": null
+    }
+  ],
+  "story": "No currently available Story; recorded fixture tests cover normalization separately",
+  "sourceRequests": 25,
+  "localBackendRequests": 9,
+  "ranking": {
+    "mode": "per_100_reach",
+    "coverage": {
+      "analysisCoverage": {
+        "examined": 3,
+        "usable": 1,
+        "missingEligible": 0,
+        "excludedByReason": {
+          "connected_after_window": 2
+        },
+        "metric": "saves",
+        "rankingMode": "per_100_reach",
+        "open": 1,
+        "closed": 2
+      },
+      "collectionObligations": {
+        "state": "not_evaluated",
+        "note": "This endpoint describes analysis coverage. Recorded policy obligations are available in get_collection_status; missing analysis observations are not missed jobs."
+      },
+      "examined": 3,
+      "observed": 1,
+      "missing": 0,
+      "truncated": false,
+      "toleranceHours": 6
+    },
+    "items": [
+      {
+        "alias": "R-recent",
+        "value": 0,
+        "n": 0,
+        "baseline": null,
+        "reason": null
+      },
+      {
+        "alias": "R-old",
+        "value": null,
+        "n": 0,
+        "baseline": null,
+        "reason": "missing_inputs"
+      },
+      {
+        "alias": "R-history-30d",
+        "value": null,
+        "n": 0,
+        "baseline": null,
+        "reason": "missing_inputs"
+      }
+    ],
+    "groups": [
+      {
+        "dimension": "rubric",
+        "mediaType": "VIDEO",
+        "sampleSize": 1,
+        "examined": 1,
+        "paired": {
+          "n": 1,
+          "medianIndividualPer100": 0,
+          "excludedPairs": 0,
+          "ratioOfSumsPer100": 0,
+          "numeratorSum": 0,
+          "denominatorSum": 108,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {}
+      },
+      {
+        "dimension": "format",
+        "mediaType": "VIDEO",
+        "sampleSize": 1,
+        "examined": 1,
+        "paired": {
+          "n": 1,
+          "medianIndividualPer100": 0,
+          "excludedPairs": 0,
+          "ratioOfSumsPer100": 0,
+          "numeratorSum": 0,
+          "denominatorSum": 108,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {}
+      },
+      {
+        "dimension": "localHour",
+        "mediaType": "VIDEO",
+        "sampleSize": 1,
+        "examined": 1,
+        "paired": {
+          "n": 1,
+          "medianIndividualPer100": 0,
+          "excludedPairs": 0,
+          "ratioOfSumsPer100": 0,
+          "numeratorSum": 0,
+          "denominatorSum": 108,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {}
+      },
+      {
+        "dimension": "duration",
+        "mediaType": "VIDEO",
+        "sampleSize": 1,
+        "examined": 1,
+        "paired": {
+          "n": 1,
+          "medianIndividualPer100": 0,
+          "excludedPairs": 0,
+          "ratioOfSumsPer100": 0,
+          "numeratorSum": 0,
+          "denominatorSum": 108,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {}
+      },
+      {
+        "dimension": "previous7DayFrequency",
+        "mediaType": "VIDEO",
+        "sampleSize": 1,
+        "examined": 1,
+        "paired": {
+          "n": 1,
+          "medianIndividualPer100": 0,
+          "excludedPairs": 0,
+          "ratioOfSumsPer100": 0,
+          "numeratorSum": 0,
+          "denominatorSum": 108,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {}
+      },
+      {
+        "dimension": "rubric",
+        "mediaType": "VIDEO",
+        "sampleSize": 0,
+        "examined": 2,
+        "paired": {
+          "n": 0,
+          "medianIndividualPer100": null,
+          "excludedPairs": 2,
+          "ratioOfSumsPer100": null,
+          "numeratorSum": 0,
+          "denominatorSum": 0,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {
+          "connected_after_window": 2
+        }
+      },
+      {
+        "dimension": "format",
+        "mediaType": "VIDEO",
+        "sampleSize": 0,
+        "examined": 2,
+        "paired": {
+          "n": 0,
+          "medianIndividualPer100": null,
+          "excludedPairs": 2,
+          "ratioOfSumsPer100": null,
+          "numeratorSum": 0,
+          "denominatorSum": 0,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {
+          "connected_after_window": 2
+        }
+      },
+      {
+        "dimension": "localHour",
+        "mediaType": "VIDEO",
+        "sampleSize": 0,
+        "examined": 1,
+        "paired": {
+          "n": 0,
+          "medianIndividualPer100": null,
+          "excludedPairs": 1,
+          "ratioOfSumsPer100": null,
+          "numeratorSum": 0,
+          "denominatorSum": 0,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {
+          "connected_after_window": 1
+        }
+      },
+      {
+        "dimension": "duration",
+        "mediaType": "VIDEO",
+        "sampleSize": 0,
+        "examined": 2,
+        "paired": {
+          "n": 0,
+          "medianIndividualPer100": null,
+          "excludedPairs": 2,
+          "ratioOfSumsPer100": null,
+          "numeratorSum": 0,
+          "denominatorSum": 0,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {
+          "connected_after_window": 2
+        }
+      },
+      {
+        "dimension": "previous7DayFrequency",
+        "mediaType": "VIDEO",
+        "sampleSize": 0,
+        "examined": 2,
+        "paired": {
+          "n": 0,
+          "medianIndividualPer100": null,
+          "excludedPairs": 2,
+          "ratioOfSumsPer100": null,
+          "numeratorSum": 0,
+          "denominatorSum": 0,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {
+          "connected_after_window": 2
+        }
+      },
+      {
+        "dimension": "localHour",
+        "mediaType": "VIDEO",
+        "sampleSize": 0,
+        "examined": 1,
+        "paired": {
+          "n": 0,
+          "medianIndividualPer100": null,
+          "excludedPairs": 1,
+          "ratioOfSumsPer100": null,
+          "numeratorSum": 0,
+          "denominatorSum": 0,
+          "denominatorMeaning": "sum of per-media denominators, not unique account reach"
+        },
+        "excludedByReason": {
+          "connected_after_window": 1
+        }
+      }
+    ]
+  },
+  "existingHistory30d": {
+    "kind": "existing_real_D1_observation_to_new_backend_MCP_not_a_Meta_history_reconstruction",
+    "publishedBeforeConnection": true,
+    "actualAgeDays": 30.02988939814815,
+    "observedAt": 1791199559444,
+    "saves": 2,
+    "reach": 445,
+    "value": 0.449438202247191,
+    "definitionVersion": null,
+    "analysisCoverage": {
+      "examined": 3,
+      "usable": 1,
+      "missingEligible": 0,
+      "excludedByReason": {
+        "too_early": 1,
+        "connected_after_window": 1
+      },
+      "metric": "saves",
+      "rankingMode": "per_100_reach",
+      "open": 0,
+      "closed": 2
+    },
+    "collectionObligations": {
+      "state": "not_evaluated",
+      "note": "This endpoint describes analysis coverage. Recorded policy obligations are available in get_collection_status; missing analysis observations are not missed jobs."
+    }
+  },
+  "quota": {
+    "recordedRequests": 24,
+    "sinceAt": 1791473677677,
+    "usagePercent": null,
+    "usageObservedAt": null,
+    "blockedUntil": 0,
+    "observedAt": 1791473687916,
+    "cachedUnavailableMetrics": 11,
+    "http": {
+      "attempts": 24,
+      "responses": 24,
+      "failuresBeforeResponse": 0,
+      "timeouts": 0,
+      "rateLimitedResponses": 0,
+      "sinceAt": 1791473677677
+    },
+    "usageHeaders": {
+      "app": {
+        "state": "unknown_schema",
+        "sample": "{\"call_volume\":0,\"cpu_time\":0}"
+      },
+      "business": {
+        "state": "absent",
+        "sample": null
+      },
+      "receivedAt": 1791473687916
+    },
+    "quotaFreshness": "unknown",
+    "quotaStaleAfterMs": 3600000
+  },
+  "jobsPage": {
+    "nextCursor": null,
+    "hasMore": false,
+    "limit": 20,
+    "cutoff": 1791473688399,
+    "total": 0,
+    "calculatedAt": 1791473688399,
+    "semantics": "Stable createdAt/id keyset, createdAt<=cutoff; states/aggregates are live at calculatedAt; no mutable status filter.",
+    "aggregates": []
+  },
+  "coverage": {
+    "analysisCoverage": [
+      {
+        "targetHours": 1,
+        "toleranceHours": 0.5,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 1,
+          "excludedByReason": {
+            "connected_after_window": 3
+          },
+          "open": 0,
+          "closed": 4
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 1,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "policy_history_unknown_or_insufficient_opportunity": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 6,
+        "toleranceHours": 1,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 1,
+          "excludedByReason": {
+            "connected_after_window": 3
+          },
+          "open": 0,
+          "closed": 4
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 1,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "policy_history_unknown_or_insufficient_opportunity": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 24,
+        "toleranceHours": 6,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 1,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3
+          },
+          "open": 1,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 1,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "policy_history_unknown_or_insufficient_opportunity": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 72,
+        "toleranceHours": 6,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "open": 0,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 168,
+        "toleranceHours": 12,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "open": 0,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 336,
+        "toleranceHours": 12,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "open": 0,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 720,
+        "toleranceHours": 24,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 2,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 1,
+            "too_early": 1
+          },
+          "open": 1,
+          "closed": 2
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 2,
+          "excludedByReason": {
+            "connected_after_window": 1,
+            "policy_history_unknown_or_insufficient_opportunity": 2,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      }
+    ],
+    "collectionCoverage": [
+      {
+        "targetHours": 1,
+        "toleranceHours": 0.5,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 1,
+          "excludedByReason": {
+            "connected_after_window": 3
+          },
+          "open": 0,
+          "closed": 4
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 1,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "policy_history_unknown_or_insufficient_opportunity": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 6,
+        "toleranceHours": 1,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 1,
+          "excludedByReason": {
+            "connected_after_window": 3
+          },
+          "open": 0,
+          "closed": 4
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 1,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "policy_history_unknown_or_insufficient_opportunity": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 24,
+        "toleranceHours": 6,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 1,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3
+          },
+          "open": 1,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 1,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "policy_history_unknown_or_insufficient_opportunity": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 72,
+        "toleranceHours": 6,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "open": 0,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 168,
+        "toleranceHours": 12,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "open": 0,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 336,
+        "toleranceHours": 12,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 0,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "open": 0,
+          "closed": 3
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 0,
+          "excludedByReason": {
+            "connected_after_window": 3,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      },
+      {
+        "targetHours": 720,
+        "toleranceHours": 24,
+        "metric": "reach",
+        "rankingMode": "absolute",
+        "analysisCoverage": {
+          "examined": 4,
+          "observed": 2,
+          "missingEligible": 0,
+          "excludedByReason": {
+            "connected_after_window": 1,
+            "too_early": 1
+          },
+          "open": 1,
+          "closed": 2
+        },
+        "collectionObligations": {
+          "expected": 0,
+          "captured": 0,
+          "missed": 0,
+          "open": 0,
+          "policyHistoryUnknown": 2,
+          "excludedByReason": {
+            "connected_after_window": 1,
+            "policy_history_unknown_or_insufficient_opportunity": 2,
+            "too_early": 1
+          },
+          "minimumOpportunityMs": 300000,
+          "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+        }
+      }
+    ],
+    "discovery": {
+      "measurementState": "not_measured",
+      "denominator": 0,
+      "measuredPublications": 0,
+      "inferredPublications": 0,
+      "averageLagMinutes": null,
+      "maximumLagMinutes": null,
+      "overOneHour": 0
+    },
+    "ageSnapshots": [
+      {
+        "targetHours": 1,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      },
+      {
+        "targetHours": 6,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      },
+      {
+        "targetHours": 24,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      },
+      {
+        "targetHours": 72,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      },
+      {
+        "targetHours": 168,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      },
+      {
+        "targetHours": 336,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      },
+      {
+        "targetHours": 720,
+        "expected": 0,
+        "captured": 0,
+        "open": 0,
+        "missed": 0
+      }
+    ],
+    "catalogue": {
+      "lastFullPassAt": null,
+      "currentJobId": null
+    },
+    "activity": {
+      "timeZone": "UTC",
+      "providerWindowDays": 90,
+      "expectedIntervals": 103,
+      "observedIntervals": 0,
+      "missingIntervals": 103,
+      "recheckIntervals": 0,
+      "dailyIntervals": 89,
+      "weeklyIntervals": 12,
+      "monthlyIntervals": 2,
+      "uncollectableIntervals": [],
+      "earliestDayFrom": 1783728000000,
+      "latestDayTo": 1791417600000
+    }
+  },
+  "pagingVerification": null
+}

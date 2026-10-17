@@ -1,0 +1,90 @@
+{
+  "checkedAt": "2026-10-09T15:58:20.679Z",
+  "scope": "Synthetic local SQLite; new writer followed by immutable 0.2.16 reader and replay, no external requests",
+  "cases": [
+    {
+      "name": "reels_supported",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "feed_supported",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "story_supported",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "reels_optional_rejected",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "feed_restrictions",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "story_restrictions",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "partial_source_error",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "page_budget_exhausted",
+      "reports": 2,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "retry_after_failure",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "zero_missing",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "zero_denominator_deferred",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    },
+    {
+      "name": "pre_insights_budget",
+      "reports": 1,
+      "oldReaderExact": true,
+      "oldReplayHTTP": 0,
+      "savedFactsUnchanged": true
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "method": "Same CDP statistical estimator as workerd-profile.mjs; wait is deliberately 50 ms; busy is 1M sqrt operations, not a wall-clock timer",
+  "result": [
+    {
+      "kind": "noop",
+      "samples": [
+        {
+          "activeMs": 0,
+          "idleMs": 4.51,
+          "wallMs": 1.8977919999999813
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.556,
+          "wallMs": 1.50408299999998
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.534,
+          "wallMs": 1.0381669999999872
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.506,
+          "wallMs": 1.1750000000000114
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.544,
+          "wallMs": 1.0097499999999968
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.586,
+          "wallMs": 1.0046670000000404
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.5,
+          "wallMs": 0.8373750000000086
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.524,
+          "wallMs": 0.6150830000000269
+        },
+        {
+          "activeMs": 0.419,
+          "idleMs": 0.485,
+          "wallMs": 0.6277079999999842
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.881,
+          "wallMs": 0.6630000000000109
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.458,
+          "wallMs": 0.6471669999999676
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.446,
+          "wallMs": 0.6199579999999969
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.484,
+          "wallMs": 0.7453340000000139
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.457,
+          "wallMs": 0.6014160000000288
+        },
+        {
+          "activeMs": 0.425,
+          "idleMs": 0.498,
+          "wallMs": 0.6210000000000377
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.504,
+          "wallMs": 0.7310829999999555
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.465,
+          "wallMs": 0.615333000000021
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.456,
+          "wallMs": 0.5178750000000036
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.447,
+          "wallMs": 0.6674170000000004
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.457,
+          "wallMs": 0.5683329999999955
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 0,
+        "p95": 0.419,
+        "max": 0.425
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 0.6630000000000109,
+        "p95": 1.50408299999998,
+        "max": 1.8977919999999813
+      }
+    },
+    {
+      "kind": "wait",
+      "samples": [
+        {
+          "activeMs": 0.857,
+          "idleMs": 1.018,
+          "wallMs": 51.27866700000004
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.569,
+          "wallMs": 50.97829100000001
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.493,
+          "wallMs": 50.70491700000002
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.487,
+          "wallMs": 50.67962499999999
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.477,
+          "wallMs": 50.634000000000015
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.472,
+          "wallMs": 50.61525000000006
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.457,
+          "wallMs": 50.645000000000095
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 51.522,
+          "wallMs": 51.235041000000024
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.447,
+          "wallMs": 50.71695900000009
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.472,
+          "wallMs": 50.618124999999964
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.456,
+          "wallMs": 50.55658399999993
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 51.592,
+          "wallMs": 50.94837499999994
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.553,
+          "wallMs": 50.870124999999916
+        },
+        {
+          "activeMs": 50.519,
+          "idleMs": 0.529,
+          "wallMs": 51.111667000000125
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.545,
+          "wallMs": 50.991416999999956
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.512,
+          "wallMs": 50.82116700000006
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.477,
+          "wallMs": 50.92537500000003
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.507,
+          "wallMs": 50.789999999999964
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.563,
+          "wallMs": 50.719082999999955
+        },
+        {
+          "activeMs": 0,
+          "idleMs": 0.491,
+          "wallMs": 50.64154200000007
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 0,
+        "p95": 0.857,
+        "max": 50.519
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 50.719082999999955,
+        "p95": 51.235041000000024,
+        "max": 51.27866700000004
+      }
+    },
+    {
+      "kind": "busy",
+      "samples": [
+        {
+          "activeMs": 1.719,
+          "idleMs": 2.959,
+          "wallMs": 1.9060830000000806
+        },
+        {
+          "activeMs": 1.738,
+          "idleMs": 0.583,
+          "wallMs": 1.9516670000000431
+        },
+        {
+          "activeMs": 1.582,
+          "idleMs": 0.516,
+          "wallMs": 1.7639169999999922
+        },
+        {
+          "activeMs": 1.056,
+          "idleMs": 0.515,
+          "wallMs": 1.2729999999999109
+        },
+        {
+          "activeMs": 0.523,
+          "idleMs": 0.752,
+          "wallMs": 0.989667000000054
+        },
+        {
+          "activeMs": 0.841,
+          "idleMs": 0.474,
+          "wallMs": 1.002292000000125
+        },
+        {
+          "activeMs": 0.784,
+          "idleMs": 0.468,
+          "wallMs": 0.9284589999999753
+        },
+        {
+          "activeMs": 0.777,
+          "idleMs": 0.471,
+          "wallMs": 0.9248749999999291
+        },
+        {
+          "activeMs": 0.858,
+          "idleMs": 0.475,
+          "wallMs": 0.9909170000000813
+        },
+        {
+          "activeMs": 0.899,
+          "idleMs": 0.533,
+          "wallMs": 1.0795000000000528
+        },
+        {
+          "activeMs": 0.878,
+          "idleMs": 0.467,
+          "wallMs": 1.1509169999999358
+        },
+        {
+          "activeMs": 0.854,
+          "idleMs": 0.542,
+          "wallMs": 1.0408749999999145
+        },
+        {
+          "activeMs": 0.867,
+          "idleMs": 0.486,
+          "wallMs": 1.0767919999998412
+        },
+        {
+          "activeMs": 0.834,
+          "idleMs": 0.491,
+          "wallMs": 1.0596659999998792
+        },
+        {
+          "activeMs": 0.876,
+          "idleMs": 0.438,
+          "wallMs": 1.08137499999998
+        },
+        {
+          "activeMs": 0.931,
+          "idleMs": 0.482,
+          "wallMs": 1.1404170000000704
+        },
+        {
+          "activeMs": 0.861,
+          "idleMs": 0.472,
+          "wallMs": 1.006208000000015
+        },
+        {
+          "activeMs": 0.897,
+          "idleMs": 0.436,
+          "wallMs": 1.1027079999998932
+        },
+        {
+          "activeMs": 0.79,
+          "idleMs": 0.486,
+          "wallMs": 0.990500000000111
+        },
+        {
+          "activeMs": 0.827,
+          "idleMs": 0.437,
+          "wallMs": 1.0013340000000426
+        }
+      ],
+      "activeMs": {
+        "n": 20,
+        "p50": 0.861,
+        "p95": 1.719,
+        "max": 1.738
+      },
+      "wallMs": {
+        "n": 20,
+        "p50": 1.0596659999998792,
+        "p95": 1.9060830000000806,
+        "max": 1.9516670000000431
+      }
+    }
+  ]
+}

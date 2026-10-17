@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import type { createBackendClient } from "./backend-client.ts";
+import { BackendError } from "./backend-client.ts";
 import * as contract from "./contract.ts";
 
 type Api = ReturnType<typeof createBackendClient>;
@@ -52,9 +53,26 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
         },
       },
       (args) =>
-        run(async (api) => ({
-          data: await api.request(path(args), response, body?.(args), method),
-        })),
+        run(async (api) => {
+          if (name === "review_account" && args.rankingMode !== "absolute")
+            throw new BackendError(
+              "review_account поддерживает только rankingMode=absolute: относительная метрика разбора пока не определена. Для saves/shares на 100 reach или views используйте analyze_content.",
+              "FEATURE_UNAVAILABLE",
+              409,
+            );
+          const data = await api.request(path(args), response, body?.(args), method);
+          if (
+            name === "analyze_content" &&
+            args.rankingMode !== "absolute" &&
+            (data as { input?: { rankingMode?: string } }).input?.rankingMode !== args.rankingMode
+          )
+            throw new BackendError(
+              "Развёрнутый backend пока не поддерживает выбранный относительный рейтинг.",
+              "FEATURE_UNAVAILABLE",
+              409,
+            );
+          return { data };
+        }),
     );
   }
   const account = (args: Record<string, unknown>) =>
@@ -74,10 +92,14 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "get_collection_status",
     "Полнота и расписание сбора",
-    "Покажи возрастные точки, прогресс, последний полный проход комментариев, свежесть, уникальные тексты отдельно от наблюдений, ошибки и состояние webhook. Чтение не запускает сбор.",
-    z.object({ accountId: id }),
+    "Сохранённое состояние: analysisCoverage отдельно от доказанных collectionObligations, свежесть по видам работы, deadlines, backlog и причины ожидания. unknown_schema и usagePercent=null не означают свободную квоту; старая оценка сохраняет исходное время. jobsPage содержит cutoff, total/aggregates и nextCursor/hasMore: следуй продолжению, состояния jobs могут меняться между страницами. Чтение не запускает сбор.",
+    z.object({
+      accountId: id,
+      limit: z.number().int().min(1).max(100).default(20),
+      cursor: z.string().max(4096).optional(),
+    }),
     contract.collectionStatusResponse,
-    (args) => `${account(args)}/collection`,
+    ({ accountId, ...args }) => query(`/api/accounts/${accountId}/collection`, args),
   );
   register(
     "subscribe_comment_webhook",
@@ -140,7 +162,7 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "set_collection_schedule",
     "Автоматическое обновление",
-    "Включать enabled=true только после явного выбора владельца обновлять автоматически. Объясни частоту; сбор не в реальном времени. enabled=false выключает расписание.",
+    "Включать enabled=true только после явного выбора владельца обновлять автоматически. Укажи discoveryMinutes и IANA timeZone для завершённых дней, недель и месяцев. Свежие периоды перечитываются; раз в 30 дней сверяется весь каталог. Без timeZone сохраняется прежняя зона. enabled=false выключает расписание.",
     z.object({ accountId: id, body: contract.configureCollectionScheduleInput }),
     contract.scheduleResponse,
     (args) => `${account(args)}/collection/schedule`,
@@ -150,7 +172,7 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "collect_account_insights",
     "Собрать активность аккаунта",
-    "По явной просьбе владельца. Интервал [from,to) до 31 дня внутри доступных 90 дней. total_value и time_series не взаимозаменяемы; reach не складывать по дням. Проверь операцию после неопределённого ответа.",
+    "По явной просьбе владельца. Интервал [from,to) до 31 дня внутри доступных 90 дней. time_series разрешён только для reach без разбивки; total_value и time_series не взаимозаменяемы. Без metrics backend выбирает совместимые поля. Reach не складывать по дням. Проверь операцию после неопределённого ответа.",
     z.object({ accountId: id, body: contract.collectAccountInsightsInput }),
     contract.accountInsightCollectionResponse,
     (args) => `${account(args)}/insights/collect`,
@@ -165,7 +187,7 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
       accountId: id,
       ...period,
       metricType: z.enum(["total_value", "time_series"]).default("total_value"),
-      breakdown: z.enum(["media_product_type", "follow_type"]).optional(),
+      breakdown: contract.collectAccountInsightsInput.shape.breakdown,
     }),
     contract.activityResponse,
     ({ accountId, ...args }) => query(`/api/accounts/${accountId}/activity`, args),
@@ -235,10 +257,11 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "analyze_content",
     "Сравнить контент по целям",
-    "Реальные снимки около возраста 1/7/30 дней. Покажи абсолютные значения, доли, выборку, product type, свежесть и допуск. Группы и время публикации — наблюдения, не причины.",
+    "Реальные пригодные снимки 1/7/30 дней. rankingMode выбирает сортировку и peer baseline: absolute, per_100_reach или per_100_views. Последние два — действия на 100 аккаунтов/просмотров, не доля уникальных людей. Покажи n, excludedByReason, mediaType, фактический возраст/допуск и unknown продвижение. Медиана коэффициентов и отношение сумм валидных пар различаются. При n=1–2 результат только описательный; время публикации и темы не доказывают причинность. Отсутствующую историю refresh не восстанавливает.",
     z.object({
       accountId: id,
       ageDays: z.union([z.literal(1), z.literal(7), z.literal(30)]).default(7),
+      rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).default("absolute"),
       metric: z.enum(["reach", "saves", "shares", "comments", "follows", "views"]).default("reach"),
       timeZone: z.string().default("UTC"),
       productType: z.enum(["FEED", "REELS", "STORY"]).optional(),
@@ -373,11 +396,17 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "review_account",
     "Разбор недели или месяца",
-    "Активность аккаунта за период, lifetime публикаций и изменения снимков — отдельные данные. Покажи покрытие, свежесть и ссылки. Сигналы используют описанный порог и базу; причины и следующие действия — гипотезы.",
+    "Активность аккаунта за период, lifetime публикаций и изменения снимков — отдельные данные. rankingMode=absolute; относительные режимы отклоняются, для saves/shares на 100 reach/views используй analyze_content. Покажи покрытие, свежесть и ссылки. Сигналы используют описанный порог и базу; причины и следующие действия — гипотезы.",
     z.object({
       accountId: id,
       ...period,
       ageDays: z.union([z.literal(1), z.literal(7), z.literal(30)]).default(7),
+      rankingMode: z
+        .enum(["absolute", "per_100_reach", "per_100_views"])
+        .default("absolute")
+        .describe(
+          "review_account supports absolute only; relative modes return FEATURE_UNAVAILABLE. Use analyze_content for relative saves/shares.",
+        ),
     }),
     contract.reviewResponse,
     ({ accountId, ...args }) => query(`/api/accounts/${accountId}/review`, args),

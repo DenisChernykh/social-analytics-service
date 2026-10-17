@@ -1,0 +1,566 @@
+{
+  "createdAt": "2026-10-08T16:09:06.311Z",
+  "gitHead": "8ed0040c31c818e7331a991704a77e6870b94c6b",
+  "workingTree": "Includes pre-existing uncommitted work and this implementation; no root/backend commit or push. Authorized separate Sites source commit is recorded below.",
+  "backendRevision": "0.2.15",
+  "mcpVersion": "0.4.0",
+  "sourceInventorySha256": "9b65885c973c212ad9c1f71f41380aa08b366cd2d2ae7092b40cbc0f171b01de",
+  "artifacts": [
+    {
+      "path": "backend/dist/index.js",
+      "bytes": 1543808,
+      "sha256": "98d616b2fe7d96cba1472ae208972391fdd906487490c02577cd5d2fb1be032b"
+    },
+    {
+      "path": "chatgpt/dist/server/index.js",
+      "bytes": 911881,
+      "sha256": "00f61c834adc7a952c0ccfbf83406a586959a6babcabf1c78a9c3e40d7c317ef"
+    },
+    {
+      "path": "chatgpt/plugin/plugin.json",
+      "bytes": 2143,
+      "sha256": "f7118fca172e3019e82786282d0ad0969c1d2cb366d7f8e0079f45ab627c3215"
+    },
+    {
+      "path": "chatgpt/contract/openapi.json",
+      "bytes": 800006,
+      "sha256": "8d6ac8142a57199998db3d51da471418c554b0ec39aab9ab4f50902b1542ce17"
+    },
+    {
+      "path": "chatgpt/dist/social-analytics-plugin.zip",
+      "bytes": 5658,
+      "sha256": "f3c735ac1b63297ec88ebee050ad36393799716958599a7f2f84c91e5175221c"
+    }
+  ],
+  "inventory": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "dede40f9205d65722eea113777ac6d11ce16d249816e195b64924f5e17fcec33"
+    },
+    {
+      "path": "backend/migrations/0000_tough_swarm.sql",
+      "sha256": "7744baf33aac259ab8782cdaa09f0a119a095ab61a9f1d1674d10a1dc24f3183"
+    },
+    {
+      "path": "backend/migrations/0001_panoramic_the_captain.sql",
+      "sha256": "f4a3e670e6be3c0c6ede1d297200e65c97ae2e7a8af02e0361a127fbd8e9804c"
+    },
+    {
+      "path": "backend/migrations/0002_amused_titanium_man.sql",
+      "sha256": "0f8ca7ada2c791082ed5940827d70be1c6e9e8c660e4777c51c7a75e1d8f8f14"
+    },
+    {
+      "path": "backend/migrations/0003_cold_captain_midlands.sql",
+      "sha256": "18de0209cfff64f3ede988a29c93975d96ce346ce44ac6ff1c958122726aad55"
+    },
+    {
+      "path": "backend/migrations/0004_many_phantom_reporter.sql",
+      "sha256": "dec59da40a35786c58e2532b902a140437a9f378cac78e52bbbb2c950c978fa0"
+    },
+    {
+      "path": "backend/migrations/0005_brainy_sasquatch.sql",
+      "sha256": "106735d3dd82437356da3c30bb8cc6bcb5e24ad6febbfd0f9133e16a5c00131b"
+    },
+    {
+      "path": "backend/migrations/0006_fancy_the_enforcers.sql",
+      "sha256": "7442f80e43b841a13ea30b7fa82b06c221045651d5e45731649d6042999fb3b8"
+    },
+    {
+      "path": "backend/migrations/0007_unusual_speed_demon.sql",
+      "sha256": "757e174b08fbf6dc73ef1968a9900bffea0dfab0ecb98ddb1d4d52aa3ecd4775"
+    },
+    {
+      "path": "backend/migrations/0008_strong_brother_voodoo.sql",
+      "sha256": "d9995bb006f5e9b9109b0e31d0c668e8ee17f7f9ea533c45503da2b5b84f3b78"
+    },
+    {
+      "path": "backend/migrations/0009_common_jocasta.sql",
+      "sha256": "b72deae382022bc537550d5b0c9df8a881e7959eaaffa3278f4a853c229e07bf"
+    },
+    {
+      "path": "backend/migrations/0010_clean_talon.sql",
+      "sha256": "b2bb4659f07f7a60a10ec819fdf2108983a589aa54a0648a201dc258e861da81"
+    },
+    {
+      "path": "backend/migrations/0011_unique_black_widow.sql",
+      "sha256": "639464dd23a1be4506e034fd74dfef96b30ec3c21c543b983e65182f44f51fb8"
+    },
+    {
+      "path": "backend/migrations/0012_hesitant_northstar.sql",
+      "sha256": "119e95ea25375b7f586fb72dfd77675135b4d0b1242db9a1878a9df238e55847"
+    },
+    {
+      "path": "backend/package.json",
+      "sha256": "c651ced91eb24b42502401e6e927552b34c92a22c1d7160fa55cd9a9bfdbb71d"
+    },
+    {
+      "path": "backend/src/app/create-app.ts",
+      "sha256": "5f188196c2d954b3681442ffa2768867592918c56d9c8e378d74fd5fd75666ee"
+    },
+    {
+      "path": "backend/src/app/create-features.ts",
+      "sha256": "40c9e825989d8e0aca75c3d054c5fb97862df48b0d61935e147b3dbdc4053904"
+    },
+    {
+      "path": "backend/src/app/public-information.ts",
+      "sha256": "05efad27647c25352b26c33f17f50f06dcbb5cc3fe83edb0966323638238cdba"
+    },
+    {
+      "path": "backend/src/index.ts",
+      "sha256": "fd5f55b340388089d3b41f9615f246f4dc248059c25f4b19e2356a74f6c1b515"
+    },
+    {
+      "path": "backend/src/modules/account-insights/application/insights.ts",
+      "sha256": "1180eedc26874ddadcbd27a59559d938b4bb46976a8818edc373b2db8f1ce48c"
+    },
+    {
+      "path": "backend/src/modules/account-insights/application/ports.ts",
+      "sha256": "533bcf2abc7ad382b9de2c0f9ffb8a55b3c0249a5ea652c96b9dfdaf551bdb14"
+    },
+    {
+      "path": "backend/src/modules/account-insights/domain/maturity.ts",
+      "sha256": "4273dce0a482c2ea9b6a6e6a8cb26766121d65b46e40ba231eff2a5057f04240"
+    },
+    {
+      "path": "backend/src/modules/account-insights/domain/model.ts",
+      "sha256": "a4ee9c364e2d7ef02b15e41f28f7a90b90070fa0cc6dfb0587be1cfa8f002434"
+    },
+    {
+      "path": "backend/src/modules/account-insights/domain/periods.ts",
+      "sha256": "6b74e0d8d8e1fbc38f28b5d854f1c492bfbb69f557560540aa69e7a482ce6f49"
+    },
+    {
+      "path": "backend/src/modules/account-insights/index.ts",
+      "sha256": "1f3c9007b18e33412906a648571e4b83716367126d65a1f200fe1ce90507d18b"
+    },
+    {
+      "path": "backend/src/modules/account-insights/infrastructure/d1-insights.ts",
+      "sha256": "a7648e5f84bed0a7a45e2b1c25f0073f723a6277156fec1f7a3131706ba7e8b0"
+    },
+    {
+      "path": "backend/src/modules/account-insights/presentation/http.ts",
+      "sha256": "36abe7c78253782f09bac9eb337f6181159059f0d35170efb1ecd1a51be431fb"
+    },
+    {
+      "path": "backend/src/modules/analytics/application/ports.ts",
+      "sha256": "82e423d9d9507bce8cb156cb22859de6d88c9e0c9c535c686f75b794a16f5c54"
+    },
+    {
+      "path": "backend/src/modules/analytics/application/queries.ts",
+      "sha256": "238dcea98e719f948919d204cdbbb89d696645239dc0ad0bae19fb7bde7749ed"
+    },
+    {
+      "path": "backend/src/modules/analytics/application/sync-account.ts",
+      "sha256": "521d5c868352bf4859b27d93ad78692631ec54a655c39ee8cc544bb87810a1e7"
+    },
+    {
+      "path": "backend/src/modules/analytics/domain/calculations.ts",
+      "sha256": "8f4d88d7b037056658d9cb422eaa1b7a3e51a9455b5a3d2f285de92cc3873b2a"
+    },
+    {
+      "path": "backend/src/modules/analytics/domain/metric-definitions.ts",
+      "sha256": "cd894892e285bc2e521ea2b25a5ad2d24d4fec3c4147884197e51c9368466ba7"
+    },
+    {
+      "path": "backend/src/modules/analytics/domain/model.ts",
+      "sha256": "499963adc378d0ed67a2c7c14d74b2a694cf9426dba7d262214786f0bbc8d1fd"
+    },
+    {
+      "path": "backend/src/modules/analytics/domain/search.ts",
+      "sha256": "11542387d6f2d607c25f489df5e5ac4e7bcc39d63083d050431e48d2929684ad"
+    },
+    {
+      "path": "backend/src/modules/analytics/index.ts",
+      "sha256": "ba4548ac65f085e759c9d63cff29fd035efd9ba461e7a766801aca3c93573efe"
+    },
+    {
+      "path": "backend/src/modules/analytics/infrastructure/d1-analytics.ts",
+      "sha256": "c68b03539222a46b8bc3c63a2d0b78e7762c6c525ced8682fe75ce5d450f30a8"
+    },
+    {
+      "path": "backend/src/modules/analytics/infrastructure/instagram-source.ts",
+      "sha256": "7e73bbe1514e2997ebd269845483f8f958fbba620ccc5f213745aa424251e450"
+    },
+    {
+      "path": "backend/src/modules/analytics/presentation/http.ts",
+      "sha256": "ad8c602d3078514164fc35435fc87c4b9528232f78477a035de5fd07a43a8654"
+    },
+    {
+      "path": "backend/src/modules/analytics/presentation/schemas.ts",
+      "sha256": "dfb9a5f4f0eb6af9b6362fb6d49f7fcac3f9d7f458a6cf32b9d011f1cbd08c43"
+    },
+    {
+      "path": "backend/src/modules/analytics/public-contracts.ts",
+      "sha256": "dd69d180aa9579b912166c6417368ad3997776c0fc7ed2166617b6c86eef8cb4"
+    },
+    {
+      "path": "backend/src/modules/collection/application/bulk-comments.ts",
+      "sha256": "59bbfd58e64e66112128b3154d0d12c7f93d37d6e6823203b0ebcef05b571466"
+    },
+    {
+      "path": "backend/src/modules/collection/application/collect.ts",
+      "sha256": "f76240a33043ddf7d8c300264e8a9e954640665c7be4c526cd809a02228e77c9"
+    },
+    {
+      "path": "backend/src/modules/collection/application/ports.ts",
+      "sha256": "a6d37c9d4a9974f9489fc1350b9ae64893af23748b1ba10e1ca212a86647ef55"
+    },
+    {
+      "path": "backend/src/modules/collection/domain/activity-policy.ts",
+      "sha256": "c133590e65675b9c549e39495145b901c58a8faa11234ed42cc5be42d54bffb6"
+    },
+    {
+      "path": "backend/src/modules/collection/domain/age-policy.ts",
+      "sha256": "e7b8dd470b2b02ce61b4f464a14c4acf275ef5930188296159d11b7d7baa1dc0"
+    },
+    {
+      "path": "backend/src/modules/collection/domain/comment-policy.ts",
+      "sha256": "5470d81736ad7ce1f172bf5695beecd8ed3c7b98ec60cf225965f7a04d72844d"
+    },
+    {
+      "path": "backend/src/modules/collection/domain/coverage.ts",
+      "sha256": "e4c547aee8e524d99f03f677cc49111a5c60af0dcc85e8fbe5f0c2f2ae5451ac"
+    },
+    {
+      "path": "backend/src/modules/collection/domain/model.ts",
+      "sha256": "c31bb207b4d79661b4114dbb7b3d9588b5726d996acdd00b11bee9e7015435ec"
+    },
+    {
+      "path": "backend/src/modules/collection/domain/selection.ts",
+      "sha256": "26465e3d60379daff46cb9d3bf4727ebac41a5ca9ac161faab09a8340c7511fe"
+    },
+    {
+      "path": "backend/src/modules/collection/index.ts",
+      "sha256": "39a43a1312ec0eff4dd9fa0ce89e177c0a705faca1aac75f46be9b878e74bee6"
+    },
+    {
+      "path": "backend/src/modules/collection/infrastructure/d1-collection.ts",
+      "sha256": "276c36aa0a6872b7bb4a79771d4ab6195dcb3c0829ac116a261e1e1bd539cafb"
+    },
+    {
+      "path": "backend/src/modules/collection/presentation/http.ts",
+      "sha256": "52e45a8e7cb604a40c2d28da9122ef48aa80fa1f318089d0d192ead85bc35fc5"
+    },
+    {
+      "path": "backend/src/modules/community/application/comments.ts",
+      "sha256": "26dff493b5e9b54cb164c0e31c88cb685b5b77ba4420e7d8afb4c45de3f04d8a"
+    },
+    {
+      "path": "backend/src/modules/community/application/ports.ts",
+      "sha256": "2c6726f9ed0c63140148b13679719fb3d9f8896d4f2b12f1762cd3a5a51e7cdc"
+    },
+    {
+      "path": "backend/src/modules/community/domain/model.ts",
+      "sha256": "3dac1b1aa0ff5aacea530b78835c17d28568dd84fc15daf6c1786c4bee740388"
+    },
+    {
+      "path": "backend/src/modules/community/index.ts",
+      "sha256": "06e4a23166e4d1eee9320c0032046a58dfcabac71929d71bf641cc8706ad2662"
+    },
+    {
+      "path": "backend/src/modules/community/infrastructure/d1-comments.ts",
+      "sha256": "0d33f67a47fd4c31344de6acaa293b434ad1c4b42bff318d4177908405f35731"
+    },
+    {
+      "path": "backend/src/modules/community/presentation/http.ts",
+      "sha256": "a653d744b76341792ca9ad890c4852a2de1d035254988c81c65c31b75056e3ae"
+    },
+    {
+      "path": "backend/src/modules/content/application/content.ts",
+      "sha256": "bdd37afe71b602a372293c24d65faa7aa538a275e042be3c50cca10a73ece530"
+    },
+    {
+      "path": "backend/src/modules/content/application/ports.ts",
+      "sha256": "5815097c111ab075bf73bacd792aeb2e6a6e556af9e310a7fb2a89d512bf0213"
+    },
+    {
+      "path": "backend/src/modules/content/domain/analysis.ts",
+      "sha256": "dfd7d62d86779f0b4410fb11242ca67942da2c6a47fb9d2f49ad0805304e8409"
+    },
+    {
+      "path": "backend/src/modules/content/domain/business.ts",
+      "sha256": "59eee4a1de2818859ac84746398ebeee421d5e58f3a056de9d52296bcc3cd0e2"
+    },
+    {
+      "path": "backend/src/modules/content/domain/model.ts",
+      "sha256": "2fa62d0cb6ba28b295e858dc33363596e6a349576105e2cfae7d95bc0c5efc21"
+    },
+    {
+      "path": "backend/src/modules/content/index.ts",
+      "sha256": "d912d0f29bb1b182b4bd4d751b736142b6c84ede11695eab6a2257567c93eabb"
+    },
+    {
+      "path": "backend/src/modules/content/infrastructure/d1-content.ts",
+      "sha256": "6151b36c474253e51ebaf569c0b66a34aab82a108e0944dbd92ec1bb89b930b0"
+    },
+    {
+      "path": "backend/src/modules/content/presentation/http.ts",
+      "sha256": "6f8528630891aa0d4a3c6373f07f25c761004dc69818d10f1ae44417230cb5cf"
+    },
+    {
+      "path": "backend/src/modules/instagram/application/comment-webhooks.ts",
+      "sha256": "34dcc88748dd824aaae82bfc50153ad093f9fd7b69479d3d79b2a4dd3f876731"
+    },
+    {
+      "path": "backend/src/modules/instagram/application/connections.ts",
+      "sha256": "db2c8037705486c469aab27d88489018fd1557edba391423d987931857ab2fa2"
+    },
+    {
+      "path": "backend/src/modules/instagram/application/ports.ts",
+      "sha256": "45731559a03ccdbe0f2fbb7436a97f688fe969c1c3ca96d5d7ba59bb327f3be6"
+    },
+    {
+      "path": "backend/src/modules/instagram/domain/request-policy.ts",
+      "sha256": "61738f9f3c73ee493947c364ea47b18c13de96b1f24cd187c004d3929f561c7d"
+    },
+    {
+      "path": "backend/src/modules/instagram/index.ts",
+      "sha256": "7f1cbf53d5aebd052c7bba5a623927ec21f1266d10c5466f285179d73df8d855"
+    },
+    {
+      "path": "backend/src/modules/instagram/infrastructure/d1-connections.ts",
+      "sha256": "e4e8e5103f0fda758a7bdf9e0c3231e29525cb388a369ac571d9993bebb99e83"
+    },
+    {
+      "path": "backend/src/modules/instagram/infrastructure/d1-request-policy.ts",
+      "sha256": "f82758469bda91347d668be2b39ead3ff88ba29342a632b287ba25b9f08f04eb"
+    },
+    {
+      "path": "backend/src/modules/instagram/infrastructure/meta-client.ts",
+      "sha256": "04dcec9769d4f3449d746fdf8b987f985dd5ea9c6bfb31374b3212307d92a7cc"
+    },
+    {
+      "path": "backend/src/modules/instagram/infrastructure/webhook-signature.ts",
+      "sha256": "6763c6ab5a53b120ea0fb17d6144951bc8b608dd0e43874c5328a4f360764f6d"
+    },
+    {
+      "path": "backend/src/modules/instagram/presentation/comment-webhooks.ts",
+      "sha256": "6ba56ee7be4c1b1f30c62d42236583fc0149557973177eed4a6acc6956e0c2a3"
+    },
+    {
+      "path": "backend/src/modules/instagram/presentation/http.ts",
+      "sha256": "571f9d70d75f12a65f192f2a544f7b63ef5e605b67dc4f2057691bb5a715a431"
+    },
+    {
+      "path": "backend/src/modules/instagram/public-contracts.ts",
+      "sha256": "fac3f95a6f77f84a75489712e3221cdab47da9d9fb1d355eff62a815dfd9972d"
+    },
+    {
+      "path": "backend/src/modules/reviews/application/review.ts",
+      "sha256": "c53afbb50bce5f5a2bc97cd489ac13b0dbd1991bb651840ffd55a5b894333276"
+    },
+    {
+      "path": "backend/src/modules/reviews/domain/signals.ts",
+      "sha256": "f9cde4e6620891e8accd1a5b37b41795f49525cea0c0851e8cff0af336e7a432"
+    },
+    {
+      "path": "backend/src/modules/reviews/index.ts",
+      "sha256": "f1ec713b33fccd26b8b7ef0d35300cf4b09b779096d7be904dae3ed0eea15aca"
+    },
+    {
+      "path": "backend/src/modules/reviews/presentation/http.ts",
+      "sha256": "7e44f9cd8e01b0126cdd97ec5e3a998f85f9a8b54fd3ad713a7c7a49e4f658af"
+    },
+    {
+      "path": "backend/src/platform/config/runtime-config.ts",
+      "sha256": "a0f63e8dddd1bf2097f631a15a60771ceb58a47468ee07b1da125af46029c81f"
+    },
+    {
+      "path": "backend/src/platform/crypto/secrets.ts",
+      "sha256": "16afc94e8cd0b02a6d28bf95d54a62d89c96d7be82f59f0075bdc62db2d28775"
+    },
+    {
+      "path": "backend/src/platform/database/schema.ts",
+      "sha256": "7bc61d775c7141979e2d51855e4d7c4e7b099fadf77fc6020a3335619734595a"
+    },
+    {
+      "path": "backend/src/platform/http/authentication.ts",
+      "sha256": "df33dac8fa346d1933309a45f27a0c640fc0752e3d8dc77216ab01feb66aebfc"
+    },
+    {
+      "path": "backend/src/platform/http/environment.ts",
+      "sha256": "22b4c83005c557b556cc6c0cf3b6bfdf6cd903c8b421a462b65de6620b504a33"
+    },
+    {
+      "path": "backend/src/platform/http/problem.ts",
+      "sha256": "7b422ac160c0ef129f5011fb11bc7ce8c9e02179888f5a8ae02fe883a098f9d6"
+    },
+    {
+      "path": "backend/src/shared/application/application-error.ts",
+      "sha256": "64cc17b6d45f70a4b6bb91a7341b4d137366014b15dce6f83e25bba37561d746"
+    },
+    {
+      "path": "backend/src/shared/domain/content.ts",
+      "sha256": "a6a90bf059fe467b7f6e387b398cc308d37ac11910e12b1b5797cc0a2431b4cc"
+    },
+    {
+      "path": "backend/src/shared/domain/measurement.ts",
+      "sha256": "03ea094928a9884ab70965afd892278db2d23b4d8fdcb78f9603ba4aa81b2955"
+    },
+    {
+      "path": "backend/src/shared/presentation/measurement.ts",
+      "sha256": "e58fee5b964463c144f3845a1a3563111d286a30530a18269ac45ecd4c3f16b7"
+    },
+    {
+      "path": "backend/src/worker-configuration.d.ts",
+      "sha256": "576d88b4a34970f5e90ecc1320c3bd696870fa28c010748e41dda6a25f7e7b56"
+    },
+    {
+      "path": "backend/test/age-snapshots.spec.ts",
+      "sha256": "548d7355339772a8f04dad2a9a9197c933a06c3770dd80cba068fa309f917c61"
+    },
+    {
+      "path": "backend/test/apply-migrations.ts",
+      "sha256": "a82feb2d16432bd70ae2545c4db315376b2098dd559122b177e7af1f3adda719"
+    },
+    {
+      "path": "backend/test/backend.spec.ts",
+      "sha256": "7cb3e7c98a256263fb5f624e9bc1acda4045497cfdf563370fd261c083c1bcc0"
+    },
+    {
+      "path": "backend/test/collection-completeness.spec.ts",
+      "sha256": "9a828bbd5e4d93ef63fdf4313c8c37389c3a93705de21efc371294ccc31a05ed"
+    },
+    {
+      "path": "backend/test/collection-recovery.spec.ts",
+      "sha256": "08dff4237380aa1f348784a0a19eb76cfb447c40fea092c950361990c3e38db7"
+    },
+    {
+      "path": "backend/test/collection-upgrades.spec.ts",
+      "sha256": "818a5dec2d10e451ee5cc03c6b209d017028b7aaa066c4e4501f1ff4a5c22594"
+    },
+    {
+      "path": "backend/test/comment-optimization.spec.ts",
+      "sha256": "6efd491b5ce8808c64cd91c173f223c1262425fe703e523313d8027497f7f475"
+    },
+    {
+      "path": "backend/test/comment-scheduling.spec.ts",
+      "sha256": "d23891c99873973557f476686640491653cc366d1cd60e23cb018e8cce881462"
+    },
+    {
+      "path": "backend/test/comment-webhooks.spec.ts",
+      "sha256": "229d838cb0d1810455d4397f0199dabffab8a240d7fd7f9a7b07de11842e99fc"
+    },
+    {
+      "path": "backend/test/env.d.ts",
+      "sha256": "98a140daeabf5b076aa438ecee438d8ce161025ea6dc7f3aaf954a949e188094"
+    },
+    {
+      "path": "backend/test/helpers.ts",
+      "sha256": "4b7fb558fe735c06c614143b6cd45bd7a92bc6ef65f954e485aff8b7c61b3430"
+    },
+    {
+      "path": "backend/test/instagram-data-quality.spec.ts",
+      "sha256": "b22ac80f18a72ae53f42fa341531b397ba827c7d604ecec867300f560e385e02"
+    },
+    {
+      "path": "backend/test/meta-client.spec.ts",
+      "sha256": "f017f9ee04487d0405b5daf5c904ec9bc396138c00c1746c31589be1c7942daa"
+    },
+    {
+      "path": "backend/test/roadmap-search.spec.ts",
+      "sha256": "e75f813024345cadb1d40136666bdbfc784753e62d9a1e8e38d200f68c21f3e3"
+    },
+    {
+      "path": "backend/test/roadmap.spec.ts",
+      "sha256": "df23b5543a85f00d307f7652238ccfcc77bea0bc742215ad1bf27f5412c253b2"
+    },
+    {
+      "path": "backend/wrangler.jsonc",
+      "sha256": "70ccfa44554a9335474781af2e5ffddbc416f1c595a7b89eed684eadf9b32e46"
+    },
+    {
+      "path": "chatgpt/contract/openapi.json",
+      "sha256": "8d6ac8142a57199998db3d51da471418c554b0ec39aab9ab4f50902b1542ce17"
+    },
+    {
+      "path": "chatgpt/package.json",
+      "sha256": "0a4311dbbd28c88bb456c335d6e6a9f4ba85fa15ad1e09020ea178221b866434"
+    },
+    {
+      "path": "chatgpt/plugin/mcp.json",
+      "sha256": "5d74904e32cff284b5a6bdbcc937aca895dce666baf8cf89dbc61ead5728513e"
+    },
+    {
+      "path": "chatgpt/plugin/plugin.json",
+      "sha256": "f7118fca172e3019e82786282d0ad0969c1d2cb366d7f8e0079f45ab627c3215"
+    },
+    {
+      "path": "chatgpt/plugin/skills/media-statistics/SKILL.md",
+      "sha256": "28d5de3bbb0a9bc188a681a5e710ad040043cb019c5cb8862dfb0f13b1a3331e"
+    },
+    {
+      "path": "chatgpt/src/backend-client.ts",
+      "sha256": "de2141523d444c33fb037f2b8280b165f195c0f972f493882b2f1b39ddd786b7"
+    },
+    {
+      "path": "chatgpt/src/contract.ts",
+      "sha256": "3a525ac570ce34547b90dda12b58b701f96dae4cf417f4b7024c36ac1634dcbc"
+    },
+    {
+      "path": "chatgpt/src/data-quality.test.ts",
+      "sha256": "53a32c96788542eeae9b4975b7042bb28ad7b64aca56be76ab9fbd50c746cdb0"
+    },
+    {
+      "path": "chatgpt/src/roadmap-tools.ts",
+      "sha256": "cdc08dae4540741d549eaa887526128031b0dfa9501f0cfb6425b742ab4d64fb"
+    },
+    {
+      "path": "chatgpt/src/server.ts",
+      "sha256": "34a0088e30c3d89b188ddc886ea2b935f1e87e2b520fc24dea694d1b5b032091"
+    },
+    {
+      "path": "chatgpt/src/ui-tools.ts",
+      "sha256": "fcca98ef0040811274e829d51bc7480310e5fa25ca8a1d18899792d1eb570e77"
+    },
+    {
+      "path": "chatgpt/src/widget.test.ts",
+      "sha256": "d6c78f50b2eb13ba68c4de5cf287acc32c95055e768196bdc02daba160227607"
+    },
+    {
+      "path": "chatgpt/src/widget.ts",
+      "sha256": "173d6c5632ee7bce568ebf792645633b3e34ae3bc90bc157303328b28eec6f68"
+    },
+    {
+      "path": "chatgpt/src/worker.test.ts",
+      "sha256": "44b840b32affb7d762d790b1800c9d953cda0c07e817914fd0a6b4d47c771f06"
+    },
+    {
+      "path": "chatgpt/src/worker.ts",
+      "sha256": "3833e488b5a8815bf5874b532bffa804b66359957293573ca7cc19ec8b3e96dc"
+    },
+    {
+      "path": "package.json",
+      "sha256": "adfda41766c398c669aa6cde4332e9e01018b2566e7f11c60bd0c3f7629b8265"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "e9017c38a8b54c103688021eb1ffa9cf536c44822c809334050891802690b850"
+    },
+    {
+      "path": "scripts/instagram-data-build-manifest.mjs",
+      "sha256": "689ae4df05b35ee4929799d115bfd6bc7d93fea95843c082243a9f56ae9312ea"
+    },
+    {
+      "path": "scripts/verify-instagram-data-migrations.mjs",
+      "sha256": "fa1cafe74806f6f37e5b221ba78a1e096456a5ae8a6d13d518bc6869dd9f7800"
+    },
+    {
+      "path": "scripts/verify-instagram-data-quality.mjs",
+      "sha256": "6c27934e326e6b23819a3e780e327f19cdf353c0ea548ad4aa8ea1132ba2be2c"
+    }
+  ],
+  "deployment": {
+    "status": "published",
+    "cloudflareVersionId": "6ebe6029-74e1-4551-b68a-0b1c30a56f68",
+    "sitesDeploymentId": "appgdep_6ac7b6a89a8081918ab53fb76730d986",
+    "sitesSourceCommit": "0bda71f779fff2ce07895bbf02f28b21481003bf",
+    "sitesVersionNumber": 13,
+    "sourceLinkage": "Backend version annotation records sourceInventorySha256 9b65885c973c212ad9c1f71f41380aa08b366cd2d2ae7092b40cbc0f171b01de; active version confirmed and downloaded active module matches checked backend bundle. MCP native saved-version source commit/archive and bundle evidence recorded. Health alone is insufficient.",
+    "backendActiveVersionConfirmed": true,
+    "backendDownloadedModuleMatchesArtifact": true,
+    "backendReleaseEvidence": "instagram-data-production-evidence.json",
+    "backendPublishedAt": "2026-10-08T16:16:47.859319Z",
+    "automaticObservation24h": "pending"
+  }
+}

@@ -1,17 +1,23 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { bodyLimit } from "hono/body-limit";
 import { HTTPException } from "hono/http-exception";
-import { activityReportSchema, createInsightModule } from "../modules/account-insights";
-import { accountSchema, createAnalyticsModule, summarySchema } from "../modules/analytics";
-import { createCollectionModule } from "../modules/collection";
-import { createCommentModule } from "../modules/community";
-import { createContentModule } from "../modules/content";
+import {
+  activityReportSchema,
+  createInsightModule,
+} from "../modules/account-insights/public-contracts";
+import {
+  accountSchema,
+  createAnalyticsModule,
+  summarySchema,
+} from "../modules/analytics/public-contracts";
+import { createCollectionModule } from "../modules/collection/public-contracts";
+import { createCommentModule } from "../modules/community/public-contracts";
+import { createContentModule } from "../modules/content/public-contracts";
+import { createInstagramOperations, type InstagramModuleOptions } from "../modules/instagram";
 import {
   createCommentWebhookModule,
   createInstagramModule,
-  createInstagramOperations,
-  type InstagramModuleOptions,
-} from "../modules/instagram";
+} from "../modules/instagram/public-contracts";
 import { createReviewModule } from "../modules/reviews";
 import { authenticate } from "../platform/http/authentication";
 import type { HttpEnv } from "../platform/http/environment";

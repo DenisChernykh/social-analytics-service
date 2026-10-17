@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import type { RuntimeBindings } from "../../../platform/config/runtime-config";
 import type { HttpEnv } from "../../../platform/http/environment";
 import { errorResponses, problem } from "../../../platform/http/problem";
+import { windowCoverageSchema } from "../../../shared/presentation/measurement";
 import type { Collect } from "../application/collect";
 
 const id = z.string().min(1).max(150);
@@ -10,14 +11,37 @@ const jobParams = z.object({ jobId: z.uuid() });
 export const jobSchema = z.object({
   id: z.uuid(),
   accountId: id,
-  origin: z.enum(["manual", "scheduled", "stories", "comments", "comments_refresh", "audience"]),
+  origin: z.enum([
+    "manual",
+    "scheduled",
+    "stories",
+    "comments",
+    "comments_refresh",
+    "audience",
+    "activity",
+    "catalogue",
+  ]),
   targetMediaId: id.nullable().optional(),
+  latencyOrigin: z.literal("recorded_from_creation").nullable().optional(),
+  httpAttemptsSinceAt: z.number().nullable().optional(),
+  firstAttemptAt: z.number().nullable().optional(),
+  lastAttemptAt: z.number().nullable().optional(),
+  firstUsefulObservationAt: z.number().nullable().optional(),
+  lastUsefulObservationAt: z.number().nullable().optional(),
+  httpAttempts: z.number().optional(),
+  lastStepDurationMs: z.number().nullable().optional(),
+  lastStepHttpAttempts: z.number().nullable().optional(),
+  effectiveState: z.string().optional(),
+  queueWaitMs: z.number().nullable().optional(),
+  continuationWaitMs: z.number().nullable().optional(),
   automatic: z.boolean(),
   status: z.enum(["running", "completed", "failed", "cancelled"]),
   cursor: z.string().nullable(),
   pages: z.number().int(),
   collected: z.number().int(),
   mediaProcessed: z.number().int(),
+  skippedMedia: z.number().int(),
+  skippedPeriods: z.number().int(),
   attempt: z.number().int(),
   failures: z.number().int(),
   nextAttemptAt: z.number(),
@@ -30,6 +54,8 @@ export const scheduleSchema = z.object({
   accountId: id,
   enabled: z.boolean(),
   discoveryMinutes: z.number(),
+  timeZone: z.string(),
+  nextCatalogueAt: z.number(),
   nextDiscoveryAt: z.number(),
   nextStoriesAt: z.number(),
   nextInsightsAt: z.number(),
@@ -63,6 +89,85 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
   const statusSchema = z.object({
     schedule: scheduleSchema,
     jobs: z.array(jobSchema),
+    jobsPage: z
+      .object({
+        nextCursor: z.string().nullable(),
+        hasMore: z.boolean(),
+        limit: z.number(),
+        cutoff: z.number(),
+        total: z.number(),
+        calculatedAt: z.number(),
+        semantics: z.string(),
+        aggregates: z.array(
+          z.object({
+            origin: z.string(),
+            status: z.string(),
+            count: z.number(),
+            due: z.number(),
+            oldestDue: z.number().nullable(),
+            atRiskFresh: z.number().optional(),
+            freshDue: z.number().optional(),
+            lastAttempt: z.number().nullable(),
+            lastSuccess: z.number().nullable(),
+            lastCheck: z.number().nullable().optional(),
+            lastUsefulObservation: z.number().nullable(),
+          }),
+        ),
+      })
+      .optional(),
+    diagnostics: z
+      .object({
+        expiredSyncAttempts: z.number(),
+        expiredInsightAttempts: z.number(),
+        expiredCommentAttempts: z.number(),
+        leasesInUse: z.number(),
+      })
+      .optional(),
+    freshness: z
+      .array(
+        z.object({
+          origin: z.string(),
+          status: z.string(),
+          count: z.number(),
+          due: z.number(),
+          oldestDue: z.number().nullable(),
+          atRiskFresh: z.number().optional(),
+          freshDue: z.number().optional(),
+          lastAttempt: z.number().nullable(),
+          lastSuccess: z.number().nullable(),
+          lastCheck: z.number().nullable().optional(),
+          lastUsefulObservation: z.number().nullable(),
+        }),
+      )
+      .optional(),
+    dataFreshness: z
+      .array(
+        z.object({
+          kind: z.string(),
+          objects: z.number(),
+          lastAttempt: z.number().nullable(),
+          lastCheck: z.number().nullable(),
+          lastSuccess: z.number().nullable(),
+          lastUsefulObservation: z.number().nullable(),
+          legacyProvenanceUnknown: z.number(),
+        }),
+      )
+      .optional(),
+    capacity: z
+      .object({
+        dueJobs: z.number(),
+        atRiskFreshJobs: z.number(),
+        scope: z.string(),
+        maximumHttpAttemptsPerTick: z.number(),
+        tickWorkMs: z.number(),
+        persistenceReserveMs: z.number(),
+        pressureIndicator: z.boolean(),
+        overload: z.enum(["not_measured", "estimated_deficit"]),
+        capacityDeficit: z.number(),
+        availableStepsIn15m: z.number(),
+        assumptions: z.string(),
+      })
+      .optional(),
     comments: z
       .object({
         lastFullPassAt: z.number().nullable(),
@@ -71,6 +176,8 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
         stalePublications: z.number(),
         partialPublications: z.number(),
         pendingReplyBranches: z.number(),
+        unverifiedReplyBranches: z.number(),
+        unavailablePublications: z.number(),
         currentPass: z
           .object({
             id: z.string(),
@@ -91,6 +198,10 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
       .optional(),
     policy: z.object({
       runBudget: z.number(),
+      maximumHttpAttempts: z.number().optional(),
+      workBudgetMs: z.number().optional(),
+      persistenceReserveMs: z.number().optional(),
+      version: z.string().optional(),
       pageSize: z.number(),
       storyPageSize: z.number(),
       commentPageSize: z.number(),
@@ -103,6 +214,7 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
           monthRefreshHours: z.number(),
           archiveRefreshHours: z.number(),
           fullReconciliationDays: z.number(),
+          omittedProbeLimit: z.number(),
         })
         .optional(),
       cronMinutes: z.number(),
@@ -111,6 +223,88 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
         z.object({ targetHours: z.number(), toleranceHours: z.number() }),
       ),
       maximumConsecutiveFailures: z.number(),
+    }),
+    coverage: z.object({
+      analysisCoverage: z.array(windowCoverageSchema).optional(),
+      collectionCoverage: z.array(windowCoverageSchema).optional(),
+      discovery: z.object({
+        measurementState: z.enum(["measured", "not_measured"]).optional(),
+        denominator: z.number().optional(),
+        measuredPublications: z.number(),
+        inferredPublications: z.number(),
+        averageLagMinutes: z.number().nullable(),
+        maximumLagMinutes: z.number().nullable(),
+        overOneHour: z.number(),
+      }),
+      ageSnapshots: z.array(
+        z.object({
+          targetHours: z.number(),
+          expected: z.number(),
+          captured: z.number(),
+          open: z.number(),
+          missed: z.number(),
+        }),
+      ),
+      catalogue: z.object({
+        lastFullPassAt: z.number().nullable(),
+        currentJobId: z.string().nullable(),
+      }),
+      activity: z.object({
+        timeZone: z.string(),
+        providerWindowDays: z.number(),
+        expectedIntervals: z.number(),
+        observedIntervals: z.number(),
+        missingIntervals: z.number(),
+        recheckIntervals: z.number(),
+        dailyIntervals: z.number(),
+        weeklyIntervals: z.number(),
+        monthlyIntervals: z.number(),
+        uncollectableIntervals: z.array(
+          z.object({
+            kind: z.enum(["day", "week", "month"]),
+            from: z.number(),
+            to: z.number(),
+            timeZone: z.string(),
+            reason: z.literal("exceeds_interval_limit"),
+          }),
+        ),
+        earliestDayFrom: z.number().nullable(),
+        latestDayTo: z.number().nullable(),
+      }),
+    }),
+    api: z.object({
+      recordedRequests: z.number(),
+      sinceAt: z.number().nullable(),
+      usagePercent: z.number().nullable(),
+      usageObservedAt: z.number().nullable(),
+      blockedUntil: z.number(),
+      observedAt: z.number().nullable(),
+      cachedUnavailableMetrics: z.number(),
+      http: z
+        .object({
+          attempts: z.number(),
+          responses: z.number(),
+          failuresBeforeResponse: z.number(),
+          timeouts: z.number(),
+          rateLimitedResponses: z.number(),
+          sinceAt: z.number().nullable(),
+        })
+        .optional(),
+      usageHeaders: z
+        .object({
+          app: z.object({
+            state: z.enum(["absent", "recognized", "unknown_schema", "malformed"]),
+            sample: z.string().nullable(),
+          }),
+          business: z.object({
+            state: z.enum(["absent", "recognized", "unknown_schema", "malformed"]),
+            sample: z.string().nullable(),
+          }),
+          receivedAt: z.number().nullable(),
+        })
+        .optional(),
+      quotaFreshness: z.enum(["unknown", "fresh", "stale"]).optional(),
+      quotaStaleAfterMs: z.number().optional(),
     }),
     note: z.string(),
   });
@@ -121,12 +315,20 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
       operationId: "getCollectionStatus",
       tags: ["Collection"],
       security,
-      request: { params },
+      request: {
+        params,
+        query: z.object({
+          limit: z.coerce.number().int().min(1).max(100).default(20),
+          cursor: z.string().max(4096).optional(),
+        }),
+      },
       responses: responses(statusSchema),
     }),
     async (c) =>
       c.json(
-        statusSchema.parse(await operations(c.env).status(c.req.valid("param").accountId)),
+        statusSchema.parse(
+          await operations(c.env).status(c.req.valid("param").accountId, c.req.valid("query")),
+        ),
         200,
       ),
   );
@@ -195,7 +397,8 @@ export function createCollectionHttp(operations: (env: RuntimeBindings) => Colle
           z
             .object({
               enabled: z.boolean(),
-              discoveryMinutes: z.number().int().min(60).max(10080).default(360),
+              discoveryMinutes: z.number().int().min(60).max(10080).default(60),
+              timeZone: z.string().min(1).max(100).optional(),
             })
             .strict(),
         ),

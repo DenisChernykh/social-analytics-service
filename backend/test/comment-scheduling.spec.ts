@@ -32,6 +32,80 @@ async function ready() {
 }
 
 describe("comment freshness, full reconciliation and fairness (#18)", () => {
+  it("serves overdue Stories and discovery while age observations have pending work", async () => {
+    const f = await ready();
+    const startedAt = f.now();
+    await env.DB.prepare("UPDATE media SET published_at=? WHERE id=?")
+      .bind(startedAt - hour, mediaId)
+      .run();
+    await env.DB.batch(
+      Array.from({ length: 20 }, (_, index) =>
+        env.DB.prepare(
+          "INSERT INTO media (id,account_id,external_id,caption,search_text,media_type,product_type,permalink,published_at,updated_at) VALUES (?,?,?,'','', 'VIDEO','REELS',?,?,?)",
+        ).bind(
+          `${accountId}_age-${index}`,
+          accountId,
+          String(19000000000000001n + BigInt(index)),
+          `https://www.instagram.com/reel/age-${index}/`,
+          startedAt - hour,
+          startedAt,
+        ),
+      ),
+    );
+    vi.mocked(f.transport.mediaPage).mockResolvedValue({
+      media: [{ ...sampleMedia, timestamp: startedAt - hour }],
+      nextCursor: null,
+    });
+    await env.DB.prepare("DELETE FROM media_snapshots").run();
+    await env.DB.prepare(
+      "UPDATE collection_schedules SET next_stories_at=?,next_discovery_at=?,next_insights_at=?",
+    )
+      .bind(f.now() - hour, f.now() - hour, f.now() + 1000 * hour)
+      .run();
+    expect(await f.store.dueAgeMedia(accountId, f.now())).toMatchObject({ targetHours: 1 });
+    for (let slot = 0; slot < 6; slot++) {
+      if (slot) f.advance(cron);
+      await f.collector.tick();
+    }
+    expect((await f.collector.status(accountId)).jobs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ origin: "stories", status: "completed" }),
+        expect.objectContaining({ origin: "scheduled", status: "completed" }),
+      ]),
+    );
+    expect(f.transport.stories).toHaveBeenCalledTimes(1);
+    expect(await f.store.dueAgeMedia(accountId, f.now())).not.toBeNull();
+  });
+  it("rechecks an enabled schedule after five failures while honoring its retry time", async () => {
+    const f = await ready();
+    await env.DB.prepare("UPDATE media_snapshots SET observed_at=observed_at-8*86400000").run();
+    await env.DB.prepare("UPDATE instagram_connections SET scopes=? WHERE account_id=?")
+      .bind(
+        JSON.stringify(["instagram_business_basic", "instagram_business_manage_insights"]),
+        accountId,
+      )
+      .run();
+    await env.DB.prepare(
+      "UPDATE collection_schedules SET failures=5,error_code='INSTAGRAM_UNAVAILABLE',retry_at=?,next_stories_at=?,next_discovery_at=?,next_insights_at=?",
+    )
+      .bind(
+        f.now() + 15 * 60_000,
+        f.now() + 1000 * hour,
+        f.now() + 1000 * hour,
+        f.now() + 1000 * hour,
+      )
+      .run();
+    await f.collector.tick();
+    expect(f.transport.media).not.toHaveBeenCalled();
+    f.advance(15 * 60_000);
+    await f.collector.tick();
+    expect(f.transport.media).toHaveBeenCalledTimes(1);
+    expect((await f.collector.status(accountId)).schedule).toMatchObject({
+      enabled: true,
+      failures: 0,
+      errorCode: null,
+    });
+  });
   it("updates a recent publication during a 236-publication legacy backfill while Stories, insights, discovery and lifetime refresh progress with one step per tick", async () => {
     const f = await ready();
     const startedAt = f.now();
@@ -177,7 +251,14 @@ describe("comment freshness, full reconciliation and fairness (#18)", () => {
       (await f.collector.status(accountId)).jobs.filter((job) => job.origin === "comments"),
     ).toHaveLength(1);
     f.advance(2 * 24 * hour);
-    await f.collector.tick();
+    // Expiring calendar obligations may precede the daily replan. It must still
+    // run within six bounded slots rather than assume a particular first action.
+    for (let i = 0; i < 6; i++) {
+      await f.collector.tick();
+      if ((await f.store.jobs(accountId)).filter((j) => j.origin === "comments").length === 2)
+        break;
+      f.advance(cron);
+    }
     const jobs = (await f.collector.status(accountId)).jobs.filter(
       (job) => job.origin === "comments",
     );

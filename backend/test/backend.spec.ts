@@ -162,7 +162,7 @@ describe("collection, search and analytics", () => {
       await (await f.request(`/api/media/${id}/statistics`)).json(),
     );
     expect(corrected.growth.netChange).toBe(-5);
-    expect(corrected.growth.perHour.value).toBeNull();
+    expect(corrected.growth.perHour.value).toBe(-5);
     expect(corrected.growth.perHour.reason).toBe("counter_decreased");
   });
 

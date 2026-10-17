@@ -1,0 +1,17 @@
+{
+  "checkedLinks": 46,
+  "brokenLinks": [],
+  "jsonFilesParsed": 11,
+  "svgFilesParsed": 2,
+  "sourceInventoryFiles": 85,
+  "sourceMismatches": [],
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 137,
+    "mcpTests": 24,
+    "localMigrationsPending": 0,
+    "newAuditMigrations": 0
+  },
+  "checkedAt": "2026-10-09T08:33:11.419453+00:00",
+  "reportPath": "docs/cron-cpu-root-cause-audit.md"
+}

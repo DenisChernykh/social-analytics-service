@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull, lt, or } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import {
   commentCollections,
@@ -33,9 +33,15 @@ export class D1Comments implements CommentStore {
           collection.limit,
         ]),
         observedAt: collection.startedAt,
+        jobId: collection.jobId ?? null,
+        parentId: collection.parentId,
         resultJson: JSON.stringify(collection),
       })
-      .onConflictDoNothing()
+      .onConflictDoUpdate({
+        target: commentCollections.id,
+        set: { observedAt: collection.startedAt, resultJson: JSON.stringify(collection) },
+        where: sql`json_extract(${commentCollections.resultJson}, '$.status')='failed'`,
+      })
       .returning({ id: commentCollections.id });
     return result.length === 1;
   }
@@ -44,7 +50,7 @@ export class D1Comments implements CommentStore {
     return (
       (await this.database
         .prepare(
-          "SELECT 1 FROM comment_collections WHERE media_id=? AND id!=? AND json_extract(result_json,'$.jobId')=? AND json_extract(result_json,'$.parentId') IS ? AND json_extract(result_json,'$.pageFingerprint')=? AND json_extract(result_json,'$.status')='completed' LIMIT 1",
+          "SELECT 1 FROM comment_collections WHERE media_id=? AND id!=? AND job_id=? AND parent_id IS ? AND page_fingerprint=? AND json_extract(result_json,'$.status')='completed' LIMIT 1",
         )
         .bind(
           collection.mediaId,
@@ -66,37 +72,31 @@ export class D1Comments implements CommentStore {
       ? " AND EXISTS (SELECT 1 FROM collection_jobs WHERE id=? AND status='running' AND lease_token=? AND lease_expires_at>?)"
       : "";
     const fenceValues = ownership ? [ownership.jobId, ownership.leaseToken, now] : [];
-    // D1 allows 100 parameters per statement. Six fields × 16 rows plus the
-    // operation/ownership fence use at most 100; a 255-text expansion needs
-    // sixteen insert statements rather than one statement per text.
+    // A bounded JSON chunk keeps transport receipts plus the largest expansion
+    // within D1's request/query limits. Fields and ownership remain explicit.
     const chunks: SavedComment[][] = [];
-    for (let offset = 0; offset < items.length; offset += 16)
-      chunks.push(items.slice(offset, offset + 16));
+    for (let offset = 0; offset < items.length; offset += 25)
+      chunks.push(items.slice(offset, offset + 25));
     const results = await this.database.batch([
       ...chunks.map((chunk) =>
         this.database
           .prepare(
-            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at) SELECT column1,column2,column3,column4,column5,column6 FROM (VALUES ${chunk.map(() => "(?,?,?,?,?,?)").join(",")}) WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
+            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at,author_id,author_username,like_count,hidden) SELECT json_extract(value,'$.id'),json_extract(value,'$.mediaId'),json_extract(value,'$.parentId'),json_extract(value,'$.text'),json_extract(value,'$.publishedAt'),json_extract(value,'$.observedAt'),json_extract(value,'$.authorId'),json_extract(value,'$.authorUsername'),json_extract(value,'$.likeCount'),json_extract(value,'$.hidden') FROM json_each(?) WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=? AND json_extract(result_json,'$.startedAt')=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at,author_id=excluded.author_id,author_username=excluded.author_username,like_count=excluded.like_count,hidden=excluded.hidden WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
           )
-          .bind(
-            ...chunk.flatMap((item) => [
-              item.id,
-              item.mediaId,
-              item.parentId,
-              item.text,
-              item.publishedAt,
-              item.observedAt,
-            ]),
-            collection.id,
-            ...fenceValues,
-          ),
+          .bind(JSON.stringify(chunk), collection.id, collection.startedAt, ...fenceValues),
       ),
       this.database
-        .prepare(`UPDATE comment_collections SET result_json=?,observed_at=? WHERE id=?${fence}`)
+        .prepare(
+          `UPDATE comment_collections SET result_json=?,observed_at=?,job_id=?,parent_id=?,page_fingerprint=? WHERE id=? AND json_extract(result_json,'$.startedAt')=?${fence}`,
+        )
         .bind(
           JSON.stringify(collection),
           collection.observedAt ?? collection.startedAt,
+          collection.jobId ?? null,
+          collection.parentId,
+          collection.pageFingerprint ?? null,
           collection.id,
+          collection.startedAt,
           ...fenceValues,
         ),
     ]);
@@ -149,7 +149,7 @@ export class D1Comments implements CommentStore {
       .first<{ total: number }>();
     const row = await this.database
       .prepare(
-        "SELECT last_attempt_at AS lastAttemptAt,last_complete_at AS lastCompleteAt,next_refresh_at AS nextRefreshAt,omitted_branches AS omittedReplyBranches,error_code AS errorCode FROM comment_media_state WHERE media_id=?",
+        "SELECT last_attempt_at AS lastAttemptAt,last_complete_at AS lastCompleteAt,next_refresh_at AS nextRefreshAt,omitted_branches AS omittedReplyBranches,error_code AS errorCode,unavailable_until AS unavailableUntil FROM comment_media_state WHERE media_id=?",
       )
       .bind(mediaId)
       .first<{
@@ -158,6 +158,7 @@ export class D1Comments implements CommentStore {
         nextRefreshAt: number;
         omittedReplyBranches: number;
         errorCode: string | null;
+        unavailableUntil: number;
       }>();
     return {
       uniqueSaved: count?.total ?? 0,
@@ -166,6 +167,7 @@ export class D1Comments implements CommentStore {
       nextRefreshAt: row?.nextRefreshAt ?? null,
       omittedReplyBranches: row?.omittedReplyBranches ?? 0,
       errorCode: row?.errorCode ?? null,
+      unavailableUntil: row?.unavailableUntil ?? 0,
     };
   }
 }

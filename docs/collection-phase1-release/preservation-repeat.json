@@ -1,0 +1,145 @@
+{
+  "checkedAt": "2026-10-09T16:18:25.740Z",
+  "mode": "SELECT_only",
+  "databaseId": "2c5956d4-0c66-4d21-9bf8-12f04e007bad",
+  "historicalSnapshots": [
+    {
+      "id": "fba2b419-db6e-4e83-9f4e-93e2ed853364:ig_17841402362568040_18110630777129028",
+      "mediaId": "ig_17841402362568040_18110630777129028",
+      "observedAt": 1790934158343,
+      "rowSHA256": "abc6ac8eb6b8db0c1a5d394384c19a2fddfd5a13a6daf4677483c88c85cf623f"
+    },
+    {
+      "id": "fba2b419-db6e-4e83-9f4e-93e2ed853364:ig_17841402362568040_18089900612220903",
+      "mediaId": "ig_17841402362568040_18089900612220903",
+      "observedAt": 1790934162436,
+      "rowSHA256": "39fee7608bf356a27f83d9ba4ea3cc2c0e02fb97cc2593d27af10f5b00ed2a27"
+    },
+    {
+      "id": "fba2b419-db6e-4e83-9f4e-93e2ed853364:ig_17841402362568040_18128790454878999",
+      "mediaId": "ig_17841402362568040_18128790454878999",
+      "observedAt": 1790934166591,
+      "rowSHA256": "6c5b3ac2706eb0c630d320abfa0487bb3a817ebbc0b468c90df8f61081847b91"
+    },
+    {
+      "id": "1e75298e-9c18-4153-8e69-ce9c8378c2b2:ig_17841402362568040_18215874430347974",
+      "mediaId": "ig_17841402362568040_18215874430347974",
+      "observedAt": 1790934261497,
+      "rowSHA256": "a856c1fff1f2ee35c71b38946203f69fb2882a130bc7345ef7223400409cf65e"
+    },
+    {
+      "id": "1e75298e-9c18-4153-8e69-ce9c8378c2b2:ig_17841402362568040_18092591924160341",
+      "mediaId": "ig_17841402362568040_18092591924160341",
+      "observedAt": 1790934266073,
+      "rowSHA256": "c46abe9a6ed30d8ba632014e54ad4dbb169f6776a56ff7d79604baaed3c4538e"
+    },
+    {
+      "id": "1e75298e-9c18-4153-8e69-ce9c8378c2b2:ig_17841402362568040_18162085327491394",
+      "mediaId": "ig_17841402362568040_18162085327491394",
+      "observedAt": 1790934270600,
+      "rowSHA256": "eae077ac165c2f3796e52561b1165f1e95722a59a3ea1929d2e6759bbd058682"
+    },
+    {
+      "id": "b2b0a873-67fe-4d34-82bb-c1f49e07d8f3:ig_17841402362568040_18088845560430600",
+      "mediaId": "ig_17841402362568040_18088845560430600",
+      "observedAt": 1790934276919,
+      "rowSHA256": "976a35cb27506ffc7b1c4f6755c3fbac025e6f9e745bd486a0d031ff25f2d557"
+    },
+    {
+      "id": "b2b0a873-67fe-4d34-82bb-c1f49e07d8f3:ig_17841402362568040_17989271304106805",
+      "mediaId": "ig_17841402362568040_17989271304106805",
+      "observedAt": 1790934281183,
+      "rowSHA256": "964fe9c73763a22ea2ff5116b3c69676aff65f72cc6ffa11fbb38e4453085316"
+    },
+    {
+      "id": "b2b0a873-67fe-4d34-82bb-c1f49e07d8f3:ig_17841402362568040_18189926203398059",
+      "mediaId": "ig_17841402362568040_18189926203398059",
+      "observedAt": 1790934285796,
+      "rowSHA256": "ac2db0b8ea6e02cc1c07d3e7dda60c076945a1d76f82abb8301de92817bceeeb"
+    },
+    {
+      "id": "07604859-05cc-4f62-a85f-2c56cd2d2404:ig_17841402362568040_18132058522660015",
+      "mediaId": "ig_17841402362568040_18132058522660015",
+      "observedAt": 1790934291026,
+      "rowSHA256": "9cabfb483990e0e7306f2667e7b72ba95fd63afa7fad76cbca4e3901a9dae87d"
+    },
+    {
+      "id": "07604859-05cc-4f62-a85f-2c56cd2d2404:ig_17841402362568040_17969645007145697",
+      "mediaId": "ig_17841402362568040_17969645007145697",
+      "observedAt": 1790934295055,
+      "rowSHA256": "1d83711c2a2a0d28d350387704eadaf6f0398af98a072c6fe870ac8560dd4569"
+    },
+    {
+      "id": "07604859-05cc-4f62-a85f-2c56cd2d2404:ig_17841402362568040_18014631350946545",
+      "mediaId": "ig_17841402362568040_18014631350946545",
+      "observedAt": 1790934299889,
+      "rowSHA256": "e2379be6f61205fcca3478261548f4f88d7873b35619303897c3950651e2299b"
+    }
+  ],
+  "policySHA256": "1dc69cfb3b4f248a029f84eb80d062e5ae7f5f243ed028ea9a69d7f1e82cf28a",
+  "policyRows": 1,
+  "scheduleSettingsSHA256": "c422b0a5d5478a96ec2bedca188c76fe61aef66b4ae32f3bc6e9f8d6ef10f4cc",
+  "activeJobs": [
+    {
+      "id": "1d548438-a5b9-5473-a13e-20b77b81d1fe",
+      "origin": "comments",
+      "status": "running",
+      "pages": 1515,
+      "collected": 3324,
+      "media_processed": 167,
+      "cursorBytes": 520,
+      "cursorSHA256": "c91191b3935d9dd799204c1563871e5881bfd341b3960663ec289ed233974035"
+    },
+    {
+      "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+      "origin": "manual",
+      "status": "running",
+      "pages": 72,
+      "collected": 72,
+      "media_processed": 72,
+      "cursorBytes": 122,
+      "cursorSHA256": "882a8a2b24ca27458a7e4f6dde0d548b4bcbd36da61b6ea6fff4aa4e9a5fd190"
+    },
+    {
+      "id": "ca8ee36b-54d5-542b-8fe4-3aa0f5210c9c",
+      "origin": "activity",
+      "status": "running",
+      "pages": 74,
+      "collected": 74,
+      "media_processed": 0,
+      "cursorBytes": 2613,
+      "cursorSHA256": "ed5da3efa4a638521c23e4a38b5a17389719ce6efaff2f9cf3c7d3625229b649"
+    }
+  ],
+  "comparison": {
+    "pinnedHistoricalFactsIdentical": true,
+    "policyAndSettingsIdentical": true,
+    "priorJobsRetainedWithoutCounterReset": true,
+    "currentPriorJobs": [
+      {
+        "id": "1d548438-a5b9-5473-a13e-20b77b81d1fe",
+        "origin": "comments",
+        "status": "running",
+        "pages": 1515,
+        "collected": 3324,
+        "media_processed": 167
+      },
+      {
+        "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+        "origin": "manual",
+        "status": "running",
+        "pages": 72,
+        "collected": 72,
+        "media_processed": 72
+      },
+      {
+        "id": "ca8ee36b-54d5-542b-8fe4-3aa0f5210c9c",
+        "origin": "activity",
+        "status": "running",
+        "pages": 74,
+        "collected": 74,
+        "media_processed": 0
+      }
+    ]
+  }
+}

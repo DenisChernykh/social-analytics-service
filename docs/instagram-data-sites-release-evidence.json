@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-08T15:29:33.075375+00:00",
+  "mcpVersion": "0.4.0",
+  "projectId": "appgprj_6abf85476cec8191928b2376b9e8626f",
+  "versionId": "appgprj_6abf85476cec8191928b2376b9e8626f~appgver_9f0f145978a0819190b5864828d37573",
+  "versionNumber": 13,
+  "deploymentId": "appgdep_6ac7b6a89a8081918ab53fb76730d986",
+  "deploymentStatus": "succeeded",
+  "url": "https://social-analytics.scary-rustles-7p.chatgpt.site",
+  "sourceCommit": "0bda71f779fff2ce07895bbf02f28b21481003bf",
+  "sourceCommitConfirmed": true,
+  "archiveSha256": "6ef6247307e5b974faa9e7d8ff147709eaf7d72fc9cd5e7e7cbdf5e8fe730350",
+  "mcpBundleSha256": "00f61c834adc7a952c0ccfbf83406a586959a6babcabf1c78a9c3e40d7c317ef",
+  "portablePluginSha256": "f3c735ac1b63297ec88ebee050ad36393799716958599a7f2f84c91e5175221c",
+  "providerArchive": {
+    "format": "tar",
+    "contentHash": "sha256:0d3fa1e18f60c1a353b16464a0f9c143fe3999386a360bb53a71de9f659ea0a1",
+    "files": 2,
+    "note": "Provider archive content hash is recorded literally; its representation is not assumed identical to the submitted gzip archive."
+  },
+  "access": {
+    "ownerOnly": true,
+    "externalVisitors": 0,
+    "pluginIdUnchanged": true,
+    "siteAutomations": 0
+  },
+  "readOnlySmoke": {
+    "connectedAppToolCalls": true,
+    "listAccountsCount": 1,
+    "collectionStatus": {
+      "legacyBackend": true,
+      "jobsReturned": 100,
+      "jobsPaginationAvailable": false,
+      "usagePercent": null,
+      "automatic": true,
+      "activity": {
+        "expected": 103,
+        "observed": 21
+      }
+    },
+    "relativeRankingOldBackend": {
+      "code": "FEATURE_UNAVAILABLE",
+      "status": 409
+    },
+    "note": "No production collection, backend deployment or remote D1 migration. New backend fields remain unavailable until its authorized release."
+  },
+  "authorization": "Existing private Sites MCP follow-up in AGENTS.md and docs/task-mcp-plugin-sites.md; root/backend push/deployment not performed."
+}

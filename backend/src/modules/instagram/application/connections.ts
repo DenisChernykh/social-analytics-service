@@ -1,6 +1,11 @@
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { InsightQuery, InstagramReader } from "../public-contracts";
-import type { ConnectionRepository, InstagramTransport, TokenProtection } from "./ports";
+import type { InsightBatchQuery, InsightQuery, InstagramReader } from "../public-contracts";
+import type {
+  ConnectionRepository,
+  InstagramRequestPolicy,
+  InstagramTransport,
+  TokenProtection,
+} from "./ports";
 
 export class InstagramConnections implements InstagramReader {
   private readonly tokens = new Map<string, Promise<string>>();
@@ -9,7 +14,25 @@ export class InstagramConnections implements InstagramReader {
     private readonly transport: InstagramTransport,
     private readonly cipher: TokenProtection,
     private readonly clock: () => number,
+    private readonly policy?: InstagramRequestPolicy,
+    private readonly apiVersion = "unknown",
   ) {}
+  forOperation(operationId: string): InstagramConnections {
+    return new InstagramConnections(
+      this.repository,
+      this.transport.forOperation?.(operationId) ?? this.transport,
+      this.cipher,
+      this.clock,
+      this.policy,
+      this.apiVersion,
+    );
+  }
+  requestStats() {
+    return this.transport.requestStats?.() ?? { attempts: 0 };
+  }
+  private accountTransport(accountId: string) {
+    return this.transport.forAccount?.(accountId) ?? this.transport;
+  }
 
   async start(state: string, hash: string, comments = false) {
     const now = this.clock();
@@ -79,7 +102,7 @@ export class InstagramConnections implements InstagramReader {
     const token = await this.cipher.decrypt(connection.encryptedToken, accountId);
     if (connection.expiresAt - now > 7 * 86_400_000 || now - connection.refreshedAt < 86_400_000)
       return token;
-    const refreshed = await this.transport.refreshToken(token);
+    const refreshed = await this.accountTransport(accountId).refreshToken(token);
     await this.repository.updateToken(
       accountId,
       await this.cipher.encrypt(refreshed.accessToken, accountId),
@@ -98,22 +121,59 @@ export class InstagramConnections implements InstagramReader {
     return pending;
   }
   async profile(accountId: string) {
-    return this.transport.profile(await this.token(accountId));
+    return this.accountTransport(accountId).profile(await this.token(accountId));
   }
   async mediaPage(accountId: string, userId: string, cursor: string | null, limit: number) {
-    return this.transport.mediaPage(await this.token(accountId), userId, cursor, limit);
+    return this.accountTransport(accountId).mediaPage(
+      await this.token(accountId),
+      userId,
+      cursor,
+      limit,
+    );
   }
   async insights(accountId: string, mediaId: string, fields: string[]) {
-    return this.transport.insights(await this.token(accountId), mediaId, fields);
+    return this.accountTransport(accountId).insights(await this.token(accountId), mediaId, fields);
   }
   async media(accountId: string, mediaId: string) {
-    return this.transport.media(await this.token(accountId), mediaId);
+    return this.accountTransport(accountId).media(await this.token(accountId), mediaId);
   }
   async stories(accountId: string, userId: string, cursor: string | null, limit: number) {
-    return this.transport.stories(await this.token(accountId), userId, cursor, limit);
+    return this.accountTransport(accountId).stories(
+      await this.token(accountId),
+      userId,
+      cursor,
+      limit,
+    );
   }
   async structuredInsights(accountId: string, objectId: string, query: InsightQuery) {
-    return this.transport.structuredInsights(await this.token(accountId), objectId, query);
+    return this.accountTransport(accountId).structuredInsights(
+      await this.token(accountId),
+      objectId,
+      query,
+    );
+  }
+  async structuredInsightsBatch(accountId: string, objectId: string, query: InsightBatchQuery) {
+    const transport = this.accountTransport(accountId),
+      token = await this.token(accountId);
+    if (transport.structuredInsightsBatch)
+      return transport.structuredInsightsBatch(token, objectId, query);
+    const results = [];
+    for (const metric of query.metrics)
+      results.push(await transport.structuredInsights(token, objectId, { ...query, metric }));
+    return results;
+  }
+  async apiStatus(accountId: string) {
+    return (
+      this.policy?.status(accountId, this.apiVersion, this.clock()) ?? {
+        recordedRequests: 0,
+        sinceAt: null,
+        usagePercent: null,
+        usageObservedAt: null,
+        blockedUntil: 0,
+        observedAt: null,
+        cachedUnavailableMetrics: 0,
+      }
+    );
   }
   async comments(
     accountId: string,
@@ -129,7 +189,7 @@ export class InstagramConnections implements InstagramReader {
         "INSTAGRAM_PERMISSION_REQUIRED",
         "Reconnect Instagram with instagram_business_manage_comments to read comment texts.",
       );
-    return this.transport.comments(
+    return this.accountTransport(accountId).comments(
       await this.token(accountId),
       objectId,
       replies,
@@ -146,6 +206,9 @@ export class InstagramConnections implements InstagramReader {
         "INSTAGRAM_PERMISSION_REQUIRED",
         "Grant manage_comments before subscribing to comment notifications.",
       );
-    await this.transport.subscribeComments(await this.token(accountId), externalId);
+    await this.accountTransport(accountId).subscribeComments(
+      await this.token(accountId),
+      externalId,
+    );
   }
 }

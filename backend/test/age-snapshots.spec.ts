@@ -29,9 +29,10 @@ async function ready() {
   const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
   await collector.configure(accountId, { enabled: true, discoveryMinutes: 360 });
   await env.DB.prepare(
-    "UPDATE collection_schedules SET next_stories_at=?,next_insights_at=?,next_discovery_at=? WHERE account_id=?",
+    "UPDATE collection_schedules SET next_stories_at=?,next_insights_at=?,next_discovery_at=?,next_catalogue_at=? WHERE account_id=?",
   )
     .bind(
+      publishedAt + 1000 * hour,
       publishedAt + 1000 * hour,
       publishedAt + 1000 * hour,
       publishedAt + 1000 * hour,
@@ -158,7 +159,7 @@ describe("scheduled real age snapshots (#17)", () => {
       coverage: { observed: number; missing: number };
       groups: { dimension: string; enoughData: boolean; sampleSize: number }[];
     };
-    expect(report.coverage).toMatchObject({ observed: 5, missing: 1 });
+    expect(report.coverage).toMatchObject({ observed: 5, missing: 0 });
     expect(report.groups.find((group) => group.dimension === "localHour")).toMatchObject({
       enoughData: true,
       sampleSize: 5,
@@ -172,7 +173,7 @@ describe("scheduled real age snapshots (#17)", () => {
       new ApplicationError("INSTAGRAM_RATE_LIMITED", "Source rate limit."),
     );
     await f.collector.tick();
-    expect((await f.collector.status(accountId)).schedule.retryAt).toBe(f.now() + 30 * 60_000);
+    expect((await f.collector.status(accountId)).schedule.retryAt).toBe(f.now() + 15 * 60_000);
     f.advance(31 * 60_000);
     expect(await f.store.dueAgeMedia(accountId, f.now())).toBeNull();
     await f.collector.tick();

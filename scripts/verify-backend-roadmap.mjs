@@ -122,7 +122,7 @@ if (flags.has("--insights")) {
         metricType: "total_value",
       },
     ],
-    ["account-time-series", { ...period, metricType: "time_series", metrics: ["reach", "views"] }],
+    ["account-time-series", { ...period, metricType: "time_series", metrics: ["reach"] }],
     [
       "account-content-breakdown",
       {
@@ -137,8 +137,21 @@ if (flags.has("--insights")) {
       {
         ...period,
         metricType: "total_value",
-        metrics: ["views", "reach"],
+        metrics: ["reach", "follows_and_unfollows"],
         breakdown: "follow_type",
+      },
+    ],
+    [
+      "account-viewer-breakdown",
+      { ...period, metricType: "total_value", metrics: ["views"], breakdown: "follower_type" },
+    ],
+    [
+      "account-contact-breakdown",
+      {
+        ...period,
+        metricType: "total_value",
+        metrics: ["profile_links_taps"],
+        breakdown: "contact_button_type",
       },
     ],
   ]) {

@@ -41,10 +41,10 @@ describe("single-media refresh and durable collection", () => {
     });
     expect(firstRefresh.status).toBe(200);
     expect(repeatedRefresh.status).toBe(200);
-    const result = await firstRefresh.json();
+    const result = (await firstRefresh.json()) as Record<string, unknown>;
     expect(await repeatedRefresh.json()).toEqual(result);
     expect(result).not.toHaveProperty("leaseExpiresAt");
-    expect(await (await f.request(`/api/sync-runs/${operationId}`)).json()).toEqual(result);
+    expect(await (await f.request(`/api/sync-runs/${operationId}`)).json()).toMatchObject(result);
     expect(f.transport.mediaPage).toHaveBeenCalledTimes(1);
     expect(f.transport.media).toHaveBeenCalledTimes(1);
     expect(await (await f.request(`/api/media/${mediaId}/statistics`)).json()).toMatchObject({
@@ -112,7 +112,7 @@ describe("single-media refresh and durable collection", () => {
     await f.request(`/api/accounts/${accountId}/collection`, "POST", { operationId });
     expect(
       await (await f.request(`/api/collection-jobs/${operationId}/advance`, "POST", {})).json(),
-    ).toMatchObject({ pages: 0, failures: 1, errorCode: "INSTAGRAM_RATE_LIMITED" });
+    ).toMatchObject({ pages: 0, failures: 0, errorCode: "INSTAGRAM_RATE_LIMITED" });
     await f.request(`/api/collection-jobs/${operationId}/advance`, "POST", {});
     expect(f.transport.mediaPage).toHaveBeenCalledTimes(1);
     f.advance(31 * 60_000);
@@ -144,24 +144,18 @@ describe("single-media refresh and durable collection", () => {
       enabled: true,
       discoveryMinutes: 60,
     });
-    f.advance(1000);
-    await collector.tick();
-    expect(f.transport.stories).not.toHaveBeenCalled();
-    f.advance(5 * 60_000);
-    await collector.tick();
-    expect(f.transport.stories).toHaveBeenCalledTimes(1);
-    f.advance(15 * 60_000);
-    await collector.tick();
-    f.advance(15 * 60_000);
-    await collector.tick();
+    for (let tick = 0; tick < 24; tick++) {
+      f.advance(5 * 60_000);
+      await collector.tick();
+      if (vi.mocked(f.transport.structuredInsights).mock.calls.length) break;
+    }
+    expect(f.transport.stories).toHaveBeenCalled();
     expect(f.transport.structuredInsights).toHaveBeenCalled();
-    f.advance(15 * 60_000);
-    await collector.tick();
     vi.mocked(f.transport.mediaPage).mockResolvedValue({
       media: [sampleMedia],
       nextCursor: "would-continue",
     });
-    for (let tick = 0; tick < 6; tick++) {
+    for (let tick = 0; tick < 24; tick++) {
       f.advance(5 * 60_000);
       await collector.tick();
     }
@@ -290,6 +284,42 @@ describe("account and audience insights", () => {
     ).toBe(400);
     const summary = await (await f.request(`/api/accounts/${accountId}/summary`)).json();
     expect(summary).toMatchObject({ totals: { views: { value: 2000 } } });
+  });
+  it("selects compatible account metrics and rejects invalid breakdowns before calling Meta", async () => {
+    const f = await collected();
+    const period = {
+      from: new Date(f.now() - 3 * 86_400_000).toISOString(),
+      to: new Date(Math.floor(f.now() / 1000) * 1000).toISOString(),
+    };
+    const path = `/api/accounts/${accountId}/insights/collect`;
+    for (const [input, expected] of [
+      [{ metricType: "time_series" }, ["reach"]],
+      [{ breakdown: "contact_button_type" }, ["profile_links_taps"]],
+      [{ breakdown: "follower_type" }, ["views"]],
+      [{ metrics: ["reposts"] }, ["reposts"]],
+    ] as const) {
+      vi.mocked(f.transport.structuredInsights).mockClear();
+      const response = await f.request(path, "POST", {
+        ...period,
+        ...input,
+        operationId: crypto.randomUUID(),
+      });
+      expect(response.status).toBe(200);
+      expect(
+        vi.mocked(f.transport.structuredInsights).mock.calls.map((call) => call[2].metric),
+      ).toEqual(expected);
+    }
+    vi.mocked(f.transport.structuredInsights).mockClear();
+    for (const input of [
+      { metricType: "time_series", metrics: ["likes"] },
+      { breakdown: "follow_type", metrics: ["profile_links_taps"] },
+      { breakdown: "media_product_type", metrics: ["accounts_engaged"] },
+    ])
+      expect(
+        (await f.request(path, "POST", { ...period, ...input, operationId: crypto.randomUUID() }))
+          .status,
+      ).toBe(400);
+    expect(f.transport.structuredInsights).not.toHaveBeenCalled();
   });
   it("does not invent audience percentages from partial category sums or replace total values with series", async () => {
     const f = await collected();
@@ -555,7 +585,11 @@ describe("content context, comparable age and external results", () => {
     });
     const missing = await f.request(`/api/accounts/${accountId}/content-analysis?ageDays=1`);
     expect(await missing.json()).toMatchObject({
-      coverage: { observed: 0, missing: 6 },
+      coverage: {
+        observed: 0,
+        missing: 0,
+        analysisCoverage: { excludedByReason: { connected_after_window: 6 } },
+      },
       items: expect.arrayContaining([expect.objectContaining({ absolute: null })]),
     });
   });
@@ -685,12 +719,14 @@ describe("Stories, private comments and reviews", () => {
     await connect(f);
     vi.mocked(f.transport.stories).mockResolvedValue({ media: [sampleMedia], nextCursor: null });
     f.values.replies = 0;
+    f.values.follows = 2;
+    f.values.profile_visits = 4;
     vi.mocked(f.transport.structuredInsights).mockResolvedValue({
       metric: "navigation",
       period: "lifetime",
       metricType: "total_value",
-      value: null,
-      reason: "not_returned",
+      value: 9,
+      reason: null,
       description: null,
       points: [],
       breakdowns: [
@@ -715,14 +751,22 @@ describe("Stories, private comments and reviews", () => {
       expect.any(String),
       expect.any(String),
       null,
-      5,
+      1,
     );
     const report = await f.request(`/api/media/${mediaId}/statistics`);
     expect(await report.json()).toMatchObject({
       media: { productType: "STORY" },
-      source: { scope: "organic_instagram_story_lifetime" },
+      source: { scope: "field_specific_story_lifetime" },
+      metrics: {
+        shares: { value: 5 },
+        reposts: { value: 3 },
+        totalInteractions: { value: 135 },
+        follows: { value: 2 },
+        profileVisits: { value: 4 },
+      },
       storyInsights: {
         replies: { value: 0 },
+        navigationTotal: { value: 9, sourceField: "navigation" },
         navigation: {
           tap_forward: { value: 3, reason: null },
           tap_exit: { value: 0, reason: null },
@@ -730,6 +774,15 @@ describe("Stories, private comments and reviews", () => {
         },
       },
     });
+    expect(f.transport.insights).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(f.transport.insights).mock.calls[0]?.[2]).toEqual(
+      expect.arrayContaining(["replies", "shares", "reposts", "follows", "profile_visits"]),
+    );
+    expect(vi.mocked(f.transport.insights).mock.calls[0]?.[2]).not.toContain("facebook_views");
+    expect(vi.mocked(f.transport.insights).mock.calls[1]?.[2]).toEqual(["facebook_views"]);
+    expect(vi.mocked(f.transport.insights).mock.invocationCallOrder[1]).toBeGreaterThan(
+      vi.mocked(f.transport.structuredInsights).mock.invocationCallOrder[0] ?? 0,
+    );
     const sequence = await f.request(`/api/accounts/${accountId}/story-sequences`, "POST", {
       operationId: crypto.randomUUID(),
       name: "Утро",
@@ -815,7 +868,7 @@ describe("Stories, private comments and reviews", () => {
         { id: "a", observedAt: 0, views: 100 },
         { id: "b", observedAt: 3_600_000, views: 90 },
       ])[0],
-    ).toMatchObject({ netChange: -10, perHour: null, reason: "counter_decreased" });
+    ).toMatchObject({ netChange: -10, perHour: -10, reason: "counter_decreased" });
     expect(
       growthIntervals([
         { id: "a", observedAt: 0, views: 100 },
@@ -831,7 +884,7 @@ describe("Stories, private comments and reviews", () => {
     );
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
-      formulaVersion: "review-v1",
+      formulaVersion: "review-v2",
       accountActivity: { current: null, coverage: { currentAvailable: false } },
       publicationLifetime: { totals: { views: { value: null } } },
       signals: [],

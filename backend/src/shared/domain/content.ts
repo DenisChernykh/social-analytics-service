@@ -8,6 +8,9 @@ export type ContextValues = {
   callToAction?: string | null;
   goal?: string | null;
   sponsored?: boolean | null;
+  paidDistribution?: boolean | null;
+  brandPartnership?: boolean | null;
+  coauthor?: boolean | null;
   notes?: string | null;
 };
 export type ContentContext = {

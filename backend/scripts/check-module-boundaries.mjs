@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
+import { stripTypeScriptTypes } from "node:module";
 import path from "node:path";
 
 const sourceRoot = path.resolve("src");
@@ -107,6 +108,32 @@ for (const file of await collectTypeScriptFiles(sourceRoot)) {
     }
   }
 }
+
+// Type-only contracts do not load presentation code. Follow actual static
+// imports/exports to prevent an operation facade from reintroducing HTTP setup
+// into Cron through a transitive module dependency.
+const cronVisited = new Set();
+async function checkCronImports(file, chain = []) {
+  if (cronVisited.has(file)) return;
+  cronVisited.add(file);
+  const relative = path.relative(sourceRoot, file).split(path.sep).join("/");
+  if (relative.includes("/presentation/") || relative.startsWith("platform/http/")) {
+    report(file, `Cron must not load HTTP presentation (${chain.join(" -> ")})`);
+    return;
+  }
+  const runtimeSource = stripTypeScriptTypes(await readFile(file, "utf8"), { mode: "transform" });
+  const imports = runtimeSource.matchAll(/(?:\bfrom\s*|\bimport\s*)["']([^"']+)["']/gu);
+  for (const match of imports) {
+    const name = match[1];
+    if (!name) continue;
+    const dependencyChain = [...chain, relative, name];
+    if (name === "hono" || name.startsWith("hono/") || name.startsWith("@hono/"))
+      report(file, `Cron must not load HTTP libraries (${dependencyChain.join(" -> ")})`);
+    if (name.startsWith("."))
+      await checkCronImports(resolveRelativeImport(file, name), [...chain, relative]);
+  }
+}
+await checkCronImports(path.join(sourceRoot, "app", "create-features.ts"));
 
 if (violations.length > 0) {
   console.error(`Module boundary violations:\n${violations.map((item) => `- ${item}`).join("\n")}`);

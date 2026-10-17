@@ -20,6 +20,13 @@ export interface ContentAnalytics {
   search(
     filter: Omit<MediaFilter, "words">,
   ): Promise<{ items: Media[]; nextCursor: string | null }>;
-  snapshots(ids: string[], ageDays?: number): Promise<Map<string, Snapshot>>;
+  snapshots(
+    ids: string[],
+    ageDays?: number,
+    selection?: {
+      metric: import("../../analytics/public-contracts").MetricKey;
+      denominator?: "reach" | "views";
+    },
+  ): Promise<Map<string, Snapshot>>;
   history(id: string): Promise<{ items: Snapshot[]; truncated: boolean }>;
 }

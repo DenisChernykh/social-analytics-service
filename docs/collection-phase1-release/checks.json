@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-09T16:14:04.731777+00:00",
+  "originalFiles": 317,
+  "originalFilesChanged": [],
+  "mainHEADUnchanged": true,
+  "realGitIndexUnchanged": true,
+  "currentBranch": "main",
+  "productionVerification": "production-latest.json",
+  "existingMigrationsApplied": 13,
+  "migrationFilesMatchPublishedInventory": true,
+  "schemaAndCollectionPolicyDiff": [],
+  "phase1RuntimeDiffAllowlistPassed": true,
+  "noCredentialFilesInGitTrees": true,
+  "checkResults": {
+    "originalRoot": {
+      "command": "pnpm check",
+      "exitCode": 0,
+      "backendTests": 161,
+      "mcpTests": 25
+    },
+    "isolatedRelease": {
+      "command": "pnpm check",
+      "exitCode": 0,
+      "backendTests": 161,
+      "mcpTests": 25
+    },
+    "artifactUploadDryRun": {
+      "command": "pnpm --dir backend exec wrangler versions upload dist/index.js --no-bundle --dry-run --outdir dist-phase1-upload",
+      "exitCode": 0,
+      "artifactIdentical": true
+    }
+  },
+  "productionReadOnly": {
+    "GET": true,
+    "GraphQLQueriesOnly": true,
+    "SQLSelectOnly": true,
+    "manualCollection": false,
+    "tail": false,
+    "deployment": false,
+    "remoteMigrations": false,
+    "push": false
+  },
+  "preservationProbe": {
+    "snapshotsPinned": 12,
+    "policyRows": 1,
+    "readOnlyComparisonPassed": true,
+    "priorJobsRetainedWithoutCounterReset": true
+  }
+}

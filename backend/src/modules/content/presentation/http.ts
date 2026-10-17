@@ -2,7 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import type { RuntimeBindings } from "../../../platform/config/runtime-config";
 import type { HttpEnv } from "../../../platform/http/environment";
 import { errorResponses, problem } from "../../../platform/http/problem";
-import { mediaSchema, snapshotSchema } from "../../analytics";
+import { mediaSchema, snapshotSchema } from "../../analytics/public-contracts";
 import type { Content } from "../application/content";
 
 const id = z.string().min(1).max(150);
@@ -18,6 +18,9 @@ export const contextValuesSchema = z
     callToAction: text.nullable().optional(),
     goal: text.nullable().optional(),
     sponsored: z.boolean().nullable().optional(),
+    paidDistribution: z.boolean().nullable().optional(),
+    brandPartnership: z.boolean().nullable().optional(),
+    coauthor: z.boolean().nullable().optional(),
     notes: z.string().max(4000).nullable().optional(),
   })
   .strict();
@@ -141,6 +144,7 @@ const rankInputSchema = z.object({
   accountId: id,
   ageDays: z.union([z.literal(1), z.literal(7), z.literal(30)]),
   metric: z.enum(["reach", "saves", "shares", "comments", "follows", "views"]),
+  rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).optional(),
   productType: z.string().optional(),
   rubric: z.string().optional(),
   goal: z.string().optional(),
@@ -151,6 +155,39 @@ const rankItemSchema = z.object({
   media: mediaSchema,
   snapshot: z.union([snapshotSchema, z.null()]),
   absolute: z.number().nullable(),
+  rankingValue: z.number().nullable().optional(),
+  ranking: z
+    .object({
+      value: z.number().nullable(),
+      reason: z.string().nullable(),
+      formula: z.string(),
+      mode: z.enum(["absolute", "per_100_reach", "per_100_views"]),
+      denominatorMetric: z.string().nullable(),
+      numerator: z.number().nullable(),
+      denominator: z.number().nullable(),
+      unit: z.string(),
+    })
+    .optional(),
+  windowState: z.string().optional(),
+  exclusion: z.string().nullable().optional(),
+  comparabilityKey: z.string().optional(),
+  sampleWarning: z.string().optional(),
+  comparisonCriteria: z
+    .object({
+      productType: z.string(),
+      mediaType: z.string(),
+      definitionVersion: z.string().nullable(),
+      surface: z.string(),
+      ageDays: z.number(),
+      toleranceHours: z.number(),
+      promotion: z.object({
+        paidDistribution: z.boolean().nullable(),
+        brandPartnership: z.boolean().nullable(),
+        coauthor: z.boolean().nullable(),
+        legacySponsored: z.boolean().nullable(),
+      }),
+    })
+    .optional(),
   rate: ratioSchema,
   actualAgeDays: z.number().nullable(),
   observationAgeSeconds: z.number().nullable(),
@@ -174,13 +211,44 @@ export const rankSchema = z.object({
   groups: z.array(
     z.object({
       productType: z.string().optional(),
+      mediaType: z.string().optional(),
+      rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).optional(),
+      note: z.string().optional(),
+      paired: z
+        .object({
+          n: z.number(),
+          medianIndividualPer100: z.number().nullable(),
+          excludedPairs: z.number().optional(),
+          ratioOfSumsPer100: z.number().nullable(),
+          numeratorSum: z.number(),
+          denominatorSum: z.number(),
+          denominatorMeaning: z.string(),
+        })
+        .optional(),
       apiVersion: z.string().optional(),
+      examined: z.number().optional(),
+      mediaIds: z.array(id).optional(),
+      pairedMediaIds: z.array(id).optional(),
+      excludedByReason: z.record(z.string(), z.number()).optional(),
       dimension: z.string().optional(),
       value: z.string().optional(),
       ...distribution,
     }),
   ),
   coverage: z.object({
+    analysisCoverage: z
+      .object({
+        examined: z.number(),
+        usable: z.number(),
+        missingEligible: z.number(),
+        excludedByReason: z.record(z.string(), z.number()),
+        metric: z.string(),
+        rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]),
+        open: z.number(),
+        closed: z.number(),
+      })
+      .optional(),
+    collectionObligations: z.object({ state: z.string(), note: z.string() }).optional(),
     examined: z.number(),
     observed: z.number(),
     missing: z.number(),
@@ -334,6 +402,7 @@ export function createContentHttp(operations: (env: RuntimeBindings) => Content)
           metric: z
             .enum(["reach", "saves", "shares", "comments", "follows", "views"])
             .default("reach"),
+          rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).default("absolute"),
           productType: z.enum(["FEED", "REELS", "STORY"]).optional(),
           rubric: text.optional(),
           goal: text.optional(),

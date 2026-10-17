@@ -13,10 +13,14 @@ export class AnalyticsQueries {
   accounts() {
     return this.repository.accounts();
   }
-  observations(ids: string[], ageDays?: number) {
+  observations(
+    ids: string[],
+    ageDays?: number,
+    selection?: { metric: MetricKey; denominator?: "reach" | "views" },
+  ) {
     return ageDays === undefined
       ? this.repository.latest(ids)
-      : this.repository.atAge(ids, ageDays);
+      : this.repository.atAge(ids, ageDays, selection);
   }
   async account(id: string) {
     const account = await this.repository.account(id);
@@ -77,8 +81,26 @@ export class AnalyticsQueries {
         : null,
       metrics: latest?.metrics ?? null,
       storyInsights: latest?.storyInsights ?? null,
+      profileActivity: latest?.profileActivity ?? null,
       calculated: latest ? calculateMetrics(latest.metrics, media) : null,
       growth: calculateGrowth(previous ?? null, latest ?? null),
+      freshness: await this.repository.metricFreshness(id),
+      observation: latest?.provenance ?? null,
+      interactionComponents: latest
+        ? {
+            native: latest.metrics.totalInteractions.value,
+            sum: ["likes", "comments", "saves", "shares"].every(
+              (k) => latest.metrics[k as MetricKey].value !== null,
+            )
+              ? ["likes", "comments", "saves", "shares"].reduce(
+                  (n, k) => n + (latest.metrics[k as MetricKey].value as number),
+                  0,
+                )
+              : null,
+            formula: "likes + comments + saves + shares; distinct from native total_interactions",
+            reason: "Differences are retained; cause not established.",
+          }
+        : null,
       completeness: { snapshotAvailable: !!latest, missingMetrics },
       limitations: definition.limitations,
     };
@@ -185,15 +207,16 @@ export class AnalyticsQueries {
     const run = await this.repository.run(id);
     if (!run) throw new ApplicationError("NOT_FOUND", "The sync operation was not found.");
     if (run.status === "running" && this.clock() - run.startedAt >= 15 * 60_000) {
-      await this.repository.fail(run, "SYNC_LEASE_EXPIRED", this.clock());
       return {
         ...run,
+        persistedStatus: run.status,
+        effectiveState: "expired",
         status: "failed" as const,
-        completedAt: this.clock(),
+        expiredAt: run.startedAt + 15 * 60_000,
         errorCode: "SYNC_LEASE_EXPIRED",
       };
     }
-    return run;
+    return { ...run, persistedStatus: run.status, effectiveState: run.status, expiredAt: null };
   }
   async summary(
     accountId: string,
@@ -264,9 +287,9 @@ export class AnalyticsQueries {
     const peers: Snapshot[] = [];
     const peerSnapshots = await this.repository.latest(page.items.map((peer) => peer.id));
     for (const peer of page.items) {
-      if (peer.id === id) continue;
+      if (peer.id === id || peer.mediaType !== media.mediaType) continue;
       const snapshot = peerSnapshots.get(peer.id);
-      if (snapshot) peers.push(snapshot);
+      if (snapshot && snapshot.apiVersion === target?.apiVersion) peers.push(snapshot);
     }
     return {
       mediaId: id,
@@ -280,6 +303,16 @@ export class AnalyticsQueries {
       comparisons: Object.fromEntries(
         (["views", "reach", "saves", "shares"] as const).map((key) => {
           const values = peers
+            .filter(
+              (peer) =>
+                peer.metrics[key].sourceField === target?.metrics[key].sourceField &&
+                (peer.metrics[key].provenance?.definitionVersion ?? null) ===
+                  (target?.metrics[key].provenance?.definitionVersion ?? null) &&
+                (peer.metrics[key].provenance?.surface ?? "unknown") ===
+                  (target?.metrics[key].provenance?.surface ?? "unknown") &&
+                (peer.metrics[key].provenance?.distribution ?? "unknown") ===
+                  (target?.metrics[key].provenance?.distribution ?? "unknown"),
+            )
             .map((peer) => peer.metrics[key].value)
             .filter((value): value is number => value !== null);
           const baseline = median(values);
@@ -296,7 +329,7 @@ export class AnalyticsQueries {
           ];
         }),
       ),
-      note: "Lifetime comparison with all saved publications of the same product type, across catalogue pages. Publication ages and observation times can differ; this is not a causal or age-normalized ranking.",
+      note: "Lifetime comparison with saved publications of the same product type, media type, API version and per-field definition/surface/distribution, across catalogue pages. Publication ages and observation times can differ; this is not a causal or age-normalized ranking.",
     };
   }
 }

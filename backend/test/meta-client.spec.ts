@@ -10,6 +10,34 @@ const config = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
 describe("official Meta API adapter", () => {
+  it("distinguishes Story viewer thresholds from missing permissions without probing every metric", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        json(
+          {
+            error: { code: 10, message: "(#10) Not enough viewers for the media to show insights" },
+          },
+          400,
+        ),
+      )
+      .mockResolvedValueOnce(json({ error: { code: 10, message: "Permission required" } }, 400));
+    const client = new MetaClient(config, request);
+    expect(await client.insights("fake-token", "123", ["views", "reach", "replies"])).toEqual({
+      views: { value: null, reason: "insufficient_audience" },
+      reach: { value: null, reason: "insufficient_audience" },
+      replies: { value: null, reason: "insufficient_audience" },
+    });
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(
+      await client.structuredInsights("fake-token", "123", {
+        metric: "navigation",
+        period: "lifetime",
+        metricType: "total_value",
+        breakdown: "story_navigation_action_type",
+      }),
+    ).toMatchObject({ value: null, reason: "permission_required" });
+  });
   it("preserves unavailable demographic categories and untimed lifetime Story values without inventing daily points", async () => {
     const request = vi
       .fn<typeof fetch>()
@@ -162,9 +190,8 @@ describe("official Meta API adapter", () => {
       .mockResolvedValueOnce(json({ data: [{ name: "views", total_value: { value: -1 } }] }));
     const client = new MetaClient(config, request);
     const query = { metric: "views", period: "day" as const, metricType: "total_value" as const };
-    expect(await client.structuredInsights("fake-token", "123", query)).toMatchObject({
-      value: null,
-      reason: "not_supported",
+    await expect(client.structuredInsights("fake-token", "123", query)).rejects.toMatchObject({
+      code: "INSTAGRAM_SOURCE_ERROR",
     });
     await expect(client.structuredInsights("fake-token", "123", query)).rejects.toMatchObject({
       code: "INSTAGRAM_RATE_LIMITED",
@@ -199,7 +226,9 @@ describe("official Meta API adapter", () => {
     });
     const url = new URL(String(request.mock.calls[1]?.[0]));
     expect(url.pathname).toBe("/v26.0/123/replies");
-    expect(url.searchParams.get("fields")).toBe("id,text,timestamp,parent_id");
+    expect(url.searchParams.get("fields")).toBe(
+      "id,text,timestamp,parent_id,from,username,like_count,hidden",
+    );
     expect(url.searchParams.get("after")).toBe("before");
     expect(request).toHaveBeenCalledTimes(2);
   });
@@ -227,7 +256,9 @@ describe("official Meta API adapter", () => {
     });
     const url = new URL(String(request.mock.calls[0]?.[0]));
     expect(url.pathname).toBe("/v26.0/123/comments");
-    expect(url.searchParams.get("fields")).toBe("id,text,timestamp,parent_id");
+    expect(url.searchParams.get("fields")).toBe(
+      "id,text,timestamp,parent_id,from,username,like_count,hidden",
+    );
   });
   it("reports Meta's minimum-audience response as missing demographic data without inventing zeros", async () => {
     const request = vi
@@ -336,7 +367,10 @@ describe("official Meta API adapter", () => {
     const request = vi
       .fn<typeof fetch>()
       .mockResolvedValueOnce(
-        json({ error_type: "IGApiException", code: 100, error_message: "not available" }, 400),
+        json(
+          { error: { code: 100, message: "does not support the metrics: facebook_views." } },
+          400,
+        ),
       )
       .mockResolvedValueOnce(json({ data: [{ name: "views", values: [{ value: 0 }] }] }))
       .mockResolvedValueOnce(json({ error: { code: 100 } }, 400));
@@ -346,7 +380,7 @@ describe("official Meta API adapter", () => {
     ]);
     expect(result.views).toEqual({ value: 0, reason: null });
     expect(result.facebook_views).toEqual({ value: null, reason: "not_supported" });
-    expect(request).toHaveBeenCalledTimes(3);
+    expect(request).toHaveBeenCalledTimes(2);
   });
 
   it("accepts total_value, keeps empty data null and does not sum multiple time buckets", async () => {
@@ -398,8 +432,8 @@ describe("official Meta API adapter", () => {
       json({ error: { code: -1, error_subcode: 999, is_transient: false } }, 400),
     );
     await expect(client.insights("test-token", "123", ["views"])).rejects.toMatchObject({
-      code: "INSTAGRAM_UNAVAILABLE",
-      message: "Meta rejected the insights request (HTTP 400, code -1).",
+      code: "INSTAGRAM_SOURCE_ERROR",
+      message: "Meta rejected insights (HTTP 400, code -1).",
     });
     request.mockResolvedValueOnce(
       json({ error: { code: -1, error_subcode: 2207086, is_transient: true } }, 400),
@@ -483,8 +517,8 @@ describe("official Meta API adapter", () => {
       message: "Instagram could not be reached during profile; retry the request later.",
     });
     await expect(client.profile("test-token")).rejects.toMatchObject({
-      code: "INSTAGRAM_UNAVAILABLE",
-      message: "Meta rejected the profile request (HTTP 400, code 777).",
+      code: "INSTAGRAM_SOURCE_ERROR",
+      message: "Meta rejected profile (HTTP 400, code 777).",
     });
   });
 

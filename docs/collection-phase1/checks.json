@@ -1,0 +1,65 @@
+{
+  "checkedAtUTC": "2026-10-09T12:32:19.962626+00:00",
+  "command": "pnpm check",
+  "exitCode": 0,
+  "backend": {
+    "testsPassed": 161,
+    "testFilesPassed": 14,
+    "typegen": "passed",
+    "format": "passed",
+    "moduleBoundaries": "passed",
+    "typecheck": "passed",
+    "wranglerDeployDryRun": "passed"
+  },
+  "mcp": {
+    "testsPassed": 25,
+    "format": "passed; existing informational useTemplate lint unchanged",
+    "typecheck": "passed",
+    "build": "passed",
+    "openapiCaptureAndZodGeneration": "passed"
+  },
+  "sourceAndTestSHA256": {
+    "backend/src/modules/analytics/application/ports.ts": "b9c5f6e19d4aa9fa023310fa55810b0dd65571439162c8194bf9761e5af208ac",
+    "backend/src/modules/analytics/application/sync-account.ts": "5ba71a547206cb59199d0b760e7f29293cd34d11392ad4670486abcf89959ca5",
+    "backend/src/modules/analytics/infrastructure/instagram-source.ts": "c9dce4a8d146a7a2c978608b845352243a9c6a572584e10052b464ea5c6b4244",
+    "backend/src/modules/instagram/infrastructure/meta-client.ts": "c270421add102f56e206d970b15957766dced040e8c7807d8dac73db15f2fd5b",
+    "backend/src/modules/reviews/application/review.ts": "b6f97add9cebcfc789252af91677b58b299babad2f76256f3870cb1d57bdd21b",
+    "backend/src/modules/reviews/presentation/http.ts": "9eeac954805af757edced6e2ad174b32b309fa9df3e9c3c40cf0a3080a886c6f",
+    "backend/src/shared/application/application-error.ts": "d1e8bf9b948fb5e6e07380e9ba9641558b4233dea084a129f6ebbc20991a664f",
+    "backend/src/platform/http/problem.ts": "534bfb32b1028453c1133c2aac055e3a084b39545acf39da224e8a1cbefadbb8",
+    "chatgpt/src/roadmap-tools.ts": "39fad8aada7c0fee77488821266a6f73f5d9d2c462f8f6b822885f776a0dc279",
+    "chatgpt/src/server.ts": "a94c76fbd1cae143731b73da5c890a9b89c9718d1acf968676ba8e2e0bf1cf4d",
+    "chatgpt/src/data-quality.test.ts": "d42c08bdaa0370edccad4cd93299237115064559fa196bf27a56095b8987bcef",
+    "chatgpt/contract/openapi.json": "5ead0501c4ee3ad39cc79bd83d4cf51588cf847e57aa1c41026c515c5e116583",
+    "backend/test/instagram-data-quality.spec.ts": "98f329fdb7135543c2c78faf52b71fbee554828daf6e87bda6134669a2c6a7ec",
+    "backend/test/roadmap.spec.ts": "cdfffa55864628b88dca4bd6f571751da70009771378c3c273cda76170434a3b",
+    "backend/test/collection-phase1.spec.ts": "d6dcaedd3a25032d445169006294037024b9dfad8968ed81dd1f22578768f683",
+    "backend/test/collection-phase1-fixtures.ts": "ca726609b9a653bca6b2202eb143b9bb218b9726c0fd97489b972b08c0a05857",
+    "backend/test/collection-phase1-runner.ts": "55e77ff46381b4c9f237a4ea2703c18eb7ac04101b6803e3d2c37a5744432d5c"
+  },
+  "preservation": {
+    "baselineFileCount": 276,
+    "missingBaselineFiles": [],
+    "changedOutsidePhase1Scope": [],
+    "concurrentFormattingOnly": {
+      "file": "backend/src/modules/account-insights/application/insights.ts",
+      "externalChangeIsRuntimeEquivalent": true,
+      "normalizedSHA256": "9aa7e385724bd5703defc9addbb9429cf5d30cedf70d80e538c389edda789ff8"
+    }
+  },
+  "restrictions": {
+    "migrationsGenerated": false,
+    "schedulesChanged": false,
+    "activeJobsOrCursorsReset": false,
+    "oldObservationsDeleted": false,
+    "productionDeploy": false,
+    "remoteMigrations": false,
+    "push": false,
+    "invocationLogsEnabled": false
+  },
+  "unchangedConfigurationSHA256": {
+    "backend/wrangler.jsonc": "77832e4e0028e6051d3725272c532dd44c8d1f45a111044affb7b28e0f95271c",
+    "pnpm-lock.yaml": "e9017c38a8b54c103688021eb1ffa9cf536c44822c809334050891802690b850",
+    "package.json": "adfda41766c398c669aa6cde4332e9e01018b2566e7f11c60bd0c3f7629b8265"
+  }
+}

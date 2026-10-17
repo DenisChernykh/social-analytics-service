@@ -1,6 +1,14 @@
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { ContentContext, ContextValues } from "../../../shared/domain/content";
-import { classify, distribution, median } from "../domain/analysis";
+import { compatibleMeasurements } from "../../../shared/domain/measurement";
+import {
+  classify,
+  distribution,
+  median,
+  pairedAggregate,
+  type RankingMode,
+  rankingValue,
+} from "../domain/analysis";
 import { businessResults } from "../domain/business";
 import {
   type BusinessRecord,
@@ -14,6 +22,7 @@ import type { ContentAnalytics, ContentStore } from "./ports";
 export type RankInput = {
   accountId: string;
   ageDays: 1 | 7 | 30;
+  rankingMode?: RankingMode;
   metric: "reach" | "saves" | "shares" | "comments" | "follows" | "views";
   productType?: string;
   rubric?: string;
@@ -81,7 +90,12 @@ export class Content {
     return businessResults(id, await this.store.businessRecords([id]));
   }
   async rank(input: RankInput) {
-    await this.analytics.account(input.accountId);
+    const account = (await this.analytics.account(input.accountId)) as { connectedAt?: number };
+    const rankingMode = input.rankingMode ?? "absolute";
+    input = { ...input, rankingMode };
+    const denominatorMetric = rankingMode === "per_100_views" ? "views" : "reach";
+    const toleranceHours = input.ageDays === 1 ? 6 : input.ageDays === 7 ? 12 : 24;
+    const now = this.clock();
     try {
       new Intl.DateTimeFormat("en", { timeZone: input.timeZone });
     } catch {
@@ -99,61 +113,158 @@ export class Content {
       page.items.map((media) => media.id),
       input.ageDays,
     );
+    const validObservations = await this.analytics.snapshots(
+      page.items.map((m) => m.id),
+      input.ageDays,
+      {
+        metric: input.metric,
+        ...(rankingMode !== "absolute"
+          ? { denominator: denominatorMetric as "reach" | "views" }
+          : {}),
+      },
+    );
     const entries = page.items.map((media) => {
-      const snapshot = observations.get(media.id) ?? null;
-      const value = snapshot?.metrics[input.metric].value ?? null;
-      const reach = snapshot?.metrics.reach.value ?? null;
+      const snapshot = validObservations.get(media.id) ?? observations.get(media.id) ?? null;
+      const numerator = snapshot?.metrics[input.metric] ?? null,
+        denominator = snapshot?.metrics[denominatorMetric] ?? null;
+      const pairCompatible =
+        !!numerator && !!denominator && compatibleMeasurements(numerator, denominator);
+      const compatible = rankingMode === "absolute" || pairCompatible;
+      const score = rankingValue(
+        numerator?.value ?? null,
+        denominator?.value ?? null,
+        rankingMode,
+        compatible,
+      );
+      const start = media.publishedAt + (input.ageDays * 24 - toleranceHours) * 3_600_000,
+        end = media.publishedAt + (input.ageDays * 24 + toleranceHours) * 3_600_000;
+      const windowState = now < start ? "too_early" : now <= end ? "open" : "closed";
+      const context = media.context?.confirmed;
+      const comparabilityKey = JSON.stringify([
+        media.productType,
+        media.mediaType,
+        snapshot?.apiVersion ?? null,
+        numerator?.provenance?.login ?? null,
+        numerator?.provenance?.requestedApiVersion ?? null,
+        numerator?.provenance?.actualApiVersion ?? null,
+        numerator?.sourceField ?? null,
+        numerator?.provenance?.definitionVersion ?? null,
+        numerator?.provenance?.surface ?? "unknown",
+        numerator?.provenance?.distribution ?? "unknown",
+        numerator?.unit ?? null,
+        rankingMode !== "absolute" ? denominator?.sourceField : null,
+        rankingMode !== "absolute" ? (denominator?.provenance?.login ?? null) : null,
+        rankingMode !== "absolute" ? (denominator?.provenance?.requestedApiVersion ?? null) : null,
+        rankingMode !== "absolute" ? (denominator?.provenance?.actualApiVersion ?? null) : null,
+        rankingMode !== "absolute" ? (denominator?.provenance?.definitionVersion ?? null) : null,
+        rankingMode !== "absolute" ? denominator?.unit : null,
+        rankingMode !== "absolute" ? (denominator?.provenance?.surface ?? "unknown") : null,
+        rankingMode !== "absolute" ? (denominator?.provenance?.distribution ?? "unknown") : null,
+        context?.rubric ?? "unknown",
+        context?.topics ?? [],
+        context?.sponsored ?? "unknown",
+        context?.paidDistribution ?? "unknown",
+        context?.brandPartnership ?? "unknown",
+        context?.coauthor ?? "unknown",
+      ]);
+      const exclusion =
+        score.value !== null
+          ? null
+          : !snapshot
+            ? windowState === "too_early"
+              ? "too_early"
+              : (account.connectedAt ?? Infinity) > end
+                ? "connected_after_window"
+                : "missing_observation"
+            : score.reason;
       return {
         media,
         snapshot,
-        absolute: value,
-        rate: divide(value, reach, `${input.metric} / reach`),
+        pairCompatible,
+        absolute: numerator?.value ?? null,
+        rate: {
+          ...divide(
+            numerator?.value ?? null,
+            denominator?.value ?? null,
+            `${input.metric} / ${denominatorMetric}`,
+          ),
+          ...(!pairCompatible && numerator?.value != null && denominator?.value != null
+            ? { value: null, reason: "incompatible_measurements" }
+            : {}),
+        },
+        rankingValue: score.value,
+        ranking: {
+          ...score,
+          mode: rankingMode,
+          denominatorMetric: rankingMode === "absolute" ? null : denominatorMetric,
+          numerator: numerator?.value ?? null,
+          denominator: denominator?.value ?? null,
+          unit: rankingMode === "absolute" ? "count" : "actions_per_100",
+        },
+        windowState,
+        exclusion,
+        comparabilityKey,
         actualAgeDays: snapshot ? (snapshot.observedAt - media.publishedAt) / 86_400_000 : null,
-        observationAgeSeconds: snapshot
-          ? Math.max(0, this.clock() - snapshot.observedAt) / 1000
-          : null,
+        observationAgeSeconds: snapshot ? Math.max(0, now - snapshot.observedAt) / 1000 : null,
       };
     });
     const items = entries
       .map((entry) => {
         const peers = entries
           .filter(
-            (peer) =>
-              peer.media.id !== entry.media.id &&
-              peer.media.productType === entry.media.productType &&
-              peer.snapshot?.apiVersion === entry.snapshot?.apiVersion &&
-              peer.absolute !== null,
+            (p) =>
+              p.media.id !== entry.media.id &&
+              p.comparabilityKey === entry.comparabilityKey &&
+              p.rankingValue !== null,
           )
-          .map((peer) => peer.absolute as number);
+          .map((p) => p.rankingValue as number);
         const baseline = median(peers);
         return {
           ...entry,
           baseline,
           sampleSize: peers.length,
-          classification: classify(entry.absolute, baseline, peers.length),
+          classification: classify(entry.rankingValue, baseline, peers.length),
+          comparisonCriteria: {
+            productType: entry.media.productType,
+            mediaType: entry.media.mediaType,
+            definitionVersion:
+              entry.snapshot?.metrics[input.metric].provenance?.definitionVersion ?? null,
+            surface: entry.snapshot?.metrics[input.metric].provenance?.surface ?? "unknown",
+            ageDays: input.ageDays,
+            toleranceHours,
+            promotion: {
+              paidDistribution: entry.media.context?.confirmed.paidDistribution ?? null,
+              brandPartnership: entry.media.context?.confirmed.brandPartnership ?? null,
+              coauthor: entry.media.context?.confirmed.coauthor ?? null,
+              legacySponsored: entry.media.context?.confirmed.sponsored ?? null,
+            },
+          },
+          sampleWarning:
+            peers.length < 2
+              ? "Extremely small descriptive sample; no causal or significance claim."
+              : peers.length < 5
+                ? "Small sample; five peers is a product heuristic, not statistical significance."
+                : "Descriptive observational comparison, not a causal effect or significance test.",
         };
       })
       .sort(
-        (a, b) => (b.absolute ?? -1) - (a.absolute ?? -1) || a.media.id.localeCompare(b.media.id),
+        (a, b) =>
+          Number(b.rankingValue !== null) - Number(a.rankingValue !== null) ||
+          (b.rankingValue ?? 0) - (a.rankingValue ?? 0) ||
+          a.media.id.localeCompare(b.media.id),
       );
-    const groups = new Map<string, number[]>();
+    const grouped = new Map<string, typeof entries>();
     const localHour = new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",
       hourCycle: "h23",
       timeZone: input.timeZone,
     });
     for (const entry of entries) {
-      if (entry.absolute === null) continue;
-      const frequency = page.items.filter(
-        (other) =>
-          other.id !== entry.media.id &&
-          other.publishedAt <= entry.media.publishedAt &&
-          other.publishedAt > entry.media.publishedAt - 7 * 86_400_000,
-      ).length;
       const context = entry.media.context?.confirmed;
       const dimensions: [string, string][] = [
         ["rubric", context?.rubric ?? "unknown"],
         ["format", context?.format ?? "unknown"],
+        ["localHour", localHour.format(entry.media.publishedAt)],
         [
           "duration",
           entry.media.durationSeconds === null
@@ -166,20 +277,73 @@ export class Content {
                   ? "30-60s"
                   : ">60s",
         ],
-        ["localHour", localHour.format(entry.media.publishedAt)],
-        ["previous7DayFrequency", String(frequency)],
-        ...(context?.topics ?? []).map((topic): [string, string] => ["topic", topic]),
+        [
+          "previous7DayFrequency",
+          String(
+            page.items.filter(
+              (o) =>
+                o.id !== entry.media.id &&
+                o.publishedAt <= entry.media.publishedAt &&
+                o.publishedAt > entry.media.publishedAt - 7 * 86_400_000,
+            ).length,
+          ),
+        ],
+        ...(context?.topics ?? []).map((t): [string, string] => ["topic", t]),
       ];
       for (const [dimension, value] of dimensions) {
-        const key = JSON.stringify([
-          entry.media.productType,
-          entry.snapshot?.apiVersion,
-          dimension,
-          value,
-        ]);
-        groups.set(key, [...(groups.get(key) ?? []), entry.absolute]);
+        const key = JSON.stringify([entry.comparabilityKey, dimension, value]);
+        grouped.set(key, [...(grouped.get(key) ?? []), entry]);
       }
     }
+    const groups = [...grouped].map(([key, values]) => {
+      const [, dimension, value] = JSON.parse(key) as string[];
+      const example = values[0];
+      const pairs = values
+        .filter(
+          (v) =>
+            v.pairCompatible &&
+            v.absolute !== null &&
+            v.ranking.denominator !== null &&
+            (v.ranking.denominator as number) > 0,
+        )
+        .map((v) => ({
+          numerator: v.absolute as number,
+          denominator: v.ranking.denominator as number,
+        }));
+      return {
+        productType: example?.media.productType,
+        mediaType: example?.media.mediaType,
+        apiVersion: example?.snapshot?.apiVersion,
+        dimension,
+        value,
+        ...distribution(
+          values.flatMap((v) => (v.rankingValue === null ? [] : [v.rankingValue])),
+          5,
+        ),
+        examined: values.length,
+        mediaIds: values.map((v) => v.media.id),
+        pairedMediaIds: values
+          .filter(
+            (v) =>
+              v.pairCompatible &&
+              v.absolute !== null &&
+              v.ranking.denominator !== null &&
+              v.ranking.denominator > 0,
+          )
+          .map((v) => v.media.id),
+        excludedByReason: values.reduce<Record<string, number>>((r, v) => {
+          if (v.exclusion) r[v.exclusion] = (r[v.exclusion] ?? 0) + 1;
+          return r;
+        }, {}),
+        paired: { ...pairedAggregate(pairs), excludedPairs: values.length - pairs.length },
+        rankingMode,
+        note: "Median of individual scores and ratio of sums use named statistics; timing is observational at every n. Unknown promotion remains unknown.",
+      };
+    });
+    const excludedByReason: Record<string, number> = {};
+    for (const entry of entries)
+      if (entry.exclusion)
+        excludedByReason[entry.exclusion] = (excludedByReason[entry.exclusion] ?? 0) + 1;
     const businessRecords = await this.store.businessRecords(items.map((entry) => entry.media.id));
     const business = items.map((entry) =>
       businessResults(
@@ -217,19 +381,38 @@ export class Content {
       items,
       business,
       efficiency,
-      groups: [...groups].map(([key, values]) => {
-        const [productType, apiVersion, dimension, value] = JSON.parse(key) as string[];
-        return { productType, apiVersion, dimension, value, ...distribution(values, 5) };
-      }),
+      groups,
       coverage: {
         examined: page.items.length,
-        observed: observations.size,
-        missing: page.items.length - observations.size,
+        observed: entries.filter((e) => e.rankingValue !== null).length,
+        missing: entries.filter(
+          (e) =>
+            e.exclusion === "missing_observation" ||
+            e.exclusion === "missing_inputs" ||
+            e.exclusion === "zero_denominator" ||
+            e.exclusion === "incompatible_measurements",
+        ).length,
+        analysisCoverage: {
+          examined: entries.length,
+          usable: entries.filter((e) => e.rankingValue !== null).length,
+          missingEligible: entries.filter(
+            (e) => e.exclusion === "missing_observation" || e.exclusion === "missing_inputs",
+          ).length,
+          excludedByReason,
+          metric: input.metric,
+          rankingMode,
+          open: entries.filter((e) => e.windowState === "open").length,
+          closed: entries.filter((e) => e.windowState === "closed").length,
+        },
+        collectionObligations: {
+          state: "not_evaluated",
+          note: "This endpoint describes analysis coverage. Recorded policy obligations are available in get_collection_status; missing analysis observations are not missed jobs.",
+        },
         truncated: !!page.nextCursor,
         toleranceHours: input.ageDays === 1 ? 6 : input.ageDays === 7 ? 12 : 24,
       },
-      formulaVersion: "content-v1",
-      note: "Real snapshots nearest age 1/7/30 days; no interpolation or reconstructed early history. All saved publications matching the selected filters are examined across catalogue pages. Rankings are absolute with reach ratios shown. Baselines exclude the target and match product type/API version, minimum 5 peers. Above usual >=1.5x median, below usual <=0.5x. Groups require 5 observations. Publication timing and frequency are associations, not causal advice; frequency uses the full selected catalogue. Overlapping topic groups must not be added as an account total.",
+      formulaVersion: "content-v2",
+      note: "Genuine nearest usable age snapshots with deterministic time/id ties; tolerances 1d±6h,7d±12h,30d±24h. No interpolation. Selected rankingMode controls sorting, baselines and groups. Peers match product, mediaType, API, definition/scope, confirmed rubric/topics/promotion; legacy definitions remain unknown. Ratios use one observation, request times within 60s; lastKnownGood is never substituted. Unknown paid coverage is disclosed and is not inferred as organic; only an explicitly contradictory paid scope excludes a pair. Actions per 100 reach/views are not percentages of unique people and are not capped at 100. Five peers is a product heuristic, not statistical significance. Timing/topics are observational; small n retains descriptive results. Groups overlap and are not account totals.",
     };
   }
   async experiment(id: string) {

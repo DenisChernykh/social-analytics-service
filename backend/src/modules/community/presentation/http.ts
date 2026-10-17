@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import type { RuntimeBindings } from "../../../platform/config/runtime-config";
 import type { HttpEnv } from "../../../platform/http/environment";
 import { errorResponses, problem } from "../../../platform/http/problem";
+import { receiptReferenceSchema } from "../../../shared/presentation/measurement";
 import type { Comments } from "../application/comments";
 
 const id = z.string().min(1).max(150);
@@ -12,14 +13,23 @@ const commentSchema = z.object({
   text: z.string(),
   publishedAt: z.number(),
   observedAt: z.number(),
+  authorId: id.nullable().optional(),
+  authorUsername: z.string().nullable().optional(),
+  likeCount: z.number().nullable().optional(),
+  hidden: z.boolean().nullable().optional(),
 });
 const collectionSchema = z.object({
+  receipt: receiptReferenceSchema.optional(),
+  definitionVersion: z.string().optional(),
   id: z.uuid(),
   mediaId: id,
   parentId: id.nullable(),
   cursor: z.string().nullable(),
   limit: z.number(),
   status: z.enum(["running", "completed", "failed"]),
+  persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+  effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+  expiredAt: z.number().nullable().optional(),
   startedAt: z.number(),
   observedAt: z.number().nullable(),
   nextCursor: z.string().nullable(),
@@ -63,6 +73,7 @@ const listSchema = z.object({
     lastCompleteAt: z.number().nullable().optional(),
     nextRefreshAt: z.number().nullable().optional(),
     omittedReplyBranches: z.number().optional(),
+    unavailableUntil: z.number().optional(),
     errorCode: z.string().nullable().optional(),
   }),
   limitations: z.array(z.string()),

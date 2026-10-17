@@ -2,7 +2,6 @@ import type { RuntimeBindings } from "../../platform/config/runtime-config";
 import { Collect } from "./application/collect";
 import type { CollectionAnalytics, CollectionComments } from "./application/ports";
 import { D1Collection } from "./infrastructure/d1-collection";
-import { createCollectionHttp } from "./presentation/http";
 
 export type CollectionOptions = {
   analytics: (env: RuntimeBindings) => CollectionAnalytics;
@@ -27,7 +26,4 @@ export function createCollectionOperations(env: RuntimeBindings, options: Collec
     operationId,
     () => crypto.randomUUID(),
   );
-}
-export function createCollectionModule(options: CollectionOptions) {
-  return { router: createCollectionHttp((env) => createCollectionOperations(env, options)) };
 }

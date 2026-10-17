@@ -2,7 +2,6 @@ import type { RuntimeBindings } from "../../platform/config/runtime-config";
 import type { InstagramReader } from "../instagram/public-contracts";
 import { Comments } from "./application/comments";
 import { D1Comments } from "./infrastructure/d1-comments";
-import { createCommentsHttp } from "./presentation/http";
 export type CommentOptions = {
   reader: (env: RuntimeBindings) => InstagramReader;
   media: (
@@ -17,15 +16,20 @@ export function createCommentOperations(env: RuntimeBindings, options: CommentOp
     new D1Comments(env.DB),
     {
       media: (id) => options.media(env, id),
-      read: (accountId, objectId, replies, cursor, limit, expandReplies) => {
+      requestStats: () => reader?.requestStats?.() ?? { attempts: 0 },
+      read: (accountId, objectId, replies, cursor, limit, expandReplies, operationId) => {
         reader ??= options.reader(env);
-        return reader.comments(accountId, objectId, replies, cursor, limit, expandReplies);
+        return (operationId ? (reader.forOperation?.(operationId) ?? reader) : reader).comments(
+          accountId,
+          objectId,
+          replies,
+          cursor,
+          limit,
+          expandReplies,
+        );
       },
     },
     options.clock ?? Date.now,
   );
 }
 export type { CommentCollection } from "./domain/model";
-export function createCommentModule(options: CommentOptions) {
-  return { router: createCommentsHttp((env) => createCommentOperations(env, options)) };
-}

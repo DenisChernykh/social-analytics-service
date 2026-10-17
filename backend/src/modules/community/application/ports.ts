@@ -17,6 +17,7 @@ export interface CommentStore {
     nextRefreshAt: number | null;
     omittedReplyBranches: number;
     errorCode: string | null;
+    unavailableUntil: number;
   }>;
   list(
     mediaId: string,
@@ -28,6 +29,7 @@ export interface CommentStore {
   erase(mediaId: string): Promise<void>;
 }
 export interface CommentSource {
+  requestStats?(): { attempts: number };
   media(id: string): Promise<{ accountId: string; externalId: string; permalink: string }>;
   read(
     accountId: string,
@@ -36,5 +38,6 @@ export interface CommentSource {
     cursor: string | null,
     limit: number,
     expandReplies?: boolean,
+    operationId?: string,
   ): Promise<CommentPage>;
 }

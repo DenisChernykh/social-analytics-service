@@ -10,8 +10,32 @@ export const activityMetrics = [
   "replies",
   "profile_links_taps",
   "follows_and_unfollows",
+  "reposts",
 ] as const;
 export type ActivityMetric = (typeof activityMetrics)[number];
+export function supportsActivityMetric(
+  metric: string,
+  metricType: "total_value" | "time_series",
+  breakdown?: string,
+) {
+  if (!activityMetrics.includes(metric as ActivityMetric)) return false;
+  if (metricType === "time_series") return metric === "reach" && breakdown === undefined;
+  if (breakdown === undefined) return true;
+  if (breakdown === "media_product_type")
+    return [
+      "views",
+      "reach",
+      "total_interactions",
+      "likes",
+      "comments",
+      "saves",
+      "shares",
+    ].includes(metric);
+  if (breakdown === "follow_type") return ["reach", "follows_and_unfollows"].includes(metric);
+  if (breakdown === "follower_type") return metric === "views";
+  if (breakdown === "contact_button_type") return metric === "profile_links_taps";
+  return false;
+}
 export type InsightInput = {
   kind: "activity" | "demographics";
   from?: number;
@@ -23,6 +47,8 @@ export type InsightInput = {
   timeframe?: string;
 };
 export type InsightValue = {
+  provenance?: import("../../../shared/domain/measurement").MeasurementProvenance;
+  receipt?: import("../../../shared/domain/measurement").ReceiptReference;
   unit: "count";
   sourceField: string;
   metric: string;
@@ -30,10 +56,16 @@ export type InsightValue = {
   metricType: "total_value" | "time_series";
   value: number | null;
   reason:
+    | "not_requested"
     | "not_returned"
     | "not_supported"
     | "permission_required"
     | "invalid_value"
+    | "invalid_request"
+    | "invalid_breakdown"
+    | "object_unavailable"
+    | "source_error"
+    | "request_deferred"
     | "insufficient_audience"
     | null;
   description: string | null;
@@ -44,6 +76,19 @@ export type InsightValue = {
   }[];
 };
 export type InsightCollection = {
+  periodKey?: string;
+  definitionVersion?: string;
+  requestBounds?: {
+    from: number;
+    to: number;
+    timeZone: string;
+    semantics: "[from,to)";
+    sourceSince: number;
+    sourceUntil: number;
+    sourceBoundaryContract: string;
+  };
+  coverageState?: "complete" | "partial" | "empty";
+
   id: string;
   accountId: string;
   input: InsightInput;

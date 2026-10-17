@@ -1,0 +1,65 @@
+{
+  "method": "Local real application path, counting all/run/raw/first as one call and batch as one call with multiple SQL statements; internal adapter SELECT changes() excluded",
+  "results": [
+    {
+      "scenario": "empty",
+      "sqlStatements": 2,
+      "d1BindingCalls": 2,
+      "externalFetches": 0
+    },
+    {
+      "scenario": "empty_enabled",
+      "sqlStatements": 7,
+      "d1BindingCalls": 7,
+      "externalFetches": 0
+    },
+    {
+      "scenario": "selection",
+      "sqlStatements": 2,
+      "d1BindingCalls": 2,
+      "externalFetches": 0
+    },
+    {
+      "scenario": "discovery",
+      "sqlStatements": 44,
+      "d1BindingCalls": 33,
+      "externalFetches": 2
+    },
+    {
+      "scenario": "discovery_new",
+      "sqlStatements": 51,
+      "d1BindingCalls": 36,
+      "externalFetches": 3
+    },
+    {
+      "scenario": "insights",
+      "sqlStatements": 30,
+      "d1BindingCalls": 22,
+      "externalFetches": 3
+    },
+    {
+      "scenario": "comments",
+      "sqlStatements": 26,
+      "d1BindingCalls": 20,
+      "externalFetches": 1
+    },
+    {
+      "scenario": "comments_large",
+      "sqlStatements": 35,
+      "d1BindingCalls": 20,
+      "externalFetches": 1
+    },
+    {
+      "scenario": "daily",
+      "sqlStatements": 55,
+      "d1BindingCalls": 46,
+      "externalFetches": 3
+    },
+    {
+      "scenario": "backlog",
+      "sqlStatements": 2,
+      "d1BindingCalls": 2,
+      "externalFetches": 0
+    }
+  ]
+}

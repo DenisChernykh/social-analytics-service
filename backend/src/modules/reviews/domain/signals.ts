@@ -24,7 +24,10 @@ export function growthIntervals(points: GrowthPoint[]) {
       fromSnapshotId: previous.id,
       toSnapshotId: point.id,
       netChange: change,
-      perHour: reason === null && change !== null ? change / hours : null,
+      perHour:
+        (reason === null || reason === "counter_decreased") && change !== null
+          ? change / hours
+          : null,
       reason,
       formula: "(current.views - previous.views) / elapsed_hours",
     };
@@ -53,6 +56,6 @@ export function resurgence(publishedAt: number, intervals: ReturnType<typeof gro
     thresholdRatio: 3,
     minimumGain: 100,
     last: last ?? null,
-    note: "Only observed intervals up to seven days with nondecreasing counters. A resurgence is an observation, not evidence of its cause.",
+    note: "Only observed intervals up to seven days with positive gains qualify; negative source deltas remain visible. A resurgence is an observation, not evidence of its cause.",
   };
 }

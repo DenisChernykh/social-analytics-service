@@ -22,6 +22,39 @@ const MediaSchema = z.object({
   publishedAt: z.number().int(),
   durationSeconds: z.number().nullable(),
   durationSource: z.enum(["manual"]).nullable(),
+  firstDiscoveredAt: z.number().int().nullable().optional(),
+  discoverySource: z.enum(["collection", "history_inferred"]).nullable().optional(),
+  availability: z
+    .object({ unavailableUntil: z.number().int(), errorCode: z.string().nullable() })
+    .optional(),
+  metadata: z
+    .object({
+      provider: z.enum(["instagram_api"]),
+      apiVersion: z.string(),
+      observedAt: z.number().int(),
+      mediaUrl: z.string().url().nullable(),
+      thumbnailUrl: z.string().url().nullable(),
+      altText: z.string().nullable(),
+      commentsEnabled: z.boolean().nullable(),
+      sharedToFeed: z.boolean().nullable(),
+      audioType: z.string().nullable(),
+      aiGenerated: z.boolean().nullable(),
+      children: z
+        .array(
+          z.object({
+            id: z.string(),
+            mediaType: z.string(),
+            mediaUrl: z.string().url().nullable(),
+            thumbnailUrl: z.string().url().nullable(),
+            altText: z.string().nullable(),
+          }),
+        )
+        .nullable(),
+      childrenComplete: z.boolean().nullable(),
+      unsupportedFields: z.array(z.string()),
+    })
+    .nullable()
+    .optional(),
   context: z
     .object({
       confirmed: z.object({
@@ -34,6 +67,9 @@ const MediaSchema = z.object({
         callToAction: z.string().nullable().optional(),
         goal: z.string().nullable().optional(),
         sponsored: z.boolean().nullable().optional(),
+        paidDistribution: z.boolean().nullable().optional(),
+        brandPartnership: z.boolean().nullable().optional(),
+        coauthor: z.boolean().nullable().optional(),
         notes: z.string().nullable().optional(),
       }),
       proposal: z.object({
@@ -46,6 +82,9 @@ const MediaSchema = z.object({
         callToAction: z.string().nullable().optional(),
         goal: z.string().nullable().optional(),
         sponsored: z.boolean().nullable().optional(),
+        paidDistribution: z.boolean().nullable().optional(),
+        brandPartnership: z.boolean().nullable().optional(),
+        coauthor: z.boolean().nullable().optional(),
         notes: z.string().nullable().optional(),
       }),
       confirmedSource: z.enum(["manual"]),
@@ -59,12 +98,33 @@ const SourceMetricSchema = z.object({
   value: z.number().nullable(),
   unit: z.enum(["count", "milliseconds", "percent"]),
   sourceField: z.string(),
+  provenance: z
+    .object({
+      receiptId: z.string(),
+      operationId: z.string().nullable(),
+      requestStartedAt: z.number(),
+      responseReceivedAt: z.number().nullable(),
+      requestedApiVersion: z.string(),
+      actualApiVersion: z.string().nullable(),
+      login: z.enum(["instagram_login"]),
+      definitionVersion: z.string(),
+      surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+      distribution: z.enum(["organic", "includes_paid", "unknown"]),
+    })
+    .nullable()
+    .optional(),
   reason: z
     .enum([
+      "not_requested",
       "not_returned",
       "not_supported",
       "permission_required",
       "invalid_value",
+      "invalid_request",
+      "invalid_breakdown",
+      "object_unavailable",
+      "source_error",
+      "request_deferred",
       "insufficient_audience",
     ])
     .nullable(),
@@ -90,7 +150,7 @@ const MediaMetricsSchema = z
   .nullable();
 const CalculatedMetricSchema = z.object({
   value: z.number().nullable(),
-  unit: z.enum(["percent", "ratio", "count_per_hour", "count"]),
+  unit: z.enum(["actions_per_100", "percent", "ratio", "count_per_hour", "count"]),
   formula: z.string(),
   inputs: z.record(z.string(), z.number().nullable()),
   reason: z
@@ -100,6 +160,7 @@ const CalculatedMetricSchema = z.object({
       "no_baseline",
       "invalid_interval",
       "counter_decreased",
+      "incompatible_measurements",
     ])
     .nullable(),
 });
@@ -142,12 +203,70 @@ const MediaReportSchema = z.object({
       aggregation: z.enum(["lifetime"]),
     })
     .nullable(),
+  observation: z
+    .object({
+      requestStartedAt: z.number(),
+      responseReceivedAt: z.number(),
+      receiptIds: z.array(z.string()),
+      semantics: z.enum(["sequential_requests_lifetime"]),
+      definitionVersion: z.string(),
+    })
+    .nullable()
+    .optional(),
+  freshness: z
+    .record(
+      z.string(),
+      z.object({
+        lastAttempt: z
+          .object({
+            receiptId: z.string(),
+            requestStartedAt: z.number(),
+            responseReceivedAt: z.number().nullable(),
+            failedAt: z.number().nullable(),
+            status: z.string(),
+            httpStatus: z.number().nullable(),
+            graphCode: z.number().nullable(),
+            graphSubcode: z.number().nullable(),
+          })
+          .nullable(),
+        lastKnownGood: z
+          .object({
+            value: z.number(),
+            observedAt: z.number(),
+            receiptId: z.string().nullable(),
+            definitionVersion: z.string().nullable(),
+            sourceField: z.string(),
+            unit: z.string(),
+          })
+          .nullable(),
+        currentReason: z.string().nullable(),
+      }),
+    )
+    .optional(),
+  interactionComponents: z
+    .object({
+      native: z.number().nullable(),
+      sum: z.number().nullable(),
+      formula: z.string(),
+      reason: z.string(),
+    })
+    .nullable()
+    .optional(),
   metrics: MediaMetricsSchema,
+  profileActivity: z
+    .object({ total: SourceMetricSchema, actions: z.record(z.string(), SourceMetricSchema) })
+    .nullable()
+    .optional(),
   storyInsights: z
-    .object({ replies: SourceMetricSchema, navigation: z.record(z.string(), SourceMetricSchema) })
+    .object({
+      replies: SourceMetricSchema,
+      navigationTotal: SourceMetricSchema.optional(),
+      navigation: z.record(z.string(), SourceMetricSchema),
+    })
     .nullable(),
   calculated: z
     .object({
+      interactionBasis: z.enum(["native_total_interactions", "derived_component_sum"]).optional(),
       engagementByReach: CalculatedMetricSchema,
       engagementByViews: CalculatedMetricSchema,
       saveRate: CalculatedMetricSchema,
@@ -184,11 +303,29 @@ const MediaReportSchema = z.object({
 const MediaSnapshotSchema = z.object({
   id: z.string(),
   mediaId: z.string().min(1).max(150),
+  provenance: z
+    .object({
+      requestStartedAt: z.number(),
+      responseReceivedAt: z.number(),
+      receiptIds: z.array(z.string()),
+      semantics: z.enum(["sequential_requests_lifetime"]),
+      definitionVersion: z.string(),
+    })
+    .nullable()
+    .optional(),
   observedAt: z.number().int(),
   apiVersion: z.string(),
   metrics: MediaMetricsSchema,
+  profileActivity: z
+    .object({ total: SourceMetricSchema, actions: z.record(z.string(), SourceMetricSchema) })
+    .nullable()
+    .optional(),
   storyInsights: z
-    .object({ replies: SourceMetricSchema, navigation: z.record(z.string(), SourceMetricSchema) })
+    .object({
+      replies: SourceMetricSchema,
+      navigationTotal: SourceMetricSchema.optional(),
+      navigation: z.record(z.string(), SourceMetricSchema),
+    })
     .nullable()
     .optional(),
 });
@@ -198,10 +335,17 @@ const SyncRunSchema = z.object({
   inputCursor: z.string().nullable(),
   pageSize: z.number().int(),
   status: z.enum(["running", "completed", "failed"]),
+  persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+  effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+  expiredAt: z.number().int().nullable().optional(),
   startedAt: z.number().int(),
   completedAt: z.number().int().nullable(),
   nextCursor: z.string().nullable(),
   mediaCount: z.number().int(),
+  usefulValues: z.number().nullable().optional(),
+  coverageState: z.enum(["complete", "partial", "empty"]).nullable().optional(),
+  firstUsefulAt: z.number().int().nullable().optional(),
+  lastUsefulAt: z.number().int().nullable().optional(),
   errorCode: z.string().nullable(),
 });
 export const accountsResponse = z.object({ accounts: z.array(SocialAccountSchema) });
@@ -324,6 +468,15 @@ export const metricsResponse = z.object({
       unit: z.string(),
       appliesTo: z.string(),
       definition: z.string(),
+      level: z.string().optional(),
+      definitionVersion: z.string().optional(),
+      surface: z.string().optional(),
+      distribution: z.string().optional(),
+      aggregation: z.string().optional(),
+      login: z.string().optional(),
+      apiApplicability: z.string().optional(),
+      denominator: z.string().optional(),
+      limitations: z.array(z.string()).optional(),
     }),
   ),
   note: z.string(),
@@ -334,6 +487,8 @@ export const collectionStatusResponse = z.object({
     accountId: z.string().min(1).max(150),
     enabled: z.boolean(),
     discoveryMinutes: z.number(),
+    timeZone: z.string(),
+    nextCatalogueAt: z.number(),
     nextDiscoveryAt: z.number(),
     nextStoriesAt: z.number(),
     nextInsightsAt: z.number(),
@@ -354,14 +509,30 @@ export const collectionStatusResponse = z.object({
         "comments",
         "comments_refresh",
         "audience",
+        "activity",
+        "catalogue",
       ]),
       targetMediaId: z.string().min(1).max(150).nullable().optional(),
+      latencyOrigin: z.enum(["recorded_from_creation"]).nullable().optional(),
+      httpAttemptsSinceAt: z.number().nullable().optional(),
+      firstAttemptAt: z.number().nullable().optional(),
+      lastAttemptAt: z.number().nullable().optional(),
+      firstUsefulObservationAt: z.number().nullable().optional(),
+      lastUsefulObservationAt: z.number().nullable().optional(),
+      httpAttempts: z.number().optional(),
+      lastStepDurationMs: z.number().nullable().optional(),
+      lastStepHttpAttempts: z.number().nullable().optional(),
+      effectiveState: z.string().optional(),
+      queueWaitMs: z.number().nullable().optional(),
+      continuationWaitMs: z.number().nullable().optional(),
       automatic: z.boolean(),
       status: z.enum(["running", "completed", "failed", "cancelled"]),
       cursor: z.string().nullable(),
       pages: z.number().int(),
       collected: z.number().int(),
       mediaProcessed: z.number().int(),
+      skippedMedia: z.number().int(),
+      skippedPeriods: z.number().int(),
       attempt: z.number().int(),
       failures: z.number().int(),
       nextAttemptAt: z.number(),
@@ -371,6 +542,85 @@ export const collectionStatusResponse = z.object({
       errorCode: z.string().nullable(),
     }),
   ),
+  jobsPage: z
+    .object({
+      nextCursor: z.string().nullable(),
+      hasMore: z.boolean(),
+      limit: z.number(),
+      cutoff: z.number(),
+      total: z.number(),
+      calculatedAt: z.number(),
+      semantics: z.string(),
+      aggregates: z.array(
+        z.object({
+          origin: z.string(),
+          status: z.string(),
+          count: z.number(),
+          due: z.number(),
+          oldestDue: z.number().nullable(),
+          atRiskFresh: z.number().optional(),
+          freshDue: z.number().optional(),
+          lastAttempt: z.number().nullable(),
+          lastSuccess: z.number().nullable(),
+          lastCheck: z.number().nullable().optional(),
+          lastUsefulObservation: z.number().nullable(),
+        }),
+      ),
+    })
+    .optional(),
+  diagnostics: z
+    .object({
+      expiredSyncAttempts: z.number(),
+      expiredInsightAttempts: z.number(),
+      expiredCommentAttempts: z.number(),
+      leasesInUse: z.number(),
+    })
+    .optional(),
+  freshness: z
+    .array(
+      z.object({
+        origin: z.string(),
+        status: z.string(),
+        count: z.number(),
+        due: z.number(),
+        oldestDue: z.number().nullable(),
+        atRiskFresh: z.number().optional(),
+        freshDue: z.number().optional(),
+        lastAttempt: z.number().nullable(),
+        lastSuccess: z.number().nullable(),
+        lastCheck: z.number().nullable().optional(),
+        lastUsefulObservation: z.number().nullable(),
+      }),
+    )
+    .optional(),
+  dataFreshness: z
+    .array(
+      z.object({
+        kind: z.string(),
+        objects: z.number(),
+        lastAttempt: z.number().nullable(),
+        lastCheck: z.number().nullable(),
+        lastSuccess: z.number().nullable(),
+        lastUsefulObservation: z.number().nullable(),
+        legacyProvenanceUnknown: z.number(),
+      }),
+    )
+    .optional(),
+  capacity: z
+    .object({
+      dueJobs: z.number(),
+      atRiskFreshJobs: z.number(),
+      scope: z.string(),
+      maximumHttpAttemptsPerTick: z.number(),
+      tickWorkMs: z.number(),
+      persistenceReserveMs: z.number(),
+      pressureIndicator: z.boolean(),
+      overload: z.enum(["not_measured", "estimated_deficit"]),
+      capacityDeficit: z.number(),
+      availableStepsIn15m: z.number(),
+      assumptions: z.string(),
+    })
+    .optional(),
   comments: z
     .object({
       lastFullPassAt: z.number().nullable(),
@@ -379,6 +629,8 @@ export const collectionStatusResponse = z.object({
       stalePublications: z.number(),
       partialPublications: z.number(),
       pendingReplyBranches: z.number(),
+      unverifiedReplyBranches: z.number(),
+      unavailablePublications: z.number(),
       currentPass: z
         .object({
           id: z.string(),
@@ -399,6 +651,10 @@ export const collectionStatusResponse = z.object({
     .optional(),
   policy: z.object({
     runBudget: z.number(),
+    maximumHttpAttempts: z.number().optional(),
+    workBudgetMs: z.number().optional(),
+    persistenceReserveMs: z.number().optional(),
+    version: z.string().optional(),
     pageSize: z.number(),
     storyPageSize: z.number(),
     commentPageSize: z.number(),
@@ -411,6 +667,7 @@ export const collectionStatusResponse = z.object({
         monthRefreshHours: z.number(),
         archiveRefreshHours: z.number(),
         fullReconciliationDays: z.number(),
+        omittedProbeLimit: z.number(),
       })
       .optional(),
     cronMinutes: z.number(),
@@ -418,19 +675,178 @@ export const collectionStatusResponse = z.object({
     ageSnapshotWindows: z.array(z.object({ targetHours: z.number(), toleranceHours: z.number() })),
     maximumConsecutiveFailures: z.number(),
   }),
+  coverage: z.object({
+    analysisCoverage: z
+      .array(
+        z.object({
+          targetHours: z.number(),
+          toleranceHours: z.number(),
+          metric: z.string().optional(),
+          rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).optional(),
+          analysisCoverage: z.object({
+            examined: z.number(),
+            observed: z.number(),
+            missingEligible: z.number(),
+            excludedByReason: z.record(z.string(), z.number()),
+            open: z.number(),
+            closed: z.number(),
+          }),
+          collectionObligations: z.object({
+            expected: z.number(),
+            captured: z.number(),
+            missed: z.number(),
+            open: z.number(),
+            policyHistoryUnknown: z.number(),
+            excludedByReason: z.record(z.string(), z.number()).optional(),
+            minimumOpportunityMs: z.number(),
+            note: z.string(),
+          }),
+        }),
+      )
+      .optional(),
+    collectionCoverage: z
+      .array(
+        z.object({
+          targetHours: z.number(),
+          toleranceHours: z.number(),
+          metric: z.string().optional(),
+          rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).optional(),
+          analysisCoverage: z.object({
+            examined: z.number(),
+            observed: z.number(),
+            missingEligible: z.number(),
+            excludedByReason: z.record(z.string(), z.number()),
+            open: z.number(),
+            closed: z.number(),
+          }),
+          collectionObligations: z.object({
+            expected: z.number(),
+            captured: z.number(),
+            missed: z.number(),
+            open: z.number(),
+            policyHistoryUnknown: z.number(),
+            excludedByReason: z.record(z.string(), z.number()).optional(),
+            minimumOpportunityMs: z.number(),
+            note: z.string(),
+          }),
+        }),
+      )
+      .optional(),
+    discovery: z.object({
+      measurementState: z.enum(["measured", "not_measured"]).optional(),
+      denominator: z.number().optional(),
+      measuredPublications: z.number(),
+      inferredPublications: z.number(),
+      averageLagMinutes: z.number().nullable(),
+      maximumLagMinutes: z.number().nullable(),
+      overOneHour: z.number(),
+    }),
+    ageSnapshots: z.array(
+      z.object({
+        targetHours: z.number(),
+        expected: z.number(),
+        captured: z.number(),
+        open: z.number(),
+        missed: z.number(),
+      }),
+    ),
+    catalogue: z.object({
+      lastFullPassAt: z.number().nullable(),
+      currentJobId: z.string().nullable(),
+    }),
+    activity: z.object({
+      timeZone: z.string(),
+      providerWindowDays: z.number(),
+      expectedIntervals: z.number(),
+      observedIntervals: z.number(),
+      missingIntervals: z.number(),
+      recheckIntervals: z.number(),
+      dailyIntervals: z.number(),
+      weeklyIntervals: z.number(),
+      monthlyIntervals: z.number(),
+      uncollectableIntervals: z.array(
+        z.object({
+          kind: z.enum(["day", "week", "month"]),
+          from: z.number(),
+          to: z.number(),
+          timeZone: z.string(),
+          reason: z.enum(["exceeds_interval_limit"]),
+        }),
+      ),
+      earliestDayFrom: z.number().nullable(),
+      latestDayTo: z.number().nullable(),
+    }),
+  }),
+  api: z.object({
+    recordedRequests: z.number(),
+    sinceAt: z.number().nullable(),
+    usagePercent: z.number().nullable(),
+    usageObservedAt: z.number().nullable(),
+    blockedUntil: z.number(),
+    observedAt: z.number().nullable(),
+    cachedUnavailableMetrics: z.number(),
+    http: z
+      .object({
+        attempts: z.number(),
+        responses: z.number(),
+        failuresBeforeResponse: z.number(),
+        timeouts: z.number(),
+        rateLimitedResponses: z.number(),
+        sinceAt: z.number().nullable(),
+      })
+      .optional(),
+    usageHeaders: z
+      .object({
+        app: z.object({
+          state: z.enum(["absent", "recognized", "unknown_schema", "malformed"]),
+          sample: z.string().nullable(),
+        }),
+        business: z.object({
+          state: z.enum(["absent", "recognized", "unknown_schema", "malformed"]),
+          sample: z.string().nullable(),
+        }),
+        receivedAt: z.number().nullable(),
+      })
+      .optional(),
+    quotaFreshness: z.enum(["unknown", "fresh", "stale"]).optional(),
+    quotaStaleAfterMs: z.number().optional(),
+  }),
   note: z.string(),
 });
 export const collectionJobResponse = z.object({
   id: z.string().uuid(),
   accountId: z.string().min(1).max(150),
-  origin: z.enum(["manual", "scheduled", "stories", "comments", "comments_refresh", "audience"]),
+  origin: z.enum([
+    "manual",
+    "scheduled",
+    "stories",
+    "comments",
+    "comments_refresh",
+    "audience",
+    "activity",
+    "catalogue",
+  ]),
   targetMediaId: z.string().min(1).max(150).nullable().optional(),
+  latencyOrigin: z.enum(["recorded_from_creation"]).nullable().optional(),
+  httpAttemptsSinceAt: z.number().nullable().optional(),
+  firstAttemptAt: z.number().nullable().optional(),
+  lastAttemptAt: z.number().nullable().optional(),
+  firstUsefulObservationAt: z.number().nullable().optional(),
+  lastUsefulObservationAt: z.number().nullable().optional(),
+  httpAttempts: z.number().optional(),
+  lastStepDurationMs: z.number().nullable().optional(),
+  lastStepHttpAttempts: z.number().nullable().optional(),
+  effectiveState: z.string().optional(),
+  queueWaitMs: z.number().nullable().optional(),
+  continuationWaitMs: z.number().nullable().optional(),
   automatic: z.boolean(),
   status: z.enum(["running", "completed", "failed", "cancelled"]),
   cursor: z.string().nullable(),
   pages: z.number().int(),
   collected: z.number().int(),
   mediaProcessed: z.number().int(),
+  skippedMedia: z.number().int(),
+  skippedPeriods: z.number().int(),
   attempt: z.number().int(),
   failures: z.number().int(),
   nextAttemptAt: z.number(),
@@ -443,6 +859,8 @@ export const scheduleResponse = z.object({
   accountId: z.string().min(1).max(150),
   enabled: z.boolean(),
   discoveryMinutes: z.number(),
+  timeZone: z.string(),
+  nextCatalogueAt: z.number(),
   nextDiscoveryAt: z.number(),
   nextStoriesAt: z.number(),
   nextInsightsAt: z.number(),
@@ -466,6 +884,23 @@ export const accountInsightCollectionResponse = z.object({
     timeframe: z.string().optional(),
   }),
   status: z.enum(["running", "completed", "failed"]),
+  persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+  effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+  expiredAt: z.number().nullable().optional(),
+  periodKey: z.string().optional(),
+  definitionVersion: z.string().optional(),
+  coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+  requestBounds: z
+    .object({
+      from: z.number(),
+      to: z.number(),
+      timeZone: z.string(),
+      semantics: z.enum(["[from,to)"]),
+      sourceSince: z.number(),
+      sourceUntil: z.number(),
+      sourceBoundaryContract: z.string(),
+    })
+    .optional(),
   requestedAt: z.number(),
   observedAt: z.number().nullable(),
   apiVersion: z.string(),
@@ -475,6 +910,31 @@ export const accountInsightCollectionResponse = z.object({
   object: z.enum(["account", "audience"]),
   values: z.array(
     z.object({
+      provenance: z
+        .object({
+          receiptId: z.string(),
+          operationId: z.string().nullable(),
+          requestStartedAt: z.number(),
+          responseReceivedAt: z.number().nullable(),
+          requestedApiVersion: z.string(),
+          actualApiVersion: z.string().nullable(),
+          login: z.enum(["instagram_login"]),
+          definitionVersion: z.string(),
+          surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+          distribution: z.enum(["organic", "includes_paid", "unknown"]),
+        })
+        .optional(),
+      receipt: z
+        .object({
+          receiptId: z.string(),
+          operationId: z.string().nullable(),
+          requestStartedAt: z.number(),
+          responseReceivedAt: z.number().nullable(),
+          requestedApiVersion: z.string(),
+          actualApiVersion: z.string().nullable(),
+          login: z.enum(["instagram_login"]),
+        })
+        .optional(),
       unit: z.enum(["count"]),
       sourceField: z.string(),
       metric: z.string(),
@@ -529,6 +989,23 @@ export const activityResponse = z.object({
         timeframe: z.string().optional(),
       }),
       status: z.enum(["running", "completed", "failed"]),
+      persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+      effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+      expiredAt: z.number().nullable().optional(),
+      periodKey: z.string().optional(),
+      definitionVersion: z.string().optional(),
+      coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+      requestBounds: z
+        .object({
+          from: z.number(),
+          to: z.number(),
+          timeZone: z.string(),
+          semantics: z.enum(["[from,to)"]),
+          sourceSince: z.number(),
+          sourceUntil: z.number(),
+          sourceBoundaryContract: z.string(),
+        })
+        .optional(),
       requestedAt: z.number(),
       observedAt: z.number().nullable(),
       apiVersion: z.string(),
@@ -538,6 +1015,31 @@ export const activityResponse = z.object({
       object: z.enum(["account", "audience"]),
       values: z.array(
         z.object({
+          provenance: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+              definitionVersion: z.string(),
+              surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+              distribution: z.enum(["organic", "includes_paid", "unknown"]),
+            })
+            .optional(),
+          receipt: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+            })
+            .optional(),
           unit: z.enum(["count"]),
           sourceField: z.string(),
           metric: z.string(),
@@ -585,6 +1087,23 @@ export const activityResponse = z.object({
         timeframe: z.string().optional(),
       }),
       status: z.enum(["running", "completed", "failed"]),
+      persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+      effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+      expiredAt: z.number().nullable().optional(),
+      periodKey: z.string().optional(),
+      definitionVersion: z.string().optional(),
+      coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+      requestBounds: z
+        .object({
+          from: z.number(),
+          to: z.number(),
+          timeZone: z.string(),
+          semantics: z.enum(["[from,to)"]),
+          sourceSince: z.number(),
+          sourceUntil: z.number(),
+          sourceBoundaryContract: z.string(),
+        })
+        .optional(),
       requestedAt: z.number(),
       observedAt: z.number().nullable(),
       apiVersion: z.string(),
@@ -594,6 +1113,31 @@ export const activityResponse = z.object({
       object: z.enum(["account", "audience"]),
       values: z.array(
         z.object({
+          provenance: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+              definitionVersion: z.string(),
+              surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+              distribution: z.enum(["organic", "includes_paid", "unknown"]),
+            })
+            .optional(),
+          receipt: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+            })
+            .optional(),
           unit: z.enum(["count"]),
           sourceField: z.string(),
           metric: z.string(),
@@ -656,6 +1200,23 @@ export const activityResponse = z.object({
     previousAvailable: z.boolean(),
     truncated: z.boolean(),
     requestedWindowComplete: z.boolean(),
+    maturity: z
+      .object({
+        version: z.string(),
+        sourceDelayMs: z.number(),
+        periodEnded: z.boolean(),
+        sourceDelayElapsed: z.boolean(),
+        observedAfterDelay: z.boolean(),
+        recheckDue: z.boolean(),
+        matureByPolicy: z.boolean(),
+        sourceFinal: z.literal(false),
+      })
+      .optional(),
+    usefulMetrics: z.number().optional(),
+    maturityTimeBasis: z
+      .enum(["earliest_useful_response", "legacy_or_collection_timestamp"])
+      .optional(),
+    requestedMetrics: z.number().optional(),
     observedAt: z.number().nullable(),
   }),
   note: z.string(),
@@ -676,6 +1237,23 @@ export const insightHistoryResponse = z.object({
         timeframe: z.string().optional(),
       }),
       status: z.enum(["running", "completed", "failed"]),
+      persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+      effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+      expiredAt: z.number().nullable().optional(),
+      periodKey: z.string().optional(),
+      definitionVersion: z.string().optional(),
+      coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+      requestBounds: z
+        .object({
+          from: z.number(),
+          to: z.number(),
+          timeZone: z.string(),
+          semantics: z.enum(["[from,to)"]),
+          sourceSince: z.number(),
+          sourceUntil: z.number(),
+          sourceBoundaryContract: z.string(),
+        })
+        .optional(),
       requestedAt: z.number(),
       observedAt: z.number().nullable(),
       apiVersion: z.string(),
@@ -685,6 +1263,31 @@ export const insightHistoryResponse = z.object({
       object: z.enum(["account", "audience"]),
       values: z.array(
         z.object({
+          provenance: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+              definitionVersion: z.string(),
+              surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+              distribution: z.enum(["organic", "includes_paid", "unknown"]),
+            })
+            .optional(),
+          receipt: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+            })
+            .optional(),
           unit: z.enum(["count"]),
           sourceField: z.string(),
           metric: z.string(),
@@ -737,6 +1340,23 @@ export const audienceResponse = z.object({
         timeframe: z.string().optional(),
       }),
       status: z.enum(["running", "completed", "failed"]),
+      persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+      effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+      expiredAt: z.number().nullable().optional(),
+      periodKey: z.string().optional(),
+      definitionVersion: z.string().optional(),
+      coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+      requestBounds: z
+        .object({
+          from: z.number(),
+          to: z.number(),
+          timeZone: z.string(),
+          semantics: z.enum(["[from,to)"]),
+          sourceSince: z.number(),
+          sourceUntil: z.number(),
+          sourceBoundaryContract: z.string(),
+        })
+        .optional(),
       requestedAt: z.number(),
       observedAt: z.number().nullable(),
       apiVersion: z.string(),
@@ -746,6 +1366,31 @@ export const audienceResponse = z.object({
       object: z.enum(["account", "audience"]),
       values: z.array(
         z.object({
+          provenance: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+              definitionVersion: z.string(),
+              surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+              distribution: z.enum(["organic", "includes_paid", "unknown"]),
+            })
+            .optional(),
+          receipt: z
+            .object({
+              receiptId: z.string(),
+              operationId: z.string().nullable(),
+              requestStartedAt: z.number(),
+              responseReceivedAt: z.number().nullable(),
+              requestedApiVersion: z.string(),
+              actualApiVersion: z.string().nullable(),
+              login: z.enum(["instagram_login"]),
+            })
+            .optional(),
           unit: z.enum(["count"]),
           sourceField: z.string(),
           metric: z.string(),
@@ -818,6 +1463,9 @@ export const contextResponse = z.object({
         callToAction: z.string().min(1).max(100).nullable().optional(),
         goal: z.string().min(1).max(100).nullable().optional(),
         sponsored: z.boolean().nullable().optional(),
+        paidDistribution: z.boolean().nullable().optional(),
+        brandPartnership: z.boolean().nullable().optional(),
+        coauthor: z.boolean().nullable().optional(),
         notes: z.string().max(4000).nullable().optional(),
       }),
       proposal: z.object({
@@ -830,6 +1478,9 @@ export const contextResponse = z.object({
         callToAction: z.string().min(1).max(100).nullable().optional(),
         goal: z.string().min(1).max(100).nullable().optional(),
         sponsored: z.boolean().nullable().optional(),
+        paidDistribution: z.boolean().nullable().optional(),
+        brandPartnership: z.boolean().nullable().optional(),
+        coauthor: z.boolean().nullable().optional(),
         notes: z.string().max(4000).nullable().optional(),
       }),
       confirmedSource: z.enum(["manual"]),
@@ -853,6 +1504,9 @@ export const contextsResponse = z.object({
           callToAction: z.string().min(1).max(100).nullable().optional(),
           goal: z.string().min(1).max(100).nullable().optional(),
           sponsored: z.boolean().nullable().optional(),
+          paidDistribution: z.boolean().nullable().optional(),
+          brandPartnership: z.boolean().nullable().optional(),
+          coauthor: z.boolean().nullable().optional(),
           notes: z.string().max(4000).nullable().optional(),
         }),
         proposal: z.object({
@@ -865,6 +1519,9 @@ export const contextsResponse = z.object({
           callToAction: z.string().min(1).max(100).nullable().optional(),
           goal: z.string().min(1).max(100).nullable().optional(),
           sponsored: z.boolean().nullable().optional(),
+          paidDistribution: z.boolean().nullable().optional(),
+          brandPartnership: z.boolean().nullable().optional(),
+          coauthor: z.boolean().nullable().optional(),
           notes: z.string().max(4000).nullable().optional(),
         }),
         confirmedSource: z.enum(["manual"]),
@@ -951,6 +1608,7 @@ export const contentAnalysisResponse = z.object({
     accountId: z.string().min(1).max(150),
     ageDays: z.union([z.literal(1), z.literal(7), z.literal(30)]),
     metric: z.enum(["reach", "saves", "shares", "comments", "follows", "views"]),
+    rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).optional(),
     productType: z.string().optional(),
     rubric: z.string().optional(),
     goal: z.string().optional(),
@@ -962,6 +1620,39 @@ export const contentAnalysisResponse = z.object({
       media: MediaSchema,
       snapshot: z.union([MediaSnapshotSchema, z.null()]),
       absolute: z.number().nullable(),
+      rankingValue: z.number().nullable().optional(),
+      ranking: z
+        .object({
+          value: z.number().nullable(),
+          reason: z.string().nullable(),
+          formula: z.string(),
+          mode: z.enum(["absolute", "per_100_reach", "per_100_views"]),
+          denominatorMetric: z.string().nullable(),
+          numerator: z.number().nullable(),
+          denominator: z.number().nullable(),
+          unit: z.string(),
+        })
+        .optional(),
+      windowState: z.string().optional(),
+      exclusion: z.string().nullable().optional(),
+      comparabilityKey: z.string().optional(),
+      sampleWarning: z.string().optional(),
+      comparisonCriteria: z
+        .object({
+          productType: z.string(),
+          mediaType: z.string(),
+          definitionVersion: z.string().nullable(),
+          surface: z.string(),
+          ageDays: z.number(),
+          toleranceHours: z.number(),
+          promotion: z.object({
+            paidDistribution: z.boolean().nullable(),
+            brandPartnership: z.boolean().nullable(),
+            coauthor: z.boolean().nullable(),
+            legacySponsored: z.boolean().nullable(),
+          }),
+        })
+        .optional(),
       rate: z.object({
         value: z.number().nullable(),
         inputs: z.object({ numerator: z.number().nullable(), denominator: z.number().nullable() }),
@@ -1073,7 +1764,25 @@ export const contentAnalysisResponse = z.object({
   groups: z.array(
     z.object({
       productType: z.string().optional(),
+      mediaType: z.string().optional(),
+      rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]).optional(),
+      note: z.string().optional(),
+      paired: z
+        .object({
+          n: z.number(),
+          medianIndividualPer100: z.number().nullable(),
+          excludedPairs: z.number().optional(),
+          ratioOfSumsPer100: z.number().nullable(),
+          numeratorSum: z.number(),
+          denominatorSum: z.number(),
+          denominatorMeaning: z.string(),
+        })
+        .optional(),
       apiVersion: z.string().optional(),
+      examined: z.number().optional(),
+      mediaIds: z.array(z.string().min(1).max(150)).optional(),
+      pairedMediaIds: z.array(z.string().min(1).max(150)).optional(),
+      excludedByReason: z.record(z.string(), z.number()).optional(),
       dimension: z.string().optional(),
       value: z.string().optional(),
       sampleSize: z.number(),
@@ -1086,6 +1795,19 @@ export const contentAnalysisResponse = z.object({
     }),
   ),
   coverage: z.object({
+    analysisCoverage: z
+      .object({
+        examined: z.number(),
+        usable: z.number(),
+        missingEligible: z.number(),
+        excludedByReason: z.record(z.string(), z.number()),
+        metric: z.string(),
+        rankingMode: z.enum(["absolute", "per_100_reach", "per_100_views"]),
+        open: z.number(),
+        closed: z.number(),
+      })
+      .optional(),
+    collectionObligations: z.object({ state: z.string(), note: z.string() }).optional(),
     examined: z.number(),
     observed: z.number(),
     missing: z.number(),
@@ -1232,6 +1954,10 @@ export const commentsResponse = z.object({
       text: z.string(),
       publishedAt: z.number(),
       observedAt: z.number(),
+      authorId: z.string().min(1).max(150).nullable().optional(),
+      authorUsername: z.string().nullable().optional(),
+      likeCount: z.number().nullable().optional(),
+      hidden: z.boolean().nullable().optional(),
     }),
   ),
   nextCursor: z.string().nullable(),
@@ -1264,18 +1990,34 @@ export const commentsResponse = z.object({
     lastCompleteAt: z.number().nullable().optional(),
     nextRefreshAt: z.number().nullable().optional(),
     omittedReplyBranches: z.number().optional(),
+    unavailableUntil: z.number().optional(),
     errorCode: z.string().nullable().optional(),
   }),
   limitations: z.array(z.string()),
 });
 export const commentWebhookSubscriptionResponse = z.object({ subscribed: z.literal(true) });
 export const commentCollectionResponse = z.object({
+  receipt: z
+    .object({
+      receiptId: z.string(),
+      operationId: z.string().nullable(),
+      requestStartedAt: z.number(),
+      responseReceivedAt: z.number().nullable(),
+      requestedApiVersion: z.string(),
+      actualApiVersion: z.string().nullable(),
+      login: z.enum(["instagram_login"]),
+    })
+    .optional(),
+  definitionVersion: z.string().optional(),
   id: z.string().uuid(),
   mediaId: z.string().min(1).max(150),
   parentId: z.string().min(1).max(150).nullable(),
   cursor: z.string().nullable(),
   limit: z.number(),
   status: z.enum(["running", "completed", "failed"]),
+  persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+  effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+  expiredAt: z.number().nullable().optional(),
   startedAt: z.number(),
   observedAt: z.number().nullable(),
   nextCursor: z.string().nullable(),
@@ -1332,6 +2074,23 @@ export const reviewResponse = z.object({
           timeframe: z.string().optional(),
         }),
         status: z.enum(["running", "completed", "failed"]),
+        persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+        effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+        expiredAt: z.number().nullable().optional(),
+        periodKey: z.string().optional(),
+        definitionVersion: z.string().optional(),
+        coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+        requestBounds: z
+          .object({
+            from: z.number(),
+            to: z.number(),
+            timeZone: z.string(),
+            semantics: z.enum(["[from,to)"]),
+            sourceSince: z.number(),
+            sourceUntil: z.number(),
+            sourceBoundaryContract: z.string(),
+          })
+          .optional(),
         requestedAt: z.number(),
         observedAt: z.number().nullable(),
         apiVersion: z.string(),
@@ -1341,6 +2100,31 @@ export const reviewResponse = z.object({
         object: z.enum(["account", "audience"]),
         values: z.array(
           z.object({
+            provenance: z
+              .object({
+                receiptId: z.string(),
+                operationId: z.string().nullable(),
+                requestStartedAt: z.number(),
+                responseReceivedAt: z.number().nullable(),
+                requestedApiVersion: z.string(),
+                actualApiVersion: z.string().nullable(),
+                login: z.enum(["instagram_login"]),
+                definitionVersion: z.string(),
+                surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+                distribution: z.enum(["organic", "includes_paid", "unknown"]),
+              })
+              .optional(),
+            receipt: z
+              .object({
+                receiptId: z.string(),
+                operationId: z.string().nullable(),
+                requestStartedAt: z.number(),
+                responseReceivedAt: z.number().nullable(),
+                requestedApiVersion: z.string(),
+                actualApiVersion: z.string().nullable(),
+                login: z.enum(["instagram_login"]),
+              })
+              .optional(),
             unit: z.enum(["count"]),
             sourceField: z.string(),
             metric: z.string(),
@@ -1388,6 +2172,23 @@ export const reviewResponse = z.object({
           timeframe: z.string().optional(),
         }),
         status: z.enum(["running", "completed", "failed"]),
+        persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+        effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+        expiredAt: z.number().nullable().optional(),
+        periodKey: z.string().optional(),
+        definitionVersion: z.string().optional(),
+        coverageState: z.enum(["complete", "partial", "empty"]).optional(),
+        requestBounds: z
+          .object({
+            from: z.number(),
+            to: z.number(),
+            timeZone: z.string(),
+            semantics: z.enum(["[from,to)"]),
+            sourceSince: z.number(),
+            sourceUntil: z.number(),
+            sourceBoundaryContract: z.string(),
+          })
+          .optional(),
         requestedAt: z.number(),
         observedAt: z.number().nullable(),
         apiVersion: z.string(),
@@ -1397,6 +2198,31 @@ export const reviewResponse = z.object({
         object: z.enum(["account", "audience"]),
         values: z.array(
           z.object({
+            provenance: z
+              .object({
+                receiptId: z.string(),
+                operationId: z.string().nullable(),
+                requestStartedAt: z.number(),
+                responseReceivedAt: z.number().nullable(),
+                requestedApiVersion: z.string(),
+                actualApiVersion: z.string().nullable(),
+                login: z.enum(["instagram_login"]),
+                definitionVersion: z.string(),
+                surface: z.enum(["instagram", "facebook", "combined", "unknown"]),
+                distribution: z.enum(["organic", "includes_paid", "unknown"]),
+              })
+              .optional(),
+            receipt: z
+              .object({
+                receiptId: z.string(),
+                operationId: z.string().nullable(),
+                requestStartedAt: z.number(),
+                responseReceivedAt: z.number().nullable(),
+                requestedApiVersion: z.string(),
+                actualApiVersion: z.string().nullable(),
+                login: z.enum(["instagram_login"]),
+              })
+              .optional(),
             unit: z.enum(["count"]),
             sourceField: z.string(),
             metric: z.string(),
@@ -1459,6 +2285,23 @@ export const reviewResponse = z.object({
       previousAvailable: z.boolean(),
       truncated: z.boolean(),
       requestedWindowComplete: z.boolean(),
+      maturity: z
+        .object({
+          version: z.string(),
+          sourceDelayMs: z.number(),
+          periodEnded: z.boolean(),
+          sourceDelayElapsed: z.boolean(),
+          observedAfterDelay: z.boolean(),
+          recheckDue: z.boolean(),
+          matureByPolicy: z.boolean(),
+          sourceFinal: z.literal(false),
+        })
+        .optional(),
+      usefulMetrics: z.number().optional(),
+      maturityTimeBasis: z
+        .enum(["earliest_useful_response", "legacy_or_collection_timestamp"])
+        .optional(),
+      requestedMetrics: z.number().optional(),
       observedAt: z.number().nullable(),
     }),
     note: z.string(),
@@ -1607,6 +2450,7 @@ export const startAccountCommentsCollectionInput = z.object({ operationId: z.str
 export const configureCollectionScheduleInput = z.object({
   enabled: z.boolean(),
   discoveryMinutes: z.number().int().min(60).max(10080).optional(),
+  timeZone: z.string().min(1).max(100).optional(),
 });
 export const controlCollectionInput = z.object({ action: z.enum(["resume", "cancel"]) });
 export const advanceCollectionInput = z.object({});
@@ -1630,10 +2474,13 @@ export const collectAccountInsightsInput = z.object({
         "replies",
         "profile_links_taps",
         "follows_and_unfollows",
+        "reposts",
       ]),
     )
     .optional(),
-  breakdown: z.enum(["media_product_type", "follow_type"]).optional(),
+  breakdown: z
+    .enum(["media_product_type", "follow_type", "follower_type", "contact_button_type"])
+    .optional(),
 });
 export const collectAudienceInsightsInput = z.object({
   operationId: z.string().uuid(),
@@ -1654,6 +2501,9 @@ export const setMediaContextInput = z.object({
     callToAction: z.string().min(1).max(100).nullable().optional(),
     goal: z.string().min(1).max(100).nullable().optional(),
     sponsored: z.boolean().nullable().optional(),
+    paidDistribution: z.boolean().nullable().optional(),
+    brandPartnership: z.boolean().nullable().optional(),
+    coauthor: z.boolean().nullable().optional(),
     notes: z.string().max(4000).nullable().optional(),
   }),
 });

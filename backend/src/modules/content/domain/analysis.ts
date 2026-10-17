@@ -35,3 +35,45 @@ export function classify(value: number | null, baseline: number | null, sampleSi
     lowThreshold: 0.5,
   };
 }
+
+export type RankingMode = "absolute" | "per_100_reach" | "per_100_views";
+export function rankingValue(
+  numerator: number | null,
+  denominator: number | null,
+  mode: RankingMode,
+  compatible = true,
+) {
+  const reason =
+    numerator === null || (mode !== "absolute" && denominator === null)
+      ? "missing_inputs"
+      : !compatible
+        ? "incompatible_measurements"
+        : mode !== "absolute" && (denominator ?? 0) <= 0
+          ? "zero_denominator"
+          : null;
+  return {
+    value:
+      reason === null
+        ? mode === "absolute"
+          ? numerator
+          : (100 * (numerator as number)) / (denominator as number)
+        : null,
+    reason,
+    formula:
+      mode === "absolute"
+        ? "native value"
+        : `100 * numerator / ${mode === "per_100_reach" ? "reach" : "views"}`,
+  };
+}
+export function pairedAggregate(pairs: { numerator: number; denominator: number }[]) {
+  const numerator = pairs.reduce((n, p) => n + p.numerator, 0),
+    denominator = pairs.reduce((n, p) => n + p.denominator, 0);
+  return {
+    n: pairs.length,
+    medianIndividualPer100: median(pairs.map((p) => (100 * p.numerator) / p.denominator)),
+    ratioOfSumsPer100: denominator > 0 ? (100 * numerator) / denominator : null,
+    numeratorSum: numerator,
+    denominatorSum: denominator,
+    denominatorMeaning: "sum of per-media denominators, not unique account reach",
+  };
+}

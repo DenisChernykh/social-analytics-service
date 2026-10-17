@@ -1,4 +1,5 @@
 import type { InsightCollection, InsightInput, InsightValue } from "../domain/model";
+import type { PeriodObservation } from "../domain/periods";
 
 export type InsightSelection = {
   cursor?: { observedAt: number; id: string };
@@ -14,6 +15,12 @@ export type InsightSelection = {
 };
 
 export interface InsightStore {
+  periodObservations(
+    accountId: string,
+    timeZone: string,
+    apiVersion: string,
+    since: number,
+  ): Promise<PeriodObservation[]>;
   collection(id: string): Promise<InsightCollection | null>;
   reserve(collection: InsightCollection): Promise<boolean>;
   finish(collection: InsightCollection): Promise<void>;
@@ -26,5 +33,5 @@ export interface InsightStore {
 }
 export interface AccountInsightSource {
   account(accountId: string): Promise<{ externalId: string }>;
-  read(accountId: string, input: InsightInput): Promise<InsightValue[]>;
+  read(accountId: string, input: InsightInput, operationId?: string): Promise<InsightValue[]>;
 }

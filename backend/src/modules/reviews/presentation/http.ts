@@ -113,6 +113,12 @@ export function createReviewHttp(
             compareFrom: date.optional(),
             compareTo: date.optional(),
             timeZone: z.string().min(1).max(100).default("UTC"),
+            rankingMode: z
+              .enum(["absolute", "per_100_reach", "per_100_views"])
+              .default("absolute")
+              .describe(
+                "Only absolute is supported for reviews. Relative modes return 409 FEATURE_UNAVAILABLE; use content-analysis for relative saves/shares.",
+              ),
             ageDays: z.coerce
               .number()
               .pipe(z.union([z.literal(1), z.literal(7), z.literal(30)]))

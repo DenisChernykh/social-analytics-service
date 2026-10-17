@@ -20,11 +20,17 @@ const statusByCode: Record<ErrorCode, ContentfulStatusCode> = {
   NOT_FOUND: 404,
   UNAUTHENTICATED: 401,
   VALIDATION_FAILED: 400,
+  FEATURE_UNAVAILABLE: 409,
   CONFIGURATION_REQUIRED: 503,
   INSTAGRAM_AUTH_EXPIRED: 409,
   INSTAGRAM_PERMISSION_REQUIRED: 403,
   INSTAGRAM_RATE_LIMITED: 429,
   INSTAGRAM_UNAVAILABLE: 502,
+  INSTAGRAM_INVALID_REQUEST: 502,
+  INSTAGRAM_INVALID_BREAKDOWN: 502,
+  INSTAGRAM_SOURCE_ERROR: 502,
+  REQUEST_BUDGET_EXHAUSTED: 503,
+  INSTAGRAM_OBJECT_UNAVAILABLE: 404,
   INSTAGRAM_PAGINATION_STALLED: 502,
   INVALID_OAUTH_STATE: 400,
   OAUTH_DENIED: 400,
@@ -58,6 +64,12 @@ export function problem(
 }
 
 export function applicationProblem(c: Context<HttpEnv>, error: ApplicationError): Response {
+  if (
+    error.retryAfterMs !== undefined &&
+    Number.isFinite(error.retryAfterMs) &&
+    error.retryAfterMs > 0
+  )
+    c.header("Retry-After", String(Math.ceil(error.retryAfterMs / 1000)));
   return problem(c, statusByCode[error.code], error.code, error.message);
 }
 

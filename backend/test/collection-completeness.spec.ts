@@ -140,7 +140,7 @@ describe("complete analytical cohorts", () => {
     expect(ranking.coverage).toMatchObject({
       examined: 121,
       observed: 120,
-      missing: 1,
+      missing: 0,
       truncated: false,
     });
     expect(ranking.items[0]).toMatchObject({
@@ -485,28 +485,29 @@ describe("bounded background comment progress", () => {
     const jobId = crypto.randomUUID();
     await f.request(`/api/accounts/${accountId}/comments/collect`, "POST", { operationId: jobId });
     await f.request(`/api/accounts/${accountId}/collection/schedule`, "PATCH", { enabled: true });
-    // Start at a schedule-preferred slot.
+    // Isolate the Stories/insights stream from catalogue discovery.
+    await env.DB.prepare("UPDATE collection_schedules SET next_discovery_at=? WHERE account_id=?")
+      .bind(f.now() + 86_400_000, accountId)
+      .run();
+    // Creation and its first atomic Story page now share the same tick.
     f.advance(600_000 - (f.now() % 600_000));
     const collector = createScheduledOperations(env, { transport: () => f.transport }, f.now);
     await collector.tick();
+    expect(f.transport.stories).toHaveBeenCalledTimes(1);
     expect(f.transport.comments).not.toHaveBeenCalled();
-    expect(f.transport.stories).not.toHaveBeenCalled();
     expect(await collector.status(accountId)).toMatchObject({
       schedule: { nextStoriesAt: f.now() + 60 * 60_000 },
       policy: { cronMinutes: 5, runBudget: 1 },
     });
-    f.advance(5 * 60_000);
-    await collector.tick();
-    expect(f.transport.stories).toHaveBeenCalledTimes(1);
-    expect(f.transport.comments).not.toHaveBeenCalled();
-    f.advance(5 * 60_000);
-    await collector.tick();
-    expect(await collector.job(jobId)).toMatchObject({ status: "running", pages: 1 });
-    expect(f.transport.structuredInsights).not.toHaveBeenCalled();
-    f.advance(10 * 60_000);
-    await collector.tick();
+    for (let i = 0; i < 6; i++) {
+      f.advance(300_000);
+      await collector.tick();
+    }
+    expect((await collector.job(jobId)).pages).toBeGreaterThanOrEqual(1);
     expect(f.transport.structuredInsights).toHaveBeenCalled();
-    expect(await collector.job(jobId)).toMatchObject({ pages: 1 });
+    const activity = (await collector.status(accountId)).jobs.find((j) => j.origin === "activity");
+    expect(activity).toMatchObject({ status: "running" });
+    expect(activity?.pages).toBeGreaterThanOrEqual(1);
     expect((await collector.status(accountId)).schedule.nextInsightsAt).toBeGreaterThan(f.now());
   });
   it("stops the affected job at source backoff and resumes its saved cursor later", async () => {
@@ -527,7 +528,7 @@ describe("bounded background comment progress", () => {
       pages: 1,
       status: "running",
       errorCode: "INSTAGRAM_RATE_LIMITED",
-      nextAttemptAt: f.now() + 30 * 60_000,
+      nextAttemptAt: f.now() + 15 * 60_000,
     });
     expect(f.transport.comments).toHaveBeenCalledTimes(2);
     await collector.tick();

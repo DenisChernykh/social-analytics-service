@@ -1,10 +1,16 @@
-import { ApplicationError } from "../../../shared/application/application-error";
+import {
+  ApplicationError,
+  retryableOperation,
+} from "../../../shared/application/application-error";
+import { periodMaturity } from "../domain/maturity";
 import {
   compareCategories,
   compareValues,
   type InsightCollection,
   type InsightInput,
+  supportsActivityMetric,
 } from "../domain/model";
+import { activityPeriodPlan } from "../domain/periods";
 import type { AccountInsightSource, InsightSelection, InsightStore } from "./ports";
 
 export class AccountInsights {
@@ -14,12 +20,32 @@ export class AccountInsights {
     private readonly clock: () => number,
     private readonly apiVersion: string,
   ) {}
+  async automaticPlan(accountId: string, timeZone: string, now: number) {
+    await this.source.account(accountId);
+    return activityPeriodPlan(
+      now,
+      timeZone,
+      await this.store.periodObservations(
+        accountId,
+        timeZone,
+        this.apiVersion,
+        now - 90 * 86_400_000,
+      ),
+    );
+  }
   async collection(id: string) {
     const collection = await this.store.collection(id);
     if (!collection)
       throw new ApplicationError("NOT_FOUND", "The insight collection was not found.");
     if (collection.status === "running" && this.clock() - collection.requestedAt >= 15 * 60_000)
-      return { ...collection, status: "failed" as const, errorCode: "COLLECTION_EXPIRED" };
+      return {
+        ...collection,
+        persistedStatus: collection.status,
+        effectiveState: "expired" as const,
+        expiredAt: collection.requestedAt + 900_000,
+        status: "failed" as const,
+        errorCode: "COLLECTION_EXPIRED",
+      };
     return collection;
   }
   async collect(accountId: string, id: string, input: InsightInput): Promise<InsightCollection> {
@@ -30,6 +56,16 @@ export class AccountInsights {
       throw new ApplicationError("VALIDATION_FAILED", "Use a valid IANA time zone.");
     }
     if (input.kind === "activity") {
+      if (
+        !input.metrics.length ||
+        input.metrics.some(
+          (metric) => !supportsActivityMetric(metric, input.metricType, input.breakdown),
+        )
+      )
+        throw new ApplicationError(
+          "VALIDATION_FAILED",
+          "Select account metrics compatible with the requested metric type and breakdown.",
+        );
       if (
         input.from === undefined ||
         input.to === undefined ||
@@ -42,7 +78,7 @@ export class AccountInsights {
       )
         throw new ApplicationError(
           "VALIDATION_FAILED",
-          "Select whole-second boundaries, at most 31 days, within the last 90 days and not in the future. Periods are [from,to). Save older collected history locally.",
+          "This service policy accepts whole-second [from,to) ranges, at most 31 days, within its 90-day guard and not in the future. These guards are not universal Meta availability guarantees.",
         );
     }
     if (
@@ -64,7 +100,19 @@ export class AccountInsights {
           "OPERATION_CONFLICT",
           "This operation ID was used for other insight parameters.",
         );
-      return this.collection(id);
+      if (
+        previous.status === "completed" ||
+        (previous.status === "failed" && !retryableOperation(previous.errorCode))
+      )
+        return this.collection(id);
+      if (previous.status === "running") {
+        if (this.clock() - previous.requestedAt < 900_000) return this.collection(id);
+        await this.store.finish({
+          ...previous,
+          status: "failed",
+          errorCode: "COLLECTION_EXPIRED",
+        });
+      }
     }
     const collection: InsightCollection = {
       id,
@@ -74,6 +122,35 @@ export class AccountInsights {
       requestedAt: this.clock(),
       observedAt: null,
       apiVersion: this.apiVersion,
+      definitionVersion: "instagram-measurement-v2",
+      periodKey: JSON.stringify([
+        accountId,
+        this.apiVersion,
+        "instagram_login",
+        "instagram-measurement-v2",
+        input.kind,
+        input.from ?? null,
+        input.to ?? null,
+        input.timeZone,
+        [...new Set(input.metrics)].sort(),
+        input.metricType,
+        input.breakdown ?? null,
+        input.timeframe ?? null,
+      ]),
+      ...(input.from !== undefined && input.to !== undefined
+        ? {
+            requestBounds: {
+              from: input.from,
+              to: input.to,
+              timeZone: input.timeZone,
+              semantics: "[from,to)" as const,
+              sourceSince: Math.floor(input.from / 1000),
+              sourceUntil: Math.floor(input.to / 1000) - 1,
+              sourceBoundaryContract:
+                "integer-second since/until adapter v1; requested range does not establish effective source buckets",
+            },
+          }
+        : {}),
       provider: "instagram_api",
       scope:
         input.kind === "activity" ? "instagram_account_period" : "instagram_audience_timeframe",
@@ -84,9 +161,20 @@ export class AccountInsights {
     };
     if (!(await this.store.reserve(collection))) return this.collect(accountId, id, input);
     try {
-      collection.values = await this.source.read(accountId, input);
-      collection.observedAt = this.clock();
+      collection.values = await this.source.read(accountId, input, id);
+      const receiptTimes = collection.values
+        .map((v) => v.provenance?.responseReceivedAt)
+        .filter((time): time is number => typeof time === "number");
+      collection.observedAt = receiptTimes.length ? Math.max(...receiptTimes) : this.clock();
       collection.status = "completed";
+      const useful = collection.values.filter(
+        (v) =>
+          v.value !== null ||
+          v.points.some((p) => p.value !== null) ||
+          v.breakdowns.some((b) => b.results.some((r) => r.value !== null)),
+      ).length;
+      collection.coverageState =
+        useful === 0 ? "empty" : useful === collection.values.length ? "complete" : "partial";
     } catch (error) {
       collection.status = "failed";
       collection.errorCode = error instanceof ApplicationError ? error.code : "INTERNAL_ERROR";
@@ -111,7 +199,10 @@ export class AccountInsights {
       const observedAt = Number(match?.[1]);
       if (!match || !Number.isSafeInteger(observedAt))
         throw new ApplicationError("VALIDATION_FAILED", "The insight history cursor is invalid.");
-      selection = { ...selection, cursor: { observedAt, id: match[2] as string } };
+      selection = {
+        ...selection,
+        cursor: { observedAt, id: match[2] as string },
+      };
     }
     const observations = await this.store.observations(accountId, kind, limit, selection);
     const last = observations[limit - 1];
@@ -172,7 +263,23 @@ export class AccountInsights {
       !!current &&
       !!previous &&
       current.apiVersion === previous.apiVersion &&
+      (current.definitionVersion ?? null) === (previous.definitionVersion ?? null) &&
+      [...current.input.metrics].sort().join(",") ===
+        [...previous.input.metrics].sort().join(",") &&
       input.to - input.from === (input.compareTo ?? 0) - (input.compareFrom ?? 0);
+    const usefulTimes =
+      current?.values
+        .filter(
+          (v) =>
+            v.value !== null ||
+            v.points.some((p) => p.value !== null) ||
+            v.breakdowns.some((b) => b.results.some((r) => r.value !== null)),
+        )
+        .map((v) => v.provenance?.responseReceivedAt)
+        .filter((time): time is number => typeof time === "number") ?? [];
+    const maturityObservedAt = usefulTimes.length
+      ? Math.min(...usefulTimes)
+      : (current?.observedAt ?? null);
     return {
       accountId,
       requestedPeriod: {
@@ -203,10 +310,23 @@ export class AccountInsights {
         currentAvailable: current !== null,
         previousAvailable: previous !== null,
         truncated: false,
-        requestedWindowComplete: input.to <= this.clock() - 48 * 3_600_000,
+        requestedWindowComplete: periodMaturity(input.to, maturityObservedAt, this.clock())
+          .matureByPolicy,
+        maturity: periodMaturity(input.to, maturityObservedAt, this.clock()),
+        usefulMetrics:
+          current?.values.filter(
+            (v) =>
+              v.value !== null ||
+              v.points.some((p) => p.value !== null) ||
+              v.breakdowns.some((b) => b.results.some((r) => r.value !== null)),
+          ).length ?? 0,
+        requestedMetrics: current?.input.metrics.length ?? 0,
+        maturityTimeBasis: usefulTimes.length
+          ? "earliest_useful_response"
+          : "legacy_or_collection_timestamp",
         observedAt: current?.observedAt ?? null,
       },
-      note: "Account activity in the exact collected period, including older publications. No lifetime cohort sums or summed daily unique reach are substituted. Periods ending within 48 hours can be incomplete. Missing exact period collections are explicit gaps; collect them explicitly.",
+      note: "Account activity in the exact collected period, including older publications. No lifetime cohort sums or summed daily unique reach are substituted. Maturity is a versioned 48h collection policy, not source finality; passing time without a late receipt does not mature an early reading. Requested range does not establish returned bucket boundaries. Missing exact period collections are explicit gaps; collect them explicitly.",
     };
   }
   async audience(

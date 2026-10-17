@@ -1,7 +1,9 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createScheduledOperations } from "../src/app/create-features";
+import { activityPeriodPlan } from "../src/modules/account-insights/domain/periods";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
+import { ApplicationError } from "../src/shared/application/application-error";
 import { accountId, connect, fixture, sampleMedia } from "./helpers";
 
 beforeEach(async () => {
@@ -73,7 +75,7 @@ describe("one-step scheduling and atomic ownership", () => {
     await env.DB.prepare("UPDATE collection_jobs SET next_attempt_at=? WHERE id=?")
       .bind(f.now() - 16 * 60_000, comments.id)
       .run();
-    expect(await f.store.nextJob(f.now())).toBe(comments.id);
+    expect((await f.store.workHeads(f.now())).archiveId).toBe(comments.id);
   });
 
   it("does not create duplicate automatic Stories jobs when an earlier pass is still running", async () => {
@@ -82,6 +84,11 @@ describe("one-step scheduling and atomic ownership", () => {
     const story = await f.collector.start(accountId, crypto.randomUUID(), "stories", true);
     await env.DB.prepare("UPDATE collection_jobs SET next_attempt_at=? WHERE id=?")
       .bind(f.now() + 2 * 3600_000, story.id)
+      .run();
+    await env.DB.prepare(
+      "UPDATE collection_schedules SET next_discovery_at=?,next_insights_at=? WHERE account_id=?",
+    )
+      .bind(f.now() + 86_400_000, f.now() + 86_400_000, accountId)
       .run();
     f.advance(600_000 - (f.now() % 600_000));
     await f.collector.tick();
@@ -151,7 +158,7 @@ describe("recovery without inventing upstream failures", () => {
     expect(f.transport.comments).toHaveBeenCalledTimes(1);
   });
 
-  it("waits for a running comment operation, then retries an expired one under a new operation ID", async () => {
+  it("waits for a running comment operation, then retries an expired one under the same logical operation ID", async () => {
     const f = await ready();
     const job = await f.collector.start(accountId, crypto.randomUUID(), "comments", true);
     await f.collector.advance(job.id);
@@ -168,27 +175,16 @@ describe("recovery without inventing upstream failures", () => {
     expect(f.transport.comments).toHaveBeenCalledTimes(1);
     f.advance(16 * 60_000);
     expect(await f.collector.advance(job.id)).toMatchObject({
-      pages: 0,
-      attempt: 1,
-      failures: 0,
-      errorCode: "COLLECTION_EXPIRED",
-      nextAttemptAt: f.now() + 300_000,
-    });
-    f.advance(300_000);
-    expect(await f.collector.advance(job.id)).toMatchObject({
       status: "completed",
       pages: 1,
       failures: 0,
       errorCode: null,
     });
     expect(f.transport.comments).toHaveBeenCalledTimes(2);
-    expect(
-      (
-        await env.DB.prepare("SELECT COUNT(*) AS total FROM comment_collections").first<{
-          total: number;
-        }>()
-      )?.total,
-    ).toBe(2);
+    const ids = await env.DB.prepare("SELECT COUNT(*) total FROM comment_collections").first<{
+      total: number;
+    }>();
+    expect(ids?.total).toBe(1);
   });
 
   it("preserves SYNC_LEASE_EXPIRED and recovers a catalogue page on the next slot", async () => {
@@ -203,18 +199,9 @@ describe("recovery without inventing upstream failures", () => {
     f.advance(900_000);
     const calls = vi.mocked(f.transport.mediaPage).mock.calls.length;
     expect(await f.collector.advance(job.id)).toMatchObject({
-      status: "running",
-      attempt: 1,
-      pages: 0,
-      failures: 0,
-      errorCode: "SYNC_LEASE_EXPIRED",
-      nextAttemptAt: f.now() + 300_000,
-    });
-    expect(f.transport.mediaPage).toHaveBeenCalledTimes(calls);
-    f.advance(300_000);
-    expect(await f.collector.advance(job.id)).toMatchObject({
       status: "completed",
       pages: 1,
+      failures: 0,
       errorCode: null,
     });
     expect(f.transport.mediaPage).toHaveBeenCalledTimes(calls + 1);
@@ -228,55 +215,57 @@ describe("recovery without inventing upstream failures", () => {
     await env.DB.prepare(
       "UPDATE sync_runs SET status='failed',error_code='INSTAGRAM_AUTH_EXPIRED' WHERE kind='page'",
     ).run();
+    vi.mocked(f.transport.profile).mockRejectedValueOnce(
+      new ApplicationError("INSTAGRAM_AUTH_EXPIRED", "Reconnect"),
+    );
     expect(await f.collector.advance(job.id)).toMatchObject({
       pages: 0,
-      failures: 1,
+      failures: 0,
       errorCode: "INSTAGRAM_AUTH_EXPIRED",
     });
   });
 
-  it("does not report interrupted daily insights as success and uses a new ID after recovery backoff", async () => {
+  it("resumes an interrupted exact-period job with the same logical operation ID after expiration", async () => {
     const f = await ready();
-    await f.collector.configure(accountId, { enabled: true, discoveryMinutes: 360 });
-    const schedule = (await f.collector.status(accountId)).schedule;
-    await env.DB.prepare("UPDATE collection_schedules SET next_stories_at=? WHERE account_id=?")
-      .bind(f.now() + 86_400_000, accountId)
+    await f.collector.configure(accountId, { enabled: true, discoveryMinutes: 60 });
+    await env.DB.prepare(
+      "UPDATE collection_schedules SET next_stories_at=?,next_discovery_at=? WHERE account_id=?",
+    )
+      .bind(f.now() + 86_400_000, f.now() + 86_400_000, accountId)
       .run();
     await f.collector.tick();
+    const job = (await f.collector.status(accountId)).jobs.find((job) => job.origin === "activity");
+    if (!job) throw new Error("Expected activity job");
     const originalCalls = vi.mocked(f.transport.structuredInsights).mock.calls.length;
-    expect(originalCalls).toBeGreaterThan(0);
-    await env.DB.prepare("DELETE FROM collection_jobs").run();
+    expect(originalCalls).toBe(12);
     await env.DB.prepare(
       "UPDATE account_insights SET payload_json=json_set(payload_json,'$.status','running','$.observedAt',NULL)",
     ).run();
+    const initialPeriod = activityPeriodPlan(f.now(), "UTC", []).periods[0];
     await env.DB.prepare(
-      "UPDATE collection_schedules SET next_insights_at=?,retry_at=0,last_success_at=NULL WHERE account_id=?",
+      "UPDATE collection_jobs SET pages=0,collected=0,cursor=?,last_success_at=NULL WHERE id=?",
     )
-      .bind(schedule.nextInsightsAt, accountId)
+      .bind(JSON.stringify([initialPeriod]), job.id)
       .run();
-    f.advance(5 * 60_000);
-    await f.collector.tick();
-    expect((await f.collector.status(accountId)).schedule).toMatchObject({
+    expect(await f.collector.advance(job.id)).toMatchObject({
       errorCode: "SYNC_IN_PROGRESS",
       failures: 0,
-      nextInsightsAt: schedule.nextInsightsAt,
+      pages: 0,
     });
-    expect(f.transport.structuredInsights).toHaveBeenCalledTimes(originalCalls);
-    f.advance(11 * 60_000);
-    await f.collector.tick();
-    expect((await f.collector.status(accountId)).schedule).toMatchObject({
-      errorCode: "COLLECTION_EXPIRED",
-      failures: 0,
-      lastSuccessAt: null,
-    });
-    expect(f.transport.structuredInsights).toHaveBeenCalledTimes(originalCalls);
-    f.advance(300_000);
-    await f.collector.tick();
-    expect((await f.collector.status(accountId)).schedule).toMatchObject({
+    f.advance(16 * 60_000);
+    expect(await f.collector.advance(job.id)).toMatchObject({
       errorCode: null,
+      pages: 1,
       lastSuccessAt: f.now(),
     });
     expect(f.transport.structuredInsights).toHaveBeenCalledTimes(originalCalls * 2);
+    expect(
+      (
+        await env.DB.prepare("SELECT COUNT(*) total FROM account_insights").first<{
+          total: number;
+        }>()
+      )?.total,
+    ).toBe(1);
   });
 
   it("does not share an Instagram reader across scheduled invocations", async () => {

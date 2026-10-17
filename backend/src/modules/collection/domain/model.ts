@@ -1,7 +1,26 @@
 export type CollectionJob = {
+  latencyOrigin?: "recorded_from_creation" | null;
+  httpAttemptsSinceAt?: number | null;
+  firstAttemptAt?: number | null;
+  lastAttemptAt?: number | null;
+  firstUsefulObservationAt?: number | null;
+  lastUsefulObservationAt?: number | null;
+  httpAttempts?: number;
+  lastStepDurationMs?: number | null;
+  lastStepHttpAttempts?: number | null;
+  leaseToken?: string | null;
+  leaseExpiresAt?: number | null;
   id: string;
   accountId: string;
-  origin: "manual" | "scheduled" | "stories" | "comments" | "comments_refresh" | "audience";
+  origin:
+    | "manual"
+    | "scheduled"
+    | "stories"
+    | "comments"
+    | "comments_refresh"
+    | "audience"
+    | "activity"
+    | "catalogue";
   targetMediaId?: string | null;
   automatic: boolean;
   status: "running" | "completed" | "failed" | "cancelled";
@@ -9,6 +28,8 @@ export type CollectionJob = {
   pages: number;
   collected: number;
   mediaProcessed: number;
+  skippedMedia: number;
+  skippedPeriods: number;
   attempt: number;
   failures: number;
   nextAttemptAt: number;
@@ -33,12 +54,16 @@ export type CommentPosition = {
   replyCursor: string | null;
   branchCursors?: Record<string, string | null>;
   omittedBranches?: number;
+  omittedProbeCount?: number;
+  unverifiedParents?: string[];
   eventGeneration?: number;
 };
 export type CollectionSchedule = {
   accountId: string;
   enabled: boolean;
   discoveryMinutes: number;
+  timeZone: string;
+  nextCatalogueAt: number;
   nextDiscoveryAt: number;
   nextStoriesAt: number;
   nextInsightsAt: number;

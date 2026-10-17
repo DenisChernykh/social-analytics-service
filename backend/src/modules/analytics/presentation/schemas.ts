@@ -1,4 +1,9 @@
 import { z } from "@hono/zod-openapi";
+import {
+  fieldFreshnessSchema,
+  measurementProvenanceSchema,
+  observationProvenanceSchema,
+} from "../../../shared/presentation/measurement";
 import { metricKeys } from "../domain/model";
 
 export const idSchema = z.string().min(1).max(150);
@@ -32,6 +37,39 @@ export const mediaSchema = z
     publishedAt: timestamp,
     durationSeconds: z.number().nullable(),
     durationSource: z.literal("manual").nullable(),
+    firstDiscoveredAt: timestamp.nullable().optional(),
+    discoverySource: z.enum(["collection", "history_inferred"]).nullable().optional(),
+    availability: z
+      .object({ unavailableUntil: timestamp, errorCode: z.string().nullable() })
+      .optional(),
+    metadata: z
+      .object({
+        provider: z.literal("instagram_api"),
+        apiVersion: z.string(),
+        observedAt: timestamp,
+        mediaUrl: z.url().nullable(),
+        thumbnailUrl: z.url().nullable(),
+        altText: z.string().nullable(),
+        commentsEnabled: z.boolean().nullable(),
+        sharedToFeed: z.boolean().nullable(),
+        audioType: z.string().nullable(),
+        aiGenerated: z.boolean().nullable(),
+        children: z
+          .array(
+            z.object({
+              id: z.string(),
+              mediaType: z.string(),
+              mediaUrl: z.url().nullable(),
+              thumbnailUrl: z.url().nullable(),
+              altText: z.string().nullable(),
+            }),
+          )
+          .nullable(),
+        childrenComplete: z.boolean().nullable(),
+        unsupportedFields: z.array(z.string()),
+      })
+      .nullable()
+      .optional(),
     context: z
       .object({
         confirmed: z.object({
@@ -44,6 +82,9 @@ export const mediaSchema = z
           callToAction: z.string().nullable().optional(),
           goal: z.string().nullable().optional(),
           sponsored: z.boolean().nullable().optional(),
+          paidDistribution: z.boolean().nullable().optional(),
+          brandPartnership: z.boolean().nullable().optional(),
+          coauthor: z.boolean().nullable().optional(),
           notes: z.string().nullable().optional(),
         }),
         proposal: z.object({
@@ -56,6 +97,9 @@ export const mediaSchema = z
           callToAction: z.string().nullable().optional(),
           goal: z.string().nullable().optional(),
           sponsored: z.boolean().nullable().optional(),
+          paidDistribution: z.boolean().nullable().optional(),
+          brandPartnership: z.boolean().nullable().optional(),
+          coauthor: z.boolean().nullable().optional(),
           notes: z.string().nullable().optional(),
         }),
         confirmedSource: z.literal("manual"),
@@ -71,12 +115,19 @@ export const metricSchema = z
     value: z.number().nullable(),
     unit: z.enum(["count", "milliseconds", "percent"]),
     sourceField: z.string(),
+    provenance: measurementProvenanceSchema.nullable().optional(),
     reason: z
       .enum([
+        "not_requested",
         "not_returned",
         "not_supported",
         "permission_required",
         "invalid_value",
+        "invalid_request",
+        "invalid_breakdown",
+        "object_unavailable",
+        "source_error",
+        "request_deferred",
         "insufficient_audience",
       ])
       .nullable(),
@@ -94,11 +145,20 @@ export const snapshotSchema = z
   .object({
     id: z.string(),
     mediaId: idSchema,
+    provenance: observationProvenanceSchema.nullable().optional(),
     observedAt: timestamp,
     apiVersion: z.string(),
     metrics: metricsSchema,
+    profileActivity: z
+      .object({ total: metricSchema, actions: z.record(z.string(), metricSchema) })
+      .nullable()
+      .optional(),
     storyInsights: z
-      .object({ replies: metricSchema, navigation: z.record(z.string(), metricSchema) })
+      .object({
+        replies: metricSchema,
+        navigationTotal: metricSchema.optional(),
+        navigation: z.record(z.string(), metricSchema),
+      })
       .nullable()
       .optional(),
   })
@@ -106,7 +166,7 @@ export const snapshotSchema = z
 export const calculatedSchema = z
   .object({
     value: z.number().nullable(),
-    unit: z.enum(["percent", "ratio", "count_per_hour", "count"]),
+    unit: z.enum(["actions_per_100", "percent", "ratio", "count_per_hour", "count"]),
     formula: z.string(),
     inputs: z.record(z.string(), z.number().nullable()),
     reason: z
@@ -116,6 +176,7 @@ export const calculatedSchema = z
         "no_baseline",
         "invalid_interval",
         "counter_decreased",
+        "incompatible_measurements",
       ])
       .nullable(),
   })
@@ -146,12 +207,32 @@ export const reportSchema = z
         aggregation: z.literal("lifetime"),
       })
       .nullable(),
+    observation: observationProvenanceSchema.nullable().optional(),
+    freshness: z.record(z.string(), fieldFreshnessSchema).optional(),
+    interactionComponents: z
+      .object({
+        native: z.number().nullable(),
+        sum: z.number().nullable(),
+        formula: z.string(),
+        reason: z.string(),
+      })
+      .nullable()
+      .optional(),
     metrics: metricsSchema.nullable(),
+    profileActivity: z
+      .object({ total: metricSchema, actions: z.record(z.string(), metricSchema) })
+      .nullable()
+      .optional(),
     storyInsights: z
-      .object({ replies: metricSchema, navigation: z.record(z.string(), metricSchema) })
+      .object({
+        replies: metricSchema,
+        navigationTotal: metricSchema.optional(),
+        navigation: z.record(z.string(), metricSchema),
+      })
       .nullable(),
     calculated: z
       .object({
+        interactionBasis: z.enum(["native_total_interactions", "derived_component_sum"]).optional(),
         engagementByReach: calculatedSchema,
         engagementByViews: calculatedSchema,
         saveRate: calculatedSchema,
@@ -175,10 +256,17 @@ export const syncSchema = z
     inputCursor: z.string().nullable(),
     pageSize: z.number().int(),
     status: z.enum(["running", "completed", "failed"]),
+    persistedStatus: z.enum(["running", "completed", "failed"]).optional(),
+    effectiveState: z.enum(["running", "completed", "failed", "expired"]).optional(),
+    expiredAt: timestamp.nullable().optional(),
     startedAt: timestamp,
     completedAt: timestamp.nullable(),
     nextCursor: z.string().nullable(),
     mediaCount: z.number().int(),
+    usefulValues: z.number().nullable().optional(),
+    coverageState: z.enum(["complete", "partial", "empty"]).nullable().optional(),
+    firstUsefulAt: timestamp.nullable().optional(),
+    lastUsefulAt: timestamp.nullable().optional(),
     errorCode: z.string().nullable(),
   })
   .openapi("SyncRun");

@@ -1,0 +1,6162 @@
+{
+  "checkedAt": "2026-10-09T15:53:19.583Z",
+  "mode": "read_only",
+  "failures": [],
+  "health": {
+    "status": "ok",
+    "revision": "0.2.16"
+  },
+  "unauthenticated": {
+    "code": "UNAUTHENTICATED"
+  },
+  "deployment": [
+    {
+      "id": "231496e2-70ef-4f0b-aff3-8dc3adffc123",
+      "created_on": "2026-10-09T06:29:40.443513Z",
+      "versions": [
+        {
+          "version_id": "e659a098-741f-47ba-891f-ad25274efa70",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "5c8df31f-79fe-4bb9-8379-0197124b9404",
+      "created_on": "2026-10-08T16:16:49.065082Z",
+      "versions": [
+        {
+          "version_id": "6ebe6029-74e1-4551-b68a-0b1c30a56f68",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "40e5545d-d8a5-475f-a2b7-bd701704cf8f",
+      "created_on": "2026-10-08T07:14:44.967788Z",
+      "versions": [
+        {
+          "version_id": "58eead44-746c-4f50-a26e-037d702964ba",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "03dad0d1-e969-4b31-8efb-8df4c10e9d10",
+      "created_on": "2026-10-08T06:39:34.467406Z",
+      "versions": [
+        {
+          "version_id": "c0cffcb3-525b-47aa-88bf-a1b21164a739",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "8140e28e-c01a-4ad5-a392-fd3b5c439a6b",
+      "created_on": "2026-10-08T06:17:26.923071Z",
+      "versions": [
+        {
+          "version_id": "a5e664bf-e0c1-42c6-9826-6fabc74ebd37",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "8fcca25b-4d1d-4481-ae5f-865927387ad5",
+      "created_on": "2026-10-07T21:24:02.33073Z",
+      "versions": [
+        {
+          "version_id": "694c32b6-4f8e-4094-8367-2229705d9731",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "dd77fbdd-6ac0-4d39-88f7-42c060c87688",
+      "created_on": "2026-10-07T21:09:59.456832Z",
+      "versions": [
+        {
+          "version_id": "8f7327a9-d752-4fba-acb8-bb88b9b4ed21",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "abda9dcf-6252-468f-a8fb-dd61af7599f0",
+      "created_on": "2026-10-07T21:09:37.588967Z",
+      "versions": [
+        {
+          "version_id": "ac5ae13b-07cc-45b6-b9c1-ff8d33b772b0",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "29abddf2-732e-4fbc-8560-aed7bbe16d73",
+      "created_on": "2026-10-05T18:52:50.416623Z",
+      "versions": [
+        {
+          "version_id": "d4308f77-b36d-42b2-9954-6f3b01dfb092",
+          "percentage": 100
+        }
+      ]
+    },
+    {
+      "id": "0ab82751-c90d-44fb-890e-4e3550e9d7f6",
+      "created_on": "2026-10-03T09:27:23.45185Z",
+      "versions": [
+        {
+          "version_id": "c44a5d62-6748-4df8-bde8-7e77c81f42ee",
+          "percentage": 100
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "usageModel": "standard",
+    "limits": null,
+    "logpush": false,
+    "observability": null,
+    "tailConsumers": null,
+    "bindings": [
+      {
+        "name": "BUILD_REVISION",
+        "text": "0.2.16",
+        "type": "plain_text"
+      },
+      {
+        "database_id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad",
+        "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad",
+        "name": "DB",
+        "type": "d1"
+      },
+      {
+        "name": "ENVIRONMENT",
+        "text": "production",
+        "type": "plain_text"
+      },
+      {
+        "name": "INSTAGRAM_API_VERSION",
+        "text": "v26.0",
+        "type": "plain_text"
+      },
+      {
+        "name": "INSTAGRAM_REDIRECT_URI",
+        "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback",
+        "type": "plain_text"
+      }
+    ],
+    "schedules": {
+      "schedules": [
+        {
+          "cron": "*/5 * * * *",
+          "created_on": "2026-10-03T08:29:58.124392Z",
+          "modified_on": "2026-10-09T06:29:42.98561Z"
+        }
+      ]
+    }
+  },
+  "bundle": {
+    "bytes": 1716875,
+    "sha256": "a6034b1536f348711a692e9c9c5b16cfb7b01700e199faeb78a9444b6036eda8"
+  },
+  "openapi": {
+    "openapi": "3.1.0",
+    "sha256": "7c260f38eb688cf04012863e87ed737fd13b2828670fca570f462b3a6c1a2c70",
+    "reviewRankingMode": null
+  },
+  "window": {
+    "start": "2026-10-09T06:30:00Z",
+    "end": "2026-10-09T15:48:00.000Z",
+    "firstCron": "2026-10-09T06:30:42.000Z",
+    "full24hAvailable": false,
+    "full24hNotBefore": "2026-10-10T06:30:42.000Z",
+    "version": "e659a098-741f-47ba-891f-ad25274efa70",
+    "scope": "Scheduled dataset uses script/time; deployment history must prove no intervening version. Mixed dataset is explicitly version-filtered. D1 includes diagnostic reads."
+  },
+  "analytics": {
+    "query": "{viewer {accounts(filter:{accountTag:\"7a2715978428a86e0c9d8ce757d33687\"}) {scheduled:workersInvocationsScheduled(limit:2000,filter:{scriptName:\"api\",datetime_geq:\"2026-10-09T06:30:00Z\",datetime_lt:\"2026-10-09T15:48:00.000Z\"},orderBy:[scheduledDatetime_ASC]) {cpuTimeUs cron datetime scheduledDatetime status} mixed:workersInvocationsAdaptive(limit:2000,filter:{scriptName:\"api\",datetime_geq:\"2026-10-09T06:30:00Z\",datetime_lt:\"2026-10-09T15:48:00.000Z\",scriptVersion:\"e659a098-741f-47ba-891f-ad25274efa70\"}) {dimensions{datetimeMinute status scriptVersion usageModel} sum{requests errors cpuTimeUs subrequests wallTime duration} max{cpuTime duration wallTime memoryUsageBytes} quantiles{cpuTimeP50 cpuTimeP95 cpuTimeP99 durationP50 wallTimeP50 memoryUsageBytesP50}}}}}",
+    "mixed": [
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 61875,
+          "duration": 0.63255575,
+          "memoryUsageBytes": 10686920,
+          "wallTime": 5060446
+        },
+        "quantiles": {
+          "cpuTimeP50": 61875,
+          "cpuTimeP95": 61875,
+          "cpuTimeP99": 61875,
+          "durationP50": 0.6325557,
+          "memoryUsageBytesP50": 10686920,
+          "wallTimeP50": 5060446
+        },
+        "sum": {
+          "cpuTimeUs": 61875,
+          "duration": 0.63255575,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5060446
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 44615,
+          "duration": 0.9320208750000001,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 7456167
+        },
+        "quantiles": {
+          "cpuTimeP50": 44615,
+          "cpuTimeP95": 44615,
+          "cpuTimeP99": 44615,
+          "durationP50": 0.9320209,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 7456167
+        },
+        "sum": {
+          "cpuTimeUs": 44615,
+          "duration": 0.9320208750000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 7456167
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 41390,
+          "duration": 1.001792375,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8014339
+        },
+        "quantiles": {
+          "cpuTimeP50": 41390,
+          "cpuTimeP95": 41390,
+          "cpuTimeP99": 41390,
+          "durationP50": 1.0017924,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8014339
+        },
+        "sum": {
+          "cpuTimeUs": 41390,
+          "duration": 1.001792375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8014339
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 24097,
+          "duration": 0.602915,
+          "memoryUsageBytes": 8589962,
+          "wallTime": 4823320
+        },
+        "quantiles": {
+          "cpuTimeP50": 24097,
+          "cpuTimeP95": 24097,
+          "cpuTimeP99": 24097,
+          "durationP50": 0.602915,
+          "memoryUsageBytesP50": 8589962,
+          "wallTimeP50": 4823320
+        },
+        "sum": {
+          "cpuTimeUs": 24097,
+          "duration": 0.602915,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4823320
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 41967,
+          "duration": 0.9379117499999999,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 7503294
+        },
+        "quantiles": {
+          "cpuTimeP50": 41967,
+          "cpuTimeP95": 41967,
+          "cpuTimeP99": 41967,
+          "durationP50": 0.93791175,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 7503294
+        },
+        "sum": {
+          "cpuTimeUs": 41967,
+          "duration": 0.9379117499999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 7503294
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 30755,
+          "duration": 0.6056214999999999,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 4844972
+        },
+        "quantiles": {
+          "cpuTimeP50": 30755,
+          "cpuTimeP95": 30755,
+          "cpuTimeP99": 30755,
+          "durationP50": 0.6056215,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 4844972
+        },
+        "sum": {
+          "cpuTimeUs": 30755,
+          "duration": 0.6056214999999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 4844972
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 24799,
+          "duration": 0.541465125,
+          "memoryUsageBytes": 8590052,
+          "wallTime": 4331721
+        },
+        "quantiles": {
+          "cpuTimeP50": 24799,
+          "cpuTimeP95": 24799,
+          "cpuTimeP99": 24799,
+          "durationP50": 0.5414651,
+          "memoryUsageBytesP50": 8590052,
+          "wallTimeP50": 4331721
+        },
+        "sum": {
+          "cpuTimeUs": 24799,
+          "duration": 0.541465125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4331721
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:02:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 44350,
+          "duration": 0.04435,
+          "memoryUsageBytes": 13570210,
+          "wallTime": 233857
+        },
+        "quantiles": {
+          "cpuTimeP50": 43222,
+          "cpuTimeP95": 44350,
+          "cpuTimeP99": 44350,
+          "durationP50": 0.043222,
+          "memoryUsageBytesP50": 13570210,
+          "wallTimeP50": 51296
+        },
+        "sum": {
+          "cpuTimeUs": 87572,
+          "duration": 0.08757200000000001,
+          "errors": 0,
+          "requests": 2,
+          "subrequests": 0,
+          "wallTime": 285153
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 38414,
+          "duration": 0.763402,
+          "memoryUsageBytes": 8589854,
+          "wallTime": 6107216
+        },
+        "quantiles": {
+          "cpuTimeP50": 38414,
+          "cpuTimeP95": 38414,
+          "cpuTimeP99": 38414,
+          "durationP50": 0.763402,
+          "memoryUsageBytesP50": 8589854,
+          "wallTimeP50": 6107216
+        },
+        "sum": {
+          "cpuTimeUs": 38414,
+          "duration": 0.763402,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6107216
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:46:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 212080,
+          "duration": 0.338359125,
+          "memoryUsageBytes": 20533260,
+          "wallTime": 2706873
+        },
+        "quantiles": {
+          "cpuTimeP50": 173101,
+          "cpuTimeP95": 212080,
+          "cpuTimeP99": 212080,
+          "durationP50": 0.21124962,
+          "memoryUsageBytesP50": 15397186,
+          "wallTimeP50": 1689997
+        },
+        "sum": {
+          "cpuTimeUs": 413294,
+          "duration": 0.7227097499999999,
+          "errors": 0,
+          "requests": 3,
+          "subrequests": 0,
+          "wallTime": 5147753
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 66174,
+          "duration": 1.0248475000000001,
+          "memoryUsageBytes": 9376136,
+          "wallTime": 8198780
+        },
+        "quantiles": {
+          "cpuTimeP50": 66174,
+          "cpuTimeP95": 66174,
+          "cpuTimeP99": 66174,
+          "durationP50": 1.0248475,
+          "memoryUsageBytesP50": 9376136,
+          "wallTimeP50": 8198780
+        },
+        "sum": {
+          "cpuTimeUs": 66174,
+          "duration": 1.0248475000000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 8198780
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:08:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 121847,
+          "duration": 1.62334125,
+          "memoryUsageBytes": 13389836,
+          "wallTime": 12986730
+        },
+        "quantiles": {
+          "cpuTimeP50": 57650,
+          "cpuTimeP95": 121847,
+          "cpuTimeP99": 121847,
+          "durationP50": 0.30342525,
+          "memoryUsageBytesP50": 13123596,
+          "wallTimeP50": 2427402
+        },
+        "sum": {
+          "cpuTimeUs": 485750,
+          "duration": 3.4627324999999995,
+          "errors": 0,
+          "requests": 7,
+          "subrequests": 0,
+          "wallTime": 27701860
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 44969,
+          "duration": 1.232051125,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 9856409
+        },
+        "quantiles": {
+          "cpuTimeP50": 44969,
+          "cpuTimeP95": 44969,
+          "cpuTimeP99": 44969,
+          "durationP50": 1.2320511,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 9856409
+        },
+        "sum": {
+          "cpuTimeUs": 44969,
+          "duration": 1.232051125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9856409
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:01:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 27836,
+          "duration": 0.29790724999999996,
+          "memoryUsageBytes": 9638494,
+          "wallTime": 2383258
+        },
+        "quantiles": {
+          "cpuTimeP50": 6555,
+          "cpuTimeP95": 27836,
+          "cpuTimeP99": 27836,
+          "durationP50": 0.018321875,
+          "memoryUsageBytesP50": 9375906,
+          "wallTimeP50": 146575
+        },
+        "sum": {
+          "cpuTimeUs": 65822,
+          "duration": 0.5988906249999999,
+          "errors": 0,
+          "requests": 4,
+          "subrequests": 4,
+          "wallTime": 4791125
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 50742,
+          "duration": 0.9662145000000001,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 7729716
+        },
+        "quantiles": {
+          "cpuTimeP50": 50742,
+          "cpuTimeP95": 50742,
+          "cpuTimeP99": 50742,
+          "durationP50": 0.9662145,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 7729716
+        },
+        "sum": {
+          "cpuTimeUs": 50742,
+          "duration": 0.9662145000000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 7729716
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:06:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 96445,
+          "duration": 0.29455525,
+          "memoryUsageBytes": 15143524,
+          "wallTime": 2356442
+        },
+        "quantiles": {
+          "cpuTimeP50": 10645,
+          "cpuTimeP95": 85180,
+          "cpuTimeP99": 96445,
+          "durationP50": 0.103694,
+          "memoryUsageBytesP50": 13119650,
+          "wallTimeP50": 829552
+        },
+        "sum": {
+          "cpuTimeUs": 685561,
+          "duration": 2.732173625,
+          "errors": 0,
+          "requests": 26,
+          "subrequests": 0,
+          "wallTime": 21366261
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 29317,
+          "duration": 0.5178137500000001,
+          "memoryUsageBytes": 8589838,
+          "wallTime": 4142510
+        },
+        "quantiles": {
+          "cpuTimeP50": 29317,
+          "cpuTimeP95": 29317,
+          "cpuTimeP99": 29317,
+          "durationP50": 0.51781374,
+          "memoryUsageBytesP50": 8589838,
+          "wallTimeP50": 4142510
+        },
+        "sum": {
+          "cpuTimeUs": 29317,
+          "duration": 0.5178137500000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 4142510
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 23232,
+          "duration": 0.5548251249999999,
+          "memoryUsageBytes": 8852196,
+          "wallTime": 4438601
+        },
+        "quantiles": {
+          "cpuTimeP50": 23232,
+          "cpuTimeP95": 23232,
+          "cpuTimeP99": 23232,
+          "durationP50": 0.5548251,
+          "memoryUsageBytesP50": 8852196,
+          "wallTimeP50": 4438601
+        },
+        "sum": {
+          "cpuTimeUs": 23232,
+          "duration": 0.5548251249999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4438601
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 38954,
+          "duration": 1.02945525,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8235642
+        },
+        "quantiles": {
+          "cpuTimeP50": 38954,
+          "cpuTimeP95": 38954,
+          "cpuTimeP99": 38954,
+          "durationP50": 1.0294553,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8235642
+        },
+        "sum": {
+          "cpuTimeUs": 38954,
+          "duration": 1.02945525,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8235642
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 51414,
+          "duration": 1.092981875,
+          "memoryUsageBytes": 8851468,
+          "wallTime": 8743855
+        },
+        "quantiles": {
+          "cpuTimeP50": 51414,
+          "cpuTimeP95": 51414,
+          "cpuTimeP99": 51414,
+          "durationP50": 1.0929819,
+          "memoryUsageBytesP50": 8851468,
+          "wallTimeP50": 8743855
+        },
+        "sum": {
+          "cpuTimeUs": 51414,
+          "duration": 1.092981875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8743855
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 45111,
+          "duration": 1.02875075,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8230006
+        },
+        "quantiles": {
+          "cpuTimeP50": 45111,
+          "cpuTimeP95": 45111,
+          "cpuTimeP99": 45111,
+          "durationP50": 1.0287508,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8230006
+        },
+        "sum": {
+          "cpuTimeUs": 45111,
+          "duration": 1.02875075,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8230006
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 28540,
+          "duration": 0.691519875,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5532159
+        },
+        "quantiles": {
+          "cpuTimeP50": 28540,
+          "cpuTimeP95": 28540,
+          "cpuTimeP99": 28540,
+          "durationP50": 0.69151986,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5532159
+        },
+        "sum": {
+          "cpuTimeUs": 28540,
+          "duration": 0.691519875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5532159
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 29178,
+          "duration": 0.698271375,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5586171
+        },
+        "quantiles": {
+          "cpuTimeP50": 29178,
+          "cpuTimeP95": 29178,
+          "cpuTimeP99": 29178,
+          "durationP50": 0.6982714,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5586171
+        },
+        "sum": {
+          "cpuTimeUs": 29178,
+          "duration": 0.698271375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5586171
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:08:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 113290,
+          "duration": 0.11691800000000001,
+          "memoryUsageBytes": 13832354,
+          "wallTime": 935344
+        },
+        "quantiles": {
+          "cpuTimeP50": 60537,
+          "cpuTimeP95": 113290,
+          "cpuTimeP99": 113290,
+          "durationP50": 0.11329,
+          "memoryUsageBytesP50": 13832354,
+          "wallTimeP50": 404637
+        },
+        "sum": {
+          "cpuTimeUs": 173827,
+          "duration": 0.23020800000000002,
+          "errors": 0,
+          "requests": 2,
+          "subrequests": 0,
+          "wallTime": 1339981
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 36689,
+          "duration": 0.827142125,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 6617137
+        },
+        "quantiles": {
+          "cpuTimeP50": 36689,
+          "cpuTimeP95": 36689,
+          "cpuTimeP99": 36689,
+          "durationP50": 0.8271421,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 6617137
+        },
+        "sum": {
+          "cpuTimeUs": 36689,
+          "duration": 0.827142125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 6617137
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 35596,
+          "duration": 0.64151725,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5132138
+        },
+        "quantiles": {
+          "cpuTimeP50": 35596,
+          "cpuTimeP95": 35596,
+          "cpuTimeP99": 35596,
+          "durationP50": 0.6415172,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5132138
+        },
+        "sum": {
+          "cpuTimeUs": 35596,
+          "duration": 0.64151725,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5132138
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 51338,
+          "duration": 1.162544875,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 9300359
+        },
+        "quantiles": {
+          "cpuTimeP50": 51338,
+          "cpuTimeP95": 51338,
+          "cpuTimeP99": 51338,
+          "durationP50": 1.1625448,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 9300359
+        },
+        "sum": {
+          "cpuTimeUs": 51338,
+          "duration": 1.162544875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9300359
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 32448,
+          "duration": 0.637690875,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5101527
+        },
+        "quantiles": {
+          "cpuTimeP50": 32448,
+          "cpuTimeP95": 32448,
+          "cpuTimeP99": 32448,
+          "durationP50": 0.6376909,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5101527
+        },
+        "sum": {
+          "cpuTimeUs": 32448,
+          "duration": 0.637690875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5101527
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 51061,
+          "duration": 1.2585932499999999,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 10068746
+        },
+        "quantiles": {
+          "cpuTimeP50": 51061,
+          "cpuTimeP95": 51061,
+          "cpuTimeP99": 51061,
+          "durationP50": 1.2585932,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 10068746
+        },
+        "sum": {
+          "cpuTimeUs": 51061,
+          "duration": 1.2585932499999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 10068746
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 29377,
+          "duration": 0.553743125,
+          "memoryUsageBytes": 8851985,
+          "wallTime": 4429945
+        },
+        "quantiles": {
+          "cpuTimeP50": 29377,
+          "cpuTimeP95": 29377,
+          "cpuTimeP99": 29377,
+          "durationP50": 0.5537431,
+          "memoryUsageBytesP50": 8851985,
+          "wallTimeP50": 4429945
+        },
+        "sum": {
+          "cpuTimeUs": 29377,
+          "duration": 0.553743125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4429945
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 43345,
+          "duration": 1.072805875,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8582447
+        },
+        "quantiles": {
+          "cpuTimeP50": 43345,
+          "cpuTimeP95": 43345,
+          "cpuTimeP99": 43345,
+          "durationP50": 1.0728059,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8582447
+        },
+        "sum": {
+          "cpuTimeUs": 43345,
+          "duration": 1.072805875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8582447
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 28854,
+          "duration": 0.547569625,
+          "memoryUsageBytes": 8852106,
+          "wallTime": 4380557
+        },
+        "quantiles": {
+          "cpuTimeP50": 28854,
+          "cpuTimeP95": 28854,
+          "cpuTimeP99": 28854,
+          "durationP50": 0.54756963,
+          "memoryUsageBytesP50": 8852106,
+          "wallTimeP50": 4380557
+        },
+        "sum": {
+          "cpuTimeUs": 28854,
+          "duration": 0.547569625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4380557
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 43304,
+          "duration": 1.117156375,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8937251
+        },
+        "quantiles": {
+          "cpuTimeP50": 43304,
+          "cpuTimeP95": 43304,
+          "cpuTimeP99": 43304,
+          "durationP50": 1.1171564,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8937251
+        },
+        "sum": {
+          "cpuTimeUs": 43304,
+          "duration": 1.117156375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8937251
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 52976,
+          "duration": 1.2257915000000001,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 9806332
+        },
+        "quantiles": {
+          "cpuTimeP50": 52976,
+          "cpuTimeP95": 52976,
+          "cpuTimeP99": 52976,
+          "durationP50": 1.2257915,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 9806332
+        },
+        "sum": {
+          "cpuTimeUs": 52976,
+          "duration": 1.2257915000000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9806332
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 30850,
+          "duration": 0.648071375,
+          "memoryUsageBytes": 9900344,
+          "wallTime": 5184571
+        },
+        "quantiles": {
+          "cpuTimeP50": 8358,
+          "cpuTimeP95": 30850,
+          "cpuTimeP99": 30850,
+          "durationP50": 0.103333,
+          "memoryUsageBytesP50": 9900194,
+          "wallTimeP50": 826664
+        },
+        "sum": {
+          "cpuTimeUs": 64194,
+          "duration": 1.0655919999999999,
+          "errors": 0,
+          "requests": 6,
+          "subrequests": 3,
+          "wallTime": 8516642
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 45794,
+          "duration": 1.0147451250000001,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8117961
+        },
+        "quantiles": {
+          "cpuTimeP50": 45794,
+          "cpuTimeP95": 45794,
+          "cpuTimeP99": 45794,
+          "durationP50": 1.0147451,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8117961
+        },
+        "sum": {
+          "cpuTimeUs": 45794,
+          "duration": 1.0147451250000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8117961
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 37849,
+          "duration": 1.02788525,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8223082
+        },
+        "quantiles": {
+          "cpuTimeP50": 37849,
+          "cpuTimeP95": 37849,
+          "cpuTimeP99": 37849,
+          "durationP50": 1.0278852,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8223082
+        },
+        "sum": {
+          "cpuTimeUs": 37849,
+          "duration": 1.02788525,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8223082
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 96552,
+          "duration": 1.250444625,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 10003557
+        },
+        "quantiles": {
+          "cpuTimeP50": 96552,
+          "cpuTimeP95": 96552,
+          "cpuTimeP99": 96552,
+          "durationP50": 1.2504447,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 10003557
+        },
+        "sum": {
+          "cpuTimeUs": 96552,
+          "duration": 1.250444625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 10003557
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:52:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 58080,
+          "duration": 0.101351625,
+          "memoryUsageBytes": 17833996,
+          "wallTime": 810813
+        },
+        "quantiles": {
+          "cpuTimeP50": 22002,
+          "cpuTimeP95": 58080,
+          "cpuTimeP99": 58080,
+          "durationP50": 0.070821375,
+          "memoryUsageBytesP50": 14102963,
+          "wallTimeP50": 566571
+        },
+        "sum": {
+          "cpuTimeUs": 80082,
+          "duration": 0.17217300000000002,
+          "errors": 0,
+          "requests": 2,
+          "subrequests": 0,
+          "wallTime": 1377384
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 22676,
+          "duration": 0.592204,
+          "memoryUsageBytes": 8589980,
+          "wallTime": 4737632
+        },
+        "quantiles": {
+          "cpuTimeP50": 22676,
+          "cpuTimeP95": 22676,
+          "cpuTimeP99": 22676,
+          "durationP50": 0.592204,
+          "memoryUsageBytesP50": 8589980,
+          "wallTimeP50": 4737632
+        },
+        "sum": {
+          "cpuTimeUs": 22676,
+          "duration": 0.592204,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4737632
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 49007,
+          "duration": 1.096384125,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8771073
+        },
+        "quantiles": {
+          "cpuTimeP50": 49007,
+          "cpuTimeP95": 49007,
+          "cpuTimeP99": 49007,
+          "durationP50": 1.0963842,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8771073
+        },
+        "sum": {
+          "cpuTimeUs": 49007,
+          "duration": 1.096384125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8771073
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 35148,
+          "duration": 0.8696575,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 6957260
+        },
+        "quantiles": {
+          "cpuTimeP50": 35148,
+          "cpuTimeP95": 35148,
+          "cpuTimeP99": 35148,
+          "durationP50": 0.8696575,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 6957260
+        },
+        "sum": {
+          "cpuTimeUs": 35148,
+          "duration": 0.8696575,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 6957260
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 40768,
+          "duration": 0.846195,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 6769560
+        },
+        "quantiles": {
+          "cpuTimeP50": 40768,
+          "cpuTimeP95": 40768,
+          "cpuTimeP99": 40768,
+          "durationP50": 0.846195,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 6769560
+        },
+        "sum": {
+          "cpuTimeUs": 40768,
+          "duration": 0.846195,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6769560
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:13:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 62385,
+          "duration": 0.087977625,
+          "memoryUsageBytes": 13832354,
+          "wallTime": 703821
+        },
+        "quantiles": {
+          "cpuTimeP50": 15809,
+          "cpuTimeP95": 62385,
+          "cpuTimeP99": 62385,
+          "durationP50": 0.062385,
+          "memoryUsageBytesP50": 9965730,
+          "wallTimeP50": 332062
+        },
+        "sum": {
+          "cpuTimeUs": 78194,
+          "duration": 0.150362625,
+          "errors": 0,
+          "requests": 2,
+          "subrequests": 0,
+          "wallTime": 1035883
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 47110,
+          "duration": 0.9574429999999999,
+          "memoryUsageBytes": 8851998,
+          "wallTime": 7659544
+        },
+        "quantiles": {
+          "cpuTimeP50": 47110,
+          "cpuTimeP95": 47110,
+          "cpuTimeP99": 47110,
+          "durationP50": 0.957443,
+          "memoryUsageBytesP50": 8851998,
+          "wallTimeP50": 7659544
+        },
+        "sum": {
+          "cpuTimeUs": 47110,
+          "duration": 0.9574429999999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 4,
+          "wallTime": 7659544
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 27228,
+          "duration": 0.504205875,
+          "memoryUsageBytes": 8852121,
+          "wallTime": 4033647
+        },
+        "quantiles": {
+          "cpuTimeP50": 27228,
+          "cpuTimeP95": 27228,
+          "cpuTimeP99": 27228,
+          "durationP50": 0.5042059,
+          "memoryUsageBytesP50": 8852121,
+          "wallTimeP50": 4033647
+        },
+        "sum": {
+          "cpuTimeUs": 27228,
+          "duration": 0.504205875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4033647
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 49406,
+          "duration": 1.1051276250000002,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8841021
+        },
+        "quantiles": {
+          "cpuTimeP50": 49406,
+          "cpuTimeP95": 49406,
+          "cpuTimeP99": 49406,
+          "durationP50": 1.1051276,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8841021
+        },
+        "sum": {
+          "cpuTimeUs": 49406,
+          "duration": 1.1051276250000002,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8841021
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 46408,
+          "duration": 1.0317863749999998,
+          "memoryUsageBytes": 8327560,
+          "wallTime": 8254291
+        },
+        "quantiles": {
+          "cpuTimeP50": 46408,
+          "cpuTimeP95": 46408,
+          "cpuTimeP99": 46408,
+          "durationP50": 1.0317863,
+          "memoryUsageBytesP50": 8327560,
+          "wallTimeP50": 8254291
+        },
+        "sum": {
+          "cpuTimeUs": 46408,
+          "duration": 1.0317863749999998,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 8254291
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 29941,
+          "duration": 0.5985097500000001,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 4788078
+        },
+        "quantiles": {
+          "cpuTimeP50": 29941,
+          "cpuTimeP95": 29941,
+          "cpuTimeP99": 29941,
+          "durationP50": 0.5985097,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 4788078
+        },
+        "sum": {
+          "cpuTimeUs": 29941,
+          "duration": 0.5985097500000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 4788078
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 78592,
+          "duration": 1.2604525000000002,
+          "memoryUsageBytes": 8851468,
+          "wallTime": 10083620
+        },
+        "quantiles": {
+          "cpuTimeP50": 78592,
+          "cpuTimeP95": 78592,
+          "cpuTimeP99": 78592,
+          "durationP50": 1.2604525,
+          "memoryUsageBytesP50": 8851468,
+          "wallTimeP50": 10083620
+        },
+        "sum": {
+          "cpuTimeUs": 78592,
+          "duration": 1.2604525000000002,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 10083620
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 44406,
+          "duration": 0.8582655,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 6866124
+        },
+        "quantiles": {
+          "cpuTimeP50": 44406,
+          "cpuTimeP95": 44406,
+          "cpuTimeP99": 44406,
+          "durationP50": 0.8582655,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 6866124
+        },
+        "sum": {
+          "cpuTimeUs": 44406,
+          "duration": 0.8582655,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6866124
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 31308,
+          "duration": 0.628130125,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5025041
+        },
+        "quantiles": {
+          "cpuTimeP50": 31308,
+          "cpuTimeP95": 31308,
+          "cpuTimeP99": 31308,
+          "durationP50": 0.62813014,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5025041
+        },
+        "sum": {
+          "cpuTimeUs": 31308,
+          "duration": 0.628130125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5025041
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 28467,
+          "duration": 0.5098311249999999,
+          "memoryUsageBytes": 8589838,
+          "wallTime": 4078649
+        },
+        "quantiles": {
+          "cpuTimeP50": 28467,
+          "cpuTimeP95": 28467,
+          "cpuTimeP99": 28467,
+          "durationP50": 0.50983113,
+          "memoryUsageBytesP50": 8589838,
+          "wallTimeP50": 4078649
+        },
+        "sum": {
+          "cpuTimeUs": 28467,
+          "duration": 0.5098311249999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 4078649
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 45711,
+          "duration": 1.246374125,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 9970993
+        },
+        "quantiles": {
+          "cpuTimeP50": 45711,
+          "cpuTimeP95": 45711,
+          "cpuTimeP99": 45711,
+          "durationP50": 1.2463741,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 9970993
+        },
+        "sum": {
+          "cpuTimeUs": 45711,
+          "duration": 1.246374125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9970993
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 27743,
+          "duration": 0.565276375,
+          "memoryUsageBytes": 8851985,
+          "wallTime": 4522211
+        },
+        "quantiles": {
+          "cpuTimeP50": 27743,
+          "cpuTimeP95": 27743,
+          "cpuTimeP99": 27743,
+          "durationP50": 0.5652764,
+          "memoryUsageBytesP50": 8851985,
+          "wallTimeP50": 4522211
+        },
+        "sum": {
+          "cpuTimeUs": 27743,
+          "duration": 0.565276375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4522211
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 30703,
+          "duration": 0.6967515,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5574012
+        },
+        "quantiles": {
+          "cpuTimeP50": 30703,
+          "cpuTimeP95": 30703,
+          "cpuTimeP99": 30703,
+          "durationP50": 0.6967515,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5574012
+        },
+        "sum": {
+          "cpuTimeUs": 30703,
+          "duration": 0.6967515,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5574012
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 38087,
+          "duration": 0.806224875,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 6449799
+        },
+        "quantiles": {
+          "cpuTimeP50": 38087,
+          "cpuTimeP95": 38087,
+          "cpuTimeP99": 38087,
+          "durationP50": 0.8062249,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 6449799
+        },
+        "sum": {
+          "cpuTimeUs": 38087,
+          "duration": 0.806224875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6449799
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:32:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 97269,
+          "duration": 0.31877675,
+          "memoryUsageBytes": 19075234,
+          "wallTime": 2550214
+        },
+        "quantiles": {
+          "cpuTimeP50": 73870,
+          "cpuTimeP95": 97269,
+          "cpuTimeP99": 97269,
+          "durationP50": 0.27630037,
+          "memoryUsageBytesP50": 16453644,
+          "wallTimeP50": 2210403
+        },
+        "sum": {
+          "cpuTimeUs": 346324,
+          "duration": 1.2376607499999999,
+          "errors": 0,
+          "requests": 5,
+          "subrequests": 0,
+          "wallTime": 9469745
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 28715,
+          "duration": 0.6914897499999999,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5531918
+        },
+        "quantiles": {
+          "cpuTimeP50": 28715,
+          "cpuTimeP95": 28715,
+          "cpuTimeP99": 28715,
+          "durationP50": 0.69148976,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5531918
+        },
+        "sum": {
+          "cpuTimeUs": 28715,
+          "duration": 0.6914897499999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5531918
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 54077,
+          "duration": 1.2310163749999998,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 9848131
+        },
+        "quantiles": {
+          "cpuTimeP50": 54077,
+          "cpuTimeP95": 54077,
+          "cpuTimeP99": 54077,
+          "durationP50": 1.2310164,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 9848131
+        },
+        "sum": {
+          "cpuTimeUs": 54077,
+          "duration": 1.2310163749999998,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9848131
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 88121,
+          "duration": 1.114493,
+          "memoryUsageBytes": 14094942,
+          "wallTime": 8915944
+        },
+        "quantiles": {
+          "cpuTimeP50": 42112,
+          "cpuTimeP95": 88121,
+          "cpuTimeP99": 88121,
+          "durationP50": 0.31386912,
+          "memoryUsageBytesP50": 9900638,
+          "wallTimeP50": 2510953
+        },
+        "sum": {
+          "cpuTimeUs": 209261,
+          "duration": 2.0685126250000003,
+          "errors": 0,
+          "requests": 4,
+          "subrequests": 12,
+          "wallTime": 16548101
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 36831,
+          "duration": 0.7100455,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 5680364
+        },
+        "quantiles": {
+          "cpuTimeP50": 36831,
+          "cpuTimeP95": 36831,
+          "cpuTimeP99": 36831,
+          "durationP50": 0.7100455,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 5680364
+        },
+        "sum": {
+          "cpuTimeUs": 36831,
+          "duration": 0.7100455,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5680364
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 30588,
+          "duration": 0.50522075,
+          "memoryUsageBytes": 8852106,
+          "wallTime": 4041766
+        },
+        "quantiles": {
+          "cpuTimeP50": 30588,
+          "cpuTimeP95": 30588,
+          "cpuTimeP99": 30588,
+          "durationP50": 0.5052208,
+          "memoryUsageBytesP50": 8852106,
+          "wallTimeP50": 4041766
+        },
+        "sum": {
+          "cpuTimeUs": 30588,
+          "duration": 0.50522075,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4041766
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:52:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 40083,
+          "duration": 0.040083,
+          "memoryUsageBytes": 13307916,
+          "wallTime": 47214
+        },
+        "quantiles": {
+          "cpuTimeP50": 40083,
+          "cpuTimeP95": 40083,
+          "cpuTimeP99": 40083,
+          "durationP50": 0.040083,
+          "memoryUsageBytesP50": 13307916,
+          "wallTimeP50": 47214
+        },
+        "sum": {
+          "cpuTimeUs": 40083,
+          "duration": 0.040083,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 0,
+          "wallTime": 47214
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 23384,
+          "duration": 0.47219712500000005,
+          "memoryUsageBytes": 8852106,
+          "wallTime": 3777577
+        },
+        "quantiles": {
+          "cpuTimeP50": 23384,
+          "cpuTimeP95": 23384,
+          "cpuTimeP99": 23384,
+          "durationP50": 0.47219712,
+          "memoryUsageBytesP50": 8852106,
+          "wallTimeP50": 3777577
+        },
+        "sum": {
+          "cpuTimeUs": 23384,
+          "duration": 0.47219712500000005,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 3777577
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 62293,
+          "duration": 1.30754725,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 10460378
+        },
+        "quantiles": {
+          "cpuTimeP50": 62293,
+          "cpuTimeP95": 62293,
+          "cpuTimeP99": 62293,
+          "durationP50": 1.3075472,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 10460378
+        },
+        "sum": {
+          "cpuTimeUs": 62293,
+          "duration": 1.30754725,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 10460378
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 40677,
+          "duration": 0.6565863749999999,
+          "memoryUsageBytes": 8589839,
+          "wallTime": 5252691
+        },
+        "quantiles": {
+          "cpuTimeP50": 40677,
+          "cpuTimeP95": 40677,
+          "cpuTimeP99": 40677,
+          "durationP50": 0.65658635,
+          "memoryUsageBytesP50": 8589839,
+          "wallTimeP50": 5252691
+        },
+        "sum": {
+          "cpuTimeUs": 40677,
+          "duration": 0.6565863749999999,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5252691
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:07:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 11795,
+          "duration": 0.10753037500000001,
+          "memoryUsageBytes": 15561476,
+          "wallTime": 860243
+        },
+        "quantiles": {
+          "cpuTimeP50": 8416,
+          "cpuTimeP95": 10534,
+          "cpuTimeP99": 11795,
+          "durationP50": 0.103347875,
+          "memoryUsageBytesP50": 11210764,
+          "wallTimeP50": 826783
+        },
+        "sum": {
+          "cpuTimeUs": 172622,
+          "duration": 2.171675625,
+          "errors": 0,
+          "requests": 21,
+          "subrequests": 0,
+          "wallTime": 17373405
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:47:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 212937,
+          "duration": 0.376932375,
+          "memoryUsageBytes": 20550244,
+          "wallTime": 3015459
+        },
+        "quantiles": {
+          "cpuTimeP50": 10866,
+          "cpuTimeP95": 97182,
+          "cpuTimeP99": 212937,
+          "durationP50": 0.12307175,
+          "memoryUsageBytesP50": 14619086,
+          "wallTimeP50": 984574
+        },
+        "sum": {
+          "cpuTimeUs": 1338824,
+          "duration": 6.256077875000001,
+          "errors": 0,
+          "requests": 44,
+          "subrequests": 0,
+          "wallTime": 49910770
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 27797,
+          "duration": 0.54134775,
+          "memoryUsageBytes": 8852106,
+          "wallTime": 4330782
+        },
+        "quantiles": {
+          "cpuTimeP50": 27797,
+          "cpuTimeP95": 27797,
+          "cpuTimeP99": 27797,
+          "durationP50": 0.54134774,
+          "memoryUsageBytesP50": 8852106,
+          "wallTimeP50": 4330782
+        },
+        "sum": {
+          "cpuTimeUs": 27797,
+          "duration": 0.54134775,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4330782
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 25263,
+          "duration": 0.56403375,
+          "memoryUsageBytes": 8852124,
+          "wallTime": 4512270
+        },
+        "quantiles": {
+          "cpuTimeP50": 25263,
+          "cpuTimeP95": 25263,
+          "cpuTimeP99": 25263,
+          "durationP50": 0.56403375,
+          "memoryUsageBytesP50": 8852124,
+          "wallTimeP50": 4512270
+        },
+        "sum": {
+          "cpuTimeUs": 25263,
+          "duration": 0.56403375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4512270
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:53:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 60130,
+          "duration": 0.06013,
+          "memoryUsageBytes": 13307916,
+          "wallTime": 69666
+        },
+        "quantiles": {
+          "cpuTimeP50": 60130,
+          "cpuTimeP95": 60130,
+          "cpuTimeP99": 60130,
+          "durationP50": 0.06013,
+          "memoryUsageBytesP50": 13307916,
+          "wallTimeP50": 69666
+        },
+        "sum": {
+          "cpuTimeUs": 60130,
+          "duration": 0.06013,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 0,
+          "wallTime": 69666
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 20275,
+          "duration": 0.474487125,
+          "memoryUsageBytes": 9114265,
+          "wallTime": 3795897
+        },
+        "quantiles": {
+          "cpuTimeP50": 20275,
+          "cpuTimeP95": 20275,
+          "cpuTimeP99": 20275,
+          "durationP50": 0.47448713,
+          "memoryUsageBytesP50": 9114265,
+          "wallTimeP50": 3795897
+        },
+        "sum": {
+          "cpuTimeUs": 20275,
+          "duration": 0.474487125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 3795897
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 33555,
+          "duration": 0.708735,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 5669880
+        },
+        "quantiles": {
+          "cpuTimeP50": 33555,
+          "cpuTimeP95": 33555,
+          "cpuTimeP99": 33555,
+          "durationP50": 0.708735,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 5669880
+        },
+        "sum": {
+          "cpuTimeUs": 33555,
+          "duration": 0.708735,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5669880
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:55:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 33053,
+          "duration": 0.68161375,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5452910
+        },
+        "quantiles": {
+          "cpuTimeP50": 33053,
+          "cpuTimeP95": 33053,
+          "cpuTimeP99": 33053,
+          "durationP50": 0.68161374,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5452910
+        },
+        "sum": {
+          "cpuTimeUs": 33053,
+          "duration": 0.68161375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5452910
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 47050,
+          "duration": 0.885151625,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 7081213
+        },
+        "quantiles": {
+          "cpuTimeP50": 47050,
+          "cpuTimeP95": 47050,
+          "cpuTimeP99": 47050,
+          "durationP50": 0.8851516,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 7081213
+        },
+        "sum": {
+          "cpuTimeUs": 47050,
+          "duration": 0.885151625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 7081213
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 58320,
+          "duration": 1.0474525000000001,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 8379620
+        },
+        "quantiles": {
+          "cpuTimeP50": 58320,
+          "cpuTimeP95": 58320,
+          "cpuTimeP99": 58320,
+          "durationP50": 1.0474524,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 8379620
+        },
+        "sum": {
+          "cpuTimeUs": 58320,
+          "duration": 1.0474525000000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 8379620
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:59:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 104191,
+          "duration": 0.11451824999999999,
+          "memoryUsageBytes": 19877900,
+          "wallTime": 916146
+        },
+        "quantiles": {
+          "cpuTimeP50": 50552,
+          "cpuTimeP95": 104191,
+          "cpuTimeP99": 104191,
+          "durationP50": 0.10839788,
+          "memoryUsageBytesP50": 13832354,
+          "wallTimeP50": 867183
+        },
+        "sum": {
+          "cpuTimeUs": 565993,
+          "duration": 1.31418475,
+          "errors": 0,
+          "requests": 13,
+          "subrequests": 0,
+          "wallTime": 9455877
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 34234,
+          "duration": 0.63566525,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5085322
+        },
+        "quantiles": {
+          "cpuTimeP50": 34234,
+          "cpuTimeP95": 34234,
+          "cpuTimeP99": 34234,
+          "durationP50": 0.63566524,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5085322
+        },
+        "sum": {
+          "cpuTimeUs": 34234,
+          "duration": 0.63566525,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5085322
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 40440,
+          "duration": 0.86160325,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 6892826
+        },
+        "quantiles": {
+          "cpuTimeP50": 40440,
+          "cpuTimeP95": 40440,
+          "cpuTimeP99": 40440,
+          "durationP50": 0.86160326,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 6892826
+        },
+        "sum": {
+          "cpuTimeUs": 40440,
+          "duration": 0.86160325,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 6892826
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 36807,
+          "duration": 0.868049125,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 6944393
+        },
+        "quantiles": {
+          "cpuTimeP50": 36807,
+          "cpuTimeP95": 36807,
+          "cpuTimeP99": 36807,
+          "durationP50": 0.86804914,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 6944393
+        },
+        "sum": {
+          "cpuTimeUs": 36807,
+          "duration": 0.868049125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 6944393
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 45354,
+          "duration": 0.990476,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 7923808
+        },
+        "quantiles": {
+          "cpuTimeP50": 45354,
+          "cpuTimeP95": 45354,
+          "cpuTimeP99": 45354,
+          "durationP50": 0.990476,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 7923808
+        },
+        "sum": {
+          "cpuTimeUs": 45354,
+          "duration": 0.990476,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 7923808
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 155473,
+          "duration": 1.331068125,
+          "memoryUsageBytes": 23728140,
+          "wallTime": 10648545
+        },
+        "quantiles": {
+          "cpuTimeP50": 9416,
+          "cpuTimeP95": 137892,
+          "cpuTimeP99": 155473,
+          "durationP50": 0.0580175,
+          "memoryUsageBytesP50": 17735842,
+          "wallTimeP50": 444494
+        },
+        "sum": {
+          "cpuTimeUs": 1079616,
+          "duration": 7.23251575,
+          "errors": 0,
+          "requests": 37,
+          "subrequests": 3,
+          "wallTime": 56102515
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 66644,
+          "duration": 0.641527375,
+          "memoryUsageBytes": 10687185,
+          "wallTime": 5132219
+        },
+        "quantiles": {
+          "cpuTimeP50": 66644,
+          "cpuTimeP95": 66644,
+          "cpuTimeP99": 66644,
+          "durationP50": 0.64152735,
+          "memoryUsageBytesP50": 10687185,
+          "wallTimeP50": 5132219
+        },
+        "sum": {
+          "cpuTimeUs": 66644,
+          "duration": 0.641527375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 5132219
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 24034,
+          "duration": 0.520602875,
+          "memoryUsageBytes": 8589998,
+          "wallTime": 4164823
+        },
+        "quantiles": {
+          "cpuTimeP50": 24034,
+          "cpuTimeP95": 24034,
+          "cpuTimeP99": 24034,
+          "durationP50": 0.5206029,
+          "memoryUsageBytesP50": 8589998,
+          "wallTimeP50": 4164823
+        },
+        "sum": {
+          "cpuTimeUs": 24034,
+          "duration": 0.520602875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4164823
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 36316,
+          "duration": 0.832920125,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 6663361
+        },
+        "quantiles": {
+          "cpuTimeP50": 36316,
+          "cpuTimeP95": 36316,
+          "cpuTimeP99": 36316,
+          "durationP50": 0.83292013,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 6663361
+        },
+        "sum": {
+          "cpuTimeUs": 36316,
+          "duration": 0.832920125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6663361
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 41214,
+          "duration": 1.0967655,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8774124
+        },
+        "quantiles": {
+          "cpuTimeP50": 41214,
+          "cpuTimeP95": 41214,
+          "cpuTimeP99": 41214,
+          "durationP50": 1.0967655,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8774124
+        },
+        "sum": {
+          "cpuTimeUs": 41214,
+          "duration": 1.0967655,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8774124
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 21649,
+          "duration": 0.510897375,
+          "memoryUsageBytes": 8590052,
+          "wallTime": 4087179
+        },
+        "quantiles": {
+          "cpuTimeP50": 21649,
+          "cpuTimeP95": 21649,
+          "cpuTimeP99": 21649,
+          "durationP50": 0.5108974,
+          "memoryUsageBytesP50": 8590052,
+          "wallTimeP50": 4087179
+        },
+        "sum": {
+          "cpuTimeUs": 21649,
+          "duration": 0.510897375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4087179
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 27609,
+          "duration": 0.624835375,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 4998683
+        },
+        "quantiles": {
+          "cpuTimeP50": 27609,
+          "cpuTimeP95": 27609,
+          "cpuTimeP99": 27609,
+          "durationP50": 0.6248354,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 4998683
+        },
+        "sum": {
+          "cpuTimeUs": 27609,
+          "duration": 0.624835375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 4998683
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 24218,
+          "duration": 0.48901275,
+          "memoryUsageBytes": 8589962,
+          "wallTime": 3912102
+        },
+        "quantiles": {
+          "cpuTimeP50": 24218,
+          "cpuTimeP95": 24218,
+          "cpuTimeP99": 24218,
+          "durationP50": 0.48901275,
+          "memoryUsageBytesP50": 8589962,
+          "wallTimeP50": 3912102
+        },
+        "sum": {
+          "cpuTimeUs": 24218,
+          "duration": 0.48901275,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 3912102
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:09:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 15116,
+          "duration": 0.08455425,
+          "memoryUsageBytes": 9900194,
+          "wallTime": 676434
+        },
+        "quantiles": {
+          "cpuTimeP50": 7411,
+          "cpuTimeP95": 15116,
+          "cpuTimeP99": 15116,
+          "durationP50": 0.03901475,
+          "memoryUsageBytesP50": 9900194,
+          "wallTimeP50": 312118
+        },
+        "sum": {
+          "cpuTimeUs": 45331,
+          "duration": 0.23705400000000001,
+          "errors": 0,
+          "requests": 5,
+          "subrequests": 0,
+          "wallTime": 1896432
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 42714,
+          "duration": 1.082272625,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8658181
+        },
+        "quantiles": {
+          "cpuTimeP50": 42714,
+          "cpuTimeP95": 42714,
+          "cpuTimeP99": 42714,
+          "durationP50": 1.0822726,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8658181
+        },
+        "sum": {
+          "cpuTimeUs": 42714,
+          "duration": 1.082272625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8658181
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 39185,
+          "duration": 0.8093813750000001,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 6475051
+        },
+        "quantiles": {
+          "cpuTimeP50": 39185,
+          "cpuTimeP95": 39185,
+          "cpuTimeP99": 39185,
+          "durationP50": 0.80938137,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 6475051
+        },
+        "sum": {
+          "cpuTimeUs": 39185,
+          "duration": 0.8093813750000001,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6475051
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:35:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 39157,
+          "duration": 0.996080875,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 7968647
+        },
+        "quantiles": {
+          "cpuTimeP50": 39157,
+          "cpuTimeP95": 39157,
+          "cpuTimeP99": 39157,
+          "durationP50": 0.9960809,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 7968647
+        },
+        "sum": {
+          "cpuTimeUs": 39157,
+          "duration": 0.996080875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 7968647
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:03:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 175611,
+          "duration": 0.342831625,
+          "memoryUsageBytes": 20475916,
+          "wallTime": 2742653
+        },
+        "quantiles": {
+          "cpuTimeP50": 111739,
+          "cpuTimeP95": 175611,
+          "cpuTimeP99": 175611,
+          "durationP50": 0.321919,
+          "memoryUsageBytesP50": 15667212,
+          "wallTimeP50": 2575352
+        },
+        "sum": {
+          "cpuTimeUs": 287350,
+          "duration": 0.6647506249999999,
+          "errors": 0,
+          "requests": 2,
+          "subrequests": 0,
+          "wallTime": 5318005
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 21256,
+          "duration": 0.5391815,
+          "memoryUsageBytes": 8852142,
+          "wallTime": 4313452
+        },
+        "quantiles": {
+          "cpuTimeP50": 21256,
+          "cpuTimeP95": 21256,
+          "cpuTimeP99": 21256,
+          "durationP50": 0.5391815,
+          "memoryUsageBytesP50": 8852142,
+          "wallTimeP50": 4313452
+        },
+        "sum": {
+          "cpuTimeUs": 21256,
+          "duration": 0.5391815,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4313452
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 40959,
+          "duration": 0.84731025,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 6778482
+        },
+        "quantiles": {
+          "cpuTimeP50": 40959,
+          "cpuTimeP95": 40959,
+          "cpuTimeP99": 40959,
+          "durationP50": 0.84731025,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 6778482
+        },
+        "sum": {
+          "cpuTimeUs": 40959,
+          "duration": 0.84731025,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 6778482
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 48207,
+          "duration": 0.996138625,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 7969109
+        },
+        "quantiles": {
+          "cpuTimeP50": 48207,
+          "cpuTimeP95": 48207,
+          "cpuTimeP99": 48207,
+          "durationP50": 0.99613863,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 7969109
+        },
+        "sum": {
+          "cpuTimeUs": 48207,
+          "duration": 0.996138625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 7969109
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 48402,
+          "duration": 1.01653025,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8132242
+        },
+        "quantiles": {
+          "cpuTimeP50": 48402,
+          "cpuTimeP95": 48402,
+          "cpuTimeP99": 48402,
+          "durationP50": 1.0165303,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8132242
+        },
+        "sum": {
+          "cpuTimeUs": 48402,
+          "duration": 1.01653025,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8132242
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 28685,
+          "duration": 0.528202625,
+          "memoryUsageBytes": 8589838,
+          "wallTime": 4225621
+        },
+        "quantiles": {
+          "cpuTimeP50": 28685,
+          "cpuTimeP95": 28685,
+          "cpuTimeP99": 28685,
+          "durationP50": 0.52820265,
+          "memoryUsageBytesP50": 8589838,
+          "wallTimeP50": 4225621
+        },
+        "sum": {
+          "cpuTimeUs": 28685,
+          "duration": 0.528202625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 4225621
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:30:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 45662,
+          "duration": 0.87876125,
+          "memoryUsageBytes": 8589324,
+          "wallTime": 7030090
+        },
+        "quantiles": {
+          "cpuTimeP50": 45662,
+          "cpuTimeP95": 45662,
+          "cpuTimeP99": 45662,
+          "durationP50": 0.87876123,
+          "memoryUsageBytesP50": 8589324,
+          "wallTimeP50": 7030090
+        },
+        "sum": {
+          "cpuTimeUs": 45662,
+          "duration": 0.87876125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 7030090
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:03:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 43513,
+          "duration": 0.332355375,
+          "memoryUsageBytes": 10162782,
+          "wallTime": 2658843
+        },
+        "quantiles": {
+          "cpuTimeP50": 27220,
+          "cpuTimeP95": 43513,
+          "cpuTimeP99": 43513,
+          "durationP50": 0.29573312,
+          "memoryUsageBytesP50": 9638494,
+          "wallTimeP50": 2365865
+        },
+        "sum": {
+          "cpuTimeUs": 139048,
+          "duration": 1.238291,
+          "errors": 0,
+          "requests": 4,
+          "subrequests": 8,
+          "wallTime": 9906328
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:05:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 41054,
+          "duration": 1.029435125,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8235481
+        },
+        "quantiles": {
+          "cpuTimeP50": 41054,
+          "cpuTimeP95": 41054,
+          "cpuTimeP99": 41054,
+          "durationP50": 1.0294352,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8235481
+        },
+        "sum": {
+          "cpuTimeUs": 41054,
+          "duration": 1.029435125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8235481
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 44738,
+          "duration": 0.813948625,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 6511589
+        },
+        "quantiles": {
+          "cpuTimeP50": 44738,
+          "cpuTimeP95": 44738,
+          "cpuTimeP99": 44738,
+          "durationP50": 0.81394863,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 6511589
+        },
+        "sum": {
+          "cpuTimeUs": 44738,
+          "duration": 0.813948625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6511589
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:09:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 181903,
+          "duration": 0.41420775,
+          "memoryUsageBytes": 14619824,
+          "wallTime": 3313662
+        },
+        "quantiles": {
+          "cpuTimeP50": 82322,
+          "cpuTimeP95": 181903,
+          "cpuTimeP99": 181903,
+          "durationP50": 0.39986688,
+          "memoryUsageBytesP50": 14094942,
+          "wallTimeP50": 3198935
+        },
+        "sum": {
+          "cpuTimeUs": 278278,
+          "duration": 1.138944125,
+          "errors": 0,
+          "requests": 3,
+          "subrequests": 6,
+          "wallTime": 9111553
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 59049,
+          "duration": 1.20733275,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 9658662
+        },
+        "quantiles": {
+          "cpuTimeP50": 59049,
+          "cpuTimeP95": 59049,
+          "cpuTimeP99": 59049,
+          "durationP50": 1.2073327,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 9658662
+        },
+        "sum": {
+          "cpuTimeUs": 59049,
+          "duration": 1.20733275,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9658662
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 47312,
+          "duration": 1.024813625,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 8198509
+        },
+        "quantiles": {
+          "cpuTimeP50": 47312,
+          "cpuTimeP95": 47312,
+          "cpuTimeP99": 47312,
+          "durationP50": 1.0248137,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 8198509
+        },
+        "sum": {
+          "cpuTimeUs": 47312,
+          "duration": 1.024813625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 8198509
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 28781,
+          "duration": 0.636197,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 5089576
+        },
+        "quantiles": {
+          "cpuTimeP50": 28781,
+          "cpuTimeP95": 28781,
+          "cpuTimeP99": 28781,
+          "durationP50": 0.636197,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 5089576
+        },
+        "sum": {
+          "cpuTimeUs": 28781,
+          "duration": 0.636197,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5089576
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 40485,
+          "duration": 0.91706825,
+          "memoryUsageBytes": 9114142,
+          "wallTime": 7336546
+        },
+        "quantiles": {
+          "cpuTimeP50": 40485,
+          "cpuTimeP95": 40485,
+          "cpuTimeP99": 40485,
+          "durationP50": 0.91706824,
+          "memoryUsageBytesP50": 9114142,
+          "wallTimeP50": 7336546
+        },
+        "sum": {
+          "cpuTimeUs": 40485,
+          "duration": 0.91706825,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 7336546
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 35554,
+          "duration": 1.00015225,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 8001218
+        },
+        "quantiles": {
+          "cpuTimeP50": 35554,
+          "cpuTimeP95": 35554,
+          "cpuTimeP99": 35554,
+          "durationP50": 1.0001522,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 8001218
+        },
+        "sum": {
+          "cpuTimeUs": 35554,
+          "duration": 1.00015225,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8001218
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 51813,
+          "duration": 1.151449125,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 9211593
+        },
+        "quantiles": {
+          "cpuTimeP50": 51813,
+          "cpuTimeP95": 51813,
+          "cpuTimeP99": 51813,
+          "durationP50": 1.1514491,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 9211593
+        },
+        "sum": {
+          "cpuTimeUs": 51813,
+          "duration": 1.151449125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9211593
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 50983,
+          "duration": 1.2580895,
+          "memoryUsageBytes": 8065036,
+          "wallTime": 10064716
+        },
+        "quantiles": {
+          "cpuTimeP50": 50983,
+          "cpuTimeP95": 50983,
+          "cpuTimeP99": 50983,
+          "durationP50": 1.2580895,
+          "memoryUsageBytesP50": 8065036,
+          "wallTimeP50": 10064716
+        },
+        "sum": {
+          "cpuTimeUs": 50983,
+          "duration": 1.2580895,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 10064716
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 78113,
+          "duration": 0.709624125,
+          "memoryUsageBytes": 10686920,
+          "wallTime": 5676993
+        },
+        "quantiles": {
+          "cpuTimeP50": 78113,
+          "cpuTimeP95": 78113,
+          "cpuTimeP99": 78113,
+          "durationP50": 0.7096241,
+          "memoryUsageBytesP50": 10686920,
+          "wallTimeP50": 5676993
+        },
+        "sum": {
+          "cpuTimeUs": 78113,
+          "duration": 0.709624125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5676993
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T08:10:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 25236,
+          "duration": 0.558370375,
+          "memoryUsageBytes": 8590052,
+          "wallTime": 4466963
+        },
+        "quantiles": {
+          "cpuTimeP50": 25236,
+          "cpuTimeP95": 25236,
+          "cpuTimeP99": 25236,
+          "durationP50": 0.55837035,
+          "memoryUsageBytesP50": 8590052,
+          "wallTimeP50": 4466963
+        },
+        "sum": {
+          "cpuTimeUs": 25236,
+          "duration": 0.558370375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4466963
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T09:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 46701,
+          "duration": 1.1834527499999998,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 9467622
+        },
+        "quantiles": {
+          "cpuTimeP50": 46701,
+          "cpuTimeP95": 46701,
+          "cpuTimeP99": 46701,
+          "durationP50": 1.1834527,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 9467622
+        },
+        "sum": {
+          "cpuTimeUs": 46701,
+          "duration": 1.1834527499999998,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9467622
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 32561,
+          "duration": 0.49225575,
+          "memoryUsageBytes": 8589841,
+          "wallTime": 3938046
+        },
+        "quantiles": {
+          "cpuTimeP50": 32561,
+          "cpuTimeP95": 32561,
+          "cpuTimeP99": 32561,
+          "durationP50": 0.49225575,
+          "memoryUsageBytesP50": 8589841,
+          "wallTimeP50": 3938046
+        },
+        "sum": {
+          "cpuTimeUs": 32561,
+          "duration": 0.49225575,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 3938046
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:45:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 51412,
+          "duration": 1.206052625,
+          "memoryUsageBytes": 8327180,
+          "wallTime": 9648421
+        },
+        "quantiles": {
+          "cpuTimeP50": 51412,
+          "cpuTimeP95": 51412,
+          "cpuTimeP99": 51412,
+          "durationP50": 1.2060527,
+          "memoryUsageBytesP50": 8327180,
+          "wallTimeP50": 9648421
+        },
+        "sum": {
+          "cpuTimeUs": 51412,
+          "duration": 1.206052625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 9648421
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:47:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 67273,
+          "duration": 0.279804375,
+          "memoryUsageBytes": 19075084,
+          "wallTime": 2238435
+        },
+        "quantiles": {
+          "cpuTimeP50": 60409,
+          "cpuTimeP95": 67273,
+          "cpuTimeP99": 67273,
+          "durationP50": 0.27772975,
+          "memoryUsageBytesP50": 16453644,
+          "wallTimeP50": 2221838
+        },
+        "sum": {
+          "cpuTimeUs": 179882,
+          "duration": 0.617943125,
+          "errors": 0,
+          "requests": 3,
+          "subrequests": 0,
+          "wallTime": 4684226
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:02:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 72644,
+          "duration": 0.365291875,
+          "memoryUsageBytes": 14094942,
+          "wallTime": 2922335
+        },
+        "quantiles": {
+          "cpuTimeP50": 24884,
+          "cpuTimeP95": 72644,
+          "cpuTimeP99": 72644,
+          "durationP50": 0.351859,
+          "memoryUsageBytesP50": 9900638,
+          "wallTimeP50": 2814872
+        },
+        "sum": {
+          "cpuTimeUs": 117967,
+          "duration": 1.0347372499999998,
+          "errors": 0,
+          "requests": 3,
+          "subrequests": 6,
+          "wallTime": 8277898
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T15:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 47416,
+          "duration": 0.91967725,
+          "memoryUsageBytes": 9375756,
+          "wallTime": 7357418
+        },
+        "quantiles": {
+          "cpuTimeP50": 47416,
+          "cpuTimeP95": 47416,
+          "cpuTimeP99": 47416,
+          "durationP50": 0.91967726,
+          "memoryUsageBytesP50": 9375756,
+          "wallTimeP50": 7357418
+        },
+        "sum": {
+          "cpuTimeUs": 47416,
+          "duration": 0.91967725,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 7357418
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T07:40:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 26920,
+          "duration": 0.623277875,
+          "memoryUsageBytes": 8590070,
+          "wallTime": 4986223
+        },
+        "quantiles": {
+          "cpuTimeP50": 26920,
+          "cpuTimeP95": 26920,
+          "cpuTimeP99": 26920,
+          "durationP50": 0.6232779,
+          "memoryUsageBytesP50": 8590070,
+          "wallTimeP50": 4986223
+        },
+        "sum": {
+          "cpuTimeUs": 26920,
+          "duration": 0.623277875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4986223
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T10:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 26961,
+          "duration": 0.50489825,
+          "memoryUsageBytes": 8589998,
+          "wallTime": 4039186
+        },
+        "quantiles": {
+          "cpuTimeP50": 26961,
+          "cpuTimeP95": 26961,
+          "cpuTimeP99": 26961,
+          "durationP50": 0.50489825,
+          "memoryUsageBytesP50": 8589998,
+          "wallTimeP50": 4039186
+        },
+        "sum": {
+          "cpuTimeUs": 26961,
+          "duration": 0.50489825,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 1,
+          "wallTime": 4039186
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T06:50:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 32220,
+          "duration": 0.545691375,
+          "memoryUsageBytes": 8065550,
+          "wallTime": 4365531
+        },
+        "quantiles": {
+          "cpuTimeP50": 32220,
+          "cpuTimeP95": 32220,
+          "cpuTimeP99": 32220,
+          "durationP50": 0.5456914,
+          "memoryUsageBytesP50": 8065550,
+          "wallTimeP50": 4365531
+        },
+        "sum": {
+          "cpuTimeUs": 32220,
+          "duration": 0.545691375,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 4365531
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T13:37:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 37926,
+          "duration": 0.041780125,
+          "memoryUsageBytes": 13570210,
+          "wallTime": 334241
+        },
+        "quantiles": {
+          "cpuTimeP50": 37926,
+          "cpuTimeP95": 37926,
+          "cpuTimeP99": 37926,
+          "durationP50": 0.041780125,
+          "memoryUsageBytesP50": 13570210,
+          "wallTimeP50": 334241
+        },
+        "sum": {
+          "cpuTimeUs": 37926,
+          "duration": 0.041780125,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 0,
+          "wallTime": 334241
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:15:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 36836,
+          "duration": 0.85592275,
+          "memoryUsageBytes": 8327624,
+          "wallTime": 6847382
+        },
+        "quantiles": {
+          "cpuTimeP50": 36836,
+          "cpuTimeP95": 36836,
+          "cpuTimeP99": 36836,
+          "durationP50": 0.85592276,
+          "memoryUsageBytesP50": 8327624,
+          "wallTimeP50": 6847382
+        },
+        "sum": {
+          "cpuTimeUs": 36836,
+          "duration": 0.85592275,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 2,
+          "wallTime": 6847382
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T14:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 43798,
+          "duration": 1.052871625,
+          "memoryUsageBytes": 9114127,
+          "wallTime": 8422973
+        },
+        "quantiles": {
+          "cpuTimeP50": 43798,
+          "cpuTimeP95": 43798,
+          "cpuTimeP99": 43798,
+          "durationP50": 1.0528716,
+          "memoryUsageBytesP50": 9114127,
+          "wallTimeP50": 8422973
+        },
+        "sum": {
+          "cpuTimeUs": 43798,
+          "duration": 1.052871625,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 6,
+          "wallTime": 8422973
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T12:25:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 29337,
+          "duration": 0.654987875,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5239903
+        },
+        "quantiles": {
+          "cpuTimeP50": 29337,
+          "cpuTimeP95": 29337,
+          "cpuTimeP99": 29337,
+          "durationP50": 0.6549879,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5239903
+        },
+        "sum": {
+          "cpuTimeUs": 29337,
+          "duration": 0.654987875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5239903
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:00:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 47248,
+          "duration": 1.016143875,
+          "memoryUsageBytes": 8327560,
+          "wallTime": 8129151
+        },
+        "quantiles": {
+          "cpuTimeP50": 47248,
+          "cpuTimeP95": 47248,
+          "cpuTimeP99": 47248,
+          "durationP50": 1.0161439,
+          "memoryUsageBytesP50": 8327560,
+          "wallTimeP50": 8129151
+        },
+        "sum": {
+          "cpuTimeUs": 47248,
+          "duration": 1.016143875,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 8129151
+        }
+      },
+      {
+        "dimensions": {
+          "datetimeMinute": "2026-10-09T11:20:00Z",
+          "scriptVersion": "e659a098-741f-47ba-891f-ad25274efa70",
+          "status": "success",
+          "usageModel": "standard"
+        },
+        "max": {
+          "cpuTime": 24401,
+          "duration": 0.64573725,
+          "memoryUsageBytes": 8851983,
+          "wallTime": 5165898
+        },
+        "quantiles": {
+          "cpuTimeP50": 24401,
+          "cpuTimeP95": 24401,
+          "cpuTimeP99": 24401,
+          "durationP50": 0.64573723,
+          "memoryUsageBytesP50": 8851983,
+          "wallTimeP50": 5165898
+        },
+        "sum": {
+          "cpuTimeUs": 24401,
+          "duration": 0.64573725,
+          "errors": 0,
+          "requests": 1,
+          "subrequests": 3,
+          "wallTime": 5165898
+        }
+      }
+    ],
+    "scheduled": [
+      {
+        "cpuTimeUs": 155473,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T06:30:53Z",
+        "scheduledDatetime": "2026-10-09T06:30:42Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 96552,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T06:35:58Z",
+        "scheduledDatetime": "2026-10-09T06:35:42Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 66644,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T06:40:15Z",
+        "scheduledDatetime": "2026-10-09T06:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 66174,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T06:45:15Z",
+        "scheduledDatetime": "2026-10-09T06:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 32220,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T06:50:15Z",
+        "scheduledDatetime": "2026-10-09T06:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 40677,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T06:55:15Z",
+        "scheduledDatetime": "2026-10-09T06:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 44738,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:00:15Z",
+        "scheduledDatetime": "2026-10-09T07:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 45794,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:05:15Z",
+        "scheduledDatetime": "2026-10-09T07:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 29377,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:10:15Z",
+        "scheduledDatetime": "2026-10-09T07:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 47110,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:15:15Z",
+        "scheduledDatetime": "2026-10-09T07:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 28467,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:20:15Z",
+        "scheduledDatetime": "2026-10-09T07:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 30703,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:25:15Z",
+        "scheduledDatetime": "2026-10-09T07:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 40440,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:30:15Z",
+        "scheduledDatetime": "2026-10-09T07:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 45111,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:35:15Z",
+        "scheduledDatetime": "2026-10-09T07:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 26920,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:40:15Z",
+        "scheduledDatetime": "2026-10-09T07:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 47312,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:45:15Z",
+        "scheduledDatetime": "2026-10-09T07:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 28685,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:50:15Z",
+        "scheduledDatetime": "2026-10-09T07:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 28715,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T07:55:15Z",
+        "scheduledDatetime": "2026-10-09T07:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 40768,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:00:15Z",
+        "scheduledDatetime": "2026-10-09T08:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 38954,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:05:15Z",
+        "scheduledDatetime": "2026-10-09T08:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 25236,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:10:15Z",
+        "scheduledDatetime": "2026-10-09T08:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 40485,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:15:15Z",
+        "scheduledDatetime": "2026-10-09T08:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 29317,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:20:15Z",
+        "scheduledDatetime": "2026-10-09T08:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 29178,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:25:15Z",
+        "scheduledDatetime": "2026-10-09T08:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 36689,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:30:15Z",
+        "scheduledDatetime": "2026-10-09T08:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 37849,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:35:15Z",
+        "scheduledDatetime": "2026-10-09T08:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 25106,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:40:15Z",
+        "scheduledDatetime": "2026-10-09T08:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 52976,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:45:15Z",
+        "scheduledDatetime": "2026-10-09T08:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 33424,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:50:15Z",
+        "scheduledDatetime": "2026-10-09T08:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 44615,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T08:55:15Z",
+        "scheduledDatetime": "2026-10-09T08:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 48402,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:00:15Z",
+        "scheduledDatetime": "2026-10-09T09:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 36316,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:05:15Z",
+        "scheduledDatetime": "2026-10-09T09:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 24034,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:10:15Z",
+        "scheduledDatetime": "2026-10-09T09:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 45711,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:15:15Z",
+        "scheduledDatetime": "2026-10-09T09:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 28781,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:20:15Z",
+        "scheduledDatetime": "2026-10-09T09:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 41214,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:25:15Z",
+        "scheduledDatetime": "2026-10-09T09:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 45662,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:30:15Z",
+        "scheduledDatetime": "2026-10-09T09:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 20275,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:35:15Z",
+        "scheduledDatetime": "2026-10-09T09:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 23232,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:40:15Z",
+        "scheduledDatetime": "2026-10-09T09:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 46701,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:45:15Z",
+        "scheduledDatetime": "2026-10-09T09:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 27609,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:50:15Z",
+        "scheduledDatetime": "2026-10-09T09:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 43304,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T09:55:15Z",
+        "scheduledDatetime": "2026-10-09T09:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 45354,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:00:15Z",
+        "scheduledDatetime": "2026-10-09T10:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 21256,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:05:15Z",
+        "scheduledDatetime": "2026-10-09T10:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 30850,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:10:15Z",
+        "scheduledDatetime": "2026-10-09T10:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 38087,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:15:15Z",
+        "scheduledDatetime": "2026-10-09T10:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 41390,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:20:15Z",
+        "scheduledDatetime": "2026-10-09T10:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 25263,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:25:15Z",
+        "scheduledDatetime": "2026-10-09T10:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 36807,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:30:15Z",
+        "scheduledDatetime": "2026-10-09T10:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 61875,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:35:15Z",
+        "scheduledDatetime": "2026-10-09T10:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 51414,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:40:15Z",
+        "scheduledDatetime": "2026-10-09T10:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 38414,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:45:15Z",
+        "scheduledDatetime": "2026-10-09T10:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 26961,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:50:15Z",
+        "scheduledDatetime": "2026-10-09T10:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 33053,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T10:55:15Z",
+        "scheduledDatetime": "2026-10-09T10:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 47248,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:00:15Z",
+        "scheduledDatetime": "2026-10-09T11:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 41054,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:05:15Z",
+        "scheduledDatetime": "2026-10-09T11:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 22676,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:10:15Z",
+        "scheduledDatetime": "2026-10-09T11:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 36836,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:15:15Z",
+        "scheduledDatetime": "2026-10-09T11:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 24401,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:20:15Z",
+        "scheduledDatetime": "2026-10-09T11:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 42714,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:25:15Z",
+        "scheduledDatetime": "2026-10-09T11:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 35148,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:30:15Z",
+        "scheduledDatetime": "2026-10-09T11:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 24218,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:35:15Z",
+        "scheduledDatetime": "2026-10-09T11:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 28540,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:40:15Z",
+        "scheduledDatetime": "2026-10-09T11:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 44969,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:45:15Z",
+        "scheduledDatetime": "2026-10-09T11:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 35554,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:50:15Z",
+        "scheduledDatetime": "2026-10-09T11:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 24799,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T11:55:15Z",
+        "scheduledDatetime": "2026-10-09T11:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 46408,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:00:15Z",
+        "scheduledDatetime": "2026-10-09T12:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 34234,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:05:15Z",
+        "scheduledDatetime": "2026-10-09T12:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 42112,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:10:15Z",
+        "scheduledDatetime": "2026-10-09T12:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 50983,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:15:15Z",
+        "scheduledDatetime": "2026-10-09T12:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 21649,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:20:15Z",
+        "scheduledDatetime": "2026-10-09T12:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 29337,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:25:15Z",
+        "scheduledDatetime": "2026-10-09T12:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 39185,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:30:15Z",
+        "scheduledDatetime": "2026-10-09T12:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 39157,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:35:15Z",
+        "scheduledDatetime": "2026-10-09T12:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 24097,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:40:15Z",
+        "scheduledDatetime": "2026-10-09T12:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 59049,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:45:15Z",
+        "scheduledDatetime": "2026-10-09T12:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 29941,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:50:15Z",
+        "scheduledDatetime": "2026-10-09T12:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 51338,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T12:55:15Z",
+        "scheduledDatetime": "2026-10-09T12:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 41967,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:00:15Z",
+        "scheduledDatetime": "2026-10-09T13:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 27228,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:05:15Z",
+        "scheduledDatetime": "2026-10-09T13:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 48207,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:10:15Z",
+        "scheduledDatetime": "2026-10-09T13:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 32561,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:15:15Z",
+        "scheduledDatetime": "2026-10-09T13:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 54077,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:20:15Z",
+        "scheduledDatetime": "2026-10-09T13:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 31308,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:25:15Z",
+        "scheduledDatetime": "2026-10-09T13:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 44406,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:30:15Z",
+        "scheduledDatetime": "2026-10-09T13:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 43345,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:35:15Z",
+        "scheduledDatetime": "2026-10-09T13:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 27743,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:40:15Z",
+        "scheduledDatetime": "2026-10-09T13:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 51412,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:45:15Z",
+        "scheduledDatetime": "2026-10-09T13:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 30755,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:50:15Z",
+        "scheduledDatetime": "2026-10-09T13:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 49406,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T13:55:15Z",
+        "scheduledDatetime": "2026-10-09T13:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 40959,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:00:15Z",
+        "scheduledDatetime": "2026-10-09T14:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 26242,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:05:15Z",
+        "scheduledDatetime": "2026-10-09T14:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 33555,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:10:15Z",
+        "scheduledDatetime": "2026-10-09T14:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 50742,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:15:15Z",
+        "scheduledDatetime": "2026-10-09T14:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 43798,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:20:15Z",
+        "scheduledDatetime": "2026-10-09T14:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 28854,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:25:15Z",
+        "scheduledDatetime": "2026-10-09T14:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 43742,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:30:15Z",
+        "scheduledDatetime": "2026-10-09T14:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 32448,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:35:15Z",
+        "scheduledDatetime": "2026-10-09T14:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 51061,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:40:15Z",
+        "scheduledDatetime": "2026-10-09T14:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 62293,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:45:15Z",
+        "scheduledDatetime": "2026-10-09T14:45:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 23384,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:50:15Z",
+        "scheduledDatetime": "2026-10-09T14:50:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 36831,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T14:55:15Z",
+        "scheduledDatetime": "2026-10-09T14:55:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 47416,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:00:15Z",
+        "scheduledDatetime": "2026-10-09T15:00:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 49007,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:05:15Z",
+        "scheduledDatetime": "2026-10-09T15:05:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 27797,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:10:15Z",
+        "scheduledDatetime": "2026-10-09T15:10:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 58320,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:15:15Z",
+        "scheduledDatetime": "2026-10-09T15:15:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 35596,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:20:15Z",
+        "scheduledDatetime": "2026-10-09T15:20:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 51813,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:25:15Z",
+        "scheduledDatetime": "2026-10-09T15:25:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 47050,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:30:15Z",
+        "scheduledDatetime": "2026-10-09T15:30:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 30588,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:35:15Z",
+        "scheduledDatetime": "2026-10-09T15:35:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 78113,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:40:15Z",
+        "scheduledDatetime": "2026-10-09T15:40:15Z",
+        "status": "success"
+      },
+      {
+        "cpuTimeUs": 78592,
+        "cron": "*/5 * * * *",
+        "datetime": "2026-10-09T15:45:15Z",
+        "scheduledDatetime": "2026-10-09T15:45:15Z",
+        "status": "success"
+      }
+    ],
+    "summary": {
+      "invocations": 112,
+      "statuses": {
+        "success": 112
+      },
+      "cpuMs": {
+        "p50": 38.954,
+        "p95": 66.174,
+        "p99": 96.552,
+        "max": 155.473
+      },
+      "expectedSlots": 112,
+      "missingSlots": [],
+      "duplicateSlots": [],
+      "mixedInvocations": 306,
+      "mixedErrors": 0
+    }
+  },
+  "d1Analytics": {
+    "query": "{viewer {accounts(filter:{accountTag:\"7a2715978428a86e0c9d8ce757d33687\"}) {d1AnalyticsAdaptiveGroups(limit:100,filter:{datetime_geq:\"2026-10-09T06:30:00Z\",datetime_lt:\"2026-10-09T15:48:00.000Z\",databaseId:\"2c5956d4-0c66-4d21-9bf8-12f04e007bad\"}) {sum {readQueries writeQueries rowsRead rowsWritten} quantiles {queryBatchTimeMsP50 queryBatchTimeMsP95 queryBatchTimeMsP99}}}}}",
+    "groups": [
+      {
+        "quantiles": {
+          "queryBatchTimeMsP50": 0.45,
+          "queryBatchTimeMsP95": 2.55,
+          "queryBatchTimeMsP99": 8.34
+        },
+        "sum": {
+          "readQueries": 3777,
+          "rowsRead": 1304970,
+          "rowsWritten": 5532,
+          "writeQueries": 2682
+        }
+      }
+    ]
+  },
+  "migrations": {
+    "results": [
+      {
+        "id": 1,
+        "name": "0000_tough_swarm.sql",
+        "applied_at": "2026-10-02 08:26:26"
+      },
+      {
+        "id": 2,
+        "name": "0001_panoramic_the_captain.sql",
+        "applied_at": "2026-10-02 08:26:26"
+      },
+      {
+        "id": 3,
+        "name": "0002_amused_titanium_man.sql",
+        "applied_at": "2026-10-02 14:01:37"
+      },
+      {
+        "id": 4,
+        "name": "0003_cold_captain_midlands.sql",
+        "applied_at": "2026-10-02 14:01:37"
+      },
+      {
+        "id": 5,
+        "name": "0004_many_phantom_reporter.sql",
+        "applied_at": "2026-10-02 14:01:37"
+      },
+      {
+        "id": 6,
+        "name": "0005_brainy_sasquatch.sql",
+        "applied_at": "2026-10-02 19:17:25"
+      },
+      {
+        "id": 7,
+        "name": "0006_fancy_the_enforcers.sql",
+        "applied_at": "2026-10-07 21:09:01"
+      },
+      {
+        "id": 8,
+        "name": "0007_unusual_speed_demon.sql",
+        "applied_at": "2026-10-07 21:09:02"
+      },
+      {
+        "id": 9,
+        "name": "0008_strong_brother_voodoo.sql",
+        "applied_at": "2026-10-08 06:15:36"
+      },
+      {
+        "id": 10,
+        "name": "0009_common_jocasta.sql",
+        "applied_at": "2026-10-08 16:15:48"
+      },
+      {
+        "id": 11,
+        "name": "0010_clean_talon.sql",
+        "applied_at": "2026-10-08 16:15:49"
+      },
+      {
+        "id": 12,
+        "name": "0011_unique_black_widow.sql",
+        "applied_at": "2026-10-08 16:15:49"
+      },
+      {
+        "id": 13,
+        "name": "0012_hesitant_northstar.sql",
+        "applied_at": "2026-10-08 16:15:49"
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "WAW",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.5519
+      },
+      "duration": 0.5519,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 11370496,
+      "rows_read": 13,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  "databaseCounts": {
+    "results": [
+      {
+        "accounts": 1,
+        "media": 247,
+        "mediaSnapshots": 775,
+        "accountSnapshots": 715,
+        "comments": 3791,
+        "accountInsights": 173,
+        "jobs": 251,
+        "runningJobs": 3,
+        "receipts": 841,
+        "policyHistory": 1
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "WAW",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.7676
+      },
+      "duration": 0.7676,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 11370496,
+      "rows_read": 6798,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  "httpWindow": {
+    "results": [
+      {
+        "result": "invalid_breakdown",
+        "httpStatus": 400,
+        "graphCode": 100,
+        "requestedVersion": "v26.0",
+        "actualVersion": "v26.0",
+        "attempts": 2,
+        "responses": 2
+      },
+      {
+        "result": "not_supported",
+        "httpStatus": 400,
+        "graphCode": -1,
+        "requestedVersion": "v26.0",
+        "actualVersion": "v26.0",
+        "attempts": 86,
+        "responses": 86
+      },
+      {
+        "result": "not_supported",
+        "httpStatus": 400,
+        "graphCode": 100,
+        "requestedVersion": "v26.0",
+        "actualVersion": "v26.0",
+        "attempts": 43,
+        "responses": 43
+      },
+      {
+        "result": "object_unavailable",
+        "httpStatus": 400,
+        "graphCode": 100,
+        "requestedVersion": "v26.0",
+        "actualVersion": "v26.0",
+        "attempts": 1,
+        "responses": 1
+      },
+      {
+        "result": "success",
+        "httpStatus": 200,
+        "graphCode": null,
+        "requestedVersion": "v26.0",
+        "actualVersion": "v26.0",
+        "attempts": 253,
+        "responses": 253
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "WAW",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 2.4976
+      },
+      "duration": 2.4976,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 11370496,
+      "rows_read": 1226,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  "activeJobs": {
+    "results": [
+      {
+        "id": "1d548438-a5b9-5473-a13e-20b77b81d1fe",
+        "origin": "comments",
+        "status": "running",
+        "pages": 1514,
+        "collected": 3316,
+        "media_processed": 167,
+        "attempt": 23,
+        "failures": 0,
+        "next_attempt_at": 1791560118764,
+        "started_at": 1791053437085,
+        "last_success_at": 1791560118764,
+        "error_code": null,
+        "lease_expires_at": null,
+        "last_step_http_attempts": 1,
+        "last_step_duration_ms": 2961,
+        "cursorBytes": 467,
+        "cursorSHA256": "a5001848845fa039052d3f3219eae209135ef9aebf6b97bd4a9675ea1ff8f6c8",
+        "queue": {
+          "keys": [
+            "afterMedia",
+            "current",
+            "commentCursor",
+            "parents",
+            "replyCursor",
+            "omittedBranches",
+            "version",
+            "branchCursors",
+            "omittedProbeCount",
+            "unverifiedParents",
+            "eventGeneration"
+          ]
+        }
+      },
+      {
+        "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+        "origin": "manual",
+        "status": "running",
+        "pages": 72,
+        "collected": 72,
+        "media_processed": 72,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1791561021986,
+        "started_at": 1791440937629,
+        "last_success_at": 1791561021986,
+        "error_code": null,
+        "lease_expires_at": null,
+        "last_step_http_attempts": 5,
+        "last_step_duration_ms": 6172,
+        "cursorBytes": 122,
+        "cursorSHA256": "8e23b9b64f3c0cfbac2a61c348c49a03dca0b3377d5c09a9e75a212f10c95907"
+      },
+      {
+        "id": "ca8ee36b-54d5-542b-8fe4-3aa0f5210c9c",
+        "origin": "activity",
+        "status": "running",
+        "pages": 73,
+        "collected": 73,
+        "media_processed": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1791560420732,
+        "started_at": 1791440484483,
+        "last_success_at": 1791560420732,
+        "error_code": null,
+        "lease_expires_at": null,
+        "last_step_http_attempts": 3,
+        "last_step_duration_ms": 4062,
+        "cursorBytes": 2700,
+        "cursorSHA256": "4988d4f45ed03ec22ad350dcca7c96c4310ccf7ee0c0ef8f0199c568819c6c3c",
+        "queue": {
+          "keys": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30"
+          ]
+        }
+      }
+    ],
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "WAW",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.3492
+      },
+      "duration": 0.3492,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 11370496,
+      "rows_read": 6,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  },
+  "collection": {
+    "pages": 3,
+    "total": 251,
+    "cutoff": 1791561210863,
+    "counts": {
+      "completed": 245,
+      "running": 3,
+      "cancelled": 3
+    },
+    "dbCount": 251,
+    "active": [
+      {
+        "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+        "accountId": "ig_17841402362568040",
+        "origin": "manual",
+        "targetMediaId": null,
+        "latencyOrigin": null,
+        "httpAttemptsSinceAt": 1791477954442,
+        "firstAttemptAt": null,
+        "lastAttemptAt": 1791561015814,
+        "firstUsefulObservationAt": null,
+        "lastUsefulObservationAt": 1791561021541,
+        "httpAttempts": 311,
+        "lastStepDurationMs": 6172,
+        "lastStepHttpAttempts": 5,
+        "effectiveState": "running",
+        "queueWaitMs": null,
+        "continuationWaitMs": 195049,
+        "automatic": false,
+        "status": "running",
+        "pages": 72,
+        "collected": 72,
+        "mediaProcessed": 72,
+        "skippedMedia": 0,
+        "skippedPeriods": 0,
+        "attempt": 0,
+        "failures": 0,
+        "nextAttemptAt": 1791561021986,
+        "startedAt": 1791440937629,
+        "completedAt": null,
+        "lastSuccessAt": 1791561021986,
+        "errorCode": null,
+        "cursorBytes": 122,
+        "cursorSHA256": "8e23b9b64f3c0cfbac2a61c348c49a03dca0b3377d5c09a9e75a212f10c95907"
+      },
+      {
+        "id": "ca8ee36b-54d5-542b-8fe4-3aa0f5210c9c",
+        "accountId": "ig_17841402362568040",
+        "origin": "activity",
+        "targetMediaId": null,
+        "latencyOrigin": null,
+        "httpAttemptsSinceAt": 1791476755821,
+        "firstAttemptAt": null,
+        "lastAttemptAt": 1791560416670,
+        "firstUsefulObservationAt": null,
+        "lastUsefulObservationAt": 1791560420293,
+        "httpAttempts": 159,
+        "lastStepDurationMs": 4062,
+        "lastStepHttpAttempts": 3,
+        "effectiveState": "running",
+        "queueWaitMs": null,
+        "continuationWaitMs": 796854,
+        "automatic": true,
+        "status": "running",
+        "pages": 73,
+        "collected": 73,
+        "mediaProcessed": 0,
+        "skippedMedia": 0,
+        "skippedPeriods": 0,
+        "attempt": 0,
+        "failures": 0,
+        "nextAttemptAt": 1791560420732,
+        "startedAt": 1791440484483,
+        "completedAt": null,
+        "lastSuccessAt": 1791560420732,
+        "errorCode": null,
+        "cursorBytes": 2700,
+        "cursorSHA256": "4988d4f45ed03ec22ad350dcca7c96c4310ccf7ee0c0ef8f0199c568819c6c3c"
+      },
+      {
+        "id": "1d548438-a5b9-5473-a13e-20b77b81d1fe",
+        "accountId": "ig_17841402362568040",
+        "origin": "comments",
+        "targetMediaId": null,
+        "latencyOrigin": null,
+        "httpAttemptsSinceAt": 1791477352565,
+        "firstAttemptAt": null,
+        "lastAttemptAt": 1791560115803,
+        "firstUsefulObservationAt": null,
+        "lastUsefulObservationAt": 1791560118764,
+        "httpAttempts": 52,
+        "lastStepDurationMs": 2961,
+        "lastStepHttpAttempts": 1,
+        "effectiveState": "running",
+        "queueWaitMs": null,
+        "continuationWaitMs": 1100188,
+        "automatic": true,
+        "status": "running",
+        "pages": 1514,
+        "collected": 3316,
+        "mediaProcessed": 167,
+        "skippedMedia": 0,
+        "skippedPeriods": 0,
+        "attempt": 23,
+        "failures": 0,
+        "nextAttemptAt": 1791560118764,
+        "startedAt": 1791053437085,
+        "completedAt": null,
+        "lastSuccessAt": 1791560118764,
+        "errorCode": null,
+        "cursorBytes": 467,
+        "cursorSHA256": "a5001848845fa039052d3f3219eae209135ef9aebf6b97bd4a9675ea1ff8f6c8"
+      }
+    ],
+    "schedule": {
+      "accountId": "ig_17841402362568040",
+      "enabled": true,
+      "discoveryMinutes": 60,
+      "timeZone": "Asia/Yekaterinburg",
+      "nextCatalogueAt": 1793555814488,
+      "nextDiscoveryAt": 1791562516543,
+      "nextStoriesAt": 1791563417002,
+      "nextInsightsAt": 1791613855284,
+      "updatedAt": 1791441667581,
+      "lastSuccessAt": 1791560724875,
+      "errorCode": null,
+      "failures": 0,
+      "retryAt": 1791561025105
+    },
+    "policy": {
+      "runBudget": 1,
+      "maximumHttpAttempts": 6,
+      "workBudgetMs": 90000,
+      "persistenceReserveMs": 15000,
+      "version": "collection-v2",
+      "pageSize": 1,
+      "storyPageSize": 1,
+      "commentPageSize": 5,
+      "commentPolicy": {
+        "outerPageSize": 5,
+        "replyPageSize": 50,
+        "recentHours": 72,
+        "recentRefreshHours": 1,
+        "monthRefreshHours": 6,
+        "archiveRefreshHours": 168,
+        "fullReconciliationDays": 30,
+        "omittedProbeLimit": 2
+      },
+      "cronMinutes": 5,
+      "ageIntervalsHours": [
+        1,
+        6,
+        24,
+        72,
+        168,
+        336,
+        720
+      ],
+      "ageSnapshotWindows": [
+        {
+          "targetHours": 1,
+          "toleranceHours": 0.5
+        },
+        {
+          "targetHours": 6,
+          "toleranceHours": 1
+        },
+        {
+          "targetHours": 24,
+          "toleranceHours": 6
+        },
+        {
+          "targetHours": 72,
+          "toleranceHours": 6
+        },
+        {
+          "targetHours": 168,
+          "toleranceHours": 12
+        },
+        {
+          "targetHours": 336,
+          "toleranceHours": 12
+        },
+        {
+          "targetHours": 720,
+          "toleranceHours": 24
+        }
+      ],
+      "maximumConsecutiveFailures": 5
+    },
+    "capacity": {
+      "dueJobs": 3,
+      "atRiskFreshJobs": 0,
+      "scope": "All jobs within cutoff; freshDue is a lower bound of steps for this account, excluding undiscovered objects and other accounts.",
+      "maximumHttpAttemptsPerTick": 6,
+      "tickWorkMs": 90000,
+      "persistenceReserveMs": 15000,
+      "pressureIndicator": false,
+      "overload": "not_measured",
+      "capacityDeficit": 0,
+      "availableStepsIn15m": 3,
+      "assumptions": "One atomic portion per 5-minute Cron, available access/lease/quota; further pages and other accounts increase demand. Deadlines preempt the archive reserve. No production capacity guarantee."
+    },
+    "diagnostics": {
+      "expiredSyncAttempts": 0,
+      "expiredInsightAttempts": 2,
+      "expiredCommentAttempts": 23,
+      "leasesInUse": 0
+    },
+    "coverage": {
+      "analysisCoverage": [
+        {
+          "targetHours": 1,
+          "toleranceHours": 0.5,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 2,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 6,
+          "toleranceHours": 1,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 24,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 2,
+            "captured": 2,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 1,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 1
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 72,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "inapplicable_story": 8,
+              "target_not_reached": 1,
+              "too_early": 2
+            },
+            "open": 1,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 4,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "policy_history_unknown_or_insufficient_opportunity": 4,
+              "inapplicable_story": 8,
+              "too_early": 2
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 168,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 4,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "open": 0,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 4,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "policy_history_unknown_or_insufficient_opportunity": 4,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 336,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "target_not_reached": 1,
+              "too_early": 6,
+              "inapplicable_story": 8
+            },
+            "open": 1,
+            "closed": 232
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 2,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "policy_history_unknown_or_insufficient_opportunity": 2,
+              "too_early": 6,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 720,
+          "toleranceHours": 24,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 6,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "target_not_reached": 1,
+              "too_early": 12,
+              "inapplicable_story": 8
+            },
+            "open": 2,
+            "closed": 225
+          },
+          "collectionObligations": {
+            "expected": 2,
+            "captured": 2,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 5,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "policy_history_unknown_or_insufficient_opportunity": 5,
+              "too_early": 12,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        }
+      ],
+      "collectionCoverage": [
+        {
+          "targetHours": 1,
+          "toleranceHours": 0.5,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 2,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 6,
+          "toleranceHours": 1,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 3,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 24,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8
+            },
+            "open": 0,
+            "closed": 239
+          },
+          "collectionObligations": {
+            "expected": 2,
+            "captured": 2,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 1,
+            "excludedByReason": {
+              "connected_after_window": 236,
+              "inapplicable_story": 8,
+              "policy_history_unknown_or_insufficient_opportunity": 1
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 72,
+          "toleranceHours": 6,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 3,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "inapplicable_story": 8,
+              "target_not_reached": 1,
+              "too_early": 2
+            },
+            "open": 1,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 4,
+            "excludedByReason": {
+              "connected_after_window": 233,
+              "policy_history_unknown_or_insufficient_opportunity": 4,
+              "inapplicable_story": 8,
+              "too_early": 2
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 168,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 4,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "open": 0,
+            "closed": 236
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 4,
+            "excludedByReason": {
+              "connected_after_window": 232,
+              "policy_history_unknown_or_insufficient_opportunity": 4,
+              "inapplicable_story": 8,
+              "too_early": 3
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 336,
+          "toleranceHours": 12,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 1,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "target_not_reached": 1,
+              "too_early": 6,
+              "inapplicable_story": 8
+            },
+            "open": 1,
+            "closed": 232
+          },
+          "collectionObligations": {
+            "expected": 0,
+            "captured": 0,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 2,
+            "excludedByReason": {
+              "connected_after_window": 231,
+              "policy_history_unknown_or_insufficient_opportunity": 2,
+              "too_early": 6,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        },
+        {
+          "targetHours": 720,
+          "toleranceHours": 24,
+          "metric": "reach",
+          "rankingMode": "absolute",
+          "analysisCoverage": {
+            "examined": 247,
+            "observed": 6,
+            "missingEligible": 0,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "target_not_reached": 1,
+              "too_early": 12,
+              "inapplicable_story": 8
+            },
+            "open": 2,
+            "closed": 225
+          },
+          "collectionObligations": {
+            "expected": 2,
+            "captured": 2,
+            "missed": 0,
+            "open": 0,
+            "policyHistoryUnknown": 5,
+            "excludedByReason": {
+              "connected_after_window": 220,
+              "policy_history_unknown_or_insufficient_opportunity": 5,
+              "too_early": 12,
+              "inapplicable_story": 8
+            },
+            "minimumOpportunityMs": 300000,
+            "note": "Only recorded active policy intervals with at least one Cron slot establish a conditional obligation. Configured grant expiry and known access denial constrain opportunity; revocation and historical source availability are not fully measured. Unknown legacy policy/access history is not a missed SLA. Analysis observations are independent."
+          }
+        }
+      ],
+      "discovery": {
+        "measurementState": "not_measured",
+        "denominator": 0,
+        "measuredPublications": 0,
+        "inferredPublications": 247,
+        "averageLagMinutes": null,
+        "maximumLagMinutes": null,
+        "overOneHour": 0
+      },
+      "ageSnapshots": [
+        {
+          "targetHours": 1,
+          "expected": 0,
+          "captured": 0,
+          "open": 0,
+          "missed": 0
+        },
+        {
+          "targetHours": 6,
+          "expected": 0,
+          "captured": 0,
+          "open": 0,
+          "missed": 0
+        },
+        {
+          "targetHours": 24,
+          "expected": 2,
+          "captured": 2,
+          "open": 0,
+          "missed": 0
+        },
+        {
+          "targetHours": 72,
+          "expected": 0,
+          "captured": 0,
+          "open": 0,
+          "missed": 0
+        },
+        {
+          "targetHours": 168,
+          "expected": 0,
+          "captured": 0,
+          "open": 0,
+          "missed": 0
+        },
+        {
+          "targetHours": 336,
+          "expected": 0,
+          "captured": 0,
+          "open": 0,
+          "missed": 0
+        },
+        {
+          "targetHours": 720,
+          "expected": 2,
+          "captured": 2,
+          "open": 0,
+          "missed": 0
+        }
+      ],
+      "catalogue": {
+        "lastFullPassAt": 1790953084504,
+        "currentJobId": "244da4fa-13c7-40fb-b48c-8988eeb3f21a"
+      },
+      "activity": {
+        "timeZone": "Asia/Yekaterinburg",
+        "providerWindowDays": 90,
+        "expectedIntervals": 103,
+        "observedIntervals": 74,
+        "missingIntervals": 29,
+        "recheckIntervals": 2,
+        "dailyIntervals": 89,
+        "weeklyIntervals": 12,
+        "monthlyIntervals": 2,
+        "uncollectableIntervals": [],
+        "earliestDayFrom": 1783796400000,
+        "latestDayTo": 1791486000000
+      }
+    },
+    "comments": {
+      "lastFullPassAt": 1791020793551,
+      "publications": 239,
+      "uniqueComments": 3791,
+      "stalePublications": 233,
+      "partialPublications": 6,
+      "pendingReplyBranches": 0,
+      "unverifiedReplyBranches": 30,
+      "unavailablePublications": 0,
+      "currentPass": {
+        "id": "1d548438-a5b9-5473-a13e-20b77b81d1fe",
+        "status": "running",
+        "mediaProcessed": 167,
+        "remainingPublications": 69,
+        "observations": 3316,
+        "errorCode": null
+      },
+      "webhook": {
+        "subscriptionConfirmedAt": 1791432192539,
+        "lastReceivedAt": 1791436171926,
+        "lastEventAt": 1791436170000,
+        "active": true
+      }
+    },
+    "freshness": [
+      {
+        "origin": "activity",
+        "status": "running",
+        "count": 1,
+        "due": 1,
+        "oldestDue": 1791560420732,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791560416670,
+        "lastSuccess": 1791560420732,
+        "lastCheck": 1791560420732,
+        "lastUsefulObservation": 1791560420293
+      },
+      {
+        "origin": "audience",
+        "status": "completed",
+        "count": 7,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791534015730,
+        "lastSuccess": 1791534018849,
+        "lastCheck": 1791534018849,
+        "lastUsefulObservation": 1791534018438
+      },
+      {
+        "origin": "comments",
+        "status": "cancelled",
+        "count": 1,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": null,
+        "lastSuccess": 1791017856293,
+        "lastCheck": 1791017856293,
+        "lastUsefulObservation": null
+      },
+      {
+        "origin": "comments",
+        "status": "completed",
+        "count": 2,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": null,
+        "lastSuccess": 1791020793551,
+        "lastCheck": 1791020793551,
+        "lastUsefulObservation": null
+      },
+      {
+        "origin": "comments",
+        "status": "running",
+        "count": 1,
+        "due": 1,
+        "oldestDue": 1791560118764,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791560115803,
+        "lastSuccess": 1791560118764,
+        "lastCheck": 1791560118764,
+        "lastUsefulObservation": 1791560118764
+      },
+      {
+        "origin": "comments_refresh",
+        "status": "completed",
+        "count": 45,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791558018942,
+        "lastSuccess": 1791558021822,
+        "lastCheck": 1791558021822,
+        "lastUsefulObservation": 1791551118865
+      },
+      {
+        "origin": "manual",
+        "status": "completed",
+        "count": 1,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": null,
+        "lastSuccess": 1790953084504,
+        "lastCheck": 1790953084504,
+        "lastUsefulObservation": null
+      },
+      {
+        "origin": "manual",
+        "status": "running",
+        "count": 1,
+        "due": 1,
+        "oldestDue": 1791561021986,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791561015814,
+        "lastSuccess": 1791561021986,
+        "lastCheck": 1791561021986,
+        "lastUsefulObservation": 1791561021541
+      },
+      {
+        "origin": "scheduled",
+        "status": "completed",
+        "count": 51,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791558917888,
+        "lastSuccess": 1791558922629,
+        "lastCheck": 1791558922629,
+        "lastUsefulObservation": 1791558921958
+      },
+      {
+        "origin": "stories",
+        "status": "cancelled",
+        "count": 2,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": null,
+        "lastSuccess": 1790952356520,
+        "lastCheck": 1790952356520,
+        "lastUsefulObservation": null
+      },
+      {
+        "origin": "stories",
+        "status": "completed",
+        "count": 139,
+        "due": 0,
+        "oldestDue": null,
+        "atRiskFresh": 0,
+        "freshDue": 0,
+        "lastAttempt": 1791559818382,
+        "lastSuccess": 1791559821682,
+        "lastCheck": 1791559821682,
+        "lastUsefulObservation": null
+      }
+    ],
+    "dataFreshness": [
+      {
+        "kind": "FEED",
+        "objects": 113,
+        "lastAttempt": 1791560117428,
+        "lastCheck": 1791560117944,
+        "lastSuccess": 1791499859477,
+        "lastUsefulObservation": 1791499859477,
+        "legacyProvenanceUnknown": 232
+      },
+      {
+        "kind": "REELS",
+        "objects": 126,
+        "lastAttempt": 1791561020864,
+        "lastCheck": 1791561021541,
+        "lastSuccess": 1791561021745,
+        "lastUsefulObservation": 1791561021745,
+        "legacyProvenanceUnknown": 398
+      },
+      {
+        "kind": "STORY",
+        "objects": 8,
+        "lastAttempt": null,
+        "lastCheck": null,
+        "lastSuccess": 1791393335866,
+        "lastUsefulObservation": 1791393335866,
+        "legacyProvenanceUnknown": 46
+      }
+    ],
+    "quota": {
+      "recordedRequests": 1160,
+      "sinceAt": 1791440293047,
+      "usagePercent": null,
+      "usageObservedAt": null,
+      "blockedUntil": 0,
+      "observedAt": 1791561021541,
+      "cachedUnavailableMetrics": 206,
+      "http": {
+        "attempts": 841,
+        "responses": 841,
+        "failuresBeforeResponse": 0,
+        "timeouts": 0,
+        "rateLimitedResponses": 0,
+        "sinceAt": 1791476425757
+      },
+      "quotaFreshness": "unknown",
+      "quotaStaleAfterMs": 3600000,
+      "usageHeaders": {
+        "appState": "unknown_schema",
+        "businessState": "absent",
+        "receivedAt": 1791561021541
+      }
+    }
+  },
+  "finishedAt": "2026-10-09T15:53:38.491Z"
+}

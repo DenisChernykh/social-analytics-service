@@ -1,6 +1,8 @@
 import type {
   CommentPage,
+  InsightBatchQuery,
   InsightQuery,
+  InstagramApiStatus,
   InstagramInsight,
   InstagramMedia,
   InstagramProfile,
@@ -33,6 +35,9 @@ export interface TokenProtection {
   decrypt(value: string, accountId: string): Promise<string>;
 }
 export interface InstagramTransport {
+  requestStats?(): { attempts: number };
+  forOperation?(operationId: string): InstagramTransport;
+  forAccount?(accountId: string): InstagramTransport;
   subscribeComments(token: string, userId: string): Promise<void>;
   authorizationUrl(state: string, comments?: boolean): string;
   exchangeCode(code: string): Promise<{ accessToken: string; scopes: string[] }>;
@@ -62,6 +67,11 @@ export interface InstagramTransport {
     objectId: string,
     query: InsightQuery,
   ): Promise<StructuredInsight>;
+  structuredInsightsBatch?(
+    token: string,
+    objectId: string,
+    query: InsightBatchQuery,
+  ): Promise<StructuredInsight[]>;
   comments(
     token: string,
     objectId: string,
@@ -71,3 +81,68 @@ export interface InstagramTransport {
     expandReplies?: boolean,
   ): Promise<CommentPage>;
 }
+
+export interface InstagramRequestPolicy {
+  status(accountId: string, apiVersion: string, now: number): Promise<InstagramApiStatus>;
+  beginAttempt?(attempt: HttpAttempt): Promise<void>;
+  finishAttempt?(
+    attempt: HttpAttempt,
+    usage: ReturnType<typeof import("../domain/request-policy").quotaObservation>,
+  ): Promise<void>;
+
+  observe(
+    accountId: string,
+    apiVersion: string,
+    now: number,
+    usagePercent: number | null,
+    blockedUntil: number,
+  ): Promise<void>;
+  unsupported(
+    accountId: string,
+    apiVersion: string,
+    objectId: string,
+    signature: string,
+    now: number,
+  ): Promise<string[]>;
+  rememberUnsupported(
+    accountId: string,
+    apiVersion: string,
+    objectId: string,
+    signature: string,
+    fields: string[],
+    now: number,
+  ): Promise<void>;
+}
+
+export type HttpAttempt = {
+  id: string;
+  accountId: string;
+  operationId: string | null;
+  objectId: string | null;
+  endpointFamily: string;
+  parameters: Record<string, string>;
+  requestStartedAt: number;
+  responseReceivedAt: number | null;
+  failedAt: number | null;
+  requestedApiVersion: string;
+  actualApiVersion: string | null;
+  login: "instagram_login";
+  httpStatus: number | null;
+  graphCode: number | null;
+  graphSubcode: number | null;
+  result:
+    | "pending"
+    | "success"
+    | "not_supported"
+    | "invalid_request"
+    | "invalid_breakdown"
+    | "permission_required"
+    | "insufficient_audience"
+    | "object_unavailable"
+    | "rate_limited"
+    | "retryable"
+    | "source_error"
+    | "transport_error"
+    | "timeout";
+  sample: string | null;
+};

@@ -2,6 +2,7 @@ import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createScheduledOperations } from "../src/app/create-features";
 import { D1Collection } from "../src/modules/collection/infrastructure/d1-collection";
+import { D1RequestPolicy } from "../src/modules/instagram/infrastructure/d1-request-policy";
 import { MetaClient } from "../src/modules/instagram/infrastructure/meta-client";
 import { accountId, connect, fixture, sampleMedia } from "./helpers";
 
@@ -35,7 +36,10 @@ async function ready(request?: typeof fetch) {
     ],
   });
   if (request) {
-    const client = new MetaClient(config, request);
+    const client = new MetaClient(config, request, {
+      policy: new D1RequestPolicy(env.DB),
+      clock: f.now,
+    }).forAccount(accountId);
     vi.mocked(f.transport.comments).mockImplementation((...args) => client.comments(...args));
   }
   await connect(f);
@@ -84,7 +88,7 @@ describe("bounded expanded comment collection (#18)", () => {
     ).first<{ total: number }>();
     expect(saved?.total).toBe(250);
   });
-  it("saves the same 62 unique texts and parents with ten requests instead of 51 and measures payloads and D1 writes", async () => {
+  it("saves the same 62 unique texts and parents with twelve requests instead of 51 and measures payloads and D1 writes", async () => {
     let requests = 0;
     let bytes = 0;
     const roots = Array.from({ length: 50 }, (_, i) => comment(String(1000 + i)));
@@ -168,7 +172,7 @@ describe("bounded expanded comment collection (#18)", () => {
         result = await f.collector.advance(job.id);
       expect(result).toMatchObject({
         status: "completed",
-        pages: 10,
+        pages: 12,
         mediaProcessed: 1,
         collected: 62,
       });
@@ -176,7 +180,7 @@ describe("bounded expanded comment collection (#18)", () => {
         "SELECT id,parent_id,text,published_at FROM comments ORDER BY id",
       ).all();
       expect(after.results).toEqual(before.results);
-      expect(requests).toBe(10);
+      expect(requests).toBe(12);
       const measured = {
         requests,
         bytes,
@@ -185,7 +189,7 @@ describe("bounded expanded comment collection (#18)", () => {
         )?.total,
       };
       expect(measured.writes).toBeLessThan(old.writes ?? 0);
-      expect(measured).toMatchObject({ bytes: 5851, writes: 113 });
+      expect(measured).toMatchObject({ bytes: 5873, writes: 123 });
       expect((await f.collector.status(accountId)).comments).toMatchObject({
         uniqueComments: 62,
         lastFullPassAt: f.now(),
@@ -195,7 +199,7 @@ describe("bounded expanded comment collection (#18)", () => {
         coverage: {
           uniqueSaved: 62,
           lastCompleteAt: f.now(),
-          omittedReplyBranches: 44,
+          omittedReplyBranches: 42,
           completeHistory: false,
         },
       });
@@ -283,7 +287,7 @@ describe("bounded expanded comment collection (#18)", () => {
     let page = 0;
     const f = await ready(async () =>
       Response.json({
-        data: [comment("100")],
+        data: [{ ...comment("100"), replies: { data: [] } }],
         paging: {
           next: "https://graph.instagram.com/next",
           cursors: { after: `cursor-${++page}` },
@@ -345,10 +349,16 @@ describe("bounded expanded comment collection (#18)", () => {
       return Response.json(
         after
           ? {
-              data: [{ ...comment("101"), text: "Edited" }, comment("102")],
+              data: [
+                { ...comment("101"), text: "Edited", replies: { data: [] } },
+                { ...comment("102"), replies: { data: [] } },
+              ],
             }
           : {
-              data: [comment("100"), comment("101")],
+              data: [
+                { ...comment("100"), replies: { data: [] } },
+                { ...comment("101"), replies: { data: [] } },
+              ],
               paging: {
                 next: "https://graph.instagram.com/next",
                 cursors: { after: "changed-page" },

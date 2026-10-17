@@ -1,0 +1,927 @@
+{
+  "method": "Equal fixture mix: one of each of 12 cases, 13 attempted publications. HTTP includes profile/catalog/probes/retries. D1 includes collection, completed replay and backend report reads; seeding and validation excluded. CPU sum is sum of per-case medians, not one production invocation.",
+  "scenarios": [
+    {
+      "case": "reels_supported",
+      "before": {
+        "attempts": 3,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 24,
+        "sqlStatements": 37,
+        "workerdActiveMsP50": 10.823,
+        "workerdActiveMsP95": 21.271,
+        "nodeNonSqlCpuMsP50": 1.9409999999999998,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 4,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 27,
+        "sqlStatements": 42,
+        "workerdActiveMsP50": 10.013,
+        "workerdActiveMsP95": 11.776,
+        "nodeNonSqlCpuMsP50": 1.5569999999999995,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "feed_supported",
+      "before": {
+        "attempts": 4,
+        "coreNumbers": 10,
+        "structuredNumbers": 3,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 27,
+        "sqlStatements": 42,
+        "workerdActiveMsP50": 13.863,
+        "workerdActiveMsP95": 19.412,
+        "nodeNonSqlCpuMsP50": 1.589,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 4
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 5,
+        "coreNumbers": 10,
+        "structuredNumbers": 3,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 30,
+        "sqlStatements": 47,
+        "workerdActiveMsP50": 8.565,
+        "workerdActiveMsP95": 10.377,
+        "nodeNonSqlCpuMsP50": 1.4799999999999998,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 4
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "story_supported",
+      "before": {
+        "attempts": 5,
+        "coreNumbers": 7,
+        "structuredNumbers": 9,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 30,
+        "sqlStatements": 47,
+        "workerdActiveMsP50": 9.164,
+        "workerdActiveMsP95": 18.904,
+        "nodeNonSqlCpuMsP50": 1.7049999999999996,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 7
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 6,
+        "coreNumbers": 7,
+        "structuredNumbers": 9,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 33,
+        "sqlStatements": 52,
+        "workerdActiveMsP50": 9.328,
+        "workerdActiveMsP95": 12.503,
+        "nodeNonSqlCpuMsP50": 1.3949999999999996,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 7
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "reels_optional_rejected",
+      "before": {
+        "attempts": 6,
+        "coreNumbers": 2,
+        "structuredNumbers": 0,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 0,
+        "deferred": 9,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 34,
+        "sqlStatements": 55,
+        "workerdActiveMsP50": 9.361,
+        "workerdActiveMsP95": 14.502,
+        "nodeNonSqlCpuMsP50": 1.8769999999999996,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "views",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "reach",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "saves",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "shares",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "reposts",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "totalInteractions",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "totalWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "averageWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "skipRate",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "request_deferred": 9,
+          "not_supported": 1,
+          "not_requested": 2
+        },
+        "primaryDeferred": 9
+      },
+      "after": {
+        "attempts": 6,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 35,
+        "sqlStatements": 56,
+        "workerdActiveMsP50": 9.266,
+        "workerdActiveMsP95": 14.515,
+        "nodeNonSqlCpuMsP50": 1.6359999999999997,
+        "deferredFields": [],
+        "reasons": {
+          "not_supported": 1,
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "feed_restrictions",
+      "before": {
+        "attempts": 6,
+        "coreNumbers": 8,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 1,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 35,
+        "sqlStatements": 57,
+        "workerdActiveMsP50": 9.756,
+        "workerdActiveMsP95": 18.479,
+        "nodeNonSqlCpuMsP50": 1.7299999999999995,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "profileActivity.total",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "not_requested": 4,
+          "not_supported": 3,
+          "request_deferred": 1
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 6,
+        "coreNumbers": 8,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 35,
+        "sqlStatements": 57,
+        "workerdActiveMsP50": 9.293,
+        "workerdActiveMsP95": 14.33,
+        "nodeNonSqlCpuMsP50": 1.3769999999999998,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 4,
+          "not_supported": 3,
+          "permission_required": 1
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "story_restrictions",
+      "before": {
+        "attempts": 6,
+        "coreNumbers": 5,
+        "structuredNumbers": 1,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 1,
+        "deferred": 6,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 36,
+        "sqlStatements": 58,
+        "workerdActiveMsP50": 10.201,
+        "workerdActiveMsP95": 18.747,
+        "nodeNonSqlCpuMsP50": 1.5529999999999995,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "navigationTotal",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "navigation.tap_forward",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "navigation.tap_back",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "navigation.tap_exit",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "navigation.swipe_forward",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "profileActivity.total",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "not_requested": 7,
+          "not_supported": 3,
+          "request_deferred": 6
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 6,
+        "coreNumbers": 5,
+        "structuredNumbers": 6,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 1,
+        "deferred": 1,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 35,
+        "sqlStatements": 56,
+        "workerdActiveMsP50": 9.92,
+        "workerdActiveMsP95": 18.293,
+        "nodeNonSqlCpuMsP50": 1.3929999999999993,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "facebookViews",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "not_requested": 7,
+          "request_deferred": 1,
+          "not_supported": 2,
+          "permission_required": 1
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "partial_source_error",
+      "before": {
+        "attempts": 8,
+        "coreNumbers": 0,
+        "structuredNumbers": 0,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 0,
+        "deferred": 0,
+        "additionalNumbers": 0,
+        "statuses": [
+          502,
+          502
+        ],
+        "d1BindingCalls": 41,
+        "sqlStatements": 64,
+        "workerdActiveMsP50": 10.214,
+        "workerdActiveMsP95": 17.382,
+        "nodeNonSqlCpuMsP50": 1.5539999999999994,
+        "deferredFields": [],
+        "reasons": {},
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 6,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 33,
+        "sqlStatements": 53,
+        "workerdActiveMsP50": 10.695,
+        "workerdActiveMsP95": 21.07,
+        "nodeNonSqlCpuMsP50": 1.5109999999999997,
+        "deferredFields": [],
+        "reasons": {
+          "not_supported": 1,
+          "source_error": 1,
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "page_budget_exhausted",
+      "before": {
+        "attempts": 6,
+        "coreNumbers": 13,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 11,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 39,
+        "sqlStatements": 61,
+        "workerdActiveMsP50": 11.315,
+        "workerdActiveMsP95": 18.92,
+        "nodeNonSqlCpuMsP50": 1.7099999999999995,
+        "deferredFields": [
+          {
+            "media": 1,
+            "field": "views",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "reach",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "saves",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "shares",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "reposts",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "totalInteractions",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "totalWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "averageWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "skipRate",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "facebookViews",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "crosspostedViews",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "not_supported": 1,
+          "not_requested": 4,
+          "request_deferred": 11
+        },
+        "primaryDeferred": 9
+      },
+      "after": {
+        "attempts": 6,
+        "coreNumbers": 22,
+        "structuredNumbers": 0,
+        "savesReachPairs": 2,
+        "sharesReachPairs": 2,
+        "deferred": 2,
+        "additionalNumbers": 1,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 41,
+        "sqlStatements": 63,
+        "workerdActiveMsP50": 11.31,
+        "workerdActiveMsP95": 14.195,
+        "nodeNonSqlCpuMsP50": 1.7009999999999996,
+        "deferredFields": [
+          {
+            "media": 1,
+            "field": "facebookViews",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 1,
+            "field": "crosspostedViews",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "not_supported": 1,
+          "not_requested": 4,
+          "request_deferred": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "retry_after_failure",
+      "before": {
+        "attempts": 6,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          502,
+          200
+        ],
+        "d1BindingCalls": 41,
+        "sqlStatements": 63,
+        "workerdActiveMsP50": 11.733,
+        "workerdActiveMsP95": 19.365,
+        "nodeNonSqlCpuMsP50": 2.1259999999999994,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 7,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 1,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          502,
+          200
+        ],
+        "d1BindingCalls": 44,
+        "sqlStatements": 68,
+        "workerdActiveMsP50": 11.286,
+        "workerdActiveMsP95": 18.337,
+        "nodeNonSqlCpuMsP50": 1.7989999999999997,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "zero_missing",
+      "before": {
+        "attempts": 3,
+        "coreNumbers": 9,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 0,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 24,
+        "sqlStatements": 37,
+        "workerdActiveMsP50": 8.274,
+        "workerdActiveMsP95": 16.368,
+        "nodeNonSqlCpuMsP50": 1.4569999999999999,
+        "deferredFields": [],
+        "reasons": {
+          "not_returned": 2,
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 4,
+        "coreNumbers": 9,
+        "structuredNumbers": 0,
+        "savesReachPairs": 1,
+        "sharesReachPairs": 0,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 27,
+        "sqlStatements": 42,
+        "workerdActiveMsP50": 7.724,
+        "workerdActiveMsP95": 15.443,
+        "nodeNonSqlCpuMsP50": 1.2079999999999997,
+        "deferredFields": [],
+        "reasons": {
+          "not_returned": 2,
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "zero_denominator_deferred",
+      "before": {
+        "attempts": 3,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 0,
+        "deferred": 0,
+        "additionalNumbers": 2,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 24,
+        "sqlStatements": 37,
+        "workerdActiveMsP50": 7.806,
+        "workerdActiveMsP95": 12.419,
+        "nodeNonSqlCpuMsP50": 1.7429999999999999,
+        "deferredFields": [],
+        "reasons": {
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      },
+      "after": {
+        "attempts": 3,
+        "coreNumbers": 11,
+        "structuredNumbers": 0,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 0,
+        "deferred": 2,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 25,
+        "sqlStatements": 38,
+        "workerdActiveMsP50": 7.938,
+        "workerdActiveMsP95": 10.186,
+        "nodeNonSqlCpuMsP50": 1.2429999999999999,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "facebookViews",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "crosspostedViews",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "request_deferred": 2,
+          "not_requested": 2
+        },
+        "primaryDeferred": 0
+      }
+    },
+    {
+      "case": "pre_insights_budget",
+      "before": {
+        "attempts": 2,
+        "coreNumbers": 2,
+        "structuredNumbers": 0,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 0,
+        "deferred": 11,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 22,
+        "sqlStatements": 33,
+        "workerdActiveMsP50": 6.416,
+        "workerdActiveMsP95": 15.132,
+        "nodeNonSqlCpuMsP50": 1.3129999999999997,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "views",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "reach",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "saves",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "shares",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "reposts",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "totalInteractions",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "totalWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "averageWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "skipRate",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "facebookViews",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "crosspostedViews",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "request_deferred": 11,
+          "not_requested": 2
+        },
+        "primaryDeferred": 9
+      },
+      "after": {
+        "attempts": 2,
+        "coreNumbers": 2,
+        "structuredNumbers": 0,
+        "savesReachPairs": 0,
+        "sharesReachPairs": 0,
+        "deferred": 11,
+        "additionalNumbers": 0,
+        "statuses": [
+          200
+        ],
+        "d1BindingCalls": 23,
+        "sqlStatements": 34,
+        "workerdActiveMsP50": 6.7,
+        "workerdActiveMsP95": 8.841,
+        "nodeNonSqlCpuMsP50": 1.6519999999999997,
+        "deferredFields": [
+          {
+            "media": 0,
+            "field": "views",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "reach",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "saves",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "shares",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "reposts",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "totalInteractions",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "totalWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "averageWatchTimeMs",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "skipRate",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "facebookViews",
+            "reason": "shared_http_budget_or_backoff"
+          },
+          {
+            "media": 0,
+            "field": "crosspostedViews",
+            "reason": "shared_http_budget_or_backoff"
+          }
+        ],
+        "reasons": {
+          "request_deferred": 11,
+          "not_requested": 2
+        },
+        "primaryDeferred": 9
+      }
+    }
+  ],
+  "aggregate": {
+    "before": {
+      "attempts": 58,
+      "coreNumbers": 89,
+      "structuredNumbers": 13,
+      "savesReachPairs": 6,
+      "sharesReachPairs": 7,
+      "deferred": 38,
+      "additionalNumbers": 12,
+      "d1BindingCalls": 377,
+      "sqlStatements": 591,
+      "primaryDeferred": 27,
+      "workerdSumOfCaseMediansMs": 118.926,
+      "nodeNonSqlSumOfCaseMediansMs": 20.297999999999995,
+      "workerdRoundSumDistribution": {
+        "p50": 126.9,
+        "p95": 154.193,
+        "min": 113.361,
+        "max": 194.20600000000002
+      },
+      "corePerHttp": 1.5344827586206897,
+      "d1PerCore": 4.235955056179775,
+      "availableAdditionalWithSixAttemptBudget": 10,
+      "snapshots": 12
+    },
+    "after": {
+      "attempts": 61,
+      "coreNumbers": 118,
+      "structuredNumbers": 18,
+      "savesReachPairs": 9,
+      "sharesReachPairs": 10,
+      "deferred": 16,
+      "additionalNumbers": 10,
+      "d1BindingCalls": 388,
+      "sqlStatements": 608,
+      "primaryDeferred": 9,
+      "workerdSumOfCaseMediansMs": 112.03800000000001,
+      "nodeNonSqlSumOfCaseMediansMs": 17.951999999999998,
+      "workerdRoundSumDistribution": {
+        "p50": 120.295,
+        "p95": 133.075,
+        "min": 105.329,
+        "max": 136.96599999999998
+      },
+      "corePerHttp": 1.9344262295081966,
+      "d1PerCore": 3.288135593220339,
+      "availableAdditionalWithSixAttemptBudget": 10,
+      "snapshots": 13
+    }
+  },
+  "mcp": {
+    "realBackendChecks": 24,
+    "reportsChecked": 25,
+    "allPassed": true
+  }
+}
