@@ -1,0 +1,144 @@
+{
+  "checkedAt": "2026-10-18T19:44:52.094Z",
+  "release": {
+    "revision": "0.3.5",
+    "source": "eb98d55",
+    "versionId": "63a77d29-7fe8-41a8-9792-99512a11a70e",
+    "deploymentId": "d5fdcfe8-28ba-4f57-9bfa-c7e2d1ac6d14",
+    "createdAt": "2026-10-18T19:44:34.027695Z",
+    "trafficPercent": 100,
+    "bundle": {
+      "bytes": 1743482,
+      "sha256": "35e1b250f7d54c45f1de56e7ca922905c1eaf0d1a05341098f8bbaed69282b02"
+    },
+    "downloadedBundleMatchesCheckedBuild": true
+  },
+  "verification": {
+    "health": {
+      "status": 200,
+      "retryAfter": null,
+      "health": {
+        "status": "ok",
+        "revision": "0.3.5"
+      }
+    },
+    "collection": {
+      "status": 503,
+      "retryAfter": "15315",
+      "code": "DATABASE_DAILY_LIMIT_REACHED",
+      "detail": "The daily database limit is exhausted. Collection can resume after 00:00 UTC."
+    },
+    "settingsPreservedExceptBuildRevision": true,
+    "bindings": [
+      {
+        "name": "API_KEY",
+        "type": "secret_text"
+      },
+      {
+        "name": "BUILD_REVISION",
+        "type": "plain_text",
+        "text": "0.3.5"
+      },
+      {
+        "name": "COLLECTION_RUNNER",
+        "type": "durable_object_namespace",
+        "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+        "className": "CollectionRunner"
+      },
+      {
+        "name": "COLLECTION_RUNNER_ENABLED",
+        "type": "plain_text",
+        "text": "true"
+      },
+      {
+        "name": "DB",
+        "type": "d1",
+        "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+      },
+      {
+        "name": "ENVIRONMENT",
+        "type": "plain_text",
+        "text": "production"
+      },
+      {
+        "name": "INSTAGRAM_API_VERSION",
+        "type": "plain_text",
+        "text": "v26.0"
+      },
+      {
+        "name": "INSTAGRAM_CLIENT_ID",
+        "type": "secret_text"
+      },
+      {
+        "name": "INSTAGRAM_CLIENT_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "name": "INSTAGRAM_REDIRECT_URI",
+        "type": "plain_text",
+        "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback"
+      },
+      {
+        "name": "INSTAGRAM_WEBHOOK_VERIFY_TOKEN",
+        "type": "secret_text"
+      },
+      {
+        "name": "TOKEN_ENCRYPTION_KEY",
+        "type": "secret_text"
+      }
+    ],
+    "observability": null,
+    "logpush": false,
+    "cron": "*/5 * * * *",
+    "beforeVersion": "e828ef32-6c65-43b9-86c0-3706420c4c38"
+  },
+  "checks": {
+    "command": "pnpm check",
+    "exitCode": 0,
+    "backendTests": 192,
+    "backendFiles": 18,
+    "mcpTests": 27,
+    "targetedTests": 19,
+    "node": "24.18.0",
+    "pnpm": "11.15.1"
+  },
+  "maintenance": {
+    "requestCompletionRunsCleanup": false,
+    "scheduleOwner": "existing CollectionRunner Durable Object",
+    "separateAlarmPortions": true,
+    "firstPassDelayMs": 86400000,
+    "dailyIntervalMs": 86400000,
+    "portionIntervalMs": 60000,
+    "maximumPortionsPerPass": 20,
+    "maximumReceiptDeletesPerPortion": 100,
+    "maximumSampleClearsPerPortion": 100,
+    "maximumMaintenanceStatementsPerPass": 40,
+    "retentionDays": {
+      "receipts": 30,
+      "samples": 7
+    },
+    "cutoffFixedPerPass": true,
+    "scheduleAndReservedBudgetSurviveEviction": true,
+    "ordinaryMaintenanceErrorRetryMs": 300000,
+    "dailyQuotaUsesExistingGlobalPause": true,
+    "remainingBacklogAfterBudget": "next daily pass"
+  },
+  "migrations": {
+    "newMigrations": [],
+    "pendingPreviouslyApproved": ["0013_opposite_wendell_vaughn.sql", "0014_colossal_gargoyle.sql"],
+    "remoteAppliedThisRelease": false,
+    "authorization": "Explicit owner approval for these two migrations after daily quota reset; recovery scheduled for 2026-10-19T05:05:00+05:00"
+  },
+  "followUp": {
+    "recovery": "2026-10-19T05:05:00+05:00",
+    "audit": "2026-10-19T10:00:00+05:00",
+    "automationPromptsUpdated": true
+  },
+  "limitations": [
+    "Production D1 daily row-read quota remains exhausted until 00:00 UTC.",
+    "Natural daily maintenance and savings have not yet been observed in production.",
+    "At the daily cap, excess old technical receipts remain for the next pass; this does not delete publication snapshots or collection checkpoints."
+  ],
+  "historicalAnalyticsAndJobCursorsReset": false,
+  "pluginChanged": false
+}
