@@ -31,6 +31,78 @@ async function onlyRefresh(f: Awaited<ReturnType<typeof ready>>) {
 }
 
 describe("collection fault isolation", () => {
+  it("bounds urgent Story retries when discovery omits the expiring object without declaring its snapshot captured", async () => {
+    const f = await ready();
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    await onlyRefresh(f);
+    const expiry = f.now() + 14 * 60_000;
+    const mediaId = `${accountId}_${sampleMedia.id}`;
+    await env.DB.prepare("UPDATE media SET product_type='STORY',published_at=? WHERE id=?")
+      .bind(expiry - 86400_000, mediaId)
+      .run();
+    const oldSnapshotAt = f.now() - 3600_000;
+    await env.DB.prepare("UPDATE media_snapshots SET observed_at=? WHERE media_id=?")
+      .bind(oldSnapshotAt, mediaId)
+      .run();
+    vi.mocked(f.transport.stories).mockResolvedValue({ media: [], nextCursor: null });
+    await f.collector.tick();
+    expect(f.transport.stories).toHaveBeenCalledTimes(1);
+    expect(await f.store.nextStoryExpiry(accountId, f.now())).toBeNull();
+    for (let i = 0; i < 6; i++) {
+      f.advance(1000);
+      await f.collector.tick();
+    }
+    expect(f.transport.stories).toHaveBeenCalledTimes(1);
+    expect(
+      await env.DB.prepare("SELECT MAX(observed_at) at FROM media_snapshots WHERE media_id=?")
+        .bind(mediaId)
+        .first("at"),
+    ).toBe(oldSnapshotAt);
+    f.advance(300_000);
+    expect(await f.store.nextStoryExpiry(accountId, f.now())).toBe(expiry);
+    await f.collector.tick();
+    expect(f.transport.stories).toHaveBeenCalledTimes(2);
+  });
+
+  it("waits for the final Story snapshot window and does not create repeated urgent passes before it", async () => {
+    const f = await ready();
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    await onlyRefresh(f);
+    const expiry = f.now() + 18 * 60_000;
+    const story = {
+      ...sampleMedia,
+      productType: "STORY",
+      timestamp: expiry - 86400_000,
+    };
+    const mediaId = `${accountId}_${story.id}`;
+    await env.DB.prepare("UPDATE media SET product_type='STORY',published_at=? WHERE id=?")
+      .bind(story.timestamp, mediaId)
+      .run();
+    await env.DB.prepare("UPDATE media_snapshots SET observed_at=? WHERE media_id=?")
+      .bind(f.now() - 3600_000, mediaId)
+      .run();
+    vi.mocked(f.transport.stories).mockResolvedValue({ media: [story], nextCursor: null });
+
+    await f.collector.tick();
+    expect(f.transport.stories).not.toHaveBeenCalled();
+    f.advance(3 * 60_000);
+    await f.collector.tick();
+    expect(f.transport.stories).toHaveBeenCalledTimes(1);
+    expect(await f.store.nextStoryExpiry(accountId, f.now())).toBeNull();
+    for (let i = 0; i < 6; i++) {
+      f.advance(1000);
+      await f.collector.tick();
+    }
+    expect(f.transport.stories).toHaveBeenCalledTimes(1);
+    expect(
+      (await f.collector.status(accountId)).jobs.filter((j) => j.origin === "stories"),
+    ).toHaveLength(1);
+  });
+
   it("persists available metadata and failure provenance, then continues the catalogue beyond an insight refusal", async () => {
     const f = await ready();
     const bad = {

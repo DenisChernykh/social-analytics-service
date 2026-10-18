@@ -651,7 +651,7 @@ describe("Story expiry scheduling", () => {
     const f = await ready();
     const mediaId = `${accountId}_${sampleMedia.id}`;
     await env.DB.prepare("UPDATE media SET product_type='STORY',published_at=? WHERE id=?")
-      .bind(f.now() - 24 * 3600_000 + 5 * 60_000, mediaId)
+      .bind(f.now() - 24 * 3600_000 + 10 * 60_000, mediaId)
       .run();
     await env.DB.prepare("UPDATE media_snapshots SET observed_at=? WHERE media_id=?")
       .bind(f.now() - 3600_000, mediaId)
@@ -662,6 +662,8 @@ describe("Story expiry scheduling", () => {
       .bind(f.now() - 24 * 3600_000, comments.id)
       .run();
     expect((await f.collector.tick())?.decision.selected?.id).toBe(story.id);
+    expect(await f.store.nextStoryExpiry(accountId, f.now())).toBeNull();
+    f.advance(5 * 60_000);
     expect(await f.store.nextStoryExpiry(accountId, f.now())).toBe(f.now() + 5 * 60_000);
     await env.DB.prepare("UPDATE media_snapshots SET observed_at=? WHERE media_id=?")
       .bind(f.now(), mediaId)

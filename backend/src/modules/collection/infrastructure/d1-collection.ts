@@ -4,7 +4,12 @@ import { collectionJobs, collectionSchedules } from "../../../platform/database/
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { ActivityPeriod } from "../../account-insights";
 import type { CollectionStore } from "../application/ports";
-import { ageSnapshotWindows, type DueAgeSnapshot } from "../domain/age-policy";
+import {
+  ageSnapshotWindows,
+  type DueAgeSnapshot,
+  storyFinalSnapshotWindowMs,
+  storyUrgentRetryIntervalMs,
+} from "../domain/age-policy";
 import { type CommentCheckpoint, commentRefreshDelay } from "../domain/comment-policy";
 import { ageCoverage, type PolicyInterval } from "../domain/coverage";
 import type {
@@ -646,8 +651,10 @@ export class D1Collection implements CollectionStore {
     const row = await this.database
       .prepare(`SELECT MIN(m.published_at+86400000) AS expiry FROM media m
       WHERE m.account_id=? AND m.product_type='STORY' AND m.published_at+86400000>?
-        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT 1),0)<m.published_at+86400000-900000`)
-      .bind(accountId, now)
+        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT 1),0)<m.published_at+86400000-?
+        AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.account_id=m.account_id
+          AND j.origin='stories' AND COALESCE(j.last_attempt_at,j.started_at)>?)`)
+      .bind(accountId, now, storyFinalSnapshotWindowMs, now - storyUrgentRetryIntervalMs)
       .first<{ expiry: number | null }>();
     return row?.expiry ?? null;
   }

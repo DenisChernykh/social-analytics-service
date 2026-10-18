@@ -5,7 +5,7 @@ import {
 import { objectFailureDelay } from "../../../shared/domain/source-failure";
 import type { ActivityPeriod } from "../../account-insights";
 import { refreshActivityQueue } from "../domain/activity-policy";
-import { ageSnapshotWindows } from "../domain/age-policy";
+import { ageSnapshotWindows, storyFinalSnapshotWindowMs } from "../domain/age-policy";
 import { type CommentCheckpoint, commentPolicy } from "../domain/comment-policy";
 import { jobState } from "../domain/job-state";
 import {
@@ -486,7 +486,7 @@ export class Collect {
         schedule.nextInsightsAt,
         schedule.nextCatalogueAt,
         age ? now : Infinity,
-        storyExpiry !== null ? storyExpiry - 20 * 60_000 : Infinity,
+        storyExpiry !== null ? storyExpiry - storyFinalSnapshotWindowMs : Infinity,
       );
       if (
         dueAt > now &&
@@ -560,14 +560,16 @@ export class Collect {
       let lastSuccessAt = schedule.lastSuccessAt;
 
       const urgentStory =
-        storyExpiry !== null && storyExpiry - 20 * 60_000 < schedule.nextStoriesAt;
+        storyExpiry !== null && storyExpiry - storyFinalSnapshotWindowMs < schedule.nextStoriesAt;
       // Pick the oldest deadline so a backlog of age snapshots cannot prevent
       // short-lived Stories and newly published media from being discovered.
       const periodic = [
         {
           kind: "stories",
-          dueAt: urgentStory ? (storyExpiry ?? now) - 20 * 60_000 : schedule.nextStoriesAt,
-          graceMs: (urgentStory ? 20 : 30) * 60_000,
+          dueAt: urgentStory
+            ? (storyExpiry ?? now) - storyFinalSnapshotWindowMs
+            : schedule.nextStoriesAt,
+          graceMs: urgentStory ? storyFinalSnapshotWindowMs : 30 * 60_000,
         },
         { kind: "discovery", dueAt: schedule.nextDiscoveryAt, graceMs: 15 * 60_000 },
         { kind: "insights", dueAt: schedule.nextInsightsAt, graceMs: 6 * 3_600_000 },
