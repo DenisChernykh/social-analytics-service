@@ -666,7 +666,9 @@ export class Collect {
           refreshingMedia = mediaId;
           const result = await this.analytics.refresh(
             mediaId,
-            await this.operationId(`refresh:${mediaId}:${Math.floor(now / 900_000)}`),
+            // A source-error cooldown is five minutes. A larger identity
+            // window replays the same completed partial page after it expires.
+            await this.operationId(`refresh:${mediaId}:${Math.floor(now / retryIntervalMs)}`),
           );
           if (result.status !== "completed")
             throw incompleteOperationError(result.status, result.errorCode);

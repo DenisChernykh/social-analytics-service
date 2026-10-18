@@ -137,6 +137,30 @@ describe("collection fault isolation", () => {
     expect(await f.store.dueMedia(accountId, f.now())).toBe(`${accountId}_${bad.id}`);
   });
 
+  it("makes a new source request after an object cooldown instead of looping over a cached partial refresh", async () => {
+    const f = await ready();
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    f.advance(8 * 86400_000);
+    f.advance(900_000 - (f.now() % 900_000));
+    await onlyRefresh(f);
+    vi.mocked(f.transport.insights).mockRejectedValueOnce(
+      new ApplicationError("INSTAGRAM_SOURCE_ERROR", "Object refusal"),
+    );
+    await f.collector.tick();
+    const calls = vi.mocked(f.transport.media).mock.calls.length;
+    expect(await f.store.mediaRefreshStatus(accountId, f.now())).toMatchObject({ deferred: 1 });
+    f.advance(300_000);
+    await f.collector.tick();
+    expect(f.transport.media).toHaveBeenCalledTimes(calls + 1);
+    expect(await f.store.mediaRefreshStatus(accountId, f.now())).toMatchObject({ deferred: 0 });
+    expect(await env.DB.prepare("SELECT COUNT(*) n FROM media_snapshots").first("n")).toBe(3);
+    expect(
+      await env.DB.prepare("SELECT unavailable_code FROM media").first("unavailable_code"),
+    ).toBeNull();
+  });
+
   it.each(["INSTAGRAM_AUTH_EXPIRED", "INSTAGRAM_RATE_LIMITED"] as const)(
     "keeps %s account-wide and does not turn it into a successful partial snapshot",
     async (code) => {
