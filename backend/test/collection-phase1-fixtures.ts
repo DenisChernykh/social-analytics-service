@@ -11,6 +11,7 @@ export type CollectionCase = {
   rejectCore?: string[];
   denyProfileActivity?: boolean;
   failCoreOnce?: boolean;
+  refuseCore?: boolean;
   coreQuotaPercent?: number;
   invalidAdditional?: string;
   malformedAdditional?: boolean;
@@ -20,6 +21,7 @@ export type CollectionCase = {
 export const collectionCases: CollectionCase[] = [
   { name: "reels_supported", productType: "REELS", maxAttempts: 6 },
   { name: "feed_supported", productType: "FEED", maxAttempts: 6 },
+  { name: "feed_source_refusal", productType: "FEED", maxAttempts: 6, refuseCore: true },
   { name: "story_supported", productType: "STORY", maxAttempts: 6 },
   {
     name: "reels_optional_rejected",
@@ -224,6 +226,11 @@ export function collectionFixture(scenario: CollectionCase) {
         ],
       });
     }
+    if (scenario.refuseCore && fields.includes("reach"))
+      return json(
+        { error: { code: 100, error_subcode: 2108006, message: "Fixture object insight refusal" } },
+        400,
+      );
     if (scenario.failCoreOnce && !failedCore && fields.includes("reach")) {
       failedCore = true;
       return json(

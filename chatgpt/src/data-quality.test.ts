@@ -138,6 +138,57 @@ test("MCP retains unknown quota states, true accounting epochs and jobs continua
   }
 });
 
+test("MCP accepts DO capacity without legacy Cron estimates and preserves object retries and incomplete pagination", async () => {
+  const status = response("getCollectionStatus");
+  status.capacity = {
+    dueJobs: 0,
+    atRiskFreshJobs: 0,
+    scope: "Owner jobs",
+    maximumHttpAttemptsPerTick: 6,
+    tickWorkMs: 90000,
+    persistenceReserveMs: 15000,
+    pressureIndicator: false,
+    overload: "not_measured",
+    assumptions: "Alarm portions have no fixed Cron slot quota",
+  };
+  status.mediaRefresh = {
+    publications: 242,
+    missingSnapshots: 0,
+    staleSnapshots: 188,
+    ready: 187,
+    deferred: 1,
+    retries: [{ errorCode: "INSTAGRAM_SOURCE_ERROR", count: 1, nextAttemptAt: 9000 }],
+  };
+  const job = {
+    ...response("getCollectionJob"),
+    status: "failed",
+    errorCode: "INSTAGRAM_PAGINATION_STALLED",
+    effectiveState: "incomplete",
+    waitingReason: "pagination_stalled",
+  };
+  status.jobs = [job];
+  let reads = 0;
+  const client = await connect(async (request) => {
+    assert.equal(request.method, "GET");
+    reads++;
+    return Response.json(status);
+  });
+  try {
+    const result = await client.callTool({
+      name: "get_collection_status",
+      arguments: { accountId: "ig_fixture" },
+    });
+    assert.notEqual(result.isError, true, JSON.stringify(result));
+    const data = (result.structuredContent as { data: typeof status }).data;
+    assert.deepEqual(data.capacity, status.capacity);
+    assert.deepEqual(data.mediaRefresh, status.mediaRefresh);
+    assert.deepEqual(data.jobs, [job]);
+    assert.equal(reads, 1);
+  } finally {
+    await client.close();
+  }
+});
+
 test("MCP preserves independent analysis coverage, unknown obligations, denominator zero and relative ranking n", async () => {
   const ranking = response("analyzeContent");
   ranking.input = {

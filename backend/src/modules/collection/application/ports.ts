@@ -49,6 +49,17 @@ export interface CollectionStore {
       legacyProvenanceUnknown: number;
     }[]
   >;
+  mediaRefreshStatus(
+    accountId: string,
+    now: number,
+  ): Promise<{
+    publications: number;
+    missingSnapshots: number;
+    staleSnapshots: number;
+    ready: number;
+    deferred: number;
+    retries: { errorCode: string; count: number; nextAttemptAt: number | null }[];
+  }>;
   diagnostics(
     accountId: string,
     now: number,

@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-18T18:08:26.428Z",
+  "mode": "local_validation_only",
+  "backendRevision": "0.3.1",
+  "mcpVersion": "0.4.1",
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 176,
+    "backendTestFiles": 16,
+    "mcpTests": 26,
+    "workerDryRun": "passed",
+    "mcpBuild": "passed",
+    "migrations": "none"
+  },
+  "production": {
+    "deploymentPerformed": false,
+    "pushPerformed": false,
+    "remoteRecoveryPerformed": false
+  },
+  "artifacts": [
+    {
+      "path": "backend/dist/index.js",
+      "bytes": 1737292,
+      "sha256": "0063e09c463da4efc803d340f375408c09fe37b24100f1c5f5c9d384969d0d7b"
+    },
+    {
+      "path": "chatgpt/dist/server/index.js",
+      "bytes": 914658,
+      "sha256": "fb7394e242b03a69b0b5143e8b54d197b59635d163fb03851f527d25129fc27a"
+    },
+    {
+      "path": "chatgpt/contract/openapi.json",
+      "bytes": 803732,
+      "sha256": "84e25997e3b5a2596117c8ec3d6e0aa6f0d6c91bb00429fb902730822f2248be"
+    }
+  ]
+}

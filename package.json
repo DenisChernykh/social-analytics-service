@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "pnpm --dir backend dev",
-    "check": "pnpm --dir backend check && pnpm --dir chatgpt check",
+    "check": "pnpm --dir chatgpt contract:check && pnpm --dir backend check && pnpm --dir chatgpt check",
     "test": "pnpm --dir backend test && pnpm --dir chatgpt test",
     "format": "pnpm --dir backend format && pnpm --dir chatgpt format",
     "mcp:build": "pnpm --dir chatgpt build",

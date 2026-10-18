@@ -92,7 +92,7 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "get_collection_status",
     "Полнота и расписание сбора",
-    "Сохранённое состояние: analysisCoverage отдельно от доказанных collectionObligations, свежесть по видам работы, deadlines, backlog и причины ожидания. unknown_schema и usagePercent=null не означают свободную квоту; старая оценка сохраняет исходное время. jobsPage содержит cutoff, total/aggregates и nextCursor/hasMore: следуй продолжению, состояния jobs могут меняться между страницами. Чтение не запускает сбор.",
+    "Сохранённое состояние: analysisCoverage отдельно от доказанных collectionObligations. mediaRefresh различает отсутствие снимка, устаревший снимок, готовое обновление и отложенный повтор отдельного объекта; retries содержит причины и сроки. effectiveState/waitingReason различают работу, ожидание и неполный проход из-за pagination_stalled; failed не повторяется автоматически. unknown_schema и usagePercent=null не означают свободную квоту. jobsPage содержит cutoff, total/aggregates и nextCursor/hasMore: следуй продолжению, состояния jobs могут меняться между страницами. Чтение не запускает сбор.",
     z.object({
       accountId: id,
       limit: z.number().int().min(1).max(100).default(20),

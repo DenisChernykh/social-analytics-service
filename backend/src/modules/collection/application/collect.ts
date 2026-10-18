@@ -2,10 +2,12 @@ import {
   ApplicationError,
   incompleteOperationError,
 } from "../../../shared/application/application-error";
+import { objectFailureDelay } from "../../../shared/domain/source-failure";
 import type { ActivityPeriod } from "../../account-insights";
 import { refreshActivityQueue } from "../domain/activity-policy";
 import { ageSnapshotWindows } from "../domain/age-policy";
 import { type CommentCheckpoint, commentPolicy } from "../domain/comment-policy";
+import { jobState } from "../domain/job-state";
 import {
   type CataloguePosition,
   type CollectionJob,
@@ -34,7 +36,7 @@ export class Collect {
   async job(id: string) {
     const job = await this.store.job(id);
     if (!job) throw new ApplicationError("NOT_FOUND", "The collection job was not found.");
-    return job;
+    return { ...job, ...jobState(job, this.clock()) };
   }
   async start(
     accountId: string,
@@ -196,7 +198,7 @@ export class Collect {
           throw incompleteOperationError(result.status, result.errorCode);
         if (result.nextCursor && result.nextCursor === job.cursor)
           throw new ApplicationError(
-            "INSTAGRAM_UNAVAILABLE",
+            "INSTAGRAM_PAGINATION_STALLED",
             "Instagram returned a repeated pagination cursor.",
           );
         const stoppedAtKnown =
@@ -284,7 +286,13 @@ export class Collect {
           lastStepHttpAttempts: Math.max(0, requestStats() - beforeAttempts),
           attempt: job.attempt + (code === "SYNC_IN_PROGRESS" ? 0 : 1),
           failures,
-          status: failures >= 5 ? "failed" : "running",
+          status:
+            (code === "INSTAGRAM_PAGINATION_STALLED" &&
+              job.origin !== "comments" &&
+              job.origin !== "comments_refresh") ||
+            failures >= 5
+              ? "failed"
+              : "running",
           errorCode: code,
           nextAttemptAt:
             this.clock() +
@@ -320,8 +328,7 @@ export class Collect {
       schedule,
       jobs: page.items.map((job) => ({
         ...job,
-        effectiveState:
-          job.leaseExpiresAt && job.leaseExpiresAt <= now ? "lease_expired" : job.status,
+        ...jobState(job, now),
         queueWaitMs:
           job.firstAttemptAt === null || job.firstAttemptAt === undefined
             ? null
@@ -341,6 +348,7 @@ export class Collect {
       diagnostics,
       freshness: page.aggregates.map((a) => ({ ...a, lastCheck: a.lastSuccess })),
       dataFreshness: await this.store.dataFreshness(accountId),
+      mediaRefresh: await this.store.mediaRefreshStatus(accountId, now),
       capacity: {
         dueJobs: page.aggregates.reduce((n, a) => n + a.due, 0),
         atRiskFreshJobs: page.aggregates.reduce((n, a) => n + a.atRiskFresh, 0),
@@ -677,10 +685,24 @@ export class Collect {
       );
     } catch (error) {
       const code = error instanceof ApplicationError ? error.code : "INTERNAL_ERROR";
-      if (code === "INSTAGRAM_OBJECT_UNAVAILABLE" && refreshingMedia) {
-        await this.store.markUnavailable(refreshingMedia, this.clock() + 24 * 3_600_000, code);
+      const objectDelay = objectFailureDelay(code);
+      if (objectDelay !== null && refreshingMedia) {
+        await this.store.markUnavailable(
+          refreshingMedia,
+          this.clock() +
+            Math.max(
+              objectDelay,
+              error instanceof ApplicationError ? (error.retryAfterMs ?? 0) : 0,
+            ),
+          code,
+        );
         await this.store.finishSchedule(
-          { ...schedule, errorCode: code, retryAt: this.clock() + retryIntervalMs },
+          {
+            ...schedule,
+            errorCode: null,
+            failures: 0,
+            retryAt: this.clock() + collectionExecution.continuationDelayMs,
+          },
           schedule.updatedAt,
         );
         return;

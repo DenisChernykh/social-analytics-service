@@ -1,4 +1,5 @@
 import { ApplicationError } from "../../../shared/application/application-error";
+import { objectFailureDelay } from "../../../shared/domain/source-failure";
 import { definitionVersion, metricDefinitions } from "../domain/metric-definitions";
 
 export { metricDefinitions } from "../domain/metric-definitions";
@@ -150,8 +151,10 @@ export class InstagramSource implements AnalyticsSource {
     accountId: string,
     objectId: string,
     query: InsightQuery,
+    failure?: ApplicationError,
   ): Promise<StructuredInsight> {
     try {
+      if (failure) throw failure;
       return await this.reader.structuredInsights(accountId, objectId, query);
     } catch (error) {
       if (!(error instanceof ApplicationError)) throw error;
@@ -193,12 +196,59 @@ export class InstagramSource implements AnalyticsSource {
     const isReel = item.media.productType === "REELS" || /\/reels?\//.test(item.media.permalink);
     const isStory = item.media.productType === "STORY";
     const requested = this.requestedMetrics(item.media);
-    const response = await this.reader.insights(accountId, item.media.externalId, [
+    const fields = [
       ...requested
         .filter(([, definition]) => definition.surface === "instagram")
         .map(([, definition]) => definition.field),
       ...(isStory ? ["replies"] : []),
-    ]);
+    ];
+    let response: Record<string, InstagramInsight>;
+    let failure: ApplicationError | undefined;
+    let collectionError: MediaStatistics["collectionError"];
+    try {
+      response = await this.reader.insights(accountId, item.media.externalId, fields);
+    } catch (error) {
+      if (!(error instanceof ApplicationError)) throw error;
+      const delay = objectFailureDelay(error.code);
+      // Auth, account-wide quota, transport failures and persistence errors
+      // retain their retry semantics; only object-scoped failures are partial.
+      if (delay === null) throw error;
+      failure = error;
+      collectionError = {
+        code: error.code,
+        retryAfterMs: Math.max(delay, error.retryAfterMs ?? 0),
+      };
+      const reason =
+        error.code === "INSTAGRAM_OBJECT_UNAVAILABLE"
+          ? "object_unavailable"
+          : error.code === "INSTAGRAM_INVALID_REQUEST"
+            ? "invalid_request"
+            : error.code === "INSTAGRAM_INVALID_BREAKDOWN"
+              ? "invalid_breakdown"
+              : "source_error";
+      response = Object.fromEntries(
+        fields.map((field) => [field, { value: null, reason, receipt: error.receipt }]),
+      );
+    }
+    if (!collectionError) {
+      const reason = Object.values(response).find((value) =>
+        ["source_error", "object_unavailable", "invalid_request", "invalid_breakdown"].includes(
+          value.reason ?? "",
+        ),
+      )?.reason;
+      const code =
+        reason === "object_unavailable"
+          ? "INSTAGRAM_OBJECT_UNAVAILABLE"
+          : reason === "invalid_request"
+            ? "INSTAGRAM_INVALID_REQUEST"
+            : reason === "invalid_breakdown"
+              ? "INSTAGRAM_INVALID_BREAKDOWN"
+              : reason === "source_error"
+                ? "INSTAGRAM_SOURCE_ERROR"
+                : null;
+      const delay = code ? objectFailureDelay(code) : null;
+      if (code && delay !== null) collectionError = { code, retryAfterMs: delay };
+    }
     const metrics = Object.fromEntries(
       Object.entries(metricDefinitions).map(([key, definition]) => {
         const applies = requested.some(([requestedKey]) => requestedKey === key);
@@ -236,12 +286,17 @@ export class InstagramSource implements AnalyticsSource {
     let navigationReceipt: import("../../instagram/public-contracts").ReceiptReference | undefined;
     let storyInsights: StoryInsights | null = null;
     if (isStory) {
-      const navigation = await this.optionalStructured(accountId, item.media.externalId, {
-        metric: "navigation",
-        period: "lifetime",
-        metricType: "total_value",
-        breakdown: "story_navigation_action_type",
-      });
+      const navigation = await this.optionalStructured(
+        accountId,
+        item.media.externalId,
+        {
+          metric: "navigation",
+          period: "lifetime",
+          metricType: "total_value",
+          breakdown: "story_navigation_action_type",
+        },
+        failure,
+      );
       navigationReceipt = navigation.receipt;
       const navProvenance = navigation.receipt
         ? {
@@ -304,12 +359,17 @@ export class InstagramSource implements AnalyticsSource {
       };
     }
     const activity = !isReel
-      ? await this.optionalStructured(accountId, item.media.externalId, {
-          metric: "profile_activity",
-          period: "lifetime",
-          metricType: "total_value",
-          breakdown: "action_type",
-        })
+      ? await this.optionalStructured(
+          accountId,
+          item.media.externalId,
+          {
+            metric: "profile_activity",
+            period: "lifetime",
+            metricType: "total_value",
+            breakdown: "action_type",
+          },
+          failure,
+        )
       : null;
     const profileActivity = activity
       ? {
@@ -357,6 +417,7 @@ export class InstagramSource implements AnalyticsSource {
         }
       : null;
     return {
+      collectionError,
       provenance: (() => {
         const refs = [
           ...Object.values(metrics).map((m) => m.provenance),
@@ -386,6 +447,7 @@ export class InstagramSource implements AnalyticsSource {
     item: { media: Media; initialMetrics: Partial<Metrics> },
     current: MediaStatistics,
   ): Promise<MediaStatistics> {
+    if (current.collectionError) return current;
     // At most two cross-surface fields: one batch and at most two isolated probes.
     // The reader keeps the same operation, budget, backoff and object capability scope.
     const requested = this.requestedMetrics(item.media).filter(

@@ -86,6 +86,7 @@ export interface AnalyticsRepository {
 }
 
 export type MediaStatistics = {
+  collectionError?: { code: string; retryAfterMs: number };
   provenance?: import("../../../shared/domain/measurement").ObservationProvenance | null;
   metrics: Metrics;
   observedAt: number;

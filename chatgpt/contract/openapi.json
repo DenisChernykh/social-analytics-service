@@ -5936,6 +5936,12 @@
                           "effectiveState": {
                             "type": "string"
                           },
+                          "waitingReason": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "queueWaitMs": {
                             "type": [
                               "number",
@@ -6033,6 +6039,59 @@
                           "errorCode"
                         ]
                       }
+                    },
+                    "mediaRefresh": {
+                      "type": "object",
+                      "properties": {
+                        "publications": {
+                          "type": "number"
+                        },
+                        "missingSnapshots": {
+                          "type": "number"
+                        },
+                        "staleSnapshots": {
+                          "type": "number"
+                        },
+                        "ready": {
+                          "type": "number"
+                        },
+                        "deferred": {
+                          "type": "number"
+                        },
+                        "retries": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "errorCode": {
+                                "type": "string"
+                              },
+                              "count": {
+                                "type": "number"
+                              },
+                              "nextAttemptAt": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "errorCode",
+                              "count",
+                              "nextAttemptAt"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "publications",
+                        "missingSnapshots",
+                        "staleSnapshots",
+                        "ready",
+                        "deferred",
+                        "retries"
+                      ]
                     },
                     "jobsPage": {
                       "type": "object",
@@ -7390,6 +7449,12 @@
                     "effectiveState": {
                       "type": "string"
                     },
+                    "waitingReason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "queueWaitMs": {
                       "type": [
                         "number",
@@ -7740,6 +7805,12 @@
                     },
                     "effectiveState": {
                       "type": "string"
+                    },
+                    "waitingReason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "queueWaitMs": {
                       "type": [
@@ -8312,6 +8383,12 @@
                     "effectiveState": {
                       "type": "string"
                     },
+                    "waitingReason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "queueWaitMs": {
                       "type": [
                         "number",
@@ -8663,6 +8740,12 @@
                     "effectiveState": {
                       "type": "string"
                     },
+                    "waitingReason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "queueWaitMs": {
                       "type": [
                         "number",
@@ -9004,6 +9087,12 @@
                     },
                     "effectiveState": {
                       "type": "string"
+                    },
+                    "waitingReason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "queueWaitMs": {
                       "type": [

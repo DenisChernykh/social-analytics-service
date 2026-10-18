@@ -22,6 +22,9 @@ export class SyncAccount {
     pageSize: number;
     kind?: "page" | "media" | "stories";
     mediaId?: string;
+    // Internal collection recovery only. Public operation-ID replay remains
+    // stable for terminal failures and completed operations.
+    retrySourceFailure?: boolean;
   }): Promise<SyncRun> {
     const previous = await this.repository.run(input.operationId);
     if (previous) {
@@ -39,7 +42,9 @@ export class SyncAccount {
       }
       if (
         previous.status === "completed" ||
-        (previous.status === "failed" && !retryableOperation(previous.errorCode))
+        (previous.status === "failed" &&
+          !retryableOperation(previous.errorCode) &&
+          !(input.retrySourceFailure && previous.errorCode === "INSTAGRAM_SOURCE_ERROR"))
       )
         return previous;
       if (previous.status === "running" && this.clock() - previous.startedAt >= 15 * 60_000) {
@@ -110,12 +115,25 @@ export class SyncAccount {
       const items = [];
       for (const item of page.items) {
         const statistics = await this.source.metrics(account.id, item);
+        const { collectionError, ...observation } = statistics;
         const snapshot: Snapshot = {
           id: `${run.id}:${item.media.id}`,
           mediaId: item.media.id,
-          ...statistics,
+          ...observation,
         };
-        items.push({ media: item.media, snapshot });
+        items.push({
+          media: {
+            ...item.media,
+            availability: collectionError
+              ? {
+                  unavailableUntil: this.clock() + collectionError.retryAfterMs,
+                  errorCode: collectionError.code,
+                }
+              : { unavailableUntil: 0, errorCode: null },
+          },
+          snapshot,
+          collectionError,
+        });
       }
       // Every publication gets its core pass before optional fields can spend the shared budget.
       // Continuations belong to this operation, retain field receipts, and never read old snapshots.
@@ -123,6 +141,7 @@ export class SyncAccount {
         for (const [index, item] of page.items.entries()) {
           const collected = items[index];
           if (!collected) throw new Error("Missing core observation");
+          if (collected.collectionError) continue;
           const statistics = await this.source.additionalMetrics(
             account.id,
             item,

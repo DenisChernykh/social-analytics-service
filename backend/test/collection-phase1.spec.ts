@@ -24,6 +24,7 @@ describe("Core-first collection through real HTTP policy, D1 and reports", () =>
     const expectedCore: Record<string, number> = {
       reels_supported: 11,
       feed_supported: 10,
+      feed_source_refusal: 2,
       story_supported: 7,
       reels_optional_rejected: 11,
       feed_restrictions: 8,
@@ -52,6 +53,35 @@ describe("Core-first collection through real HTTP policy, D1 and reports", () =>
       scenario.mediaCount ?? 1,
     );
     expect(await env.DB.prepare("SELECT COUNT(*) AS n FROM account_snapshots").first("n")).toBe(1);
+  });
+
+  it("retains a real Graph 100/2108006 receipt and a partial snapshot without declaring metrics unsupported", async () => {
+    const runner = await scenarioRunner(env.DB, namedCase("feed_source_refusal"));
+    const result = await exerciseScenario(runner);
+    expect(result.run).toMatchObject({
+      status: "completed",
+      coverageState: "partial",
+      mediaCount: 1,
+    });
+    expect(result.reports[0]?.metrics?.reach).toMatchObject({
+      value: null,
+      reason: "source_error",
+      provenance: { operationId: phase1OperationId },
+    });
+    expect(result.reports[0]?.metrics?.likes).toMatchObject({
+      value: 100,
+      sourceField: "like_count",
+    });
+    expect(
+      await env.DB.prepare(
+        "SELECT json_extract(payload_json,'$.graphSubcode') subcode FROM instagram_http_attempts WHERE json_extract(payload_json,'$.httpStatus')=400",
+      ).first("subcode"),
+    ).toBe(2108006);
+    expect(
+      await env.DB.prepare("SELECT unavailable_code FROM media").first("unavailable_code"),
+    ).toBe("INSTAGRAM_SOURCE_ERROR");
+    expect(runner.calls.filter((call) => call.family === "scalar")).toHaveLength(1);
+    expect(runner.calls.filter((call) => call.family === "structured")).toHaveLength(0);
   });
 
   it("protects every page publication and its same-observation pairs before any optional probe", async () => {

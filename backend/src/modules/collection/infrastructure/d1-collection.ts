@@ -411,10 +411,62 @@ export class D1Collection implements CollectionStore {
       .values(schedule)
       .onConflictDoUpdate({ target: collectionSchedules.accountId, set: schedule });
   }
+  async mediaRefreshStatus(accountId: string, now: number) {
+    const rows = await this.database
+      .prepare(`SELECT error_code,COUNT(*) publications,
+      SUM(missing) missingSnapshots,SUM(stale) staleSnapshots,
+      SUM(until_at>?) deferred,SUM(until_at<=? AND due) ready,
+      MIN(CASE WHEN until_at>? THEN until_at END) nextAttemptAt
+      FROM (SELECT m.unavailable_code error_code,m.unavailable_until until_at,
+        s.id IS NULL missing,
+        s.id IS NOT NULL AND s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END stale,
+        m.unavailable_code IS NOT NULL OR s.id IS NULL OR
+          EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') OR
+          s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END due
+        FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
+        WHERE m.account_id=? AND m.product_type!='STORY') GROUP BY error_code`)
+      .bind(now, now, now, now, now, now, now, now, now, now, now, accountId)
+      .all<{
+        error_code: string | null;
+        publications: number;
+        missingSnapshots: number;
+        staleSnapshots: number;
+        deferred: number;
+        ready: number;
+        nextAttemptAt: number | null;
+      }>();
+    return rows.results.reduce(
+      (status, row) => ({
+        publications: status.publications + row.publications,
+        missingSnapshots: status.missingSnapshots + row.missingSnapshots,
+        staleSnapshots: status.staleSnapshots + row.staleSnapshots,
+        ready: status.ready + row.ready,
+        deferred: status.deferred + row.deferred,
+        retries: row.error_code
+          ? [
+              ...status.retries,
+              {
+                errorCode: row.error_code,
+                count: row.publications,
+                nextAttemptAt: row.nextAttemptAt,
+              },
+            ]
+          : status.retries,
+      }),
+      {
+        publications: 0,
+        missingSnapshots: 0,
+        staleSnapshots: 0,
+        ready: 0,
+        deferred: 0,
+        retries: [] as { errorCode: string; count: number; nextAttemptAt: number | null }[],
+      },
+    );
+  }
   async dueMedia(accountId: string, now: number) {
     const row = await this.database
       .prepare(`SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
-      WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=? AND (EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)
+      WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)
       ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1`)
       .bind(accountId, now, now, now, now, now)
       .first<{ id: string }>();

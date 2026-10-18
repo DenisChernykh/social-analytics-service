@@ -183,6 +183,7 @@ export function featureOptions(
             pageSize: 1,
             kind: "media",
             mediaId: id,
+            retrySourceFailure: true,
           });
         },
         page: (accountId: string, operationId: string, cursor: string | null, stories: boolean) =>
@@ -192,6 +193,7 @@ export function featureOptions(
             cursor,
             pageSize: collectionExecution.pageSize,
             kind: stories ? "stories" : "page",
+            retrySourceFailure: true,
           }),
       };
     },

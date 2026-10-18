@@ -32,6 +32,7 @@ export const jobSchema = z.object({
   lastStepDurationMs: z.number().nullable().optional(),
   lastStepHttpAttempts: z.number().nullable().optional(),
   effectiveState: z.string().optional(),
+  waitingReason: z.string().nullable().optional(),
   queueWaitMs: z.number().nullable().optional(),
   continuationWaitMs: z.number().nullable().optional(),
   automatic: z.boolean(),
@@ -92,6 +93,22 @@ export function createCollectionHttp(
   const statusSchema = z.object({
     schedule: scheduleSchema,
     jobs: z.array(jobSchema),
+    mediaRefresh: z
+      .object({
+        publications: z.number(),
+        missingSnapshots: z.number(),
+        staleSnapshots: z.number(),
+        ready: z.number(),
+        deferred: z.number(),
+        retries: z.array(
+          z.object({
+            errorCode: z.string(),
+            count: z.number(),
+            nextAttemptAt: z.number().nullable(),
+          }),
+        ),
+      })
+      .optional(),
     jobsPage: z
       .object({
         nextCursor: z.string().nullable(),

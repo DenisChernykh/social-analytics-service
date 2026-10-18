@@ -1,6 +1,6 @@
 {
   "name": "social-analytics-chatgpt",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "type": "module",
   "description": "Личная статистика соцсетей в ChatGPT; первая готовая интеграция — Instagram",
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "contract:generate": "node scripts/capture-contract.mjs && node scripts/generate-contract.mjs && biome check --write src/contract.ts contract/openapi.json",
+    "contract:check": "node scripts/capture-contract.mjs --check",
     "build": "node scripts/build.mjs",
     "check": "biome check . && tsc --noEmit && pnpm test && pnpm build",
     "test": "node --test src/*.test.ts",
