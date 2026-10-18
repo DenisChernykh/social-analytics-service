@@ -35,6 +35,127 @@ async function alarmTime(stub: DurableObjectStub<CollectionRunner>) {
 }
 
 describe("Durable Object collection execution", () => {
+  it("runs a daily pass in separate minute-spaced portions, persists it across eviction and keeps collecting between portions", async () => {
+    let time = Date.parse("2026-10-19T12:00:00Z");
+    vi.spyOn(Date, "now").mockImplementation(() => time);
+    const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
+    const tick = vi.fn();
+    const pruneReceipts = vi
+      .fn()
+      .mockResolvedValueOnce({ more: true })
+      .mockResolvedValue({ more: false });
+    const install = () =>
+      runInDurableObject(stub, (instance) => {
+        vi.spyOn(instance as unknown as RunnerInternals, "executor").mockReturnValue({
+          tick,
+          nextWakeAt: async () => time + 1000,
+        } as unknown as Executor);
+        vi.spyOn(
+          instance as unknown as { maintenance(): { pruneReceipts: typeof pruneReceipts } },
+          "maintenance",
+        ).mockReturnValue({ pruneReceipts });
+      });
+    await install();
+    await stub.ensureAwake();
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).not.toHaveBeenCalled();
+    const due = time + 86_400_000;
+    time = due;
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).toHaveBeenCalledExactlyOnceWith(due);
+    expect(tick).toHaveBeenCalledTimes(1);
+    expect(await alarmTime(stub)).toBe(time + 1000);
+    await runDurableObjectAlarm(stub);
+    expect(tick).toHaveBeenCalledTimes(2);
+    expect(pruneReceipts).toHaveBeenCalledTimes(1);
+    await evictDurableObject(stub);
+    await install();
+    time += 60_000;
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).toHaveBeenLastCalledWith(due);
+    expect(pruneReceipts).toHaveBeenCalledTimes(2);
+    const wake = await runInDurableObject(stub, (_instance, state) =>
+      state.storage.get("receiptMaintenance"),
+    );
+    expect(wake).toEqual({ nextAt: due + 86_400_000, cutoffAt: null, batches: 0 });
+    time += 60_000;
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).toHaveBeenCalledTimes(2);
+  });
+
+  it("caps maintenance at 20 portions per day even with a large backlog and leaves an idle wake for tomorrow", async () => {
+    let time = Date.parse("2026-10-19T12:00:00Z");
+    vi.spyOn(Date, "now").mockImplementation(() => time);
+    const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
+    const pruneReceipts = vi.fn().mockResolvedValue({ more: true });
+    const tick = vi.fn();
+    await runInDurableObject(stub, (instance) => {
+      vi.spyOn(instance as unknown as RunnerInternals, "executor").mockReturnValue({
+        tick,
+        nextWakeAt: async () => null,
+      } as unknown as Executor);
+      vi.spyOn(
+        instance as unknown as { maintenance(): { pruneReceipts: typeof pruneReceipts } },
+        "maintenance",
+      ).mockReturnValue({ pruneReceipts });
+    });
+    await stub.ensureAwake();
+    await runDurableObjectAlarm(stub);
+    const due = time + 86_400_000;
+    expect(await alarmTime(stub)).toBe(due);
+    time = due;
+    for (let i = 0; i < 20; i++) {
+      await runDurableObjectAlarm(stub);
+      time += 60_000;
+    }
+    expect(pruneReceipts).toHaveBeenCalledTimes(20);
+    expect(await alarmTime(stub)).toBe(due + 86_400_000);
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).toHaveBeenCalledTimes(20);
+    time = due + 86_400_000;
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).toHaveBeenLastCalledWith(time);
+  });
+
+  it("defers a maintenance failure without blocking collection and pauses all D1 work on daily quota", async () => {
+    let time = Date.parse("2026-10-19T12:00:00Z");
+    vi.spyOn(Date, "now").mockImplementation(() => time);
+    const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
+    const tick = vi.fn();
+    const pruneReceipts = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("temporary maintenance failure"))
+      .mockRejectedValueOnce(
+        new Error("D1_ERROR: Your account has exceeded D1's free tier daily row read limit."),
+      );
+    await runInDurableObject(stub, (instance) => {
+      vi.spyOn(instance as unknown as RunnerInternals, "executor").mockReturnValue({
+        tick,
+        nextWakeAt: async () => time + 1000,
+      } as unknown as Executor);
+      vi.spyOn(
+        instance as unknown as { maintenance(): { pruneReceipts: typeof pruneReceipts } },
+        "maintenance",
+      ).mockReturnValue({ pruneReceipts });
+    });
+    await stub.ensureAwake();
+    await runDurableObjectAlarm(stub);
+    time += 86_400_000;
+    await runDurableObjectAlarm(stub);
+    expect(await alarmTime(stub)).toBe(time + 1000);
+    time += 60_000;
+    await runDurableObjectAlarm(stub);
+    expect(tick).toHaveBeenCalledTimes(2);
+    expect(pruneReceipts).toHaveBeenCalledTimes(1);
+    time += 4 * 60_000;
+    await runDurableObjectAlarm(stub);
+    expect(pruneReceipts).toHaveBeenCalledTimes(2);
+    expect(await alarmTime(stub)).toBe(Date.parse("2026-10-21T00:00:05Z"));
+    await runDurableObjectAlarm(stub);
+    expect(tick).toHaveBeenCalledTimes(2);
+    expect(pruneReceipts).toHaveBeenCalledTimes(2);
+  });
+
   it("persists daily D1 exhaustion across eviction, avoids more database work, and resumes after UTC reset", async () => {
     let time = Date.parse("2026-10-18T23:58:00Z");
     vi.spyOn(Date, "now").mockImplementation(() => time);
@@ -79,7 +200,7 @@ describe("Durable Object collection execution", () => {
     await install();
     await runDurableObjectAlarm(stub);
     expect(tick).toHaveBeenCalledTimes(2);
-    expect(await alarmTime(stub)).toBeNull();
+    expect(await alarmTime(stub)).toBeGreaterThan(Date.now() + 23 * 3_600_000);
     expect(
       await runInDurableObject(stub, (_instance, state) =>
         state.storage.get("databaseBlockedUntil"),
@@ -133,7 +254,7 @@ describe("Durable Object collection execution", () => {
     expect(await env.DB.prepare("SELECT COUNT(*) n FROM media_snapshots").first()).toEqual({
       n: 1,
     });
-    expect(await alarmTime(f.stub)).toBeNull();
+    expect(await alarmTime(f.stub)).toBeGreaterThan(Date.now() + 23 * 3_600_000);
     expect(
       await runInDurableObject(f.stub, (_instance, state) => state.storage.get("sequence")),
     ).toBe(2);
@@ -187,7 +308,7 @@ describe("Durable Object collection execution", () => {
     await stub.ensureAwake();
     expect(await alarmTime(stub)).not.toBeNull();
     expect(await runDurableObjectAlarm(stub)).toBe(true);
-    expect(await alarmTime(stub)).toBeNull();
+    expect(await alarmTime(stub)).toBeGreaterThan(Date.now() + 23 * 3_600_000);
   });
 
   it("disables automatic alarms for rollback without deleting D1 jobs or cursors", async () => {

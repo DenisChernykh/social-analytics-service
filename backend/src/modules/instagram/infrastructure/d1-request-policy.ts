@@ -4,7 +4,6 @@ import type { InstagramApiStatus } from "../public-contracts";
 
 export class D1RequestPolicy implements InstagramRequestPolicy {
   private readonly states = new Map<string, InstagramApiStatus>();
-  private receiptsPruned = false;
   constructor(private readonly database: D1Database) {}
   async status(accountId: string, apiVersion: string, now: number): Promise<InstagramApiStatus> {
     const id = JSON.stringify([accountId, apiVersion]);
@@ -170,22 +169,6 @@ export class D1RequestPolicy implements InstagramRequestPolicy {
           id,
         ),
     ]);
-    // Maintenance is bounded once per invocation, rather than once per request.
-    if (!this.receiptsPruned) {
-      await this.database.batch([
-        this.database
-          .prepare(
-            "DELETE FROM instagram_http_attempts WHERE id IN (SELECT id FROM instagram_http_attempts WHERE requested_at<? LIMIT 100)",
-          )
-          .bind(now - 30 * 86_400_000),
-        this.database
-          .prepare(
-            "UPDATE instagram_http_attempts SET payload_json=json_set(payload_json,'$.sample',NULL) WHERE id IN (SELECT id FROM instagram_http_attempts WHERE requested_at<? AND json_extract(payload_json,'$.sample') IS NOT NULL LIMIT 100)",
-          )
-          .bind(now - 7 * 86_400_000),
-      ]);
-      this.receiptsPruned = true;
-    }
     const previous = this.states.get(id);
     if (previous)
       this.states.set(id, {

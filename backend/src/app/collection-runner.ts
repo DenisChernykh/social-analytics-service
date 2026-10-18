@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import type { CollectionCommands } from "../modules/collection";
+import { createInstagramMaintenance } from "../modules/instagram";
 import type { RuntimeBindings } from "../platform/config/runtime-config";
 import { databaseDailyLimitError } from "../platform/database/d1-errors";
 import { ApplicationError, type ErrorCode } from "../shared/application/application-error";
@@ -10,6 +11,10 @@ export type CommandResult<T> =
   | { ok: false; code: ErrorCode; message: string; retryAfterMs?: number };
 
 const recoveryIntervalMs = 5 * 60_000;
+const maintenanceDayMs = 86_400_000;
+const maintenanceIntervalMs = 60_000;
+const maintenanceDailyBatches = 20;
+type MaintenanceWake = { nextAt: number; cutoffAt: number | null; batches: number };
 
 export class CollectionRunner extends DurableObject<RuntimeBindings> {
   // RPC calls may interleave at awaits. Serialize commands with alarms as well
@@ -41,6 +46,53 @@ export class CollectionRunner extends DurableObject<RuntimeBindings> {
     return createCollectionExecutor(this.env);
   }
 
+  private maintenance() {
+    return createInstagramMaintenance(this.env);
+  }
+
+  private async maintenanceWake(): Promise<MaintenanceWake> {
+    const saved = await this.ctx.storage.get<MaintenanceWake>("receiptMaintenance");
+    if (saved) return saved;
+    // Start tomorrow rather than adding maintenance to deployment/recovery.
+    const initial = { nextAt: Date.now() + maintenanceDayMs, cutoffAt: null, batches: 0 };
+    await this.ctx.storage.put("receiptMaintenance", initial);
+    return initial;
+  }
+
+  private async maintain(wake: MaintenanceWake) {
+    const now = Date.now();
+    const cutoffAt = wake.cutoffAt ?? now;
+    const batches = wake.batches + 1;
+    // Reserve the delay and daily budget before D1 work. A hard termination
+    // must not turn retries into a tight cleanup loop.
+    const next: MaintenanceWake =
+      batches >= maintenanceDailyBatches
+        ? {
+            nextAt: Math.max(now + maintenanceIntervalMs, cutoffAt + maintenanceDayMs),
+            cutoffAt: null,
+            batches: 0,
+          }
+        : { nextAt: now + maintenanceIntervalMs, cutoffAt, batches };
+    await this.ctx.storage.put("receiptMaintenance", next);
+    try {
+      const result = await this.maintenance().pruneReceipts(cutoffAt);
+      if (!result.more)
+        await this.ctx.storage.put("receiptMaintenance", {
+          nextAt: Math.max(Date.now() + maintenanceIntervalMs, cutoffAt + maintenanceDayMs),
+          cutoffAt: null,
+          batches: 0,
+        } satisfies MaintenanceWake);
+    } catch (error) {
+      // Daily exhaustion pauses all D1 work. Other cleanup failures defer only
+      // maintenance, leaving collection commands/alarms available.
+      if (databaseDailyLimitError(error, Date.now())) throw error;
+      await this.ctx.storage.put("receiptMaintenance", {
+        ...next,
+        nextAt: Math.max(next.nextAt, Date.now() + recoveryIntervalMs),
+      });
+    }
+  }
+
   private async blockedError() {
     const until = (await this.ctx.storage.get<number>("databaseBlockedUntil")) ?? 0;
     if (until > Date.now())
@@ -63,9 +115,10 @@ export class CollectionRunner extends DurableObject<RuntimeBindings> {
       await this.ctx.storage.deleteAlarm();
       return;
     }
-    const next = await executor.nextWakeAt();
-    if (next === null) await this.ctx.storage.deleteAlarm();
-    else await this.ctx.storage.setAlarm(Math.max(Date.now() + 1000, next));
+    const collectionAt = await executor.nextWakeAt();
+    const maintenance = await this.maintenanceWake();
+    const next = Math.min(collectionAt ?? Infinity, maintenance.nextAt);
+    await this.ctx.storage.setAlarm(Math.max(Date.now() + 1000, next));
   }
 
   private async retry(error?: unknown) {
@@ -99,10 +152,14 @@ export class CollectionRunner extends DurableObject<RuntimeBindings> {
       // cannot leave a successful claim without another recovery opportunity.
       await this.armRecovery();
       try {
-        const sequence = (await this.ctx.storage.get<number>("sequence")) ?? 0;
-        await this.ctx.storage.put("sequence", (sequence + 1) % 6);
         const executor = this.executor();
-        await executor.tick(sequence);
+        const maintenance = await this.maintenanceWake();
+        if (maintenance.nextAt <= Date.now()) await this.maintain(maintenance);
+        else {
+          const sequence = (await this.ctx.storage.get<number>("sequence")) ?? 0;
+          await this.ctx.storage.put("sequence", (sequence + 1) % 6);
+          await executor.tick(sequence);
+        }
         await this.reschedule(executor);
         await this.ctx.storage.delete("failures");
       } catch (error) {

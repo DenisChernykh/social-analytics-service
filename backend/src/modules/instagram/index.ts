@@ -3,6 +3,7 @@ import { TokenCipher } from "../../platform/crypto/secrets";
 import { InstagramConnections } from "./application/connections";
 import type { InstagramTransport } from "./application/ports";
 import { D1Connections } from "./infrastructure/d1-connections";
+import { D1ReceiptMaintenance } from "./infrastructure/d1-receipt-maintenance";
 import { D1RequestPolicy } from "./infrastructure/d1-request-policy";
 import { MetaClient, type MetaClientConfig } from "./infrastructure/meta-client";
 
@@ -32,3 +33,7 @@ export function createInstagramOperations(
   );
 }
 export type { CommentWebhookPort } from "./application/comment-webhooks";
+
+export function createInstagramMaintenance(env: RuntimeBindings) {
+  return new D1ReceiptMaintenance(env.DB);
+}
