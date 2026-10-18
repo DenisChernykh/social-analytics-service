@@ -5,7 +5,17 @@ import test from "node:test";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { BACKEND_ORIGIN, type BackendFetch, createBackendClient } from "./backend-client.ts";
+import { VERSION } from "./server.ts";
 import { createWorker } from "./worker.ts";
+
+test("plugin manifest and package identify the same release as the MCP server", async () => {
+  const manifest = JSON.parse(
+    await readFile(new URL("../plugin/plugin.json", import.meta.url), "utf8"),
+  );
+  const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(manifest.version, VERSION);
+  assert.equal(pkg.version, VERSION);
+});
 
 const env = {
   SOCIAL_API_KEY: "test-secret-must-not-escape",
