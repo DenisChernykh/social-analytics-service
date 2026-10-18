@@ -8,6 +8,26 @@ Site: https://social-analytics.scary-rustles-7p.chatgpt.site
 Плагин: https://chatgpt.com/plugins/plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01
 Исходники и инструкции: [chatgpt/README.md](../chatgpt/README.md).
 
+## Публикация 0.4.1
+
+2026-10-18 в 18:23:38 UTC выпущен адаптер `0.4.1`, Sites 15. Manifest,
+package и MCP server имеют одну версию. Native deployment
+`appgdep_6ad50e757b488191b03a61b2cdd7fe0d`: succeeded, has_mcp=true,
+runtime env revision 1. Source `4bf419f5a14810536b95956d8ce5f960bdd0cf85`;
+SHA256 MCP bundle
+`fb7394e242b03a69b0b5143e8b54d197b59635d163fb03851f527d25129fc27a`.
+Прежние Site, plugin ID, подключение и owner-only доступ сохранены.
+
+Обновлены валидаторы для `mediaRefresh`, `effectiveState` и `waitingReason`;
+прошли 27 MCP-тестов. Реальные чтения установленного плагина с backend 0.3.3
+вернули новые счётчики и прежний manual job completed на странице 238.
+Через этот же плагин выполнены разрешённые точечные resume и восстановление
+расписания. Исторические наблюдения, политика и частота сбора сохранены.
+Build и health не считаются доказательством полноты сбора: ограничения
+источника и короткого наблюдения приведены в
+[отчёте](collection-fault-isolation-2026-10-18.md) и
+[production evidence](collection-fault-isolation-production-evidence.json).
+
 ## Публикация 0.4.0
 
 2026-10-08 в 15:29:33 UTC опубликована версия Sites 13, адаптер `0.4.0`.

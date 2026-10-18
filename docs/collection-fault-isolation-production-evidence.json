@@ -1,0 +1,1637 @@
+{
+  "checkedAt": "2026-10-18T18:55:56.326Z",
+  "scope": "Authorized backend and private plugin release, checkpoint resume and bounded production observation; no long-term stability claim.",
+  "validation": {
+    "checkedAt": "2026-10-18T18:44:16.961Z",
+    "sourceCommit": "62ecf5e",
+    "backendRevision": "0.3.3",
+    "mcpVersion": "0.4.1",
+    "checks": {
+      "rootPnpmCheck": "passed",
+      "backendTests": 179,
+      "mcpTests": 27,
+      "workerDryRun": "passed",
+      "mcpBuild": "passed",
+      "cooldownRegression": "reproduced_failure_before_fix_and_passed_after_fix",
+      "storyWindowRegression": "reproduced_failure_before_fix_and_passed_after_fix",
+      "omittedStoryRetryRegression": "passed"
+    },
+    "bundle": {
+      "sha256": "b879bf981107aa3369723ba44921ee80292c74f0bcb8e856f94290bcc8a193be",
+      "bytes": 1737909
+    }
+  },
+  "backend": {
+    "revision": "0.3.3",
+    "sourceCommit": "62ecf5e",
+    "deployment": {
+      "id": "7ede5680-1cf6-45cf-b5ea-f4b21f39ee27",
+      "created_on": "2026-10-18T18:49:21.382301Z",
+      "versions": [
+        {
+          "version_id": "6e769570-99b5-4758-a64c-4eb3890cf335",
+          "percentage": 100
+        }
+      ]
+    },
+    "bundle": {
+      "sha256": "b879bf981107aa3369723ba44921ee80292c74f0bcb8e856f94290bcc8a193be",
+      "bytes": 1737909,
+      "downloadedActiveBundleMatchesCheckedBuild": true
+    },
+    "apiChecks": {
+      "checkedAt": "2026-10-18T18:53:38.388Z",
+      "mode": "GET_only",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.3"
+      },
+      "unauthenticatedCode": "UNAUTHENTICATED",
+      "openapiMatchesCheckedContract": true,
+      "collection": {
+        "accountCount": 1,
+        "returnedJobs": 1,
+        "capacity": {
+          "dueJobs": 1,
+          "atRiskFreshJobs": 0,
+          "scope": "All jobs within cutoff; freshDue is a lower bound of steps for this account, excluding undiscovered objects and other accounts.",
+          "maximumHttpAttemptsPerTick": 6,
+          "tickWorkMs": 90000,
+          "persistenceReserveMs": 15000,
+          "pressureIndicator": false,
+          "overload": "not_measured",
+          "assumptions": "Durable Object alarms continue ready portions without a fixed Cron slot quota. Throughput depends on source latency, access, leases and quota; capacity is not measured by counting due jobs."
+        }
+      },
+      "job": {
+        "id": "7d309d5b-b054-50f9-b237-944df837f05d",
+        "status": "failed",
+        "pages": 1
+      }
+    },
+    "preserved": {
+      "d1Binding": true,
+      "durableObjectNamespaceAndClass": true,
+      "otherBindings": true,
+      "cron": true,
+      "invocationLogsDisabled": true,
+      "d1MigrationsUnchanged": true
+    }
+  },
+  "plugin": {
+    "checkedAt": "2026-10-18T18:54:44.901Z",
+    "plugin": {
+      "version": "0.4.1",
+      "siteVersion": 15,
+      "deploymentId": "appgdep_6ad50e757b488191b03a61b2cdd7fe0d",
+      "status": "succeeded",
+      "url": "https://social-analytics.scary-rustles-7p.chatgpt.site",
+      "hasMcp": true,
+      "envSetRevision": 1,
+      "updatedAt": "2026-10-18T18:23:38.410137+00:00",
+      "sourceCommit": "4bf419f5a14810536b95956d8ce5f960bdd0cf85",
+      "bundleSHA256": "fb7394e242b03a69b0b5143e8b54d197b59635d163fb03851f527d25129fc27a",
+      "access": "owner_only",
+      "pluginId": "plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01"
+    },
+    "connectedMcp": {
+      "statusReadSucceeded": true,
+      "jobReadSucceeded": true,
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 92,
+        "ready": 203,
+        "deferred": 1,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 2,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": null
+          }
+        ]
+      },
+      "schedule": {
+        "accountId": "ig_17841402362568040",
+        "enabled": true,
+        "discoveryMinutes": 60,
+        "timeZone": "Asia/Yekaterinburg",
+        "nextCatalogueAt": 1793555814488,
+        "nextDiscoveryAt": 1792352572558,
+        "nextStoriesAt": 1792352947235,
+        "nextInsightsAt": 1792422367181,
+        "updatedAt": 1792349558494,
+        "lastSuccessAt": 1792349657565,
+        "errorCode": null,
+        "failures": 0,
+        "retryAt": 1792349658637
+      },
+      "comments": {
+        "lastFullPassAt": 1792005654733,
+        "publications": 242,
+        "uniqueComments": 3841,
+        "stalePublications": 87,
+        "partialPublications": 44,
+        "pendingReplyBranches": 1,
+        "unverifiedReplyBranches": 589,
+        "unavailablePublications": 3,
+        "currentPass": {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "status": "running",
+          "mediaProcessed": 83,
+          "remainingPublications": 159,
+          "observations": 562,
+          "errorCode": null
+        },
+        "webhook": {
+          "subscriptionConfirmedAt": 1791432192539,
+          "lastReceivedAt": 1792343497848,
+          "lastEventAt": 1792343496000,
+          "active": true
+        }
+      },
+      "targetJob": {
+        "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+        "status": "completed",
+        "pages": 238,
+        "effectiveState": "completed",
+        "errorCode": null
+      }
+    },
+    "privacy": {
+      "version": 15,
+      "accessMode": "custom",
+      "allowedUsers": 1,
+      "allowedAccountIds": 1,
+      "groups": 0,
+      "externalVisitors": 0,
+      "editors": 0,
+      "pluginId": "plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01"
+    }
+  },
+  "recovery": {
+    "targetJobBefore": {
+      "checkedAt": "2026-10-18T18:17:04.033Z",
+      "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+      "origin": "manual",
+      "status": "failed",
+      "pages": 210,
+      "collected": 210,
+      "mediaProcessed": 210,
+      "failures": 5,
+      "errorCode": "INSTAGRAM_SOURCE_ERROR",
+      "lastSuccessAt": 1791858021561,
+      "completedAt": null,
+      "cursorBytes": 125,
+      "cursorSHA256": "a0e606e1e152c62fd9b98cc9c90bc16757144c9d8a1ada3bc5c1bdc9d5898adb"
+    },
+    "resumeAt": "2026-10-18T18:19:26.203Z",
+    "resumeRetainedCursor": true,
+    "targetJobAfter": {
+      "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+      "origin": "manual",
+      "status": "completed",
+      "pages": 238,
+      "collected": 238,
+      "mediaProcessed": 238,
+      "failures": 0,
+      "errorCode": null,
+      "lastSuccessAt": 1792347665107,
+      "completedAt": 1792347665107
+    },
+    "manualAdvanceCalls": 0,
+    "newManualJobsCreated": 0,
+    "massCancellationOrReset": false,
+    "storyLoop": {
+      "checkedAt": "2026-10-18T18:25:23.587Z",
+      "job": {
+        "id": "7ca10e09-754b-59b8-8113-5e636d240a4f",
+        "origin": "stories",
+        "status": "failed",
+        "pages": 1,
+        "collected": 1,
+        "error_code": "INSTAGRAM_PAGINATION_STALLED",
+        "last_step_http_attempts": 0,
+        "lease_expires_at": null
+      }
+    },
+    "scheduleReapplications": [
+      {
+        "at": "2026-10-18T18:21:25Z",
+        "reason": "Clear inherited global SOURCE_ERROR retry delay"
+      },
+      {
+        "at": "2026-10-18T18:30:04Z",
+        "reason": "Retry after one INTERNAL_ERROR"
+      },
+      {
+        "at": "2026-10-18T18:37:58.119Z",
+        "reason": "Diagnostic RPC after no persisted progress since 18:31:25; prior success already recorded at 18:37:57",
+        "elapsedMs": 3846
+      }
+    ],
+    "scheduleSettings": {
+      "enabled": true,
+      "discoveryMinutes": 60,
+      "timeZone": "Asia/Yekaterinburg"
+    },
+    "preservation": {
+      "checkedAt": "2026-10-18T18:53:37.821Z",
+      "mode": "SELECT_only",
+      "databaseId": "2c5956d4-0c66-4d21-9bf8-12f04e007bad",
+      "historicalSnapshots": [
+        {
+          "id": "fba2b419-db6e-4e83-9f4e-93e2ed853364:ig_17841402362568040_18110630777129028",
+          "mediaId": "ig_17841402362568040_18110630777129028",
+          "observedAt": 1790934158343,
+          "rowSHA256": "abc6ac8eb6b8db0c1a5d394384c19a2fddfd5a13a6daf4677483c88c85cf623f"
+        },
+        {
+          "id": "fba2b419-db6e-4e83-9f4e-93e2ed853364:ig_17841402362568040_18089900612220903",
+          "mediaId": "ig_17841402362568040_18089900612220903",
+          "observedAt": 1790934162436,
+          "rowSHA256": "39fee7608bf356a27f83d9ba4ea3cc2c0e02fb97cc2593d27af10f5b00ed2a27"
+        },
+        {
+          "id": "fba2b419-db6e-4e83-9f4e-93e2ed853364:ig_17841402362568040_18128790454878999",
+          "mediaId": "ig_17841402362568040_18128790454878999",
+          "observedAt": 1790934166591,
+          "rowSHA256": "6c5b3ac2706eb0c630d320abfa0487bb3a817ebbc0b468c90df8f61081847b91"
+        },
+        {
+          "id": "1e75298e-9c18-4153-8e69-ce9c8378c2b2:ig_17841402362568040_18215874430347974",
+          "mediaId": "ig_17841402362568040_18215874430347974",
+          "observedAt": 1790934261497,
+          "rowSHA256": "a856c1fff1f2ee35c71b38946203f69fb2882a130bc7345ef7223400409cf65e"
+        },
+        {
+          "id": "1e75298e-9c18-4153-8e69-ce9c8378c2b2:ig_17841402362568040_18092591924160341",
+          "mediaId": "ig_17841402362568040_18092591924160341",
+          "observedAt": 1790934266073,
+          "rowSHA256": "c46abe9a6ed30d8ba632014e54ad4dbb169f6776a56ff7d79604baaed3c4538e"
+        },
+        {
+          "id": "1e75298e-9c18-4153-8e69-ce9c8378c2b2:ig_17841402362568040_18162085327491394",
+          "mediaId": "ig_17841402362568040_18162085327491394",
+          "observedAt": 1790934270600,
+          "rowSHA256": "eae077ac165c2f3796e52561b1165f1e95722a59a3ea1929d2e6759bbd058682"
+        },
+        {
+          "id": "b2b0a873-67fe-4d34-82bb-c1f49e07d8f3:ig_17841402362568040_18088845560430600",
+          "mediaId": "ig_17841402362568040_18088845560430600",
+          "observedAt": 1790934276919,
+          "rowSHA256": "976a35cb27506ffc7b1c4f6755c3fbac025e6f9e745bd486a0d031ff25f2d557"
+        },
+        {
+          "id": "b2b0a873-67fe-4d34-82bb-c1f49e07d8f3:ig_17841402362568040_17989271304106805",
+          "mediaId": "ig_17841402362568040_17989271304106805",
+          "observedAt": 1790934281183,
+          "rowSHA256": "964fe9c73763a22ea2ff5116b3c69676aff65f72cc6ffa11fbb38e4453085316"
+        },
+        {
+          "id": "b2b0a873-67fe-4d34-82bb-c1f49e07d8f3:ig_17841402362568040_18189926203398059",
+          "mediaId": "ig_17841402362568040_18189926203398059",
+          "observedAt": 1790934285796,
+          "rowSHA256": "ac2db0b8ea6e02cc1c07d3e7dda60c076945a1d76f82abb8301de92817bceeeb"
+        },
+        {
+          "id": "07604859-05cc-4f62-a85f-2c56cd2d2404:ig_17841402362568040_18132058522660015",
+          "mediaId": "ig_17841402362568040_18132058522660015",
+          "observedAt": 1790934291026,
+          "rowSHA256": "9cabfb483990e0e7306f2667e7b72ba95fd63afa7fad76cbca4e3901a9dae87d"
+        },
+        {
+          "id": "07604859-05cc-4f62-a85f-2c56cd2d2404:ig_17841402362568040_17969645007145697",
+          "mediaId": "ig_17841402362568040_17969645007145697",
+          "observedAt": 1790934295055,
+          "rowSHA256": "1d83711c2a2a0d28d350387704eadaf6f0398af98a072c6fe870ac8560dd4569"
+        },
+        {
+          "id": "07604859-05cc-4f62-a85f-2c56cd2d2404:ig_17841402362568040_18014631350946545",
+          "mediaId": "ig_17841402362568040_18014631350946545",
+          "observedAt": 1790934299889,
+          "rowSHA256": "e2379be6f61205fcca3478261548f4f88d7873b35619303897c3950651e2299b"
+        }
+      ],
+      "policySHA256": "1dc69cfb3b4f248a029f84eb80d062e5ae7f5f243ed028ea9a69d7f1e82cf28a",
+      "policyRows": 1,
+      "scheduleSettingsSHA256": "c422b0a5d5478a96ec2bedca188c76fe61aef66b4ae32f3bc6e9f8d6ef10f4cc",
+      "activeJobs": [
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 135,
+          "collected": 560,
+          "media_processed": 81,
+          "cursorBytes": 325,
+          "cursorSHA256": "1aed0be8a3ac6fd06b108a27600fa4dc2c658d6c354d980472a3249bec8de192"
+        }
+      ],
+      "comparison": {
+        "pinnedHistoricalFactsIdentical": true,
+        "policyAndSettingsIdentical": true,
+        "priorJobsRetainedWithoutCounterReset": true,
+        "currentPriorJobs": [
+          {
+            "id": "7ca10e09-754b-59b8-8113-5e636d240a4f",
+            "origin": "stories",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "media_processed": 1
+          }
+        ]
+      }
+    },
+    "preStandardDeployWake": {
+      "checkedAt": "2026-10-18T18:46:20.111Z",
+      "purpose": "Re-arm through the newly deployed backend after SQL guard was confirmed but old alarm behavior still observed",
+      "data": {
+        "accountId": "ig_17841402362568040",
+        "enabled": true,
+        "discoveryMinutes": 60,
+        "timeZone": "Asia/Yekaterinburg",
+        "nextCatalogueAt": 1793555814488,
+        "nextDiscoveryAt": 1792352572558,
+        "nextStoriesAt": 1792352768087,
+        "nextInsightsAt": 1792422367181,
+        "updatedAt": 1792349172006,
+        "lastSuccessAt": 1792349171615,
+        "errorCode": null,
+        "failures": 0,
+        "retryAt": 0
+      }
+    },
+    "finalReleaseWake": {
+      "checkedAt": "2026-10-18T18:52:38.990Z",
+      "purpose": "Wake after final standard deploy using unchanged owner schedule",
+      "data": {
+        "accountId": "ig_17841402362568040",
+        "enabled": true,
+        "discoveryMinutes": 60,
+        "timeZone": "Asia/Yekaterinburg",
+        "nextCatalogueAt": 1793555814488,
+        "nextDiscoveryAt": 1792352572558,
+        "nextStoriesAt": 1792352947235,
+        "nextInsightsAt": 1792422367181,
+        "updatedAt": 1792349558494,
+        "lastSuccessAt": 1792349350806,
+        "errorCode": null,
+        "failures": 0,
+        "retryAt": 0
+      }
+    }
+  },
+  "progress": {
+    "before": {
+      "checkedAt": "2026-10-18T18:15:46.532Z",
+      "counts": {
+        "media": 257,
+        "mediaSnapshots": 1188,
+        "lastMediaSnapshot": 1792345387262,
+        "comments": 3841,
+        "accountInsights": 268,
+        "httpAttempts": 4417,
+        "lastHttpResponse": 1792347314241
+      },
+      "mediaRefreshCheckedAt": "2026-10-18T18:18:51.910Z",
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 204,
+        "ready": 205,
+        "deferred": 0,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 2,
+            "nextAttemptAt": null
+          }
+        ]
+      }
+    },
+    "after": {
+      "checkedAt": "2026-10-18T18:55:11.410Z",
+      "counts": {
+        "media": 257,
+        "snapshots": 1415,
+        "comments": 3841,
+        "receipts": 5821,
+        "latest_snapshot": 1792349708904
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 84,
+        "ready": 203,
+        "deferred": 1,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 2,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": null
+          }
+        ]
+      },
+      "schedule": {
+        "accountId": "ig_17841402362568040",
+        "enabled": true,
+        "discoveryMinutes": 60,
+        "timeZone": "Asia/Yekaterinburg",
+        "nextCatalogueAt": 1793555814488,
+        "nextDiscoveryAt": 1792352572558,
+        "nextStoriesAt": 1792352947235,
+        "nextInsightsAt": 1792422367181,
+        "updatedAt": 1792349558494,
+        "lastSuccessAt": 1792349708904,
+        "errorCode": null,
+        "failures": 0,
+        "retryAt": 1792349709980
+      },
+      "comments": {
+        "lastFullPassAt": 1792005654733,
+        "publications": 242,
+        "uniqueComments": 3841,
+        "stalePublications": 84,
+        "partialPublications": 43,
+        "pendingReplyBranches": 0,
+        "unverifiedReplyBranches": 588,
+        "unavailablePublications": 3,
+        "currentPass": {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "status": "running",
+          "mediaProcessed": 86,
+          "remainingPublications": 156,
+          "observations": 576,
+          "errorCode": null
+        },
+        "webhook": {
+          "subscriptionConfirmedAt": 1791432192539,
+          "lastReceivedAt": 1792343497848,
+          "lastEventAt": 1792343496000,
+          "active": true
+        }
+      },
+      "diagnostics": {
+        "expiredSyncAttempts": 0,
+        "expiredInsightAttempts": 2,
+        "expiredCommentAttempts": 23,
+        "leasesInUse": 0
+      },
+      "jobs": [
+        {
+          "id": "e39af8c4-051c-5ead-9bb3-21f062223662",
+          "origin": "scheduled",
+          "status": "completed",
+          "pages": 1,
+          "collected": 1,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792348974848
+        },
+        {
+          "id": "87ec83f8-4266-5224-b801-a01ce2fc0191",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 4,
+          "collected": 62,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347961618
+        },
+        {
+          "id": "e14675d6-2d24-588f-9516-7b16204f9d91",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 3,
+          "collected": 45,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347936926
+        },
+        {
+          "id": "27e95b7b-1c7d-5814-97a6-01ace6fe1f1d",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 4,
+          "collected": 100,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347921102
+        },
+        {
+          "id": "9de40bd6-5ecd-586c-b54e-949c7fd832fb",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 4,
+          "collected": 102,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347900827
+        },
+        {
+          "id": "c83499cb-3ded-5dc7-b5e5-2d2c7fc8a420",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 5,
+          "collected": 152,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347884226
+        },
+        {
+          "id": "75aa0af4-f0d6-52db-a2f8-8ae596bc8a84",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 4,
+          "collected": 92,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347861343
+        },
+        {
+          "id": "9ddd165b-55a9-514a-9807-0ffedb86f74f",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 4,
+          "collected": 112,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347841886
+        },
+        {
+          "id": "15d0d9bf-20d2-5f3f-9cb3-5db5ea97d2d3",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 5,
+          "collected": 139,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347824473
+        },
+        {
+          "id": "92535950-fd11-573e-b78c-b462d049550e",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 4,
+          "collected": 86,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347808385
+        },
+        {
+          "id": "3ca15bfb-2206-5dd6-ba8c-649e67da1d78",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 2,
+          "collected": 1,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347795688
+        },
+        {
+          "id": "891b4062-8c3d-5bd6-841c-0b322e70b049",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 1,
+          "collected": 26,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347777969
+        },
+        {
+          "id": "0d4cfdcb-12e3-582f-9b3f-da120013943f",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 3,
+          "collected": 15,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347757623
+        },
+        {
+          "id": "da435006-fcbe-5b20-9ac9-7b94154e7f15",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 1,
+          "collected": 17,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347736837
+        },
+        {
+          "id": "16ce7219-5ae8-580c-885f-dbba70f36097",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 2,
+          "collected": 9,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347733453
+        },
+        {
+          "id": "f295081f-5e69-57f5-8dd3-790f8f7ad360",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 1,
+          "collected": 8,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347714960
+        },
+        {
+          "id": "e2f00f0d-2de8-5f4c-a929-2de4624007f3",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347709544
+        },
+        {
+          "id": "cfe27cde-6352-5332-9c07-42c7d5526409",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 2,
+          "collected": 5,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347698873
+        },
+        {
+          "id": "5761fab5-1f5b-549a-909a-03bbc609a197",
+          "origin": "comments_refresh",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "mediaProcessed": 1,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347691067
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 142,
+          "collected": 576,
+          "mediaProcessed": 86,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792349698950
+        },
+        {
+          "id": "f89f8a00-50d9-5b96-ab52-807e14611dd9",
+          "origin": "audience",
+          "status": "completed",
+          "pages": 4,
+          "collected": 200,
+          "mediaProcessed": 0,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347684969
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "collected": 238,
+          "mediaProcessed": 238,
+          "failures": 0,
+          "errorCode": null,
+          "lastSuccessAt": 1792347665107
+        }
+      ],
+      "snapshotsByProduct": [
+        {
+          "product_type": "FEED",
+          "snapshots": 33,
+          "objects": 33,
+          "with_reach": 5,
+          "reach_source_error": 28,
+          "first_at": 1792347569458,
+          "last_at": 1792348759080
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 88,
+          "objects": 88,
+          "with_reach": 88,
+          "reach_source_error": null,
+          "first_at": 1792347720101,
+          "last_at": 1792349708904
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 106,
+          "objects": 1,
+          "with_reach": 106,
+          "reach_source_error": null,
+          "first_at": 1792348766589,
+          "last_at": 1792349563313
+        }
+      ],
+      "http": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graph_code": null,
+          "graph_subcode": null,
+          "n": 112,
+          "last_at": 1792349697931
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graph_code": 100,
+          "graph_subcode": 33,
+          "n": 3,
+          "last_at": 1792347693008
+        },
+        {
+          "family": "insights",
+          "status": null,
+          "result": "pending",
+          "graph_code": null,
+          "graph_subcode": null,
+          "n": 1,
+          "last_at": 1792348047897
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graph_code": null,
+          "graph_subcode": null,
+          "n": 435,
+          "last_at": 1792349708536
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graph_code": -1,
+          "graph_subcode": 2207086,
+          "n": 74,
+          "last_at": 1792349677640
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graph_code": 100,
+          "graph_subcode": null,
+          "n": 119,
+          "last_at": 1792349707500
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "source_error",
+          "graph_code": 100,
+          "graph_subcode": 2108006,
+          "n": 28,
+          "last_at": 1792347664179
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graph_code": null,
+          "graph_subcode": null,
+          "n": 228,
+          "last_at": 1792349707159
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graph_code": 100,
+          "graph_subcode": null,
+          "n": 92,
+          "last_at": 1792349706603
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graph_code": 100,
+          "graph_subcode": 33,
+          "n": 1,
+          "last_at": 1792347687860
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graph_code": null,
+          "graph_subcode": null,
+          "n": 233,
+          "last_at": 1792349706187
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graph_code": null,
+          "graph_subcode": null,
+          "n": 78,
+          "last_at": 1792349672771
+        }
+      ],
+      "coverage": {
+        "activity": {
+          "timeZone": "Asia/Yekaterinburg",
+          "providerWindowDays": 90,
+          "expectedIntervals": 102,
+          "observedIntervals": 102,
+          "missingIntervals": 0,
+          "recheckIntervals": 2,
+          "dailyIntervals": 89,
+          "weeklyIntervals": 11,
+          "monthlyIntervals": 2,
+          "uncollectableIntervals": [],
+          "earliestDayFrom": 1784574000000,
+          "latestDayTo": 1792263600000
+        },
+        "age": [
+          {
+            "targetHours": 1,
+            "expected": 3,
+            "captured": 3,
+            "open": 0,
+            "missed": 0
+          },
+          {
+            "targetHours": 6,
+            "expected": 3,
+            "captured": 2,
+            "open": 0,
+            "missed": 1
+          },
+          {
+            "targetHours": 24,
+            "expected": 5,
+            "captured": 4,
+            "open": 0,
+            "missed": 1
+          },
+          {
+            "targetHours": 72,
+            "expected": 4,
+            "captured": 4,
+            "open": 0,
+            "missed": 0
+          },
+          {
+            "targetHours": 168,
+            "expected": 4,
+            "captured": 4,
+            "open": 0,
+            "missed": 0
+          },
+          {
+            "targetHours": 336,
+            "expected": 4,
+            "captured": 4,
+            "open": 0,
+            "missed": 0
+          },
+          {
+            "targetHours": 720,
+            "expected": 7,
+            "captured": 6,
+            "open": 0,
+            "missed": 1
+          }
+        ]
+      }
+    },
+    "delta": {
+      "mediaSnapshots": 227,
+      "httpReceipts": 1404,
+      "staleSnapshots": -120
+    },
+    "readsAreNotAtomic": true
+  },
+  "anomalies": {
+    "internalFailure": {
+      "code": "INTERNAL_ERROR",
+      "at": "2026-10-18T18:27:28Z",
+      "rootCause": "unestablished",
+      "evidence": {
+        "checkedAt": "2026-10-18T18:49:26.934Z",
+        "mode": "SELECT_only",
+        "runs": [
+          {
+            "id": "5796bcdc-5c7b-536c-ba70-cb7c8ca169ec",
+            "kind": "media",
+            "target_media_id": "ig_17841402362568040_17859423441643822",
+            "status": "completed",
+            "error_code": null,
+            "started_at": 1792348208616,
+            "completed_at": 1792348211843
+          },
+          {
+            "id": "340a998a-9015-590b-bb44-43c97ce9ad28",
+            "kind": "media",
+            "target_media_id": "ig_17841402362568040_17859423441643822",
+            "status": "failed",
+            "error_code": "INTERNAL_ERROR",
+            "started_at": 1792348046048,
+            "completed_at": 1792348048560
+          }
+        ],
+        "snapshots": [
+          {
+            "id": "5796bcdc-5c7b-536c-ba70-cb7c8ca169ec:ig_17841402362568040_17859423441643822",
+            "observed_at": 1792348211843,
+            "reach": 890,
+            "reach_reason": null
+          },
+          {
+            "id": "7b24d57a-af41-5122-bb55-ab05e0c0a747:ig_17841402362568040_17859423441643822",
+            "observed_at": 1791515169085,
+            "reach": null,
+            "reach_reason": "request_deferred"
+          },
+          {
+            "id": "ce397f8f-ac3a-5e2b-8b23-1a5968f533dc:ig_17841402362568040_17859423441643822",
+            "observed_at": 1790952653631,
+            "reach": 873,
+            "reach_reason": null
+          }
+        ],
+        "failed": [
+          {
+            "id": "340a998a-9015-590b-bb44-43c97ce9ad28",
+            "kind": "media",
+            "target_media_id": "ig_17841402362568040_17859423441643822",
+            "status": "failed",
+            "error_code": "INTERNAL_ERROR",
+            "started_at": 1792348046048,
+            "completed_at": 1792348048560
+          }
+        ],
+        "heads": [
+          {
+            "account_id": "ig_17841402362568040",
+            "claim_expires_at": null,
+            "retry_at": 1792349351922,
+            "last_success_at": 1792349350806,
+            "failures": 0,
+            "error_code": null
+          }
+        ]
+      },
+      "recoveredSameObject": true,
+      "historicalPendingReceiptRetained": true
+    },
+    "pause": {
+      "lastProgressBefore": "2026-10-18T18:31:25Z",
+      "nextProgress": "2026-10-18T18:37:57Z",
+      "rootCause": "unestablished",
+      "noRecordedScheduleError": true,
+      "configureCausality": "Not established: success preceded persisted configure result."
+    }
+  },
+  "telemetry": {
+    "releaseWindow": {
+      "checkedAt": "2026-10-18T18:36:11.016Z",
+      "mode": "GraphQL_read_only",
+      "namespace": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+      "version": "d9cd815b-d549-49fc-8a04-e90b0fd09bfd",
+      "window": {
+        "start": "2026-10-18T18:26:23.011638Z",
+        "end": "2026-10-18T18:36:11.016Z",
+        "complete": false,
+        "note": "Recent metrics may still be ingesting. Cron and periodic datasets use namespace/script and time; verify no intervening deployment."
+      },
+      "units": {
+        "periodicCpuTime": "microseconds (sum over periodic samples, not CPU per alarm)",
+        "periodicActiveTime": "microseconds",
+        "periodicDuration": "GB*s",
+        "cronCpuTimeUs": "microseconds"
+      },
+      "queries": {
+        "invocations": "durableObjectsInvocationsAdaptiveGroups(limit:1000,filter:{datetime_geq:\"2026-10-18T18:26:23.011638Z\",datetime_lt:\"2026-10-18T18:36:11.016Z\",scriptName:\"api\",namespaceId:\"fa3aad98034e4c3abdedc4ddc69f0ef5\",scriptVersion:\"d9cd815b-d549-49fc-8a04-e90b0fd09bfd\"}){dimensions{datetimeMinute type status namespaceId scriptVersion} sum{requests errors wallTime}}",
+        "periodic": "durableObjectsPeriodicGroups(limit:1000,filter:{datetime_geq:\"2026-10-18T18:26:23.011638Z\",datetime_lt:\"2026-10-18T18:36:11.016Z\",namespaceId:\"fa3aad98034e4c3abdedc4ddc69f0ef5\"}){dimensions{datetimeMinute namespaceId} count sum{cpuTime activeTime duration exceededCpuErrors exceededMemoryErrors fatalInternalErrors subrequests} max{memoryUsageBytes}}",
+        "cron": "workersInvocationsScheduled(limit:1000,filter:{datetime_geq:\"2026-10-18T18:26:23.011638Z\",datetime_lt:\"2026-10-18T18:36:11.016Z\",scriptName:\"api\"},orderBy:[scheduledDatetime_ASC]){cpuTimeUs cron datetime scheduledDatetime status}"
+      },
+      "results": {
+        "cron": {
+          "workersInvocationsScheduled": []
+        },
+        "invocations": {
+          "durableObjectsInvocationsAdaptiveGroups": []
+        },
+        "periodic": {
+          "durableObjectsPeriodicGroups": [
+            {
+              "count": 1,
+              "dimensions": {
+                "datetimeMinute": "2026-10-18T18:29:00Z",
+                "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+              },
+              "max": {
+                "memoryUsageBytes": 22536204
+              },
+              "sum": {
+                "activeTime": 60000093,
+                "cpuTime": 530517,
+                "duration": 7.680011904,
+                "exceededCpuErrors": 0,
+                "exceededMemoryErrors": 0,
+                "fatalInternalErrors": 0,
+                "subrequests": 36
+              }
+            },
+            {
+              "count": 1,
+              "dimensions": {
+                "datetimeMinute": "2026-10-18T18:30:00Z",
+                "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+              },
+              "max": {
+                "memoryUsageBytes": 24633871
+              },
+              "sum": {
+                "activeTime": 58954027,
+                "cpuTime": 511597,
+                "duration": 7.546115456,
+                "exceededCpuErrors": 0,
+                "exceededMemoryErrors": 0,
+                "fatalInternalErrors": 0,
+                "subrequests": 59
+              }
+            },
+            {
+              "count": 1,
+              "dimensions": {
+                "datetimeMinute": "2026-10-18T18:28:00Z",
+                "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+              },
+              "max": {
+                "memoryUsageBytes": 21488143
+              },
+              "sum": {
+                "activeTime": 60000145,
+                "cpuTime": 538814,
+                "duration": 7.68001856,
+                "exceededCpuErrors": 0,
+                "exceededMemoryErrors": 0,
+                "fatalInternalErrors": 0,
+                "subrequests": 25
+              }
+            },
+            {
+              "count": 1,
+              "dimensions": {
+                "datetimeMinute": "2026-10-18T18:31:00Z",
+                "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+              },
+              "max": {
+                "memoryUsageBytes": 24625986
+              },
+              "sum": {
+                "activeTime": 457644,
+                "cpuTime": 5787,
+                "duration": 0.058578432,
+                "exceededCpuErrors": 0,
+                "exceededMemoryErrors": 0,
+                "fatalInternalErrors": 0,
+                "subrequests": 0
+              }
+            },
+            {
+              "count": 1,
+              "dimensions": {
+                "datetimeMinute": "2026-10-18T18:27:00Z",
+                "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+              },
+              "max": {
+                "memoryUsageBytes": 20431375
+              },
+              "sum": {
+                "activeTime": 60000142,
+                "cpuTime": 521048,
+                "duration": 7.680018176,
+                "exceededCpuErrors": 0,
+                "exceededMemoryErrors": 0,
+                "fatalInternalErrors": 0,
+                "subrequests": 28
+              }
+            },
+            {
+              "count": 1,
+              "dimensions": {
+                "datetimeMinute": "2026-10-18T18:26:00Z",
+                "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+              },
+              "max": {
+                "memoryUsageBytes": 19653221
+              },
+              "sum": {
+                "activeTime": 60000121,
+                "cpuTime": 554606,
+                "duration": 7.680015488,
+                "exceededCpuErrors": 0,
+                "exceededMemoryErrors": 0,
+                "fatalInternalErrors": 0,
+                "subrequests": 54
+              }
+            }
+          ]
+        }
+      },
+      "failures": []
+    },
+    "dailyDuration": {
+      "checkedAt": "2026-10-18T18:37:03.265Z",
+      "mode": "GraphQL_read_only",
+      "query": "{viewer{accounts(filter:{accountTag:\"7a2715978428a86e0c9d8ce757d33687\"}){durableObjectsPeriodicGroups(limit:20,filter:{datetime_geq:\"2026-10-18T00:00:00Z\",datetime_lt:\"2026-10-18T18:35:00Z\"}){dimensions{namespaceId} sum{duration exceededCpuErrors exceededMemoryErrors fatalInternalErrors}}}}}",
+      "data": {
+        "viewer": {
+          "accounts": [
+            {
+              "durableObjectsPeriodicGroups": [
+                {
+                  "dimensions": {
+                    "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5"
+                  },
+                  "sum": {
+                    "duration": 288.146449792,
+                    "exceededCpuErrors": 0,
+                    "exceededMemoryErrors": 0,
+                    "fatalInternalErrors": 0
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "errors": null
+    },
+    "note": "Periodic sums are not per-alarm CPU. Empty invocation/Cron datasets do not prove zero errors. Earlier GraphQL budget errors and ingestion delay limit coverage.",
+    "finalVersionInvocations": {
+      "checkedAt": "2026-10-18T18:55:32.236Z",
+      "mode": "GraphQL_read_only",
+      "query": "{viewer{accounts(filter:{accountTag:\"7a2715978428a86e0c9d8ce757d33687\"}){durableObjectsInvocationsAdaptiveGroups(limit:20,filter:{datetime_geq:\"2026-10-18T18:52:00Z\",datetime_lt:\"2026-10-18T18:55:00Z\",namespaceId:\"fa3aad98034e4c3abdedc4ddc69f0ef5\"}){dimensions{scriptVersion scriptName type status} sum{requests errors}}}}}",
+      "data": {
+        "viewer": {
+          "accounts": [
+            {
+              "durableObjectsInvocationsAdaptiveGroups": [
+                {
+                  "dimensions": {
+                    "scriptName": "api",
+                    "scriptVersion": "6e769570-99b5-4758-a64c-4eb3890cf335",
+                    "status": "success",
+                    "type": "alarm"
+                  },
+                  "sum": {
+                    "errors": 0,
+                    "requests": 29
+                  }
+                },
+                {
+                  "dimensions": {
+                    "scriptName": "api",
+                    "scriptVersion": "6e769570-99b5-4758-a64c-4eb3890cf335",
+                    "status": "success",
+                    "type": "jsrpc"
+                  },
+                  "sum": {
+                    "errors": 0,
+                    "requests": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "errors": null
+    }
+  },
+  "remaining": {
+    "sourceErrors": "28 FEED objects still return Graph 100/2108006: fresh metadata saved, unavailable reach remains null; underlying source rejection unresolved.",
+    "historicalMisses": "Expired Stories and missed age-window observations cannot be recreated retrospectively.",
+    "newScheduledStoryPass": "Fresh metric observations saved for one available Story; source repeated cursor keeps passes explicitly incomplete; omitted expiring Story not recovered",
+    "longTermAcceptance": "24-48 hours and two daily cycles not completed",
+    "directServiceOnlyLandingProbe": "HTTP 403; not accepted as successful UI verification. Actual owner-connected MCP reads passed."
+  },
+  "storyUrgency": {
+    "before": {
+      "checkedAt": "2026-10-18T18:42:05.780Z",
+      "jobsRead": 14,
+      "latestJobs": [
+        {
+          "id": "c181aa26-0323-5f8c-a3cd-c2294e62acf5",
+          "status": "running",
+          "pages": 1,
+          "collected": 1,
+          "error_code": null,
+          "started_at": 1792348920180,
+          "completed_at": null,
+          "last_step_http_attempts": 5
+        },
+        {
+          "id": "d13a9b1d-4155-552d-91e7-3d980a8dd370",
+          "status": "failed",
+          "pages": 1,
+          "collected": 1,
+          "error_code": "INSTAGRAM_PAGINATION_STALLED",
+          "started_at": 1792348908267,
+          "completed_at": null,
+          "last_step_http_attempts": 5
+        },
+        {
+          "id": "e592f4cb-bcc1-513c-844d-53ab1c3aaeeb",
+          "status": "failed",
+          "pages": 1,
+          "collected": 1,
+          "error_code": "INSTAGRAM_PAGINATION_STALLED",
+          "started_at": 1792348895914,
+          "completed_at": null,
+          "last_step_http_attempts": 5
+        }
+      ],
+      "stories": [
+        {
+          "id": "ig_17841402362568040_18028146623845440",
+          "published_at": 1792341661000,
+          "expires_at": 1792428061000,
+          "last_snapshot_at": 1792348923526
+        },
+        {
+          "id": "ig_17841402362568040_18106809884202781",
+          "published_at": 1792315217000,
+          "expires_at": 1792401617000,
+          "last_snapshot_at": 1792317247530
+        },
+        {
+          "id": "ig_17841402362568040_18107462399579371",
+          "published_at": 1792263556000,
+          "expires_at": 1792349956000,
+          "last_snapshot_at": 1792313443531
+        }
+      ],
+      "snapshotsRead": 27,
+      "lastSnapshots": [
+        {
+          "id": "9d2c8709-e9ea-549e-bbc3-3ce74a6e8f90:ig_17841402362568040_18028146623845440",
+          "observed_at": 1792348923526,
+          "operation_id": "9d2c8709-e9ea-549e-bbc3-3ce74a6e8f90",
+          "reach": 19,
+          "reason": null
+        },
+        {
+          "id": "c7bd2cc5-cbf8-5d89-a2ea-512b0f1d17a4:ig_17841402362568040_18028146623845440",
+          "observed_at": 1792348916215,
+          "operation_id": "c7bd2cc5-cbf8-5d89-a2ea-512b0f1d17a4",
+          "reach": 19,
+          "reason": null
+        },
+        {
+          "id": "6a5c358c-f595-53c7-97b7-494e9eb9e8ad:ig_17841402362568040_18028146623845440",
+          "observed_at": 1792348911591,
+          "operation_id": "6a5c358c-f595-53c7-97b7-494e9eb9e8ad",
+          "reach": 19,
+          "reason": null
+        }
+      ]
+    },
+    "firstPostDeploy": {
+      "checkedAt": "2026-10-18T18:44:27.963Z",
+      "jobsRead": 26,
+      "latestJobs": [
+        {
+          "id": "a140df81-e265-51e2-898d-0394d40e9994",
+          "status": "running",
+          "pages": 0,
+          "collected": 0,
+          "error_code": null,
+          "started_at": 1792349066532,
+          "completed_at": null,
+          "last_step_http_attempts": null
+        },
+        {
+          "id": "600c4c47-b264-50c4-a00a-285d548dc3eb",
+          "status": "failed",
+          "pages": 1,
+          "collected": 1,
+          "error_code": "INSTAGRAM_PAGINATION_STALLED",
+          "started_at": 1792349056786,
+          "completed_at": null,
+          "last_step_http_attempts": 5
+        },
+        {
+          "id": "f1df01d7-e36b-598c-a056-833adaadbf77",
+          "status": "failed",
+          "pages": 1,
+          "collected": 1,
+          "error_code": "INSTAGRAM_PAGINATION_STALLED",
+          "started_at": 1792349045269,
+          "completed_at": null,
+          "last_step_http_attempts": 5
+        }
+      ],
+      "stories": [
+        {
+          "id": "ig_17841402362568040_18028146623845440",
+          "published_at": 1792341661000,
+          "expires_at": 1792428061000,
+          "last_snapshot_at": 1792349064793
+        },
+        {
+          "id": "ig_17841402362568040_18106809884202781",
+          "published_at": 1792315217000,
+          "expires_at": 1792401617000,
+          "last_snapshot_at": 1792317247530
+        },
+        {
+          "id": "ig_17841402362568040_18107462399579371",
+          "published_at": 1792263556000,
+          "expires_at": 1792349956000,
+          "last_snapshot_at": 1792313443531
+        }
+      ],
+      "snapshotsRead": 50,
+      "lastSnapshots": [
+        {
+          "id": "e13f2c89-0660-5680-b59e-dd3f39b5ddb6:ig_17841402362568040_18028146623845440",
+          "observed_at": 1792349064793,
+          "operation_id": "e13f2c89-0660-5680-b59e-dd3f39b5ddb6",
+          "reach": 21,
+          "reason": null
+        },
+        {
+          "id": "eed1c85f-2cba-56ea-a009-953d8bd8f32e:ig_17841402362568040_18028146623845440",
+          "observed_at": 1792349059938,
+          "operation_id": "eed1c85f-2cba-56ea-a009-953d8bd8f32e",
+          "reach": 21,
+          "reason": null
+        },
+        {
+          "id": "83ac94ae-b171-562f-94ad-c4e9dc4d8f7d:ig_17841402362568040_18028146623845440",
+          "observed_at": 1792349052899,
+          "operation_id": "83ac94ae-b171-562f-94ad-c4e9dc4d8f7d",
+          "reach": 21,
+          "reason": null
+        }
+      ]
+    },
+    "preSwitchTelemetry": {
+      "checkedAt": "2026-10-18T18:47:12.577Z",
+      "mode": "GraphQL_read_only",
+      "query": "{viewer{accounts(filter:{accountTag:\"7a2715978428a86e0c9d8ce757d33687\"}){durableObjectsInvocationsAdaptiveGroups(limit:20,filter:{datetime_geq:\"2026-10-18T18:39:00Z\",datetime_lt:\"2026-10-18T18:46:00Z\",namespaceId:\"fa3aad98034e4c3abdedc4ddc69f0ef5\"}){dimensions{scriptVersion scriptName type status} sum{requests errors}}}}}",
+      "data": {
+        "viewer": {
+          "accounts": [
+            {
+              "durableObjectsInvocationsAdaptiveGroups": [
+                {
+                  "dimensions": {
+                    "scriptName": "api",
+                    "scriptVersion": "d9cd815b-d549-49fc-8a04-e90b0fd09bfd",
+                    "status": "success",
+                    "type": "alarm"
+                  },
+                  "sum": {
+                    "errors": 0,
+                    "requests": 98
+                  }
+                },
+                {
+                  "dimensions": {
+                    "scriptName": "api",
+                    "scriptVersion": "d9cd815b-d549-49fc-8a04-e90b0fd09bfd",
+                    "status": "success",
+                    "type": "jsrpc"
+                  },
+                  "sum": {
+                    "errors": 0,
+                    "requests": 2
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "errors": null
+    },
+    "policy": {
+      "finalWindowMinutes": 15,
+      "minimumUrgentRetryMinutes": 5
+    },
+    "verification": {
+      "afterWake": {
+        "checkedAt": "2026-10-18T18:53:07.153Z",
+        "jobsRead": 53,
+        "latestJobs": [
+          {
+            "id": "7d309d5b-b054-50f9-b237-944df837f05d",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "error_code": "INSTAGRAM_PAGINATION_STALLED",
+            "started_at": 1792349347427,
+            "completed_at": null,
+            "last_step_http_attempts": 5
+          },
+          {
+            "id": "a47027fa-0fd9-58f9-b3d3-11a15c9a1e9a",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "error_code": "INSTAGRAM_PAGINATION_STALLED",
+            "started_at": 1792349337508,
+            "completed_at": null,
+            "last_step_http_attempts": 5
+          },
+          {
+            "id": "d448db2e-0951-512e-86a4-b73824146281",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "error_code": "INSTAGRAM_PAGINATION_STALLED",
+            "started_at": 1792349326955,
+            "completed_at": null,
+            "last_step_http_attempts": 5
+          }
+        ],
+        "stories": [
+          {
+            "id": "ig_17841402362568040_18028146623845440",
+            "published_at": 1792341661000,
+            "expires_at": 1792428061000,
+            "last_snapshot_at": 1792349563313
+          },
+          {
+            "id": "ig_17841402362568040_18106809884202781",
+            "published_at": 1792315217000,
+            "expires_at": 1792401617000,
+            "last_snapshot_at": 1792317247530
+          },
+          {
+            "id": "ig_17841402362568040_18107462399579371",
+            "published_at": 1792263556000,
+            "expires_at": 1792349956000,
+            "last_snapshot_at": 1792313443531
+          }
+        ],
+        "due": [
+          {
+            "expiry": null
+          }
+        ],
+        "snapshotsRead": 80,
+        "lastSnapshots": [
+          {
+            "id": "fa77bd47-0285-5c60-b02b-59fb4252373e:ig_17841402362568040_18028146623845440",
+            "observed_at": 1792349563313,
+            "operation_id": "fa77bd47-0285-5c60-b02b-59fb4252373e",
+            "reach": 21,
+            "reason": null
+          },
+          {
+            "id": "532142cc-c56f-5832-8521-c9f287d6238f:ig_17841402362568040_18028146623845440",
+            "observed_at": 1792349350725,
+            "operation_id": "532142cc-c56f-5832-8521-c9f287d6238f",
+            "reach": 21,
+            "reason": null
+          },
+          {
+            "id": "0a8310e6-03e7-5367-8f1c-17e13faff89c:ig_17841402362568040_18028146623845440",
+            "observed_at": 1792349345621,
+            "operation_id": "0a8310e6-03e7-5367-8f1c-17e13faff89c",
+            "reach": 21,
+            "reason": null
+          }
+        ]
+      },
+      "subsequent": {
+        "checkedAt": "2026-10-18T18:54:18.517Z",
+        "jobsRead": 53,
+        "latestJobs": [
+          {
+            "id": "7d309d5b-b054-50f9-b237-944df837f05d",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "error_code": "INSTAGRAM_PAGINATION_STALLED",
+            "started_at": 1792349347427,
+            "completed_at": null,
+            "last_step_http_attempts": 5
+          },
+          {
+            "id": "a47027fa-0fd9-58f9-b3d3-11a15c9a1e9a",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "error_code": "INSTAGRAM_PAGINATION_STALLED",
+            "started_at": 1792349337508,
+            "completed_at": null,
+            "last_step_http_attempts": 5
+          },
+          {
+            "id": "d448db2e-0951-512e-86a4-b73824146281",
+            "status": "failed",
+            "pages": 1,
+            "collected": 1,
+            "error_code": "INSTAGRAM_PAGINATION_STALLED",
+            "started_at": 1792349326955,
+            "completed_at": null,
+            "last_step_http_attempts": 5
+          }
+        ],
+        "stories": [
+          {
+            "id": "ig_17841402362568040_18028146623845440",
+            "published_at": 1792341661000,
+            "expires_at": 1792428061000,
+            "last_snapshot_at": 1792349563313
+          },
+          {
+            "id": "ig_17841402362568040_18106809884202781",
+            "published_at": 1792315217000,
+            "expires_at": 1792401617000,
+            "last_snapshot_at": 1792317247530
+          },
+          {
+            "id": "ig_17841402362568040_18107462399579371",
+            "published_at": 1792263556000,
+            "expires_at": 1792349956000,
+            "last_snapshot_at": 1792313443531
+          }
+        ],
+        "due": [
+          {
+            "expiry": null
+          }
+        ],
+        "snapshotsRead": 80,
+        "lastSnapshots": [
+          {
+            "id": "fa77bd47-0285-5c60-b02b-59fb4252373e:ig_17841402362568040_18028146623845440",
+            "observed_at": 1792349563313,
+            "operation_id": "fa77bd47-0285-5c60-b02b-59fb4252373e",
+            "reach": 21,
+            "reason": null
+          },
+          {
+            "id": "532142cc-c56f-5832-8521-c9f287d6238f:ig_17841402362568040_18028146623845440",
+            "observed_at": 1792349350725,
+            "operation_id": "532142cc-c56f-5832-8521-c9f287d6238f",
+            "reach": 21,
+            "reason": null
+          },
+          {
+            "id": "0a8310e6-03e7-5367-8f1c-17e13faff89c:ig_17841402362568040_18028146623845440",
+            "observed_at": 1792349345621,
+            "operation_id": "0a8310e6-03e7-5367-8f1c-17e13faff89c",
+            "reach": 21,
+            "reason": null
+          }
+        ]
+      },
+      "observed": "Story jobs stable at 53 while archive snapshots and comments advanced; five-minute retry boundary validated locally, long-term stability unproven."
+    }
+  }
+}
