@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const accounts = sqliteTable(
@@ -212,6 +213,7 @@ export const accountInsights = sqliteTable(
   },
   (table) => [
     index("account_insights_query_time").on(table.accountId, table.signature, table.observedAt),
+    index("account_insights_account_time").on(table.accountId, table.observedAt),
   ],
 );
 
@@ -378,6 +380,11 @@ export const instagramHttpAttempts = sqliteTable(
   (t) => [
     index("instagram_attempt_object_time").on(t.accountId, t.objectId, t.requestedAt),
     index("instagram_attempt_operation").on(t.operationId),
+    index("instagram_attempt_time").on(t.requestedAt),
+    index("instagram_attempt_sample_time")
+      .on(t.requestedAt)
+      .where(sql`json_extract(${t.payloadJson},'$.sample') IS NOT NULL`),
+    index("instagram_attempt_account_time").on(t.accountId, t.requestedAt, t.id),
   ],
 );
 export const collectionPolicyHistory = sqliteTable(

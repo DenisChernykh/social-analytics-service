@@ -21,6 +21,7 @@ import {
 } from "../modules/instagram/public-contracts";
 import { createReviewModule } from "../modules/reviews";
 import type { RuntimeBindings } from "../platform/config/runtime-config";
+import { databaseDailyLimitError } from "../platform/database/d1-errors";
 import { authenticate } from "../platform/http/authentication";
 import type { HttpEnv } from "../platform/http/environment";
 import { applicationProblem, errorResponses, problem } from "../platform/http/problem";
@@ -139,6 +140,8 @@ export function createApp(
   });
   app.notFound((c) => problem(c, 404, "NOT_FOUND", "The requested resource was not found."));
   app.onError((error, c) => {
+    const dailyLimit = databaseDailyLimitError(error, (options.clock ?? Date.now)());
+    if (dailyLimit) return applicationProblem(c, dailyLimit);
     if (error instanceof ApplicationError) return applicationProblem(c, error);
     if (error instanceof HTTPException && error.status === 400)
       return problem(c, 400, "VALIDATION_FAILED", "The request contains invalid JSON.");

@@ -35,6 +35,58 @@ async function alarmTime(stub: DurableObjectStub<CollectionRunner>) {
 }
 
 describe("Durable Object collection execution", () => {
+  it("persists daily D1 exhaustion across eviction, avoids more database work, and resumes after UTC reset", async () => {
+    let time = Date.parse("2026-10-18T23:58:00Z");
+    vi.spyOn(Date, "now").mockImplementation(() => time);
+    const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
+    const tick = vi
+      .fn()
+      .mockRejectedValueOnce(
+        new Error("query wrapper", {
+          cause: new Error(
+            "D1_ERROR: Your account has exceeded D1's free tier daily row read limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue.",
+          ),
+        }),
+      )
+      .mockResolvedValue(undefined);
+    const advance = vi.fn();
+    const install = () =>
+      runInDurableObject(stub, (instance) => {
+        vi.spyOn(instance as unknown as RunnerInternals, "executor").mockReturnValue({
+          tick,
+          advance,
+          nextWakeAt: async () => null,
+        } as unknown as Executor);
+      });
+    await install();
+    await stub.ensureAwake();
+    await runDurableObjectAlarm(stub);
+    const reset = Date.parse("2026-10-19T00:00:05Z");
+    expect(await alarmTime(stub)).toBe(reset);
+    await stub.ensureAwake();
+    expect(await alarmTime(stub)).toBe(reset);
+    expect(await stub.advance(crypto.randomUUID())).toMatchObject({
+      ok: false,
+      code: "DATABASE_DAILY_LIMIT_REACHED",
+      retryAfterMs: 125_000,
+    });
+    expect(advance).not.toHaveBeenCalled();
+    await evictDurableObject(stub);
+    await stub.ensureAwake();
+    expect(await alarmTime(stub)).toBe(reset);
+    expect(tick).toHaveBeenCalledTimes(1);
+    time = reset + 1000;
+    await install();
+    await runDurableObjectAlarm(stub);
+    expect(tick).toHaveBeenCalledTimes(2);
+    expect(await alarmTime(stub)).toBeNull();
+    expect(
+      await runInDurableObject(stub, (_instance, state) =>
+        state.storage.get("databaseBlockedUntil"),
+      ),
+    ).toBeUndefined();
+  });
+
   it("continues saved pages through alarms without waiting for another Cron or duplicating a committed page", async () => {
     const f = await controlledRunner();
     vi.mocked(f.transport.mediaPage)

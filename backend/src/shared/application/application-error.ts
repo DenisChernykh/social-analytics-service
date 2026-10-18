@@ -4,6 +4,7 @@ export type ErrorCode =
   | "VALIDATION_FAILED"
   | "FEATURE_UNAVAILABLE"
   | "CONFIGURATION_REQUIRED"
+  | "DATABASE_DAILY_LIMIT_REACHED"
   | "INSTAGRAM_AUTH_EXPIRED"
   | "INSTAGRAM_PERMISSION_REQUIRED"
   | "INSTAGRAM_RATE_LIMITED"
@@ -42,6 +43,7 @@ export function incompleteOperationError(status: string, code: string | null): A
   switch (code) {
     case "NOT_FOUND":
     case "CONFIGURATION_REQUIRED":
+    case "DATABASE_DAILY_LIMIT_REACHED":
     case "INSTAGRAM_AUTH_EXPIRED":
     case "INSTAGRAM_PERMISSION_REQUIRED":
     case "INSTAGRAM_RATE_LIMITED":
@@ -77,6 +79,7 @@ export function retryableOperation(code: string | null) {
       "COLLECTION_EXPIRED",
       "SYNC_IN_PROGRESS",
       "INTERNAL_ERROR",
+      "DATABASE_DAILY_LIMIT_REACHED",
     ].includes(code)
   );
 }

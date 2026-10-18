@@ -483,10 +483,9 @@ export class D1Collection implements CollectionStore {
         `WITH targets(hours,tolerance) AS (VALUES ${ageSnapshotWindows.map(() => "(?,?)").join(",")})
          SELECT m.id AS mediaId,t.hours AS targetHours,
            m.published_at+(t.hours+t.tolerance)*3600000 AS deadline
-         FROM media m CROSS JOIN targets t
+         FROM targets t CROSS JOIN media m
          WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=?
-           AND m.published_at+t.hours*3600000<=?
-           AND m.published_at+(t.hours+t.tolerance)*3600000>=?
+           AND m.published_at BETWEEN ?-(t.hours+t.tolerance)*3600000 AND ?-t.hours*3600000
            AND NOT EXISTS (SELECT 1 FROM media_snapshots s WHERE s.media_id=m.id
              AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000
                AND m.published_at+(t.hours+t.tolerance)*3600000 AND json_extract(s.metrics_json,'$.reach.value') IS NOT NULL)

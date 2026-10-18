@@ -1,0 +1,1 @@
+CREATE INDEX `instagram_attempt_sample_time` ON `instagram_http_attempts` (`requested_at`) WHERE json_extract("instagram_http_attempts"."payload_json",'$.sample') IS NOT NULL;
