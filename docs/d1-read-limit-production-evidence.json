@@ -1,0 +1,515 @@
+{
+  "checkedAt": "2026-10-18T19:26:15.641Z",
+  "sourceCommit": "e449d96",
+  "clientDate": "2026-10-19",
+  "clientTimeZone": "Asia/Yekaterinburg",
+  "incident": {
+    "cloudflareErrorCode": 7500,
+    "reason": "D1 free tier daily row read limit exhausted",
+    "resetAt": "2026-10-19T00:00:00Z",
+    "automaticRecoveryNotBefore": "2026-10-19T00:00:05Z",
+    "currentBacklogAndStories": "unavailable_due_to_database_limit",
+    "previousBaseline": {
+      "at": "2026-10-18T18:55:11Z",
+      "staleSnapshots": 84,
+      "publications": 242,
+      "commentPages": 142,
+      "commentMediaProcessed": 86
+    }
+  },
+  "before": {
+    "checkedAt": "2026-10-18T19:25:45.250Z",
+    "mode": "Cloudflare_control_plane_and_GET_only_no_D1_queries",
+    "health": {
+      "status": 200,
+      "retryAfter": null,
+      "health": {
+        "status": "ok",
+        "revision": "0.3.3"
+      }
+    },
+    "collection": {
+      "status": 500,
+      "retryAfter": null,
+      "code": "INTERNAL_ERROR",
+      "detail": "The request could not be completed."
+    },
+    "deployment": {
+      "id": "7ede5680-1cf6-45cf-b5ea-f4b21f39ee27",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "sharper.togas-6q@icloud.com",
+      "annotations": {
+        "workers/message": "Publish checked 62ecf5e: promote bounded Story runner after observed version skew",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "6e769570-99b5-4758-a64c-4eb3890cf335",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-18T18:49:21.382301Z"
+    },
+    "settings": {
+      "bindings": [
+        {
+          "name": "API_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BUILD_REVISION",
+          "type": "plain_text",
+          "text": "0.3.3"
+        },
+        {
+          "name": "COLLECTION_RUNNER",
+          "type": "durable_object_namespace",
+          "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+          "className": "CollectionRunner"
+        },
+        {
+          "name": "COLLECTION_RUNNER_ENABLED",
+          "type": "plain_text",
+          "text": "true"
+        },
+        {
+          "name": "DB",
+          "type": "d1",
+          "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "INSTAGRAM_API_VERSION",
+          "type": "plain_text",
+          "text": "v26.0"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_ID",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_REDIRECT_URI",
+          "type": "plain_text",
+          "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback"
+        },
+        {
+          "name": "INSTAGRAM_WEBHOOK_VERIFY_TOKEN",
+          "type": "secret_text"
+        },
+        {
+          "name": "TOKEN_ENCRYPTION_KEY",
+          "type": "secret_text"
+        }
+      ],
+      "observability": null,
+      "logpush": false,
+      "schedules": {
+        "schedules": [
+          {
+            "cron": "*/5 * * * *",
+            "created_on": "2026-10-03T08:29:58.124392Z",
+            "modified_on": "2026-10-09T06:29:42.98561Z"
+          }
+        ]
+      }
+    },
+    "bundle": {
+      "bytes": 1737909,
+      "sha256": "b879bf981107aa3369723ba44921ee80292c74f0bcb8e856f94290bcc8a193be"
+    }
+  },
+  "after": {
+    "checkedAt": "2026-10-18T19:26:15.641Z",
+    "mode": "Cloudflare_control_plane_and_GET_only_no_D1_queries",
+    "health": {
+      "status": 200,
+      "retryAfter": null,
+      "health": {
+        "status": "ok",
+        "revision": "0.3.4"
+      }
+    },
+    "collection": {
+      "status": 503,
+      "retryAfter": "16431",
+      "code": "DATABASE_DAILY_LIMIT_REACHED",
+      "detail": "The daily database limit is exhausted. Collection can resume after 00:00 UTC."
+    },
+    "deployment": {
+      "id": "47383ee7-ffc4-4f95-be47-3f8fcb539a6a",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "sharper.togas-6q@icloud.com",
+      "annotations": {
+        "workers/message": "Checked e449d96: defer D1 daily quota until UTC reset; indexes pending separate approval",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "e828ef32-6c65-43b9-86c0-3706420c4c38",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-18T19:25:59.886713Z"
+    },
+    "settings": {
+      "bindings": [
+        {
+          "name": "API_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BUILD_REVISION",
+          "type": "plain_text",
+          "text": "0.3.4"
+        },
+        {
+          "name": "COLLECTION_RUNNER",
+          "type": "durable_object_namespace",
+          "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+          "className": "CollectionRunner"
+        },
+        {
+          "name": "COLLECTION_RUNNER_ENABLED",
+          "type": "plain_text",
+          "text": "true"
+        },
+        {
+          "name": "DB",
+          "type": "d1",
+          "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "INSTAGRAM_API_VERSION",
+          "type": "plain_text",
+          "text": "v26.0"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_ID",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_REDIRECT_URI",
+          "type": "plain_text",
+          "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback"
+        },
+        {
+          "name": "INSTAGRAM_WEBHOOK_VERIFY_TOKEN",
+          "type": "secret_text"
+        },
+        {
+          "name": "TOKEN_ENCRYPTION_KEY",
+          "type": "secret_text"
+        }
+      ],
+      "observability": null,
+      "logpush": false,
+      "schedules": {
+        "schedules": [
+          {
+            "cron": "*/5 * * * *",
+            "created_on": "2026-10-03T08:29:58.124392Z",
+            "modified_on": "2026-10-09T06:29:42.98561Z"
+          }
+        ]
+      }
+    },
+    "bundle": {
+      "bytes": 1741027,
+      "sha256": "b8546108dabea6e44665aac81b756ada15b3e6f112b6056d5936d51a4933bf2b"
+    }
+  },
+  "queryInsights": {
+    "checkedAt": "2026-10-18T19:19:00.203Z",
+    "mode": "GraphQL_only_no_D1_queries",
+    "queries": [
+      {
+        "avg": {
+          "rowsRead": 5004
+        },
+        "count": 788,
+        "sum": {
+          "queryDurationMs": 7720.205099999998,
+          "rowsRead": 3943800,
+          "rowsWritten": 8
+        },
+        "querySHA256": "7e5e9d1795107ba12a9682263e2b99ccd91cd140699a05bf835cd97052128817",
+        "sqlShape": "UPDATE instagram_http_attempts SET payload_json=json_set(payload_json,'?',NULL) WHERE id IN (SELECT id FROM instagram_http_attempts WHERE requested_at<? AND json_extract(payload_json,'?') IS NOT NULL LIMIT ?)"
+      },
+      {
+        "avg": {
+          "rowsRead": 4947
+        },
+        "count": 688,
+        "sum": {
+          "queryDurationMs": 3682.3577,
+          "rowsRead": 3403827,
+          "rowsWritten": 0
+        },
+        "querySHA256": "8e298655f93329c8f7ac773fd3d9f9214e440aae27cf08c511ad0fb5a70be288",
+        "sqlShape": "DELETE FROM instagram_http_attempts WHERE id IN (SELECT id FROM instagram_http_attempts WHERE requested_at<? LIMIT ?)"
+      },
+      {
+        "avg": {
+          "rowsRead": 9751
+        },
+        "count": 276,
+        "sum": {
+          "queryDurationMs": 6846.8894999999975,
+          "rowsRead": 2691308,
+          "rowsWritten": 0
+        },
+        "querySHA256": "1f3b75232636dbb756048935b919d5be2a1ab3bf3a4d6610d6e1fef6a647dfc7",
+        "sqlShape": "SELECT\n (SELECT enabled FROM collection_policy_history WHERE account_id=? AND effective_to IS NULL ORDER BY effective_from DESC LIMIT ?) enabled,\n (SELECT policy_json FROM collection_policy_history WHERE account_id=? AND effective_to IS NULL ORDER BY effective_from DESC LIMIT 1) policy_json,\n (SELECT expires_at FROM instagram_connections WHERE account_id=?) grantExpiresAt,\n (SELECT scopes FROM instagram_connections WHERE account_id=?) scopes,\n (SELECT json_extract(payload_json,'?') FROM instagram_http_attempts WHERE account_id=? ORDER BY requested_at DESC,id DESC LIMIT 1) lastResult"
+      },
+      {
+        "avg": {
+          "rowsRead": 12489
+        },
+        "count": 118,
+        "sum": {
+          "queryDurationMs": 7621.3289,
+          "rowsRead": 1473750,
+          "rowsWritten": 0
+        },
+        "querySHA256": "a9b3d87e9df3510cb5ee221ee94aa943edb897350e3e1acd94839bc84ec80a16",
+        "sqlShape": "SELECT json_extract(payload_json,'?') AS \"from\",json_extract(payload_json,'?') AS \"to\",MAX(observed_at) AS observedAt FROM account_insights\n       WHERE account_id=? AND observed_at>=? AND json_extract(payload_json,'?')='?'\n         AND NOT EXISTS (SELECT 1 FROM json_each(payload_json,'?') v WHERE json_extract(v.value,'?')='?')\n         AND json_extract(payload_json,'?')=? AND json_extract(payload_json,'?')='?'\n         AND json_extract(payload_json,'?')=? AND json_extract(payload_json,'?')='?'\n         AND json_extract(payload_json,'?') IS NULL\n         AND NOT EXISTS (SELECT 1 FROM json_each(?) needed WHERE NOT EXISTS (SELECT 1 FROM json_each(account_insights.payload_json,'?') saved WHERE saved.value=needed.value))\n       GROUP BY json_extract(payload_json,'?'),json_extract(payload_json,'?')"
+      },
+      {
+        "avg": {
+          "rowsRead": 1921
+        },
+        "count": 500,
+        "sum": {
+          "queryDurationMs": 1173.4259,
+          "rowsRead": 960654,
+          "rowsWritten": 0
+        },
+        "querySHA256": "3ed5f579518d0454d9904e73db31577c97e34d5c8a962d700845a16dd04697ca",
+        "sqlShape": "WITH targets(hours,tolerance) AS (VALUES (?,?),(?,?),(?,?),(?,?),(?,?),(?,?),(?,?))\n         SELECT m.id AS mediaId,t.hours AS targetHours,\n           m.published_at+(t.hours+t.tolerance)*3600000 AS deadline\n         FROM media m CROSS JOIN targets t\n         WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=?\n           AND m.published_at+t.hours*3600000<=?\n           AND m.published_at+(t.hours+t.tolerance)*3600000>=?\n           AND NOT EXISTS (SELECT 1 FROM media_snapshots s WHERE s.media_id=m.id\n             AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000\n               AND m.published_at+(t.hours+t.tolerance)*3600000 AND json_extract(s.metrics_json,'?') IS NOT NULL)\n         ORDER BY deadline,m.published_at,m.id,t.hours LIMIT ?"
+      },
+      {
+        "avg": {
+          "rowsRead": 2168
+        },
+        "count": 372,
+        "sum": {
+          "queryDurationMs": 3291.4876999999997,
+          "rowsRead": 806824,
+          "rowsWritten": 0
+        },
+        "querySHA256": "992f5aa50154b23edfe48100256d113811d57b25172d625b4400051fcb8978ee",
+        "sqlShape": "SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT ?)\n      WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'?')='?') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)\n      ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1"
+      },
+      {
+        "avg": {
+          "rowsRead": 10475
+        },
+        "count": 60,
+        "sum": {
+          "queryDurationMs": 3786.5184,
+          "rowsRead": 628534,
+          "rowsWritten": 0
+        },
+        "querySHA256": "8c7c5fbe7c81c0c4cb86aae4e3045cc3645537c55d2827b36532892350e3c718",
+        "sqlShape": "WITH observed AS (\n      SELECT s.media_id,MAX(s.observed_at) lastSuccess,\n        MAX(CASE WHEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) v WHERE json_extract(v.value,'?') IS NOT NULL) OR json_extract(s.story_insights_json,'?') IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.story_insights_json,'?') v WHERE json_extract(v.value,'?') IS NOT NULL) THEN s.observed_at END) lastUsefulObservation,\n        SUM(s.provenance_json IS NULL) legacyProvenanceUnknown\n      FROM media_snapshots s JOIN media m ON m.id=s.media_id WHERE m.account_id=? GROUP BY s.media_id\n    ),attempted AS (\n      SELECT object_id,MAX(requested_at) lastAttempt,MAX(CASE WHEN json_extract(payload_json,'?')='?' THEN received_at END) lastCheck FROM instagram_http_attempts WHERE account_id=? GROUP BY object_id\n    ) SELECT m.product_type kind,COUNT(*) objects,MAX(a.lastAttempt) lastAttempt,MAX(a.lastCheck) lastCheck,MAX(o.lastSuccess) lastSuccess,MAX(o.lastUsefulObservation) lastUsefulObservation,COALESCE(SUM(o.legacyProvenanceUnknown),0) legacyProvenanceUnknown\n      FROM media m LEFT JOIN observed o ON o.media_id=m.id LEFT JOIN attempted a ON a.object_id=m.external_id WHERE m.account_id=? GROUP BY m.product_type"
+      },
+      {
+        "avg": {
+          "rowsRead": 8184
+        },
+        "count": 36,
+        "sum": {
+          "queryDurationMs": 1551.0892,
+          "rowsRead": 294654,
+          "rowsWritten": 0
+        },
+        "querySHA256": "b79efb0e6d9c01b2ca939f381318d0bbfad4df50747c101ef816f8042589b658",
+        "sqlShape": "SELECT\n      (SELECT COUNT(*) FROM sync_runs WHERE account_id=? AND status='?' AND lease_expires_at<=?) expiredSyncAttempts,\n      (SELECT COUNT(*) FROM account_insights WHERE account_id=? AND json_extract(payload_json,'?')='?' AND json_extract(payload_json,'?')<=?) expiredInsightAttempts,\n      (SELECT COUNT(*) FROM comment_collections c JOIN media m ON m.id=c.media_id WHERE m.account_id=? AND json_extract(c.result_json,'?')='?' AND json_extract(c.result_json,'?')<=?) expiredCommentAttempts,\n      (SELECT COUNT(*) FROM collection_jobs WHERE account_id=? AND lease_expires_at>?) leasesInUse"
+      },
+      {
+        "avg": {
+          "rowsRead": 1742
+        },
+        "count": 149,
+        "sum": {
+          "queryDurationMs": 722.7293,
+          "rowsRead": 259641,
+          "rowsWritten": 0
+        },
+        "querySHA256": "5fd744538778d6c4ce4bbeee67c1ca0e1c7a5e1eb3ba1becc6371567e763ca32",
+        "sqlShape": "SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT ?)\n      WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=? AND (EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'?')='?') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)\n      ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1"
+      },
+      {
+        "avg": {
+          "rowsRead": 171
+        },
+        "count": 965,
+        "sum": {
+          "queryDurationMs": 567.2667,
+          "rowsRead": 165939,
+          "rowsWritten": 0
+        },
+        "querySHA256": "356a488f6f934c7d64bc37cd8fc12990c46910957b45c7136f453ed6504d87d9",
+        "sqlShape": "SELECT recorded_requests AS recordedRequests,since_at AS sinceAt,usage_percent AS usagePercent,usage_observed_at AS usageObservedAt,blocked_until AS blockedUntil,observed_at AS observedAt,attempts,responses,failures_before_response AS failuresBeforeResponse,timeouts,rate_limited_responses AS rateLimitedResponses,accounting_since_at AS accountingSinceAt,usage_headers_json AS usageHeadersJson,(SELECT COUNT(*) FROM instagram_metric_support WHERE account_id=? AND api_version=? AND expires_at>?) AS cachedUnavailableMetrics FROM instagram_api_state WHERE id=?"
+      },
+      {
+        "avg": {
+          "rowsRead": 2072
+        },
+        "count": 79,
+        "sum": {
+          "queryDurationMs": 1992.9529999999997,
+          "rowsRead": 163707,
+          "rowsWritten": 0
+        },
+        "querySHA256": "7732488365bf32774dcf434b5df826796bdea3eca982f93d0ae4e6ee6d2e3cb2",
+        "sqlShape": "SELECT media_id mediaId,observed_at observedAt,json_extract(metrics_json,'?') IS NOT NULL usable FROM media_snapshots WHERE media_id IN (SELECT id FROM media WHERE account_id=?) AND observed_at<=?"
+      },
+      {
+        "avg": {
+          "rowsRead": 1152
+        },
+        "count": 127,
+        "sum": {
+          "queryDurationMs": 1013.9861999999999,
+          "rowsRead": 146385,
+          "rowsWritten": 0
+        },
+        "querySHA256": "79ff26a2ec15342d01a24cdf0b8c90d0f97e2d5d5c6be3e31a0e926b3cccd69d",
+        "sqlShape": "SELECT m.id,m.published_at AS publishedAt FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?)))\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n       ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,\n         CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1"
+      },
+      {
+        "avg": {
+          "rowsRead": 5449
+        },
+        "count": 24,
+        "sum": {
+          "queryDurationMs": 209.98860000000002,
+          "rowsRead": 130776,
+          "rowsWritten": 0
+        },
+        "querySHA256": "87f1dd75a786d27327567c115f287ba5efe847c60aa502ea810e9e39f9b89ebb",
+        "sqlShape": "SELECT json_extract(payload_json,'?') family,json_extract(payload_json,'?') status,json_extract(payload_json,'?') result,json_extract(payload_json,'?') graph_code,json_extract(payload_json,'?') graph_subcode,COUNT(*) n,MAX(requested_at) last_at FROM instagram_http_attempts WHERE requested_at>=? GROUP BY family,status,result,graph_code,graph_subcode"
+      },
+      {
+        "avg": {
+          "rowsRead": 259
+        },
+        "count": 457,
+        "sum": {
+          "queryDurationMs": 211.0564,
+          "rowsRead": 118406,
+          "rowsWritten": 0
+        },
+        "querySHA256": "37cc3205bf53c0303eca9fd9977468b793c80868f76769b459d591d7622ffb3d",
+        "sqlShape": "SELECT MIN(m.published_at+86400000) AS expiry FROM media m\n      WHERE m.account_id=? AND m.product_type='?' AND m.published_at+86400000>?\n        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT ?),0)<m.published_at+86400000-900000"
+      },
+      {
+        "avg": {
+          "rowsRead": 1134
+        },
+        "count": 96,
+        "sum": {
+          "queryDurationMs": 101.9325,
+          "rowsRead": 108957,
+          "rowsWritten": 0
+        },
+        "querySHA256": "7cdf7e4d33a722e94e3bd8467f228f9784ec1b675b321eed1450f4b6fdf09140",
+        "sqlShape": "SELECT MIN(m.published_at+86400000) AS expiry FROM media m\n      WHERE m.account_id=? AND m.product_type='?' AND m.published_at+86400000>?\n        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT ?),0)<m.published_at+86400000-?\n        AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.account_id=m.account_id\n          AND j.origin='?' AND COALESCE(j.last_attempt_at,j.started_at)>?)"
+      }
+    ],
+    "databases": [
+      {
+        "dimensions": {
+          "databaseId": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+        },
+        "sum": {
+          "readQueries": 14139,
+          "rowsRead": 14947689,
+          "rowsWritten": 28460,
+          "writeQueries": 13367
+        }
+      }
+    ],
+    "errors": null
+  },
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 186,
+    "mcpTests": 27,
+    "localMigrationsApplied": true,
+    "bindingCronAndLogsPreserved": true,
+    "activeBundleMatchesCheckedBuild": true,
+    "utcResetRecovery": "local_test_passed_production_still_pending"
+  },
+  "migrations": [
+    {
+      "path": "backend/migrations/0013_opposite_wendell_vaughn.sql",
+      "sha256": "d1d10a92976378b5b9216efb76585ceb212c206c1fe8f9a24d88601334aff184",
+      "sql": "CREATE INDEX `account_insights_account_time` ON `account_insights` (`account_id`,`observed_at`);--> statement-breakpoint\nCREATE INDEX `instagram_attempt_time` ON `instagram_http_attempts` (`requested_at`);--> statement-breakpoint\nCREATE INDEX `instagram_attempt_account_time` ON `instagram_http_attempts` (`account_id`,`requested_at`,`id`);",
+      "localApplied": true,
+      "remoteApplied": false
+    },
+    {
+      "path": "backend/migrations/0014_colossal_gargoyle.sql",
+      "sha256": "3547fbc37bbafcede315d37bc5dbb37e8fa54cb683604e6f593749442d224d46",
+      "sql": "CREATE INDEX `instagram_attempt_sample_time` ON `instagram_http_attempts` (`requested_at`) WHERE json_extract(\"instagram_http_attempts\".\"payload_json\",'$.sample') IS NOT NULL;",
+      "localApplied": true,
+      "remoteApplied": false
+    }
+  ],
+  "dataChanges": {
+    "remoteMigrations": false,
+    "jobResets": false,
+    "cursorResets": false,
+    "deletions": false,
+    "paidInfrastructure": false
+  },
+  "nextSteps": [
+    "Apply the two owner-approved index migrations after quota reset",
+    "Verify automatic progress, D1 read consumption and Story retry intervals after reset"
+  ],
+  "runnerGuardProbe": {
+    "checkedAt": "2026-10-18T19:29:56.654Z",
+    "action": "One configure RPC with previously enabled=true, discoveryMinutes=60, Asia/Yekaterinburg to exercise the new runner quota guard",
+    "result": {
+      "code": "DATABASE_DAILY_LIMIT_REACHED",
+      "status": 503,
+      "error_code": "INVALID_ARGUMENT"
+    },
+    "rawErrorOrCursorSaved": false
+  },
+  "followUp": {
+    "recovery": {
+      "automationId": "d1",
+      "kind": "heartbeat",
+      "scheduledLocal": "2026-10-19T05:05:00+05:00",
+      "count": 1
+    },
+    "audit": {
+      "automationId": "social-analytics",
+      "scheduledLocal": "2026-10-19T10:00:00+05:00",
+      "count": 1
+    },
+    "remoteMigrationAuthorization": "Owner explicitly approved both 0013 and 0014 after quota reset: Да, применить обе миграции"
+  }
+}
