@@ -31,6 +31,78 @@ async function onlyRefresh(f: Awaited<ReturnType<typeof ready>>) {
 }
 
 describe("collection fault isolation", () => {
+  it("waits for a new refresh identity after a completed partial media sync while keeping age work eligible", async () => {
+    const f = await ready();
+    f.advance(300_000 - (f.now() % 300_000) + 1000);
+    const original = vi.mocked(f.transport.insights).getMockImplementation();
+    vi.mocked(f.transport.insights).mockImplementation(async (...args) => ({
+      ...(await original?.(...args)),
+      reach: { value: null, reason: "request_deferred" },
+    }));
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    await onlyRefresh(f);
+    // The first partial snapshot came from catalogue work, so refresh is still eligible.
+    expect(await f.store.dueMedia(accountId, f.now())).toBe(`${accountId}_${sampleMedia.id}`);
+    await f.collector.tick(1);
+    const calls = vi.mocked(f.transport.media).mock.calls.length;
+    f.advance(1000);
+    expect(await f.store.dueMedia(accountId, f.now())).toBeNull();
+    expect(await f.store.mediaRefreshStatus(accountId, f.now())).toMatchObject({
+      ready: 0,
+      deferred: 1,
+    });
+    await f.collector.tick(1);
+    expect(f.transport.media).toHaveBeenCalledTimes(calls);
+    const eligible = f.now() + 300_000 - (f.now() % 300_000);
+    f.advance(eligible - f.now());
+    expect(await f.store.dueMedia(accountId, f.now())).toBe(`${accountId}_${sampleMedia.id}`);
+    await env.DB.prepare("UPDATE media SET published_at=?")
+      .bind(f.now() - 3_600_000)
+      .run();
+    expect(await f.store.dueAgeMedia(accountId, f.now())).toMatchObject({ targetHours: 1 });
+  });
+
+  it("does not choose a completed comments refresh identity again when new webhook work is waiting", async () => {
+    const f = await ready();
+    await env.DB.prepare("UPDATE instagram_connections SET scopes=? WHERE account_id=?")
+      .bind(
+        JSON.stringify([
+          "instagram_business_basic",
+          "instagram_business_manage_insights",
+          "instagram_business_manage_comments",
+        ]),
+        accountId,
+      )
+      .run();
+    f.advance(300_000 - (f.now() % 300_000) + 1000);
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    const id = `${accountId}_${sampleMedia.id}`;
+    const job = await f.collector.start(accountId, crypto.randomUUID(), "comments_refresh", true, {
+      id,
+      publishedAt: sampleMedia.timestamp,
+    });
+    await f.collector.advance(job.id);
+    await env.DB.prepare(
+      "UPDATE comment_media_state SET event_generation=processed_generation+1,next_refresh_at=0 WHERE media_id=?",
+    )
+      .bind(id)
+      .run();
+    expect(await f.store.nextCommentRefresh(accountId, f.now())).toBeNull();
+    expect(
+      await env.DB.prepare(
+        "SELECT event_generation>processed_generation AS pending FROM comment_media_state WHERE media_id=?",
+      )
+        .bind(id)
+        .first("pending"),
+    ).toBe(1);
+    f.advance(300_000 - (f.now() % 300_000));
+    expect(await f.store.nextCommentRefresh(accountId, f.now())).toMatchObject({ id });
+  });
+
   it.each([
     ['{"reach":{"reason":"request_deferred"}}', true],
     ['{ "reach": { "reason": "request_deferred" } }', true],

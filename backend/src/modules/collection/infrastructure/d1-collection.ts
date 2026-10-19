@@ -19,6 +19,7 @@ import type {
   CollectionSchedule,
   CommentEvent,
 } from "../domain/model";
+import { collectionRetryIntervalMs } from "../domain/model";
 
 // json_each virtual rows count towards D1 reads. Skip expanding documents
 // without the marker; escaped JSON still takes the exact parser path so this
@@ -425,20 +426,42 @@ export class D1Collection implements CollectionStore {
       .onConflictDoUpdate({ target: collectionSchedules.accountId, set: schedule });
   }
   async mediaRefreshStatus(accountId: string, now: number) {
+    const identityFrom = Math.floor(now / collectionRetryIntervalMs) * collectionRetryIntervalMs;
     const rows = await this.database
       .prepare(`SELECT error_code,COUNT(*) publications,
       SUM(missing) missingSnapshots,SUM(stale) staleSnapshots,
-      SUM(until_at>?) deferred,SUM(until_at<=? AND due) ready,
-      MIN(CASE WHEN until_at>? THEN until_at END) nextAttemptAt
-      FROM (SELECT m.unavailable_code error_code,m.unavailable_until until_at,
+      SUM(until_at>? OR (due AND identity_wait)) deferred,
+      SUM(until_at<=? AND due AND NOT identity_wait) ready,
+      MIN(CASE WHEN until_at>? OR (due AND identity_wait)
+        THEN MAX(until_at,CASE WHEN due AND identity_wait THEN ? ELSE 0 END) END) nextAttemptAt
+      FROM (SELECT m.unavailable_code error_code,
+        m.unavailable_until until_at,
+        COALESCE(r.kind='media' AND r.status='completed'
+          AND r.account_id=m.account_id AND r.target_media_id=m.id AND r.started_at>=?,0) identity_wait,
         s.id IS NULL missing,
         s.id IS NOT NULL AND s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END stale,
         m.unavailable_code IS NOT NULL OR s.id IS NULL OR
           (${deferredMetrics}) OR
           s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END due
         FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
+        LEFT JOIN sync_runs r ON r.id=s.operation_id
         WHERE m.account_id=? AND m.product_type!='STORY') GROUP BY error_code`)
-      .bind(now, now, now, now, now, now, now, now, now, now, now, accountId)
+      .bind(
+        now,
+        now,
+        now,
+        identityFrom + collectionRetryIntervalMs,
+        identityFrom,
+        now,
+        now,
+        now,
+        now,
+        now,
+        now,
+        now,
+        now,
+        accountId,
+      )
       .all<{
         error_code: string | null;
         publications: number;
@@ -480,8 +503,18 @@ export class D1Collection implements CollectionStore {
     const row = await this.database
       .prepare(`SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
       WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR (${deferredMetrics}) OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)
+      AND NOT EXISTS (SELECT 1 FROM sync_runs r WHERE r.id=s.operation_id AND r.account_id=m.account_id
+        AND r.kind='media' AND r.target_media_id=m.id AND r.status='completed' AND r.started_at>=?)
       ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1`)
-      .bind(accountId, now, now, now, now, now)
+      .bind(
+        accountId,
+        now,
+        now,
+        now,
+        now,
+        now,
+        Math.floor(now / collectionRetryIntervalMs) * collectionRetryIntervalMs,
+      )
       .first<{ id: string }>();
     return row?.id ?? null;
   }
@@ -518,10 +551,21 @@ export class D1Collection implements CollectionStore {
          AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1)))
          AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='comments_refresh' AND status='running')
          AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='comments_refresh' AND error_code IS NOT NULL AND next_attempt_at>?)
+         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id
+           AND origin='comments_refresh' AND status='completed' AND started_at>=?)
        ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,
          CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1`,
       )
-      .bind(accountId, now, now, now, now, now, now)
+      .bind(
+        accountId,
+        now,
+        now,
+        now,
+        now,
+        now,
+        Math.floor(now / collectionRetryIntervalMs) * collectionRetryIntervalMs,
+        now,
+      )
       .first<CataloguePosition>();
   }
   async commentGeneration(mediaId: string) {

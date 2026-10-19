@@ -15,13 +15,12 @@ import {
   type CommentEvent,
   type CommentPosition,
   retryDelay,
+  collectionRetryIntervalMs as retryIntervalMs,
 } from "../domain/model";
 import { selectWork, type WorkCandidate } from "../domain/selection";
 import { advanceComments } from "./bulk-comments";
 import { collectionExecution } from "./execution-policy";
 import type { CollectionAnalytics, CollectionComments, CollectionStore } from "./ports";
-
-const retryIntervalMs = 5 * 60_000;
 
 export class Collect {
   private selectionSequence = 0;

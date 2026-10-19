@@ -75,6 +75,8 @@ export type CollectionSchedule = {
   failures: number;
   retryAt: number;
 };
+export const collectionRetryIntervalMs = 5 * 60_000;
+
 export function retryDelay(failures: number): number {
   return Math.min(24 * 60, 15 * 2 ** Math.min(failures, 7)) * 60_000;
 }
