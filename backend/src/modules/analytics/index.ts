@@ -6,6 +6,8 @@ import { SyncAccount } from "./application/sync-account";
 import { D1Analytics } from "./infrastructure/d1-analytics";
 import { InstagramSource, instagramReportDefinition } from "./infrastructure/instagram-source";
 
+export { metricKeys } from "./domain/model";
+
 export type AnalyticsModuleOptions = {
   reader: (env: RuntimeBindings) => InstagramReader;
   clock?: () => number;

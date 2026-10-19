@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/d1";
 import { collectionJobs, collectionSchedules } from "../../../platform/database/schema";
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { ActivityPeriod } from "../../account-insights";
+import { metricKeys } from "../../analytics";
 import type { CollectionStore } from "../application/ports";
 import {
   ageSnapshotWindows,
@@ -22,7 +23,8 @@ import type {
 // json_each virtual rows count towards D1 reads. Skip expanding documents
 // without the marker; escaped JSON still takes the exact parser path so this
 // prefilter cannot hide an escaped reason or turn unrelated text into a match.
-const deferredMetrics = `CASE WHEN instr(s.metrics_json,'request_deferred')>0 OR instr(s.metrics_json,char(92))>0
+const deferredMetrics = `CASE WHEN ${metricKeys.map((key) => `json_extract(s.metrics_json,'$.${key}.reason')='request_deferred'`).join(" OR ")} THEN 1
+  WHEN instr(s.metrics_json,'request_deferred')>0 OR instr(s.metrics_json,char(92))>0
   THEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') ELSE 0 END`;
 
 export class D1Collection implements CollectionStore {

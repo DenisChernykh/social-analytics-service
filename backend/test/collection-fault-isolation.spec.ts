@@ -38,6 +38,9 @@ describe("collection fault isolation", () => {
     ['{"reach":{"reason":"not_supported","sourceField":"request_deferred"}}', false],
     ['{"reach":{"reason":"not_supported","sourceField":"escaped\\\\field"}}', false],
     ['{"reach":{"value":0,"reason":null}}', false],
+    ['{"futureMetric":{"reason":"request_deferred"}}', true],
+    ['{"reach":{"reason":["request_deferred"]}}', false],
+    ['{"reach":{"reason":{"value":"request_deferred"}}}', false],
   ])("preserves exact deferred-metric eligibility for %s", async (metrics, expected) => {
     const f = await ready();
     await f.request(`/api/accounts/${accountId}/sync`, "POST", {
