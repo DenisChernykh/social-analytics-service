@@ -467,6 +467,7 @@ export class Collect {
         schedule: CollectionSchedule;
         age: Awaited<ReturnType<CollectionStore["dueAgeMedia"]>>;
         storyExpiry: number | null;
+        refreshMediaId?: string | null;
       }
     >();
     for (const schedule of schedules) {
@@ -488,13 +489,16 @@ export class Collect {
         age ? now : Infinity,
         storyExpiry !== null ? storyExpiry - storyFinalSnapshotWindowMs : Infinity,
       );
-      if (
-        dueAt > now &&
-        ((await this.store.dueMedia(schedule.accountId, now)) ||
+      let refreshMediaId: string | null | undefined;
+      if (dueAt > now) {
+        refreshMediaId = await this.store.dueMedia(schedule.accountId, now);
+        if (
+          refreshMediaId ||
           ((await this.comments.enabled(schedule.accountId)) &&
-            (await this.store.nextCommentRefresh(schedule.accountId, now))))
-      )
-        dueAt = now;
+            (await this.store.nextCommentRefresh(schedule.accountId, now)))
+        )
+          dueAt = now;
+      }
       candidates.push({
         kind: "schedule",
         id: schedule.accountId,
@@ -502,7 +506,7 @@ export class Collect {
         deadline,
         archive: false,
       });
-      contexts.set(schedule.accountId, { schedule, age, storyExpiry });
+      contexts.set(schedule.accountId, { schedule, age, storyExpiry, refreshMediaId });
     }
     for (const job of jobs) {
       let deadline = ["stories", "scheduled", "comments_refresh"].includes(job.origin)
@@ -650,7 +654,10 @@ export class Collect {
         const commentMedia = (await this.comments.enabled(schedule.accountId))
           ? await this.store.nextCommentRefresh(schedule.accountId, now)
           : null;
-        const mediaId = await this.store.dueMedia(schedule.accountId, now);
+        const mediaId =
+          context.refreshMediaId === undefined
+            ? await this.store.dueMedia(schedule.accountId, now)
+            : context.refreshMediaId;
         const preferComments = sequence % 2 === 0;
         if (commentMedia && (!mediaId || preferComments)) {
           await this.start(

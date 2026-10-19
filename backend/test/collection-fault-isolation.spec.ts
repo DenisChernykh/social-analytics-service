@@ -31,6 +31,46 @@ async function onlyRefresh(f: Awaited<ReturnType<typeof ready>>) {
 }
 
 describe("collection fault isolation", () => {
+  it.each([
+    ['{"reach":{"reason":"request_deferred"}}', true],
+    ['{ "reach": { "reason": "request_deferred" } }', true],
+    ['{"reach":{"reason":"request\\u005fdeferred"}}', true],
+    ['{"reach":{"reason":"not_supported","sourceField":"request_deferred"}}', false],
+    ['{"reach":{"reason":"not_supported","sourceField":"escaped\\\\field"}}', false],
+    ['{"reach":{"value":0,"reason":null}}', false],
+  ])("preserves exact deferred-metric eligibility for %s", async (metrics, expected) => {
+    const f = await ready();
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    await env.DB.prepare("UPDATE media_snapshots SET metrics_json=?,observed_at=?")
+      .bind(metrics, f.now())
+      .run();
+    expect(await f.store.dueMedia(accountId, f.now())).toBe(
+      expected ? `${accountId}_${sampleMedia.id}` : null,
+    );
+    expect((await f.store.mediaRefreshStatus(accountId, f.now())).ready).toBe(expected ? 1 : 0);
+  });
+
+  it("reuses the selected refresh target within one tick without repeating its scan", async () => {
+    const f = await ready();
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    await onlyRefresh(f);
+    await env.DB.prepare("UPDATE media_snapshots SET metrics_json=?")
+      .bind('{"reach":{"reason":"request_deferred"}}')
+      .run();
+    const select = vi.spyOn(D1Collection.prototype, "dueMedia");
+    try {
+      await f.collector.tick(1);
+      expect(select).toHaveBeenCalledTimes(1);
+      expect(f.transport.media).toHaveBeenCalled();
+    } finally {
+      select.mockRestore();
+    }
+  });
+
   it("bounds urgent Story retries when discovery omits the expiring object without declaring its snapshot captured", async () => {
     const f = await ready();
     await f.request(`/api/accounts/${accountId}/sync`, "POST", {

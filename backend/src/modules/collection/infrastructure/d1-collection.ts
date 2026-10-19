@@ -19,6 +19,12 @@ import type {
   CommentEvent,
 } from "../domain/model";
 
+// json_each virtual rows count towards D1 reads. Skip expanding documents
+// without the marker; escaped JSON still takes the exact parser path so this
+// prefilter cannot hide an escaped reason or turn unrelated text into a match.
+const deferredMetrics = `CASE WHEN instr(s.metrics_json,'request_deferred')>0 OR instr(s.metrics_json,char(92))>0
+  THEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') ELSE 0 END`;
+
 export class D1Collection implements CollectionStore {
   private readonly db;
   constructor(private readonly database: D1Database) {
@@ -426,7 +432,7 @@ export class D1Collection implements CollectionStore {
         s.id IS NULL missing,
         s.id IS NOT NULL AND s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END stale,
         m.unavailable_code IS NOT NULL OR s.id IS NULL OR
-          EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') OR
+          (${deferredMetrics}) OR
           s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END due
         FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
         WHERE m.account_id=? AND m.product_type!='STORY') GROUP BY error_code`)
@@ -471,7 +477,7 @@ export class D1Collection implements CollectionStore {
   async dueMedia(accountId: string, now: number) {
     const row = await this.database
       .prepare(`SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)
-      WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)
+      WHERE m.account_id=? AND m.product_type!='STORY' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR (${deferredMetrics}) OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)
       ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1`)
       .bind(accountId, now, now, now, now, now)
       .first<{ id: string }>();
@@ -649,11 +655,11 @@ export class D1Collection implements CollectionStore {
   async nextStoryExpiry(accountId: string, now: number) {
     const row = await this.database
       .prepare(`SELECT MIN(m.published_at+86400000) AS expiry FROM media m
-      WHERE m.account_id=? AND m.product_type='STORY' AND m.published_at+86400000>?
+      WHERE m.account_id=? AND m.product_type='STORY' AND m.published_at>?-86400000
         AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT 1),0)<m.published_at+86400000-?
-        AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.account_id=m.account_id
+        AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.account_id=?
           AND j.origin='stories' AND COALESCE(j.last_attempt_at,j.started_at)>?)`)
-      .bind(accountId, now, storyFinalSnapshotWindowMs, now - storyUrgentRetryIntervalMs)
+      .bind(accountId, now, storyFinalSnapshotWindowMs, accountId, now - storyUrgentRetryIntervalMs)
       .first<{ expiry: number | null }>();
     return row?.expiry ?? null;
   }

@@ -34,9 +34,15 @@ async function alarmTime(stub: DurableObjectStub<CollectionRunner>) {
   return runInDurableObject(stub, (_instance, state) => state.storage.getAlarm());
 }
 
+function futureNoon() {
+  // The alarm service uses its own wall clock and clamps past alarm times.
+  // Keep mocked dates ahead of real time, including after UTC midnight.
+  return Math.floor(Date.now() / 86_400_000) * 86_400_000 + 86_400_000 + 12 * 3_600_000;
+}
+
 describe("Durable Object collection execution", () => {
   it("runs a daily pass in separate minute-spaced portions, persists it across eviction and keeps collecting between portions", async () => {
-    let time = Date.parse("2026-10-19T12:00:00Z");
+    let time = futureNoon();
     vi.spyOn(Date, "now").mockImplementation(() => time);
     const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
     const tick = vi.fn();
@@ -84,7 +90,7 @@ describe("Durable Object collection execution", () => {
   });
 
   it("caps maintenance at 20 portions per day even with a large backlog and leaves an idle wake for tomorrow", async () => {
-    let time = Date.parse("2026-10-19T12:00:00Z");
+    let time = futureNoon();
     vi.spyOn(Date, "now").mockImplementation(() => time);
     const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
     const pruneReceipts = vi.fn().mockResolvedValue({ more: true });
@@ -118,7 +124,7 @@ describe("Durable Object collection execution", () => {
   });
 
   it("defers a maintenance failure without blocking collection and pauses all D1 work on daily quota", async () => {
-    let time = Date.parse("2026-10-19T12:00:00Z");
+    let time = futureNoon();
     vi.spyOn(Date, "now").mockImplementation(() => time);
     const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
     const tick = vi.fn();
@@ -150,14 +156,16 @@ describe("Durable Object collection execution", () => {
     time += 4 * 60_000;
     await runDurableObjectAlarm(stub);
     expect(pruneReceipts).toHaveBeenCalledTimes(2);
-    expect(await alarmTime(stub)).toBe(Date.parse("2026-10-21T00:00:05Z"));
+    expect(await alarmTime(stub)).toBe(
+      Math.floor(time / 86_400_000) * 86_400_000 + 86_400_000 + 5000,
+    );
     await runDurableObjectAlarm(stub);
     expect(tick).toHaveBeenCalledTimes(2);
     expect(pruneReceipts).toHaveBeenCalledTimes(2);
   });
 
   it("persists daily D1 exhaustion across eviction, avoids more database work, and resumes after UTC reset", async () => {
-    let time = Date.parse("2026-10-18T23:58:00Z");
+    let time = futureNoon() + (11 * 60 + 58) * 60_000;
     vi.spyOn(Date, "now").mockImplementation(() => time);
     const stub = env.COLLECTION_RUNNER.getByName(crypto.randomUUID());
     const tick = vi
@@ -182,7 +190,7 @@ describe("Durable Object collection execution", () => {
     await install();
     await stub.ensureAwake();
     await runDurableObjectAlarm(stub);
-    const reset = Date.parse("2026-10-19T00:00:05Z");
+    const reset = Math.floor(time / 86_400_000) * 86_400_000 + 86_400_000 + 5000;
     expect(await alarmTime(stub)).toBe(reset);
     await stub.ensureAwake();
     expect(await alarmTime(stub)).toBe(reset);
