@@ -1,0 +1,1232 @@
+{
+  "checkedAt": "2026-10-19T00:27:24.200Z",
+  "timeZone": "Asia/Yekaterinburg",
+  "mode": "authorized_index_migrations_and_backend_release_plus_read_only_observation",
+  "production": {
+    "revision": "0.3.7",
+    "sourceCommit": "d5f88e5",
+    "versionId": "ed3b1b9c-cf7a-4fe7-b167-bb0428a7c106",
+    "deploymentId": "b8368f7f-649c-4af1-81c4-036a9f0687e5",
+    "createdAt": "2026-10-19T00:21:02.475165Z",
+    "trafficPercent": 100,
+    "bundle": {
+      "bytes": 1743898,
+      "sha256": "9c8773ed2fe41344b84f641b3bedee773bd7d05deefc43e94ee62b97cfc18acb"
+    },
+    "downloadedBundleMatchesCheckedBuild": true,
+    "settingsPreservedExceptRevision": true,
+    "settings": {
+      "bindings": [
+        {
+          "name": "API_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BUILD_REVISION",
+          "type": "plain_text",
+          "text": "0.3.7"
+        },
+        {
+          "name": "COLLECTION_RUNNER",
+          "type": "durable_object_namespace",
+          "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+          "className": "CollectionRunner"
+        },
+        {
+          "name": "COLLECTION_RUNNER_ENABLED",
+          "type": "plain_text",
+          "text": "true"
+        },
+        {
+          "name": "DB",
+          "type": "d1",
+          "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "INSTAGRAM_API_VERSION",
+          "type": "plain_text",
+          "text": "v26.0"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_ID",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_REDIRECT_URI",
+          "type": "plain_text",
+          "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback"
+        },
+        {
+          "name": "INSTAGRAM_WEBHOOK_VERIFY_TOKEN",
+          "type": "secret_text"
+        },
+        {
+          "name": "TOKEN_ENCRYPTION_KEY",
+          "type": "secret_text"
+        }
+      ],
+      "observability": null,
+      "logpush": false,
+      "schedules": {
+        "schedules": [
+          {
+            "cron": "*/5 * * * *",
+            "created_on": "2026-10-03T08:29:58.124392Z",
+            "modified_on": "2026-10-09T06:29:42.98561Z"
+          }
+        ]
+      }
+    },
+    "health": {
+      "status": 200,
+      "retryAfter": null,
+      "health": {
+        "status": "ok",
+        "revision": "0.3.7"
+      }
+    },
+    "collectionGet": {
+      "status": 200,
+      "retryAfter": null
+    }
+  },
+  "checkpoint": {
+    "savedAt": "2026-10-19T00:07:39.214Z",
+    "jobsFileSHA256": "a9b853dd14938600cd1fad763fc6921b6d4cf3add81234af0fe50fd631630256",
+    "jobsFileLocation": "ignored private local recovery-checkpoint-raw-jobs.json",
+    "timeTravelBookmarkSaved": true,
+    "timeTravelBookmarkSHA256": "639187b8bf2aee3eaf3515d42c3eafd007323751bde6e3777c011dcec4d95dd4",
+    "historicalControls": [
+      {
+        "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+        "media_id": "ig_17841402362568040_18081218903397003",
+        "observed_at": 1791654622092,
+        "metricsSHA256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee"
+      },
+      {
+        "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+        "media_id": "ig_17841402362568040_17872575796522924",
+        "observed_at": 1791791420878,
+        "metricsSHA256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac"
+      },
+      {
+        "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+        "media_id": "ig_17841402362568040_18092591924160341",
+        "observed_at": 1791455727114,
+        "metricsSHA256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428"
+      },
+      {
+        "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+        "media_id": "ig_17841402362568040_17857059501655545",
+        "observed_at": 1790952719616,
+        "metricsSHA256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3"
+      },
+      {
+        "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+        "media_id": "ig_17841402362568040_18499761757071577",
+        "observed_at": 1790952758400,
+        "metricsSHA256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9"
+      },
+      {
+        "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+        "media_id": "ig_17841402362568040_18093292946656602",
+        "observed_at": 1791370531426,
+        "metricsSHA256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5"
+      },
+      {
+        "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+        "media_id": "ig_17841402362568040_18074484620460916",
+        "observed_at": 1791187237464,
+        "metricsSHA256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11"
+      },
+      {
+        "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+        "media_id": "ig_17841402362568040_18184928518357793",
+        "observed_at": 1791501060069,
+        "metricsSHA256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d"
+      },
+      {
+        "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+        "media_id": "ig_17841402362568040_17860663988262545",
+        "observed_at": 1790952873559,
+        "metricsSHA256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d"
+      },
+      {
+        "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+        "media_id": "ig_17841402362568040_17882339396369585",
+        "observed_at": 1790952862151,
+        "metricsSHA256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09"
+      },
+      {
+        "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+        "media_id": "ig_17841402362568040_18065403764488565",
+        "observed_at": 1790952795801,
+        "metricsSHA256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70"
+      },
+      {
+        "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+        "media_id": "ig_17841402362568040_18093432221582150",
+        "observed_at": 1791516365255,
+        "metricsSHA256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688"
+      }
+    ],
+    "historicalControlsUnchanged": true,
+    "manualJobPreserved": {
+      "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+      "status": "completed",
+      "pages": 238
+    }
+  },
+  "migrations": {
+    "ownerExplicitlyApproved": true,
+    "pendingBefore": ["0013_opposite_wendell_vaughn.sql", "0014_colossal_gargoyle.sql"],
+    "applied": [
+      {
+        "id": 14,
+        "name": "0013_opposite_wendell_vaughn.sql",
+        "applied_at": "2026-10-19 00:08:00"
+      },
+      {
+        "id": 15,
+        "name": "0014_colossal_gargoyle.sql",
+        "applied_at": "2026-10-19 00:08:01"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "account_insights_account_time",
+        "sql": "CREATE INDEX `account_insights_account_time` ON `account_insights` (`account_id`,`observed_at`)"
+      },
+      {
+        "name": "instagram_attempt_account_time",
+        "sql": "CREATE INDEX `instagram_attempt_account_time` ON `instagram_http_attempts` (`account_id`,`requested_at`,`id`)"
+      },
+      {
+        "name": "instagram_attempt_sample_time",
+        "sql": "CREATE INDEX `instagram_attempt_sample_time` ON `instagram_http_attempts` (`requested_at`) WHERE json_extract(\"instagram_http_attempts\".\"payload_json\",'$.sample') IS NOT NULL"
+      },
+      {
+        "name": "instagram_attempt_time",
+        "sql": "CREATE INDEX `instagram_attempt_time` ON `instagram_http_attempts` (`requested_at`)"
+      }
+    ],
+    "pendingAfter": [],
+    "onlyApprovedMigrationsApplied": true,
+    "newMigrationFiles": [],
+    "dataDeletedOrReset": false
+  },
+  "previousBaseline": {
+    "at": "2026-10-18T18:55:11Z",
+    "publications": 242,
+    "staleSnapshots": 84,
+    "missingSnapshots": 0,
+    "commentJob": {
+      "id": "501cb356-2540-5895-a181-66d20f371c18",
+      "pages": 142,
+      "mediaProcessed": 86,
+      "observations": 576
+    }
+  },
+  "observations": [
+    {
+      "checkedAt": "2026-10-19T00:07:39.214Z",
+      "finishedAt": "2026-10-19T00:07:45.396Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.5"
+      },
+      "counts": {
+        "publications": 257,
+        "snapshots": 1517,
+        "receipts": 6451,
+        "comments": 3841
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "ready": 186,
+        "deferred": 18,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 3,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": 1792368695779
+          }
+        ]
+      },
+      "jobs": [
+        {
+          "id": "684cf24f-5b3f-58cd-98d9-698adc576dce",
+          "origin": "stories",
+          "status": "failed",
+          "pages": 1,
+          "mediaProcessed": 1,
+          "observations": 1,
+          "startedAt": 1792368009559,
+          "lastAttemptAt": 1792368016084,
+          "lastSuccessAt": 1792368014642,
+          "nextAttemptAt": 1792369819800,
+          "errorCode": "INSTAGRAM_PAGINATION_STALLED"
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 191,
+          "mediaProcessed": 122,
+          "observations": 683,
+          "startedAt": 1792347665004,
+          "lastAttemptAt": 1792368452322,
+          "lastSuccessAt": 1792368453614,
+          "nextAttemptAt": 1792368453614,
+          "errorCode": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "mediaProcessed": 238,
+          "observations": 238,
+          "startedAt": 1791440937629,
+          "lastAttemptAt": 1792347662482,
+          "lastSuccessAt": 1792347665107,
+          "nextAttemptAt": 1792347665107,
+          "errorCode": null
+        }
+      ],
+      "newSnapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 60,
+          "objects": 60,
+          "withReach": 45,
+          "firstAt": 1792368040792,
+          "lastAt": 1792368461124
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 11,
+          "objects": 11,
+          "withReach": 11,
+          "firstAt": 1792368007825,
+          "lastAt": 1792368392301
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 2,
+          "objects": 1,
+          "withReach": 2,
+          "firstAt": 1792368014575,
+          "lastAt": 1792368019735
+        }
+      ],
+      "diagnosticSelectRowsRead": 20463
+    },
+    {
+      "checkedAt": "2026-10-19T00:09:15.260Z",
+      "finishedAt": "2026-10-19T00:09:21.295Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.5"
+      },
+      "counts": {
+        "publications": 257,
+        "snapshots": 1537,
+        "receipts": 6543,
+        "comments": 3841
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "ready": 166,
+        "deferred": 31,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 3,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": 1792368695779
+          }
+        ]
+      },
+      "jobs": [
+        {
+          "id": "684cf24f-5b3f-58cd-98d9-698adc576dce",
+          "origin": "stories",
+          "status": "failed",
+          "pages": 1,
+          "mediaProcessed": 1,
+          "observations": 1,
+          "startedAt": 1792368009559,
+          "lastAttemptAt": 1792368016084,
+          "lastSuccessAt": 1792368014642,
+          "nextAttemptAt": 1792369819800,
+          "errorCode": "INSTAGRAM_PAGINATION_STALLED"
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 201,
+          "mediaProcessed": 126,
+          "observations": 693,
+          "startedAt": 1792347665004,
+          "lastAttemptAt": 1792368555940,
+          "lastSuccessAt": 1792368546543,
+          "nextAttemptAt": 1792368546543,
+          "errorCode": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "mediaProcessed": 238,
+          "observations": 238,
+          "startedAt": 1791440937629,
+          "lastAttemptAt": 1792347662482,
+          "lastSuccessAt": 1792347665107,
+          "nextAttemptAt": 1792347665107,
+          "errorCode": null
+        }
+      ],
+      "newSnapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 74,
+          "objects": 74,
+          "withReach": 46,
+          "firstAt": 1792368040792,
+          "lastAt": 1792368523327
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 17,
+          "objects": 17,
+          "withReach": 17,
+          "firstAt": 1792368007825,
+          "lastAt": 1792368554541
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 2,
+          "objects": 1,
+          "withReach": 2,
+          "firstAt": 1792368014575,
+          "lastAt": 1792368019735
+        }
+      ],
+      "diagnosticSelectRowsRead": 14781
+    },
+    {
+      "checkedAt": "2026-10-19T00:13:53.978Z",
+      "finishedAt": "2026-10-19T00:14:00.195Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.5"
+      },
+      "counts": {
+        "publications": 257,
+        "snapshots": 1589,
+        "receipts": 6779,
+        "comments": 3841
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "ready": 142,
+        "deferred": 3,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 3,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": null
+          }
+        ]
+      },
+      "jobs": [
+        {
+          "id": "684cf24f-5b3f-58cd-98d9-698adc576dce",
+          "origin": "stories",
+          "status": "failed",
+          "pages": 1,
+          "mediaProcessed": 1,
+          "observations": 1,
+          "startedAt": 1792368009559,
+          "lastAttemptAt": 1792368016084,
+          "lastSuccessAt": 1792368014642,
+          "nextAttemptAt": 1792369819800,
+          "errorCode": "INSTAGRAM_PAGINATION_STALLED"
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 228,
+          "mediaProcessed": 135,
+          "observations": 823,
+          "startedAt": 1792347665004,
+          "lastAttemptAt": 1792368834442,
+          "lastSuccessAt": 1792368835192,
+          "nextAttemptAt": 1792368835192,
+          "errorCode": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "mediaProcessed": 238,
+          "observations": 238,
+          "startedAt": 1791440937629,
+          "lastAttemptAt": 1792347662482,
+          "lastSuccessAt": 1792347665107,
+          "nextAttemptAt": 1792347665107,
+          "errorCode": null
+        }
+      ],
+      "newSnapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 76,
+          "objects": 76,
+          "withReach": 48,
+          "firstAt": 1792368040792,
+          "lastAt": 1792368609749
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 67,
+          "objects": 67,
+          "withReach": 67,
+          "firstAt": 1792368007825,
+          "lastAt": 1792368833037
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 2,
+          "objects": 1,
+          "withReach": 2,
+          "firstAt": 1792368014575,
+          "lastAt": 1792368019735
+        }
+      ],
+      "diagnosticSelectRowsRead": 15647
+    },
+    {
+      "checkedAt": "2026-10-19T00:21:48.312Z",
+      "finishedAt": "2026-10-19T00:21:51.844Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.7"
+      },
+      "counts": {
+        "publications": 257,
+        "snapshots": 1665,
+        "receipts": 7210,
+        "comments": 3841
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "ready": 66,
+        "deferred": 3,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 3,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": null
+          }
+        ]
+      },
+      "jobs": [
+        {
+          "id": "684cf24f-5b3f-58cd-98d9-698adc576dce",
+          "origin": "stories",
+          "status": "failed",
+          "pages": 1,
+          "mediaProcessed": 1,
+          "observations": 1,
+          "startedAt": 1792368009559,
+          "lastAttemptAt": 1792368016084,
+          "lastSuccessAt": 1792368014642,
+          "nextAttemptAt": 1792369819800,
+          "errorCode": "INSTAGRAM_PAGINATION_STALLED"
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 266,
+          "mediaProcessed": 147,
+          "observations": 1239,
+          "startedAt": 1792347665004,
+          "lastAttemptAt": 1792369300470,
+          "lastSuccessAt": 1792369301339,
+          "nextAttemptAt": 1792369301339,
+          "errorCode": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "mediaProcessed": 238,
+          "observations": 238,
+          "startedAt": 1791440937629,
+          "lastAttemptAt": 1792347662482,
+          "lastSuccessAt": 1792347665107,
+          "nextAttemptAt": 1792347665107,
+          "errorCode": null
+        }
+      ],
+      "newSnapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 93,
+          "objects": 79,
+          "withReach": 65,
+          "firstAt": 1792368040792,
+          "lastAt": 1792369309601
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 126,
+          "objects": 123,
+          "withReach": 126,
+          "firstAt": 1792368007825,
+          "lastAt": 1792369223819
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 2,
+          "objects": 1,
+          "withReach": 2,
+          "firstAt": 1792368014575,
+          "lastAt": 1792368019735
+        }
+      ],
+      "diagnosticSelectRowsRead": 18151
+    },
+    {
+      "checkedAt": "2026-10-19T00:23:15.527Z",
+      "finishedAt": "2026-10-19T00:23:19.188Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.7"
+      },
+      "counts": {
+        "publications": 257,
+        "snapshots": 1676,
+        "receipts": 7280,
+        "comments": 3841
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "ready": 55,
+        "deferred": 3,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 3,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": null
+          }
+        ]
+      },
+      "jobs": [
+        {
+          "id": "684cf24f-5b3f-58cd-98d9-698adc576dce",
+          "origin": "stories",
+          "status": "failed",
+          "pages": 1,
+          "mediaProcessed": 1,
+          "observations": 1,
+          "startedAt": 1792368009559,
+          "lastAttemptAt": 1792368016084,
+          "lastSuccessAt": 1792368014642,
+          "nextAttemptAt": 1792369819800,
+          "errorCode": "INSTAGRAM_PAGINATION_STALLED"
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 273,
+          "mediaProcessed": 149,
+          "observations": 1306,
+          "startedAt": 1792347665004,
+          "lastAttemptAt": 1792369381559,
+          "lastSuccessAt": 1792369383800,
+          "nextAttemptAt": 1792369383800,
+          "errorCode": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "mediaProcessed": 238,
+          "observations": 238,
+          "startedAt": 1791440937629,
+          "lastAttemptAt": 1792347662482,
+          "lastSuccessAt": 1792347665107,
+          "nextAttemptAt": 1792347665107,
+          "errorCode": null
+        }
+      ],
+      "newSnapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 104,
+          "objects": 79,
+          "withReach": 76,
+          "firstAt": 1792368040792,
+          "lastAt": 1792369388831
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 126,
+          "objects": 123,
+          "withReach": 126,
+          "firstAt": 1792368007825,
+          "lastAt": 1792369223819
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 2,
+          "objects": 1,
+          "withReach": 2,
+          "firstAt": 1792368014575,
+          "lastAt": 1792368019735
+        }
+      ],
+      "diagnosticSelectRowsRead": 18397
+    },
+    {
+      "checkedAt": "2026-10-19T00:25:48.914Z",
+      "finishedAt": "2026-10-19T00:25:52.833Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.7"
+      },
+      "counts": {
+        "publications": 257,
+        "snapshots": 1701,
+        "receipts": 7412,
+        "comments": 3841
+      },
+      "mediaRefresh": {
+        "publications": 242,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "ready": 30,
+        "deferred": 3,
+        "retries": [
+          {
+            "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+            "count": 3,
+            "nextAttemptAt": 1792434088175
+          },
+          {
+            "errorCode": "INSTAGRAM_SOURCE_ERROR",
+            "count": 28,
+            "nextAttemptAt": null
+          }
+        ]
+      },
+      "jobs": [
+        {
+          "id": "684cf24f-5b3f-58cd-98d9-698adc576dce",
+          "origin": "stories",
+          "status": "failed",
+          "pages": 1,
+          "mediaProcessed": 1,
+          "observations": 1,
+          "startedAt": 1792368009559,
+          "lastAttemptAt": 1792368016084,
+          "lastSuccessAt": 1792368014642,
+          "nextAttemptAt": 1792369819800,
+          "errorCode": "INSTAGRAM_PAGINATION_STALLED"
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "origin": "comments",
+          "status": "running",
+          "pages": 285,
+          "mediaProcessed": 154,
+          "observations": 1397,
+          "startedAt": 1792347665004,
+          "lastAttemptAt": 1792369541863,
+          "lastSuccessAt": 1792369542607,
+          "nextAttemptAt": 1792369542607,
+          "errorCode": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "mediaProcessed": 238,
+          "observations": 238,
+          "startedAt": 1791440937629,
+          "lastAttemptAt": 1792347662482,
+          "lastSuccessAt": 1792347665107,
+          "nextAttemptAt": 1792347665107,
+          "errorCode": null
+        }
+      ],
+      "newSnapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 124,
+          "objects": 79,
+          "withReach": 96,
+          "firstAt": 1792368040792,
+          "lastAt": 1792369519661
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 131,
+          "objects": 123,
+          "withReach": 131,
+          "firstAt": 1792368007825,
+          "lastAt": 1792369550589
+        },
+        {
+          "product_type": "STORY",
+          "snapshots": 2,
+          "objects": 1,
+          "withReach": 2,
+          "firstAt": 1792368014575,
+          "lastAt": 1792368019735
+        }
+      ],
+      "diagnosticSelectRowsRead": 18870
+    }
+  ],
+  "remainingStale": [
+    {
+      "id": "ig_17841402362568040_18088845560430600",
+      "external_id": "18088845560430600",
+      "product_type": "REELS",
+      "unavailable_code": "INSTAGRAM_OBJECT_UNAVAILABLE",
+      "unavailable_until": 1792434088175,
+      "observed_at": 1791328232001
+    },
+    {
+      "id": "ig_17841402362568040_18112769911853924",
+      "external_id": "18112769911853924",
+      "product_type": "REELS",
+      "unavailable_code": "INSTAGRAM_OBJECT_UNAVAILABLE",
+      "unavailable_until": 1792454775200,
+      "observed_at": 1792005354744
+    },
+    {
+      "id": "ig_17841402362568040_18100175414562897",
+      "external_id": "18100175414562897",
+      "product_type": "REELS",
+      "unavailable_code": "INSTAGRAM_OBJECT_UNAVAILABLE",
+      "unavailable_until": 1792454780164,
+      "observed_at": 1792239075525
+    }
+  ],
+  "indexes": {
+    "checkedAt": "2026-10-19T00:08:34.387Z",
+    "plans": [
+      {
+        "name": "receiptRetention",
+        "details": [
+          "SEARCH instagram_http_attempts USING INDEX instagram_attempt_time (requested_at<?)"
+        ],
+        "returnedRows": 0
+      },
+      {
+        "name": "sampleRetention",
+        "details": [
+          "SEARCH instagram_http_attempts USING INDEX instagram_attempt_sample_time (requested_at<?)"
+        ],
+        "returnedRows": 0
+      },
+      {
+        "name": "lastReceipt",
+        "details": [
+          "SEARCH instagram_http_attempts USING INDEX instagram_attempt_account_time (account_id=?)"
+        ],
+        "returnedRows": 1
+      },
+      {
+        "name": "accountPeriods",
+        "details": [
+          "SEARCH account_insights USING INDEX account_insights_account_time (account_id=? AND observed_at>?)"
+        ],
+        "returnedRows": 100
+      }
+    ],
+    "meta": [
+      {
+        "name": "receiptRetentionPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.1717
+      },
+      {
+        "name": "receiptRetention",
+        "rowsRead": 1,
+        "rowsWritten": 0,
+        "durationMs": 0.1552
+      },
+      {
+        "name": "sampleRetentionPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.6352
+      },
+      {
+        "name": "sampleRetention",
+        "rowsRead": 1,
+        "rowsWritten": 0,
+        "durationMs": 0.1529
+      },
+      {
+        "name": "lastReceiptPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.1848
+      },
+      {
+        "name": "lastReceipt",
+        "rowsRead": 1,
+        "rowsWritten": 0,
+        "durationMs": 0.2296
+      },
+      {
+        "name": "accountPeriodsPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.1134
+      },
+      {
+        "name": "accountPeriods",
+        "rowsRead": 100,
+        "rowsWritten": 0,
+        "durationMs": 0.5653
+      }
+    ]
+  },
+  "queryCosts": {
+    "beforeFinalFix": {
+      "checkedAt": "2026-10-19T00:15:41.852Z",
+      "queries": [
+        {
+          "name": "mediaOriginal",
+          "rowsRead": 3690,
+          "rowsWritten": 0,
+          "durationMs": 9.5837,
+          "returnedRows": 1
+        },
+        {
+          "name": "mediaCheapJson",
+          "rowsRead": 1965,
+          "rowsWritten": 0,
+          "durationMs": 7.9599,
+          "returnedRows": 1
+        },
+        {
+          "name": "storyOriginal",
+          "rowsRead": 845,
+          "rowsWritten": 0,
+          "durationMs": 0.8051,
+          "returnedRows": 1
+        },
+        {
+          "name": "storyBounded",
+          "rowsRead": 590,
+          "rowsWritten": 0,
+          "durationMs": 0.4464,
+          "returnedRows": 1
+        }
+      ]
+    },
+    "recordPolicyAfterIndexes": {
+      "checkedAt": "2026-10-19T00:14:44.074Z",
+      "queries": [
+        {
+          "name": "dueMedia",
+          "rowsRead": 3669,
+          "rowsWritten": 0,
+          "durationMs": 13.0276,
+          "returnedRows": 1
+        },
+        {
+          "name": "recordPolicy",
+          "rowsRead": 5,
+          "rowsWritten": 0,
+          "durationMs": 0.5727,
+          "returnedRows": 1
+        }
+      ]
+    },
+    "final037": {
+      "checkedAt": "2026-10-19T00:21:34.360Z",
+      "queries": [
+        {
+          "name": "media037",
+          "rowsRead": 803,
+          "rowsWritten": 0,
+          "durationMs": 7.8954,
+          "returnedRows": 1
+        },
+        {
+          "name": "story037",
+          "rowsRead": 297,
+          "rowsWritten": 0,
+          "durationMs": 0.4803,
+          "returnedRows": 1
+        }
+      ]
+    },
+    "diagnosticSelectsDoNotMutateData": true,
+    "selectionReusedWithinTick": true,
+    "jsonFallbackRetainsUnknownAndEscapedReasons": true
+  },
+  "telemetry": {
+    "initialMixedWindow": {
+      "checkedAt": "2026-10-19T00:13:54.379Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "queries": [
+        {
+          "avg": {
+            "rowsRead": 8920
+          },
+          "count": 131,
+          "sum": {
+            "queryDurationMs": 2054.5427,
+            "rowsRead": 1168563,
+            "rowsWritten": 0
+          },
+          "querySHA256": "1f3b75232636dbb756048935b919d5be2a1ab3bf3a4d6610d6e1fef6a647dfc7",
+          "sqlShape": "SELECT\n (SELECT enabled FROM collection_policy_history WHERE account_id=? AND effective_to IS NULL ORDER BY effective_from DESC LIMIT ?) enabled,\n (SELECT policy_json FROM collection_policy_history WHERE account_id=? AND effective_to IS NULL ORDER BY effective_from DESC LIMIT 1) policy_json,\n (SELECT expires_at FROM instagram_connections WHERE account_id=?) grantExpiresAt,\n (SELECT scopes FROM instagram_connections WHERE account_id=?) scopes,\n (SELECT json_extract(payload_json,'?') FROM instagram_http_attempts WHERE account_id=? ORDER BY requested_at DESC,id DESC LIMIT 1) lastResult"
+        },
+        {
+          "avg": {
+            "rowsRead": 3379
+          },
+          "count": 295,
+          "sum": {
+            "queryDurationMs": 2538.4788,
+            "rowsRead": 996957,
+            "rowsWritten": 0
+          },
+          "querySHA256": "992f5aa50154b23edfe48100256d113811d57b25172d625b4400051fcb8978ee",
+          "sqlShape": "SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT ?)\n      WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'?')='?') OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)\n      ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1"
+        },
+        {
+          "avg": {
+            "rowsRead": 844
+          },
+          "count": 302,
+          "sum": {
+            "queryDurationMs": 270.61109999999996,
+            "rowsRead": 255130,
+            "rowsWritten": 0
+          },
+          "querySHA256": "7cdf7e4d33a722e94e3bd8467f228f9784ec1b675b321eed1450f4b6fdf09140",
+          "sqlShape": "SELECT MIN(m.published_at+86400000) AS expiry FROM media m\n      WHERE m.account_id=? AND m.product_type='?' AND m.published_at+86400000>?\n        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT ?),0)<m.published_at+86400000-?\n        AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.account_id=m.account_id\n          AND j.origin='?' AND COALESCE(j.last_attempt_at,j.started_at)>?)"
+        },
+        {
+          "avg": {
+            "rowsRead": 1373
+          },
+          "count": 119,
+          "sum": {
+            "queryDurationMs": 880.0173,
+            "rowsRead": 163479,
+            "rowsWritten": 0
+          },
+          "querySHA256": "79ff26a2ec15342d01a24cdf0b8c90d0f97e2d5d5c6be3e31a0e926b3cccd69d",
+          "sqlShape": "SELECT m.id,m.published_at AS publishedAt FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?)))\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n       ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,\n         CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1"
+        },
+        {
+          "avg": {
+            "rowsRead": 424
+          },
+          "count": 271,
+          "sum": {
+            "queryDurationMs": 143.7234,
+            "rowsRead": 115143,
+            "rowsWritten": 0
+          },
+          "querySHA256": "356a488f6f934c7d64bc37cd8fc12990c46910957b45c7136f453ed6504d87d9",
+          "sqlShape": "SELECT recorded_requests AS recordedRequests,since_at AS sinceAt,usage_percent AS usagePercent,usage_observed_at AS usageObservedAt,blocked_until AS blockedUntil,observed_at AS observedAt,attempts,responses,failures_before_response AS failuresBeforeResponse,timeouts,rate_limited_responses AS rateLimitedResponses,accounting_since_at AS accountingSinceAt,usage_headers_json AS usageHeadersJson,(SELECT COUNT(*) FROM instagram_metric_support WHERE account_id=? AND api_version=? AND expires_at>?) AS cachedUnavailableMetrics FROM instagram_api_state WHERE id=?"
+        },
+        {
+          "avg": {
+            "rowsRead": 126
+          },
+          "count": 90,
+          "sum": {
+            "queryDurationMs": 38.322,
+            "rowsRead": 11370,
+            "rowsWritten": 0
+          },
+          "querySHA256": "0f1d8869ab952cfcfeb39c68c948f2c31401b05bd3405b1bc01365da143cc3c3",
+          "sqlShape": "SELECT id,published_at AS publishedAt FROM media WHERE account_id=? AND product_type!='?' AND published_at<=? AND NOT EXISTS (SELECT 1 FROM comment_media_state s WHERE s.media_id=media.id AND s.unavailable_until>?) AND (published_at<? OR (published_at=? AND id<?)) ORDER BY published_at DESC,id DESC LIMIT ?"
+        },
+        {
+          "avg": {
+            "rowsRead": 417
+          },
+          "count": 10,
+          "sum": {
+            "queryDurationMs": 7.090999999999999,
+            "rowsRead": 4170,
+            "rowsWritten": 0
+          },
+          "querySHA256": "979dba7fe4d220e562378b533e9474534c2b076529eea8abab90b6d2b952753a",
+          "sqlShape": "select \"id\", \"account_id\", \"origin\", \"target_media_id\", \"automatic\", \"status\", \"cursor\", \"pages\", \"collected\", \"media_processed\", \"skipped_media\", \"skipped_periods\", \"attempt\", \"failures\", \"next_attempt_at\", \"started_at\", \"completed_at\", \"last_success_at\", \"error_code\", \"latency_origin\", \"http_attempts_since_at\", \"first_attempt_at\", \"last_attempt_at\", \"first_useful_observation_at\", \"last_useful_observation_at\", \"http_attempts\", \"last_step_duration_ms\", \"last_step_http_attempts\", \"lease_token\", \"lease_expires_at\" from \"collection_jobs\" where (\"collection_jobs\".\"account_id\" = ? and \"collection_jobs\".\"origin\" = ?) order by CASE WHEN \"collection_jobs\".\"status\"='?' THEN 0 ELSE 1 END, \"collection_jobs\".\"started_at\" DESC, \"collection_jobs\".\"id\" DESC limit ?"
+        },
+        {
+          "avg": {
+            "rowsRead": 11
+          },
+          "count": 177,
+          "sum": {
+            "queryDurationMs": 58.9666,
+            "rowsRead": 1947,
+            "rowsWritten": 0
+          },
+          "querySHA256": "e2abee2aca1ef9f437300305b7e257fe800c8428842838278e725d9258856586",
+          "sqlShape": "WITH targets(hours,tolerance) AS (VALUES (?,?),(?,?),(?,?),(?,?),(?,?),(?,?),(?,?))\n         SELECT m.id AS mediaId,t.hours AS targetHours,\n           m.published_at+(t.hours+t.tolerance)*3600000 AS deadline\n         FROM targets t CROSS JOIN media m\n         WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=?\n           AND m.published_at BETWEEN ?-(t.hours+t.tolerance)*3600000 AND ?-t.hours*3600000\n           AND NOT EXISTS (SELECT 1 FROM media_snapshots s WHERE s.media_id=m.id\n             AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000\n               AND m.published_at+(t.hours+t.tolerance)*3600000 AND json_extract(s.metrics_json,'?') IS NOT NULL)\n         ORDER BY deadline,m.published_at,m.id,t.hours LIMIT ?"
+        }
+      ],
+      "databases": [
+        {
+          "dimensions": {
+            "databaseId": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+          },
+          "sum": {
+            "readQueries": 4197,
+            "rowsRead": 2948741,
+            "rowsWritten": 25117,
+            "writeQueries": 4718
+          }
+        }
+      ],
+      "errors": null
+    },
+    "afterIndexesBefore036": {
+      "checkedAt": "2026-10-19T00:18:28.738Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "databases": [
+        {
+          "dimensions": {
+            "databaseId": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+          },
+          "sum": {
+            "readQueries": 2939,
+            "rowsRead": 1487333,
+            "rowsWritten": 7780,
+            "writeQueries": 3216
+          }
+        }
+      ],
+      "errors": null
+    },
+    "afterFinal037": {
+      "checkedAt": "2026-10-19T00:25:47.366Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "databases": [
+        {
+          "dimensions": {
+            "databaseId": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+          },
+          "sum": {
+            "readQueries": 1011,
+            "rowsRead": 454949,
+            "rowsWritten": 2670,
+            "writeQueries": 1082
+          }
+        }
+      ],
+      "errors": null,
+      "windowStart": "2026-10-19T00:21:03Z"
+    },
+    "notes": [
+      "Adaptive analytics estimates, not a billing reconciliation.",
+      "Initial UTC window includes eight minutes before index application and diagnostic reads.",
+      "Later windows may be affected by ingestion lag and changing catch-up workload; no 24-hour guarantee."
+    ]
+  },
+  "checks": {
+    "command": "pnpm check",
+    "backendTests": 202,
+    "mcpTests": 27,
+    "backendFiles": 18,
+    "exitCode": 0,
+    "node": "24.18.0",
+    "pnpm": "11.15.1",
+    "clockDependentAlarmTestFixed": true
+  },
+  "restoration": {
+    "automaticResume": true,
+    "newJobsStartedManually": false,
+    "manualAdvanceOrResume": false,
+    "cursorsOrAnalyticsReset": false,
+    "newInfrastructure": false,
+    "paidPlanEnabled": false,
+    "invocationLogsEnabled": false,
+    "maintenanceForced": false,
+    "pluginChanged": false,
+    "maintenanceDailyBudgetPreserved": true
+  },
+  "followUp": {
+    "auditScheduledLocal": "2026-10-19T10:00:00+05:00",
+    "baselineAndReleaseUpdatedInAutomation": true
+  },
+  "limitations": [
+    "Three age-stale publications remain source-unavailable and keep their retry delays.",
+    "One new Story job since UTC reset saved useful data but stopped on repeated provider cursor; hourly source pagination remains incomplete.",
+    "The first natural daily maintenance pass has not happened yet.",
+    "24-hour capacity remains unproven; compare sustained use at the 10:00 audit."
+  ]
+}
