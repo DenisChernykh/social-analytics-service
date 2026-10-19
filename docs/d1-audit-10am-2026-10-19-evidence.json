@@ -1,0 +1,331 @@
+{
+  "checkedAt": "2026-10-19T05:18:50.759Z",
+  "timeZone": "Asia/Yekaterinburg",
+  "incident": {
+    "observedDuring": "2026-10-19T05:00:31Z/2026-10-19T05:02:53Z",
+    "httpStatus": 503,
+    "code": "DATABASE_DAILY_LIMIT_REACHED",
+    "rawError": ["Запрос не выполнен (HTTP 503, DATABASE_DAILY_LIMIT_REACHED)."],
+    "quotaKind": "not_exposed_by_sanitized_MCP_error",
+    "heavyD1ReadsStoppedAfterLimit": true,
+    "currentSnapshotsBacklogStories": "unavailable_due_to_daily_database_limit",
+    "nextResetAt": "2026-10-20T00:00:00Z"
+  },
+  "verifiedJob": {
+    "id": "501cb356-2540-5895-a181-66d20f371c18",
+    "accountId": "ig_17841402362568040",
+    "origin": "comments",
+    "targetMediaId": null,
+    "latencyOrigin": "recorded_from_creation",
+    "httpAttemptsSinceAt": 1792347669532,
+    "firstAttemptAt": 1792347669532,
+    "lastAttemptAt": 1792370413689,
+    "firstUsefulObservationAt": 1792347670901,
+    "lastUsefulObservationAt": 1792370410142,
+    "httpAttempts": 542,
+    "lastStepDurationMs": 740,
+    "lastStepHttpAttempts": 1,
+    "effectiveState": "incomplete",
+    "waitingReason": null,
+    "automatic": false,
+    "status": "completed",
+    "pages": 542,
+    "collected": 4067,
+    "mediaProcessed": 241,
+    "skippedMedia": 2,
+    "skippedPeriods": 0,
+    "attempt": 0,
+    "failures": 0,
+    "nextAttemptAt": 1792370414429,
+    "startedAt": 1792347665004,
+    "completedAt": 1792370414429,
+    "lastSuccessAt": 1792370414429,
+    "errorCode": null
+  },
+  "jobCompletedAtISO": "2026-10-19T00:40:14.429Z",
+  "previousBaselineNotCurrent": {
+    "checkedAt": "2026-10-19T00:25:48Z",
+    "staleSnapshots": 3,
+    "ready": 30,
+    "snapshots": 1701,
+    "receipts": 7412
+  },
+  "fix": {
+    "sourceCommit": "d05a2cc",
+    "revision": "0.3.8",
+    "mediaWait": "latest completed media sync in current identity window, joined by snapshot.operation_id",
+    "commentWait": "completed comments_refresh target in current identity window",
+    "sharedIntervalMs": 300000,
+    "readyDeferredRespectIdentityWait": true,
+    "freshCompleteIsNotDeferred": true,
+    "webhookGenerationPreserved": true,
+    "ageSelectionUnaffected": true,
+    "newSchemaMigrations": [],
+    "sourceReasonsPreserved": true
+  },
+  "production": {
+    "health": {
+      "status": 200,
+      "retryAfter": null,
+      "health": {
+        "status": "ok",
+        "revision": "0.3.8"
+      }
+    },
+    "versionId": "862e401c-4c40-46f5-b261-355cc7206c3f",
+    "deploymentId": "9269b890-b9f0-4ceb-b2d7-65b918071883",
+    "trafficPercent": 100,
+    "createdAt": "2026-10-19T05:13:52.657675Z",
+    "bundle": {
+      "bytes": 1745382,
+      "sha256": "5088cbbd107ab32f078e9a80634477cd619102418bcacd19af9dcb13b430ff71"
+    },
+    "downloadedBundleMatchesCheckedBuild": true,
+    "settingsPreservedExceptRevision": true,
+    "settings": {
+      "bindings": [
+        {
+          "name": "API_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BUILD_REVISION",
+          "type": "plain_text",
+          "text": "0.3.8"
+        },
+        {
+          "name": "COLLECTION_RUNNER",
+          "type": "durable_object_namespace",
+          "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+          "className": "CollectionRunner"
+        },
+        {
+          "name": "COLLECTION_RUNNER_ENABLED",
+          "type": "plain_text",
+          "text": "true"
+        },
+        {
+          "name": "DB",
+          "type": "d1",
+          "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "INSTAGRAM_API_VERSION",
+          "type": "plain_text",
+          "text": "v26.0"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_ID",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_REDIRECT_URI",
+          "type": "plain_text",
+          "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback"
+        },
+        {
+          "name": "INSTAGRAM_WEBHOOK_VERIFY_TOKEN",
+          "type": "secret_text"
+        },
+        {
+          "name": "TOKEN_ENCRYPTION_KEY",
+          "type": "secret_text"
+        }
+      ],
+      "observability": null,
+      "logpush": false,
+      "schedules": {
+        "schedules": [
+          {
+            "cron": "*/5 * * * *",
+            "created_on": "2026-10-03T08:29:58.124392Z",
+            "modified_on": "2026-10-09T06:29:42.98561Z"
+          }
+        ]
+      }
+    },
+    "fullCollectionStatusNotRequeriedAfterLimit": true
+  },
+  "checks": {
+    "rootCommand": "pnpm check",
+    "backendTests": 204,
+    "mcpTests": 27,
+    "backendTestFiles": 18,
+    "exitCode": 0,
+    "finalRevisionBindingTypesFormatDryRunPassed": true,
+    "node": "24.18.0",
+    "pnpm": "11.15.1",
+    "isolatedSQLiteProof": {
+      "mode": "synthetic_in_memory_SQLite_no_production_access",
+      "sqliteVersion": "3.49.1",
+      "checks": [
+        {
+          "name": "before_patch_selects_completed_partial",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "after_patch_waits_for_new_identity",
+          "passed": true,
+          "actual": false
+        },
+        {
+          "name": "ready_count_respects_identity_wait",
+          "passed": true,
+          "actual": 0
+        },
+        {
+          "name": "deferred_count_includes_identity_wait",
+          "passed": true,
+          "actual": 1
+        },
+        {
+          "name": "new_identity_releases_target",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "complete_fresh_snapshot_is_not_counted_as_deferred",
+          "passed": true,
+          "actual": 0
+        },
+        {
+          "name": "catalogue_partial_does_not_block_first_refresh",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "failed_sync_is_not_treated_as_completed_identity",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "older_media_sync_is_eligible",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "legacy_snapshot_is_eligible",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "before_patch_reselects_completed_comment_identity",
+          "passed": true,
+          "actual": true
+        },
+        {
+          "name": "after_patch_keeps_webhook_work_pending_without_replay",
+          "passed": true,
+          "actual": false
+        },
+        {
+          "name": "webhook_generation_is_not_marked_processed",
+          "passed": true,
+          "actual": 1
+        },
+        {
+          "name": "comments_released_at_next_identity",
+          "passed": true,
+          "actual": true
+        }
+      ],
+      "passed": 14,
+      "integrationTestsExecuted": false
+    }
+  },
+  "telemetry": {
+    "firstAttempt": {
+      "checkedAt": "2026-10-19T05:12:44.058Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-19T00:00:00Z",
+        "to": "2026-10-19T05:12:42.703Z"
+      },
+      "recentWindow": {
+        "from": "2026-10-19T04:00:00Z",
+        "to": "2026-10-19T05:00:00Z"
+      },
+      "errors": [
+        {
+          "message": "Rate limiter budget depleted. Please try again after 5 minutes. Refer to this page for more details about rate limits: https://developers.cloudflare.com/analytics/graphql-api/limits/",
+          "path": null,
+          "extensions": {
+            "code": "budget",
+            "timestamp": "2026-10-19T05:12:44.408701781Z",
+            "ray_id": "a4cd4a19f857b17b-SEA"
+          }
+        }
+      ]
+    },
+    "retry": {
+      "checkedAt": "2026-10-19T05:17:57.363Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-19T00:00:00Z",
+        "to": "2026-10-19T05:17:56.013Z"
+      },
+      "recentWindow": {
+        "from": "2026-10-19T04:00:00Z",
+        "to": "2026-10-19T05:00:00Z"
+      },
+      "errors": [
+        {
+          "message": "Rate limiter budget depleted. Please try again after 5 minutes. Refer to this page for more details about rate limits: https://developers.cloudflare.com/analytics/graphql-api/limits/",
+          "path": null,
+          "extensions": {
+            "code": "budget",
+            "timestamp": "2026-10-19T05:17:57.737323698Z",
+            "ray_id": "a4cd51c2dc4b9187-SEA"
+          }
+        }
+      ]
+    },
+    "notes": [
+      "No direct D1 diagnostic scans after confirmed limit.",
+      "GraphQL is a separate read-only analytics API; budget failures respect a five-minute pause.",
+      "Exact attribution of the second daily exhaustion to the reproduced defect is not established.",
+      "Adaptive totals may include sampling and diagnostic work; do not claim daily capacity."
+    ]
+  },
+  "followUp": {
+    "automationId": "d1-2",
+    "scheduledLocal": "2026-10-20T05:05:00+05:00",
+    "kind": "heartbeat",
+    "singleRun": true,
+    "targetThreadId": "01a14f87-8b18-7082-b4e4-3ee10921c8a2"
+  },
+  "authorizationReview": {
+    "temporaryCapacityFailures": true,
+    "commandsNotExecutedDuringFailures": true,
+    "reviewNotBypassed": true,
+    "laterHostCheckCommitPushAndDeployExecuted": true
+  },
+  "dataSafety": {
+    "jobsRecreated": false,
+    "cursorsReset": false,
+    "analyticsDeleted": false,
+    "manualJobResumeAdvance": false,
+    "retentionForced": false,
+    "newInfrastructure": false,
+    "paidPlanEnabled": false,
+    "invocationLogsEnabled": false,
+    "pluginChanged": false,
+    "remoteMigrationsApplied": false
+  },
+  "limitations": [
+    "Production recovery remains blocked by external daily quota until next reset.",
+    "Current Stories rate and stale/ready values were not readable at the 10:00 audit.",
+    "Completed comments pass has two skipped media and effectiveState=incomplete.",
+    "The released fix has not yet been observed after reset; full-day capacity is unproven."
+  ]
+}
