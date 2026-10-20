@@ -467,6 +467,7 @@ export class Collect {
         age: Awaited<ReturnType<CollectionStore["dueAgeMedia"]>>;
         storyExpiry: number | null;
         refreshMediaId?: string | null;
+        commentMedia?: CataloguePosition | null;
       }
     >();
     for (const schedule of schedules) {
@@ -489,14 +490,14 @@ export class Collect {
         storyExpiry !== null ? storyExpiry - storyFinalSnapshotWindowMs : Infinity,
       );
       let refreshMediaId: string | null | undefined;
+      let commentMedia: CataloguePosition | null | undefined;
       if (dueAt > now) {
         refreshMediaId = await this.store.dueMedia(schedule.accountId, now);
-        if (
-          refreshMediaId ||
-          ((await this.comments.enabled(schedule.accountId)) &&
-            (await this.store.nextCommentRefresh(schedule.accountId, now)))
-        )
-          dueAt = now;
+        if (!refreshMediaId)
+          commentMedia = (await this.comments.enabled(schedule.accountId))
+            ? await this.store.nextCommentRefresh(schedule.accountId, now)
+            : null;
+        if (refreshMediaId || commentMedia) dueAt = now;
       }
       candidates.push({
         kind: "schedule",
@@ -505,7 +506,13 @@ export class Collect {
         deadline,
         archive: false,
       });
-      contexts.set(schedule.accountId, { schedule, age, storyExpiry, refreshMediaId });
+      contexts.set(schedule.accountId, {
+        schedule,
+        age,
+        storyExpiry,
+        refreshMediaId,
+        commentMedia,
+      });
     }
     for (const job of jobs) {
       let deadline = ["stories", "scheduled", "comments_refresh"].includes(job.origin)
@@ -650,9 +657,12 @@ export class Collect {
         if (discoveryJob) await this.advance(discoveryJob.id);
         schedule.nextDiscoveryAt = now + schedule.discoveryMinutes * 60_000;
       } else {
-        const commentMedia = (await this.comments.enabled(schedule.accountId))
-          ? await this.store.nextCommentRefresh(schedule.accountId, now)
-          : null;
+        const commentMedia =
+          context.commentMedia === undefined
+            ? (await this.comments.enabled(schedule.accountId))
+              ? await this.store.nextCommentRefresh(schedule.accountId, now)
+              : null
+            : context.commentMedia;
         const mediaId =
           context.refreshMediaId === undefined
             ? await this.store.dueMedia(schedule.accountId, now)

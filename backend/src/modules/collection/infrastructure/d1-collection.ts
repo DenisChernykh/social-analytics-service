@@ -542,19 +542,23 @@ export class D1Collection implements CollectionStore {
       .first<DueAgeSnapshot>();
   }
   async nextCommentRefresh(accountId: string, now: number) {
+    // Filter due publications before probing job history. Without materialization,
+    // SQLite can repeat those correlated lookups for every fresh publication.
     return this.database
       .prepare(
-        `SELECT m.id,m.published_at AS publishedAt FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id
+        `WITH candidates AS MATERIALIZED (
+       SELECT m.id,m.account_id,m.published_at,CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END AS priority,COALESCE(s.next_refresh_at,0) AS next_refresh_at
+       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id
        WHERE m.account_id=? AND m.product_type!='STORY' AND m.published_at<=?
          AND COALESCE(s.unavailable_until,0)<=?
          AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='comments' AND status='running'))
          AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1)))
-         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='comments_refresh' AND status='running')
+) SELECT m.id,m.published_at AS publishedAt FROM candidates m
+       WHERE NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='comments_refresh' AND status='running')
          AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='comments_refresh' AND error_code IS NOT NULL AND next_attempt_at>?)
          AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id
            AND origin='comments_refresh' AND status='completed' AND started_at>=?)
-       ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'$.comments.value') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,
-         CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1`,
+       ORDER BY m.priority,CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,m.next_refresh_at,m.published_at DESC,m.id LIMIT 1`,
       )
       .bind(
         accountId,

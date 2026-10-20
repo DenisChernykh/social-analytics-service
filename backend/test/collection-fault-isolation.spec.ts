@@ -127,6 +127,85 @@ describe("collection fault isolation", () => {
     expect((await f.store.mediaRefreshStatus(accountId, f.now())).ready).toBe(expected ? 1 : 0);
   });
 
+  it("collects the selected comment target with only one eligibility scan per tick", async () => {
+    const f = await ready();
+    await env.DB.prepare("UPDATE instagram_connections SET scopes=? WHERE account_id=?")
+      .bind(
+        JSON.stringify([
+          "instagram_business_basic",
+          "instagram_business_manage_insights",
+          "instagram_business_manage_comments",
+        ]),
+        accountId,
+      )
+      .run();
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    await onlyRefresh(f);
+    const select = vi.spyOn(D1Collection.prototype, "nextCommentRefresh");
+    try {
+      await f.collector.tick(0);
+      expect(select).toHaveBeenCalledTimes(1);
+      expect(f.transport.comments).toHaveBeenCalledTimes(1);
+      expect(await f.store.latestJob(accountId, "comments_refresh")).toMatchObject({
+        status: "completed",
+        targetMediaId: `${accountId}_${sampleMedia.id}`,
+      });
+    } finally {
+      select.mockRestore();
+    }
+  });
+
+  it("keeps webhook and changed-count priorities while respecting cooldown and completed identities", async () => {
+    const f = await ready();
+    f.advance(300_000 - (f.now() % 300_000) + 1000);
+    await f.request(`/api/accounts/${accountId}/sync`, "POST", {
+      operationId: crypto.randomUUID(),
+    });
+    // Isolate three candidates from an existing fully populated publication.
+    const base = `${accountId}_${sampleMedia.id}`;
+    await env.DB.prepare("UPDATE media SET unavailable_until=? WHERE id=?")
+      .bind(f.now() + 86400_000, base)
+      .run();
+    for (const [id, generation, count] of [
+      ["webhook", 1, 10],
+      ["changed", 0, 9],
+      ["due", 0, 10],
+    ] as const) {
+      await env.DB.prepare(
+        "INSERT INTO media(id,account_id,external_id,caption,search_text,media_type,product_type,permalink,published_at,updated_at) SELECT ?,account_id,?,'','','VIDEO','REELS','',published_at,updated_at FROM media WHERE id=?",
+      )
+        .bind(id, id, base)
+        .run();
+      await env.DB.prepare(
+        "INSERT INTO media_snapshots(id,media_id,observed_at,api_version,metrics_json) VALUES(?,?,?,'v26.0',?)",
+      )
+        .bind(`snapshot-${id}`, id, f.now(), '{"comments":{"value":10}}')
+        .run();
+      await env.DB.prepare(
+        "INSERT INTO comment_media_state(media_id,event_generation,processed_generation,last_complete_at,last_comments_count,next_refresh_at) VALUES(?,?,0,?,?,0)",
+      )
+        .bind(id, generation, f.now() - 3600_000, count)
+        .run();
+    }
+    expect(await f.store.nextCommentRefresh(accountId, f.now())).toMatchObject({ id: "webhook" });
+    await env.DB.prepare(
+      "UPDATE comment_media_state SET unavailable_until=? WHERE media_id='webhook'",
+    )
+      .bind(f.now() + 86400_000)
+      .run();
+    expect(await f.store.nextCommentRefresh(accountId, f.now())).toMatchObject({ id: "changed" });
+    await env.DB.prepare(
+      "INSERT INTO collection_jobs(id,account_id,origin,target_media_id,automatic,status,next_attempt_at,started_at) VALUES('completed-identity',?,'comments_refresh','changed',1,'completed',?,?)",
+    )
+      .bind(accountId, f.now(), f.now())
+      .run();
+    expect(await f.store.nextCommentRefresh(accountId, f.now())).toMatchObject({ id: "due" });
+    f.advance(300_000);
+    expect(await f.store.nextCommentRefresh(accountId, f.now())).toMatchObject({ id: "changed" });
+  });
+
   it("reuses the selected refresh target within one tick without repeating its scan", async () => {
     const f = await ready();
     await f.request(`/api/accounts/${accountId}/sync`, "POST", {
