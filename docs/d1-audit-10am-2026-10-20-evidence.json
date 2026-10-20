@@ -1,0 +1,1699 @@
+{
+  "checkedAt": "2026-10-20T05:04:44.519Z",
+  "timeZone": "Asia/Yekaterinburg",
+  "sourceCommit": "9642e17",
+  "production": {
+    "revision": "0.3.9",
+    "versionId": "1ed84a6b-e303-4df3-9494-18a542272ea6",
+    "deploymentId": "2b55f0ae-cc26-495a-89a0-e5d37e2fd40b",
+    "createdAt": "2026-10-20T00:17:02.143238Z",
+    "bundle": {
+      "bytes": 1745777,
+      "sha256": "3fcf7298719e0471be1eb2b6ec0c94c199e2035527184159c1bc598d171ea795"
+    }
+  },
+  "productionReverifiedAt": "2026-10-20T05:02:56.936Z",
+  "sameCheckedBundle": true,
+  "settingsUnchanged": true,
+  "health": {
+    "status": 200,
+    "retryAfter": null,
+    "health": {
+      "status": "ok",
+      "revision": "0.3.9"
+    }
+  },
+  "observations": [
+    {
+      "checkedAt": "2026-10-20T05:02:07.728Z",
+      "finishedAt": "2026-10-20T05:02:14.447Z",
+      "mode": "observe",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.9"
+      },
+      "jobs": [
+        {
+          "id": "a8314567-a1ce-5550-85e9-909a4671ccc0",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792472414712,
+          "started_at": 1792472413333,
+          "completed_at": 1792472414712,
+          "last_success_at": 1792472414712,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792472413461,
+          "last_attempt_at": 1792472413461,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1251,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792472413461,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "6d0759a2-4122-54dc-b446-4fd222a11fbf",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792468814274,
+          "started_at": 1792468813097,
+          "completed_at": 1792468814274,
+          "last_success_at": 1792468814274,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792468813241,
+          "last_attempt_at": 1792468813241,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1033,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792468813241,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "3216ef27-fb57-5a2c-86b6-b540d6246b9d",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792465214224,
+          "started_at": 1792465212876,
+          "completed_at": 1792465214224,
+          "last_success_at": 1792465214224,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792465213013,
+          "last_attempt_at": 1792465213013,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1211,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792465213013,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "5d5389dd-2f1c-588b-b638-a7b85b4f13ff",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792461613873,
+          "started_at": 1792461612679,
+          "completed_at": 1792461613873,
+          "last_success_at": 1792461613873,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792461612824,
+          "last_attempt_at": 1792461612824,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1049,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792461612824,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "56837477-1f77-51a7-a066-c6036e51dd7a",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792458013408,
+          "started_at": 1792458012452,
+          "completed_at": 1792458013408,
+          "last_success_at": 1792458013408,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792458012585,
+          "last_attempt_at": 1792458012585,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 823,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792458012585,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "6c958fc0-d489-54b1-961e-f34e017c2069",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792454413439,
+          "started_at": 1792454412264,
+          "completed_at": 1792454413439,
+          "last_success_at": 1792454413439,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792454412405,
+          "last_attempt_at": 1792454412405,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1034,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792454412405,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "account_id": "ig_17841402362568040",
+          "origin": "comments",
+          "status": "completed",
+          "pages": 542,
+          "collected": 4067,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792370414429,
+          "started_at": 1792347665004,
+          "completed_at": 1792370414429,
+          "last_success_at": 1792370414429,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 0,
+          "media_processed": 241,
+          "target_media_id": null,
+          "skipped_media": 2,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792347669532,
+          "last_attempt_at": 1792370413689,
+          "first_useful_observation_at": 1792347670901,
+          "last_useful_observation_at": 1792370410142,
+          "http_attempts": 542,
+          "last_step_duration_ms": 740,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792347669532,
+          "last_step_http_attempts": 1,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "account_id": "ig_17841402362568040",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "collected": 238,
+          "attempt": 5,
+          "failures": 0,
+          "next_attempt_at": 1792347665107,
+          "started_at": 1791440937629,
+          "completed_at": 1792347665107,
+          "last_success_at": 1792347665107,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 0,
+          "media_processed": 238,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": null,
+          "last_attempt_at": 1792347662482,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": 1792347663714,
+          "http_attempts": 1182,
+          "last_step_duration_ms": 2625,
+          "latency_origin": null,
+          "http_attempts_since_at": 1791477954442,
+          "last_step_http_attempts": 4,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        }
+      ],
+      "history": [
+        {
+          "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+          "media_id": "ig_17841402362568040_18081218903397003",
+          "observed_at": 1791654622092,
+          "metricsSHA256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee"
+        },
+        {
+          "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+          "media_id": "ig_17841402362568040_17872575796522924",
+          "observed_at": 1791791420878,
+          "metricsSHA256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac"
+        },
+        {
+          "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+          "media_id": "ig_17841402362568040_18092591924160341",
+          "observed_at": 1791455727114,
+          "metricsSHA256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428"
+        },
+        {
+          "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+          "media_id": "ig_17841402362568040_17857059501655545",
+          "observed_at": 1790952719616,
+          "metricsSHA256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3"
+        },
+        {
+          "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+          "media_id": "ig_17841402362568040_18499761757071577",
+          "observed_at": 1790952758400,
+          "metricsSHA256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9"
+        },
+        {
+          "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+          "media_id": "ig_17841402362568040_18093292946656602",
+          "observed_at": 1791370531426,
+          "metricsSHA256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5"
+        },
+        {
+          "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+          "media_id": "ig_17841402362568040_18074484620460916",
+          "observed_at": 1791187237464,
+          "metricsSHA256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11"
+        },
+        {
+          "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+          "media_id": "ig_17841402362568040_18184928518357793",
+          "observed_at": 1791501060069,
+          "metricsSHA256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d"
+        },
+        {
+          "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+          "media_id": "ig_17841402362568040_17860663988262545",
+          "observed_at": 1790952873559,
+          "metricsSHA256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d"
+        },
+        {
+          "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+          "media_id": "ig_17841402362568040_17882339396369585",
+          "observed_at": 1790952862151,
+          "metricsSHA256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09"
+        },
+        {
+          "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+          "media_id": "ig_17841402362568040_18065403764488565",
+          "observed_at": 1790952795801,
+          "metricsSHA256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70"
+        },
+        {
+          "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+          "media_id": "ig_17841402362568040_18093432221582150",
+          "observed_at": 1791516365255,
+          "metricsSHA256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688"
+        }
+      ],
+      "commentRefreshToday": [
+        {
+          "status": "completed",
+          "jobs": 28,
+          "pages": 36,
+          "observations": 278,
+          "lastUsefulAt": 1792472476493
+        }
+      ],
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792476013172,
+        "next_discovery_at": 1792476009348,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792472477590,
+        "last_success_at": 1792472478593,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      },
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 25,
+          "firstAt": 1792454425092,
+          "lastAt": 1792472475955
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 173,
+          "firstAt": 1792454408582,
+          "lastAt": 1792472410836
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 54,
+          "firstAt": 1792454409644,
+          "lastAt": 1792464854957
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 72,
+          "firstAt": 1792454408116,
+          "lastAt": 1792462860190
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "source_error",
+          "graphCode": 100,
+          "graphSubcode": 2108006,
+          "n": 183,
+          "firstAt": 1792457240740,
+          "lastAt": 1792472406286
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 280,
+          "firstAt": 1792454407546,
+          "lastAt": 1792472414199
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 70,
+          "firstAt": 1792454440657,
+          "lastAt": 1792462859074
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454434775,
+          "lastAt": 1792456605070
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 292,
+          "firstAt": 1792454407187,
+          "lastAt": 1792472413815
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 8,
+          "firstAt": 1792454477206,
+          "lastAt": 1792472478332
+        }
+      ],
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 251,
+          "objects": 62,
+          "withReach": 68,
+          "firstAt": 1792454443037,
+          "lastAt": 1792472406576
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 23,
+          "objects": 10,
+          "withReach": 23,
+          "firstAt": 1792454410506,
+          "lastAt": 1792472411616
+        }
+      ],
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 3,
+          "ready": 25,
+          "deferred": 6,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": 1792472582773
+            }
+          ]
+        }
+      },
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 811,
+          "rowsWritten": 0,
+          "durationMs": 1.2305
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 26,
+          "rowsWritten": 0,
+          "durationMs": 0.7208
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2367
+        },
+        {
+          "name": "leases",
+          "rowsRead": 803,
+          "rowsWritten": 0,
+          "durationMs": 0.5359
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 2326,
+          "rowsWritten": 0,
+          "durationMs": 6.697
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 1064,
+          "rowsWritten": 0,
+          "durationMs": 5.0278
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 20.5293
+        },
+        {
+          "name": "commentRefreshToday",
+          "rowsRead": 256,
+          "rowsWritten": 0,
+          "durationMs": 0.3246
+        }
+      ]
+    },
+    {
+      "checkedAt": "2026-10-20T05:04:11.644Z",
+      "finishedAt": "2026-10-20T05:04:17.900Z",
+      "mode": "observe",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.9"
+      },
+      "jobs": [
+        {
+          "id": "a8314567-a1ce-5550-85e9-909a4671ccc0",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792472414712,
+          "started_at": 1792472413333,
+          "completed_at": 1792472414712,
+          "last_success_at": 1792472414712,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792472413461,
+          "last_attempt_at": 1792472413461,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1251,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792472413461,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "6d0759a2-4122-54dc-b446-4fd222a11fbf",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792468814274,
+          "started_at": 1792468813097,
+          "completed_at": 1792468814274,
+          "last_success_at": 1792468814274,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792468813241,
+          "last_attempt_at": 1792468813241,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1033,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792468813241,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "3216ef27-fb57-5a2c-86b6-b540d6246b9d",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792465214224,
+          "started_at": 1792465212876,
+          "completed_at": 1792465214224,
+          "last_success_at": 1792465214224,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792465213013,
+          "last_attempt_at": 1792465213013,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1211,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792465213013,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "5d5389dd-2f1c-588b-b638-a7b85b4f13ff",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792461613873,
+          "started_at": 1792461612679,
+          "completed_at": 1792461613873,
+          "last_success_at": 1792461613873,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792461612824,
+          "last_attempt_at": 1792461612824,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1049,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792461612824,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "56837477-1f77-51a7-a066-c6036e51dd7a",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792458013408,
+          "started_at": 1792458012452,
+          "completed_at": 1792458013408,
+          "last_success_at": 1792458013408,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792458012585,
+          "last_attempt_at": 1792458012585,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 823,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792458012585,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "6c958fc0-d489-54b1-961e-f34e017c2069",
+          "account_id": "ig_17841402362568040",
+          "origin": "stories",
+          "status": "completed",
+          "pages": 1,
+          "collected": 0,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792454413439,
+          "started_at": 1792454412264,
+          "completed_at": 1792454413439,
+          "last_success_at": 1792454413439,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 1,
+          "media_processed": 0,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792454412405,
+          "last_attempt_at": 1792454412405,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": null,
+          "http_attempts": 2,
+          "last_step_duration_ms": 1034,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792454412405,
+          "last_step_http_attempts": 2,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "501cb356-2540-5895-a181-66d20f371c18",
+          "account_id": "ig_17841402362568040",
+          "origin": "comments",
+          "status": "completed",
+          "pages": 542,
+          "collected": 4067,
+          "attempt": 0,
+          "failures": 0,
+          "next_attempt_at": 1792370414429,
+          "started_at": 1792347665004,
+          "completed_at": 1792370414429,
+          "last_success_at": 1792370414429,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 0,
+          "media_processed": 241,
+          "target_media_id": null,
+          "skipped_media": 2,
+          "skipped_periods": 0,
+          "first_attempt_at": 1792347669532,
+          "last_attempt_at": 1792370413689,
+          "first_useful_observation_at": 1792347670901,
+          "last_useful_observation_at": 1792370410142,
+          "http_attempts": 542,
+          "last_step_duration_ms": 740,
+          "latency_origin": "recorded_from_creation",
+          "http_attempts_since_at": 1792347669532,
+          "last_step_http_attempts": 1,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        },
+        {
+          "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+          "account_id": "ig_17841402362568040",
+          "origin": "manual",
+          "status": "completed",
+          "pages": 238,
+          "collected": 238,
+          "attempt": 5,
+          "failures": 0,
+          "next_attempt_at": 1792347665107,
+          "started_at": 1791440937629,
+          "completed_at": 1792347665107,
+          "last_success_at": 1792347665107,
+          "error_code": null,
+          "lease_expires_at": null,
+          "automatic": 0,
+          "media_processed": 238,
+          "target_media_id": null,
+          "skipped_media": 0,
+          "skipped_periods": 0,
+          "first_attempt_at": null,
+          "last_attempt_at": 1792347662482,
+          "first_useful_observation_at": null,
+          "last_useful_observation_at": 1792347663714,
+          "http_attempts": 1182,
+          "last_step_duration_ms": 2625,
+          "latency_origin": null,
+          "http_attempts_since_at": 1791477954442,
+          "last_step_http_attempts": 4,
+          "cursorBytes": 0,
+          "cursorSHA256": null
+        }
+      ],
+      "history": [
+        {
+          "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+          "media_id": "ig_17841402362568040_18081218903397003",
+          "observed_at": 1791654622092,
+          "metricsSHA256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee"
+        },
+        {
+          "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+          "media_id": "ig_17841402362568040_17872575796522924",
+          "observed_at": 1791791420878,
+          "metricsSHA256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac"
+        },
+        {
+          "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+          "media_id": "ig_17841402362568040_18092591924160341",
+          "observed_at": 1791455727114,
+          "metricsSHA256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428"
+        },
+        {
+          "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+          "media_id": "ig_17841402362568040_17857059501655545",
+          "observed_at": 1790952719616,
+          "metricsSHA256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3"
+        },
+        {
+          "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+          "media_id": "ig_17841402362568040_18499761757071577",
+          "observed_at": 1790952758400,
+          "metricsSHA256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9"
+        },
+        {
+          "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+          "media_id": "ig_17841402362568040_18093292946656602",
+          "observed_at": 1791370531426,
+          "metricsSHA256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5"
+        },
+        {
+          "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+          "media_id": "ig_17841402362568040_18074484620460916",
+          "observed_at": 1791187237464,
+          "metricsSHA256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11"
+        },
+        {
+          "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+          "media_id": "ig_17841402362568040_18184928518357793",
+          "observed_at": 1791501060069,
+          "metricsSHA256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d"
+        },
+        {
+          "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+          "media_id": "ig_17841402362568040_17860663988262545",
+          "observed_at": 1790952873559,
+          "metricsSHA256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d"
+        },
+        {
+          "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+          "media_id": "ig_17841402362568040_17882339396369585",
+          "observed_at": 1790952862151,
+          "metricsSHA256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09"
+        },
+        {
+          "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+          "media_id": "ig_17841402362568040_18065403764488565",
+          "observed_at": 1790952795801,
+          "metricsSHA256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70"
+        },
+        {
+          "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+          "media_id": "ig_17841402362568040_18093432221582150",
+          "observed_at": 1791516365255,
+          "metricsSHA256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688"
+        }
+      ],
+      "commentRefreshToday": [
+        {
+          "status": "completed",
+          "jobs": 28,
+          "pages": 36,
+          "observations": 278,
+          "lastUsefulAt": 1792472476493
+        }
+      ],
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792476013172,
+        "next_discovery_at": 1792476009348,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792472602900,
+        "last_success_at": 1792472601828,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      },
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 25,
+          "firstAt": 1792454425092,
+          "lastAt": 1792472475955
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 173,
+          "firstAt": 1792454408582,
+          "lastAt": 1792472410836
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 54,
+          "firstAt": 1792454409644,
+          "lastAt": 1792464854957
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 72,
+          "firstAt": 1792454408116,
+          "lastAt": 1792462860190
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "source_error",
+          "graphCode": 100,
+          "graphSubcode": 2108006,
+          "n": 185,
+          "firstAt": 1792457240740,
+          "lastAt": 1792472601627
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 282,
+          "firstAt": 1792454407546,
+          "lastAt": 1792472601198
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 70,
+          "firstAt": 1792454440657,
+          "lastAt": 1792462859074
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454434775,
+          "lastAt": 1792456605070
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 294,
+          "firstAt": 1792454407187,
+          "lastAt": 1792472600956
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 8,
+          "firstAt": 1792454477206,
+          "lastAt": 1792472478332
+        }
+      ],
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 253,
+          "objects": 62,
+          "withReach": 68,
+          "firstAt": 1792454443037,
+          "lastAt": 1792472601828
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 23,
+          "objects": 10,
+          "withReach": 23,
+          "firstAt": 1792454410506,
+          "lastAt": 1792472411616
+        }
+      ],
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 3,
+          "ready": 25,
+          "deferred": 6,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": 1792472706576
+            }
+          ]
+        }
+      },
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 811,
+          "rowsWritten": 0,
+          "durationMs": 0.9474
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 26,
+          "rowsWritten": 0,
+          "durationMs": 0.559
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.3827
+        },
+        {
+          "name": "leases",
+          "rowsRead": 803,
+          "rowsWritten": 0,
+          "durationMs": 0.7391
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 2338,
+          "rowsWritten": 0,
+          "durationMs": 5.6455
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 1068,
+          "rowsWritten": 0,
+          "durationMs": 5.8783
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 19.4719
+        },
+        {
+          "name": "commentRefreshToday",
+          "rowsRead": 256,
+          "rowsWritten": 0,
+          "durationMs": 0.3004
+        }
+      ]
+    }
+  ],
+  "refreshGroups": {
+    "checkedAt": "2026-10-20T05:04:44.519Z",
+    "refreshGroups": [
+      {
+        "error_code": null,
+        "publications": 212,
+        "missingSnapshots": 0,
+        "staleSnapshots": 0,
+        "deferred": 0,
+        "ready": 0,
+        "nextAttemptAt": null
+      },
+      {
+        "error_code": "INSTAGRAM_OBJECT_UNAVAILABLE",
+        "publications": 3,
+        "missingSnapshots": 0,
+        "staleSnapshots": 3,
+        "deferred": 3,
+        "ready": 0,
+        "nextAttemptAt": 1792540835287
+      },
+      {
+        "error_code": "INSTAGRAM_SOURCE_ERROR",
+        "publications": 28,
+        "missingSnapshots": 0,
+        "staleSnapshots": 0,
+        "deferred": 4,
+        "ready": 24,
+        "nextAttemptAt": 1792472706576
+      }
+    ],
+    "latestUseful": [
+      {
+        "snapshots": 3,
+        "withReach": 0,
+        "withLikes": 3,
+        "withComments": 3,
+        "lastAt": 1792472663476
+      }
+    ],
+    "meta": [
+      {
+        "name": "refreshGroups",
+        "rowsRead": 1230,
+        "rowsWritten": 0,
+        "durationMs": 22.4989
+      },
+      {
+        "name": "latestUseful",
+        "rowsRead": 519,
+        "rowsWritten": 0,
+        "durationMs": 1.033
+      }
+    ]
+  },
+  "stories": {
+    "jobs": [
+      {
+        "id": "6c958fc0-d489-54b1-961e-f34e017c2069",
+        "account_id": "ig_17841402362568040",
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "collected": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1792454413439,
+        "started_at": 1792454412264,
+        "completed_at": 1792454413439,
+        "last_success_at": 1792454413439,
+        "error_code": null,
+        "lease_expires_at": null,
+        "automatic": 1,
+        "media_processed": 0,
+        "target_media_id": null,
+        "skipped_media": 0,
+        "skipped_periods": 0,
+        "first_attempt_at": 1792454412405,
+        "last_attempt_at": 1792454412405,
+        "first_useful_observation_at": null,
+        "last_useful_observation_at": null,
+        "http_attempts": 2,
+        "last_step_duration_ms": 1034,
+        "latency_origin": "recorded_from_creation",
+        "http_attempts_since_at": 1792454412405,
+        "last_step_http_attempts": 2,
+        "cursorBytes": 0,
+        "cursorSHA256": null
+      },
+      {
+        "id": "56837477-1f77-51a7-a066-c6036e51dd7a",
+        "account_id": "ig_17841402362568040",
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "collected": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1792458013408,
+        "started_at": 1792458012452,
+        "completed_at": 1792458013408,
+        "last_success_at": 1792458013408,
+        "error_code": null,
+        "lease_expires_at": null,
+        "automatic": 1,
+        "media_processed": 0,
+        "target_media_id": null,
+        "skipped_media": 0,
+        "skipped_periods": 0,
+        "first_attempt_at": 1792458012585,
+        "last_attempt_at": 1792458012585,
+        "first_useful_observation_at": null,
+        "last_useful_observation_at": null,
+        "http_attempts": 2,
+        "last_step_duration_ms": 823,
+        "latency_origin": "recorded_from_creation",
+        "http_attempts_since_at": 1792458012585,
+        "last_step_http_attempts": 2,
+        "cursorBytes": 0,
+        "cursorSHA256": null
+      },
+      {
+        "id": "5d5389dd-2f1c-588b-b638-a7b85b4f13ff",
+        "account_id": "ig_17841402362568040",
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "collected": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1792461613873,
+        "started_at": 1792461612679,
+        "completed_at": 1792461613873,
+        "last_success_at": 1792461613873,
+        "error_code": null,
+        "lease_expires_at": null,
+        "automatic": 1,
+        "media_processed": 0,
+        "target_media_id": null,
+        "skipped_media": 0,
+        "skipped_periods": 0,
+        "first_attempt_at": 1792461612824,
+        "last_attempt_at": 1792461612824,
+        "first_useful_observation_at": null,
+        "last_useful_observation_at": null,
+        "http_attempts": 2,
+        "last_step_duration_ms": 1049,
+        "latency_origin": "recorded_from_creation",
+        "http_attempts_since_at": 1792461612824,
+        "last_step_http_attempts": 2,
+        "cursorBytes": 0,
+        "cursorSHA256": null
+      },
+      {
+        "id": "3216ef27-fb57-5a2c-86b6-b540d6246b9d",
+        "account_id": "ig_17841402362568040",
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "collected": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1792465214224,
+        "started_at": 1792465212876,
+        "completed_at": 1792465214224,
+        "last_success_at": 1792465214224,
+        "error_code": null,
+        "lease_expires_at": null,
+        "automatic": 1,
+        "media_processed": 0,
+        "target_media_id": null,
+        "skipped_media": 0,
+        "skipped_periods": 0,
+        "first_attempt_at": 1792465213013,
+        "last_attempt_at": 1792465213013,
+        "first_useful_observation_at": null,
+        "last_useful_observation_at": null,
+        "http_attempts": 2,
+        "last_step_duration_ms": 1211,
+        "latency_origin": "recorded_from_creation",
+        "http_attempts_since_at": 1792465213013,
+        "last_step_http_attempts": 2,
+        "cursorBytes": 0,
+        "cursorSHA256": null
+      },
+      {
+        "id": "6d0759a2-4122-54dc-b446-4fd222a11fbf",
+        "account_id": "ig_17841402362568040",
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "collected": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1792468814274,
+        "started_at": 1792468813097,
+        "completed_at": 1792468814274,
+        "last_success_at": 1792468814274,
+        "error_code": null,
+        "lease_expires_at": null,
+        "automatic": 1,
+        "media_processed": 0,
+        "target_media_id": null,
+        "skipped_media": 0,
+        "skipped_periods": 0,
+        "first_attempt_at": 1792468813241,
+        "last_attempt_at": 1792468813241,
+        "first_useful_observation_at": null,
+        "last_useful_observation_at": null,
+        "http_attempts": 2,
+        "last_step_duration_ms": 1033,
+        "latency_origin": "recorded_from_creation",
+        "http_attempts_since_at": 1792468813241,
+        "last_step_http_attempts": 2,
+        "cursorBytes": 0,
+        "cursorSHA256": null
+      },
+      {
+        "id": "a8314567-a1ce-5550-85e9-909a4671ccc0",
+        "account_id": "ig_17841402362568040",
+        "origin": "stories",
+        "status": "completed",
+        "pages": 1,
+        "collected": 0,
+        "attempt": 0,
+        "failures": 0,
+        "next_attempt_at": 1792472414712,
+        "started_at": 1792472413333,
+        "completed_at": 1792472414712,
+        "last_success_at": 1792472414712,
+        "error_code": null,
+        "lease_expires_at": null,
+        "automatic": 1,
+        "media_processed": 0,
+        "target_media_id": null,
+        "skipped_media": 0,
+        "skipped_periods": 0,
+        "first_attempt_at": 1792472413461,
+        "last_attempt_at": 1792472413461,
+        "first_useful_observation_at": null,
+        "last_useful_observation_at": null,
+        "http_attempts": 2,
+        "last_step_duration_ms": 1251,
+        "latency_origin": "recorded_from_creation",
+        "http_attempts_since_at": 1792472413461,
+        "last_step_http_attempts": 2,
+        "cursorBytes": 0,
+        "cursorSHA256": null
+      }
+    ],
+    "intervalsSeconds": [
+      3600.188,
+      3600.227,
+      3600.197,
+      3600.221,
+      3600.236
+    ],
+    "frequentRetriesOrPaginationLoop": false,
+    "scope": "2026-10-20T00:00:00Z to second observation; empty source responses, no Story snapshot claim"
+  },
+  "historicalControlsUnchanged": true,
+  "historicalControls": [
+    {
+      "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+      "media_id": "ig_17841402362568040_18081218903397003",
+      "observed_at": 1791654622092,
+      "metricsSHA256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee"
+    },
+    {
+      "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+      "media_id": "ig_17841402362568040_17872575796522924",
+      "observed_at": 1791791420878,
+      "metricsSHA256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac"
+    },
+    {
+      "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+      "media_id": "ig_17841402362568040_18092591924160341",
+      "observed_at": 1791455727114,
+      "metricsSHA256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428"
+    },
+    {
+      "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+      "media_id": "ig_17841402362568040_17857059501655545",
+      "observed_at": 1790952719616,
+      "metricsSHA256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3"
+    },
+    {
+      "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+      "media_id": "ig_17841402362568040_18499761757071577",
+      "observed_at": 1790952758400,
+      "metricsSHA256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9"
+    },
+    {
+      "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+      "media_id": "ig_17841402362568040_18093292946656602",
+      "observed_at": 1791370531426,
+      "metricsSHA256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5"
+    },
+    {
+      "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+      "media_id": "ig_17841402362568040_18074484620460916",
+      "observed_at": 1791187237464,
+      "metricsSHA256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11"
+    },
+    {
+      "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+      "media_id": "ig_17841402362568040_18184928518357793",
+      "observed_at": 1791501060069,
+      "metricsSHA256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d"
+    },
+    {
+      "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+      "media_id": "ig_17841402362568040_17860663988262545",
+      "observed_at": 1790952873559,
+      "metricsSHA256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d"
+    },
+    {
+      "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+      "media_id": "ig_17841402362568040_17882339396369585",
+      "observed_at": 1790952862151,
+      "metricsSHA256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09"
+    },
+    {
+      "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+      "media_id": "ig_17841402362568040_18065403764488565",
+      "observed_at": 1790952795801,
+      "metricsSHA256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70"
+    },
+    {
+      "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+      "media_id": "ig_17841402362568040_18093432221582150",
+      "observed_at": 1791516365255,
+      "metricsSHA256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688"
+    }
+  ],
+  "telemetry": {
+    "dayDatabase": {
+      "checkedAt": "2026-10-20T05:02:07.670Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:00:00Z",
+        "to": "2026-10-20T05:02:05.418Z"
+      },
+      "recentWindow": {
+        "from": "2026-10-20T04:00:00Z",
+        "to": "2026-10-20T05:00:00Z"
+      },
+      "total": [
+        {
+          "sum": {
+            "readQueries": 6843,
+            "rowsRead": 1082696,
+            "rowsWritten": 20115,
+            "writeQueries": 8414
+          }
+        }
+      ],
+      "errors": null
+    },
+    "hourlyAndAccountBudget": {
+      "checkedAt": "2026-10-20T05:02:49.922Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:00:00Z",
+        "to": "2026-10-20T05:02:44.946Z"
+      },
+      "earlier": [
+        {
+          "sum": {
+            "readQueries": 1130,
+            "rowsRead": 149382,
+            "rowsWritten": 2946,
+            "writeQueries": 1343
+          }
+        }
+      ],
+      "recent": [
+        {
+          "sum": {
+            "readQueries": 1181,
+            "rowsRead": 159171,
+            "rowsWritten": 3008,
+            "writeQueries": 1364
+          }
+        }
+      ],
+      "accountTotal": [
+        {
+          "sum": {
+            "readQueries": 6858,
+            "rowsRead": 1085007,
+            "rowsWritten": 20152,
+            "writeQueries": 8426
+          }
+        }
+      ],
+      "errors": null,
+      "earlierWindow": {
+        "from": "2026-10-20T03:00:00Z",
+        "to": "2026-10-20T04:00:00Z"
+      },
+      "recentWindow": {
+        "from": "2026-10-20T04:00:00Z",
+        "to": "2026-10-20T05:00:00Z"
+      }
+    },
+    "recentQueryInsights": {
+      "checkedAt": "2026-10-20T05:02:51.636Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T04:00:00Z",
+        "to": "2026-10-20T05:00:00Z"
+      },
+      "queries": [
+        {
+          "avg": {
+            "rowsRead": 1223
+          },
+          "count": 58,
+          "sum": {
+            "rowsRead": 70934,
+            "rowsWritten": 0
+          },
+          "sqlShape": "WITH candidates AS MATERIALIZED (\n       SELECT m.id,m.account_id,m.published_at,CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?) THEN 1 ELSE 2 END AS priority,COALESCE(s.next_refresh_at,0) AS next_refresh_at\n       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1)))\n) SELECT m.id,m.published_at AS publishedAt FROM candidates m\n       WHERE NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id\n           AND origin='?' AND status='?' AND started_at>=?)\n       ORDER BY m.priority,CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,m.next_refresh_at,m.published_at DESC,m.id LIMIT 1",
+          "querySHA256": "28748b25e6ff6655f806a095927d398664eaf5c76b7e8d0d44917cd1f3678a3c"
+        },
+        {
+          "avg": {
+            "rowsRead": 779
+          },
+          "count": 64,
+          "sum": {
+            "rowsRead": 49904,
+            "rowsWritten": 0
+          },
+          "sqlShape": "SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT ?)\n      WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR (CASE WHEN json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' THEN 1\n  WHEN instr(s.metrics_json,'?')>0 OR instr(s.metrics_json,char(92))>0\n  THEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'?')='?') ELSE 0 END) OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)\n      AND NOT EXISTS (SELECT 1 FROM sync_runs r WHERE r.id=s.operation_id AND r.account_id=m.account_id\n        AND r.kind='?' AND r.target_media_id=m.id AND r.status='?' AND r.started_at>=?)\n      ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1",
+          "querySHA256": "ec2006ddf32be3da9bddf63b32cf313d9939d50d99edb1867858745a43448a88"
+        },
+        {
+          "avg": {
+            "rowsRead": 290
+          },
+          "count": 79,
+          "sum": {
+            "rowsRead": 22961,
+            "rowsWritten": 0
+          },
+          "sqlShape": "SELECT MIN(m.published_at+86400000) AS expiry FROM media m\n      WHERE m.account_id=? AND m.product_type='?' AND m.published_at>?-86400000\n        AND COALESCE((SELECT observed_at FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC LIMIT ?),0)<m.published_at+86400000-?\n        AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.account_id=?\n          AND j.origin='?' AND COALESCE(j.last_attempt_at,j.started_at)>?)",
+          "querySHA256": "2001020c46c098785076e5e29a3da3038351e70878614d00a8e74d896c6d713c"
+        }
+      ],
+      "errors": null
+    },
+    "recentHourRowsReadPerMinute": 2652.85,
+    "accountBudgetApproxRemaining": {
+      "rowsRead": 3914993,
+      "rowsWritten": 79848
+    },
+    "conditionalEndOfDayProjection": {
+      "rowsRead": 4101963,
+      "rowsWritten": 77166
+    },
+    "projectionAssumption": "The recent complete hour repeats for all remaining UTC hours; adaptive estimates, not guarantee or measured full day.",
+    "samplingAndIngestionDelayApply": true
+  },
+  "maintenance": {
+    "stateProbe": {
+      "checkedAt": "2026-10-20T05:03:49.613Z",
+      "cutoffAt": 1792454405000,
+      "previousSample": [
+        {
+          "id": "93217138-9354-4642-9e7e-69586f277991",
+          "requested_at": 1791849620335,
+          "samplePresent": 1
+        }
+      ],
+      "beforeResetCutoff": [],
+      "meta": [
+        {
+          "name": "previousSample",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.8379
+        },
+        {
+          "name": "beforeResetCutoff",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2247
+        }
+      ]
+    },
+    "telemetry": {
+      "checkedAt": "2026-10-20T05:03:52.854Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:00:00Z",
+        "to": "2026-10-20T05:03:51.476Z"
+      },
+      "queries": [],
+      "errors": null
+    },
+    "forcedRun": false,
+    "olderThanResetMinusSevenDaysRemaining": 0,
+    "naturalPassExecutionConfirmed": false,
+    "note": "No query-insights rows is inconclusive. The retained sample timestamp is later than reset-minus-seven-days cutoff; daily fixed cutoff does not slide during the day."
+  },
+  "checks": {
+    "command": "pnpm check",
+    "exitCode": 0,
+    "backendTests": 206,
+    "mcpTests": 27,
+    "node": "24.18.0",
+    "pnpm": "11.15.1",
+    "bundleDryRunMatchesProduction": true
+  },
+  "actions": {
+    "manualResumeAdvance": false,
+    "jobOrCursorReset": false,
+    "newJobsForRecovery": false,
+    "sourceChanges": false,
+    "deploy": false,
+    "remoteMigration": false,
+    "retentionForced": false,
+    "analyticsDeleted": false,
+    "logsEnabled": false,
+    "paidInfrastructure": false
+  },
+  "automation": {
+    "id": "social-analytics",
+    "status": "PAUSED",
+    "toolConfirmed": true,
+    "reason": "One-time 10:00 check completed; no repeated stale prompt."
+  },
+  "conclusion": "Automatic collection continues; ordinary stale catch-up is complete, three source-unavailable snapshots remain. No confirmed global hang or immediate quota overspend from two complete-hour measurements. Full-day sustainability not yet proven."
+}
