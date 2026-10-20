@@ -1,0 +1,2695 @@
+{
+  "checkedAt": "2026-10-20T00:22:20.697Z",
+  "timeZone": "Asia/Yekaterinburg",
+  "automaticRecovery": true,
+  "sourceCommit": "9642e17",
+  "production": {
+    "revision": "0.3.9",
+    "versionId": "1ed84a6b-e303-4df3-9494-18a542272ea6",
+    "deploymentId": "2b55f0ae-cc26-495a-89a0-e5d37e2fd40b",
+    "createdAt": "2026-10-20T00:17:02.143238Z",
+    "trafficPercent": 100,
+    "bundle": {
+      "bytes": 1745777,
+      "sha256": "3fcf7298719e0471be1eb2b6ec0c94c199e2035527184159c1bc598d171ea795"
+    },
+    "downloadMatchesCheckedBuild": true,
+    "settingsUnchangedExceptRevision": true,
+    "settings": {
+      "bindings": [
+        {
+          "name": "API_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BUILD_REVISION",
+          "type": "plain_text",
+          "text": "0.3.9"
+        },
+        {
+          "name": "COLLECTION_RUNNER",
+          "type": "durable_object_namespace",
+          "namespaceId": "fa3aad98034e4c3abdedc4ddc69f0ef5",
+          "className": "CollectionRunner"
+        },
+        {
+          "name": "COLLECTION_RUNNER_ENABLED",
+          "type": "plain_text",
+          "text": "true"
+        },
+        {
+          "name": "DB",
+          "type": "d1",
+          "id": "2c5956d4-0c66-4d21-9bf8-12f04e007bad"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "INSTAGRAM_API_VERSION",
+          "type": "plain_text",
+          "text": "v26.0"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_ID",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_CLIENT_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "INSTAGRAM_REDIRECT_URI",
+          "type": "plain_text",
+          "text": "https://api.social-insights.workers.dev/api/instagram/oauth/callback"
+        },
+        {
+          "name": "INSTAGRAM_WEBHOOK_VERIFY_TOKEN",
+          "type": "secret_text"
+        },
+        {
+          "name": "TOKEN_ENCRYPTION_KEY",
+          "type": "secret_text"
+        }
+      ],
+      "observability": null,
+      "logpush": false,
+      "schedules": {
+        "schedules": [
+          {
+            "cron": "*/5 * * * *",
+            "created_on": "2026-10-03T08:29:58.124392Z",
+            "modified_on": "2026-10-09T06:29:42.98561Z"
+          }
+        ]
+      }
+    }
+  },
+  "initialObservation": {
+    "checkedAt": "2026-10-20T00:07:44.003Z",
+    "source": "captured initial production tool output; later observations are retained individually",
+    "staleSnapshots": 24,
+    "missingSnapshots": 0,
+    "publications": 243,
+    "newSnapshotsSinceReset": 9,
+    "allSnapshots": 1801,
+    "receipts": 8037
+  },
+  "checkpoint": {
+    "savedAt": "2026-10-20T00:16:37.100Z",
+    "privateIgnoredJobsFile": "tmp/collection-fault-isolation-release/recovery20-pre039-raw-jobs.json",
+    "jobsFileSHA256": "4532e58f54c41ca26600665f93af798e7bd485db1e1b4056c393d5f547a15bf3",
+    "historicalControls": [
+      {
+        "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+        "media_id": "ig_17841402362568040_18081218903397003",
+        "observed_at": 1791654622092,
+        "metricsSHA256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee"
+      },
+      {
+        "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+        "media_id": "ig_17841402362568040_17872575796522924",
+        "observed_at": 1791791420878,
+        "metricsSHA256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac"
+      },
+      {
+        "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+        "media_id": "ig_17841402362568040_18092591924160341",
+        "observed_at": 1791455727114,
+        "metricsSHA256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428"
+      },
+      {
+        "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+        "media_id": "ig_17841402362568040_17857059501655545",
+        "observed_at": 1790952719616,
+        "metricsSHA256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3"
+      },
+      {
+        "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+        "media_id": "ig_17841402362568040_18499761757071577",
+        "observed_at": 1790952758400,
+        "metricsSHA256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9"
+      },
+      {
+        "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+        "media_id": "ig_17841402362568040_18093292946656602",
+        "observed_at": 1791370531426,
+        "metricsSHA256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5"
+      },
+      {
+        "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+        "media_id": "ig_17841402362568040_18074484620460916",
+        "observed_at": 1791187237464,
+        "metricsSHA256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11"
+      },
+      {
+        "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+        "media_id": "ig_17841402362568040_18184928518357793",
+        "observed_at": 1791501060069,
+        "metricsSHA256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d"
+      },
+      {
+        "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+        "media_id": "ig_17841402362568040_17860663988262545",
+        "observed_at": 1790952873559,
+        "metricsSHA256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d"
+      },
+      {
+        "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+        "media_id": "ig_17841402362568040_17882339396369585",
+        "observed_at": 1790952862151,
+        "metricsSHA256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09"
+      },
+      {
+        "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+        "media_id": "ig_17841402362568040_18065403764488565",
+        "observed_at": 1790952795801,
+        "metricsSHA256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70"
+      },
+      {
+        "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+        "media_id": "ig_17841402362568040_18093432221582150",
+        "observed_at": 1791516365255,
+        "metricsSHA256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688"
+      }
+    ],
+    "historicalControlsUnchanged": true
+  },
+  "migrations": {
+    "applied": [
+      {
+        "id": 1,
+        "name": "0000_tough_swarm.sql",
+        "applied_at": "2026-10-02 08:26:26"
+      },
+      {
+        "id": 2,
+        "name": "0001_panoramic_the_captain.sql",
+        "applied_at": "2026-10-02 08:26:26"
+      },
+      {
+        "id": 3,
+        "name": "0002_amused_titanium_man.sql",
+        "applied_at": "2026-10-02 14:01:37"
+      },
+      {
+        "id": 4,
+        "name": "0003_cold_captain_midlands.sql",
+        "applied_at": "2026-10-02 14:01:37"
+      },
+      {
+        "id": 5,
+        "name": "0004_many_phantom_reporter.sql",
+        "applied_at": "2026-10-02 14:01:37"
+      },
+      {
+        "id": 6,
+        "name": "0005_brainy_sasquatch.sql",
+        "applied_at": "2026-10-02 19:17:25"
+      },
+      {
+        "id": 7,
+        "name": "0006_fancy_the_enforcers.sql",
+        "applied_at": "2026-10-07 21:09:01"
+      },
+      {
+        "id": 8,
+        "name": "0007_unusual_speed_demon.sql",
+        "applied_at": "2026-10-07 21:09:02"
+      },
+      {
+        "id": 9,
+        "name": "0008_strong_brother_voodoo.sql",
+        "applied_at": "2026-10-08 06:15:36"
+      },
+      {
+        "id": 10,
+        "name": "0009_common_jocasta.sql",
+        "applied_at": "2026-10-08 16:15:48"
+      },
+      {
+        "id": 11,
+        "name": "0010_clean_talon.sql",
+        "applied_at": "2026-10-08 16:15:49"
+      },
+      {
+        "id": 12,
+        "name": "0011_unique_black_widow.sql",
+        "applied_at": "2026-10-08 16:15:49"
+      },
+      {
+        "id": 13,
+        "name": "0012_hesitant_northstar.sql",
+        "applied_at": "2026-10-08 16:15:49"
+      },
+      {
+        "id": 14,
+        "name": "0013_opposite_wendell_vaughn.sql",
+        "applied_at": "2026-10-19 00:08:00"
+      },
+      {
+        "id": 15,
+        "name": "0014_colossal_gargoyle.sql",
+        "applied_at": "2026-10-19 00:08:01"
+      }
+    ],
+    "pending": [],
+    "appliedThisTurn": [],
+    "newSchema": false
+  },
+  "observations": [
+    {
+      "checkedAt": "2026-10-20T00:08:49.668Z",
+      "finishedAt": "2026-10-20T00:08:53.827Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.8"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 24,
+          "ready": 57,
+          "deferred": 2,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 7,
+          "objects": 7,
+          "withReach": 7,
+          "firstAt": 1792454443037,
+          "lastAt": 1792454815201
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 8,
+          "firstAt": 1792454425092,
+          "lastAt": 1792454876464
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 30,
+          "firstAt": 1792454408582,
+          "lastAt": 1792454814281
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 9,
+          "firstAt": 1792454408116,
+          "lastAt": 1792454813435
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454407546,
+          "lastAt": 1792454812809
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 7,
+          "firstAt": 1792454440657,
+          "lastAt": 1792454812375
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 20,
+          "firstAt": 1792454407187,
+          "lastAt": 1792454812006
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 3,
+          "firstAt": 1792454477206,
+          "lastAt": 1792454878951
+        }
+      ],
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 779,
+          "rowsWritten": 0,
+          "durationMs": 0.7921
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.5392
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2832
+        },
+        {
+          "name": "leases",
+          "rowsRead": 776,
+          "rowsWritten": 0,
+          "durationMs": 0.4234
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 190,
+          "rowsWritten": 0,
+          "durationMs": 0.8144
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 534,
+          "rowsWritten": 0,
+          "durationMs": 1.5268
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 18.7152
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792454878151,
+        "last_success_at": 1792454879512,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      }
+    },
+    {
+      "checkedAt": "2026-10-20T00:11:17.608Z",
+      "finishedAt": "2026-10-20T00:11:21.535Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.8"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 24,
+          "ready": 58,
+          "deferred": 2,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 8,
+          "objects": 8,
+          "withReach": 8,
+          "firstAt": 1792454443037,
+          "lastAt": 1792455006431
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454425092,
+          "lastAt": 1792455067652
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 32,
+          "firstAt": 1792454408582,
+          "lastAt": 1792455005371
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454408116,
+          "lastAt": 1792455003981
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 11,
+          "firstAt": 1792454407546,
+          "lastAt": 1792455003208
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 8,
+          "firstAt": 1792454440657,
+          "lastAt": 1792455002799
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 21,
+          "firstAt": 1792454407187,
+          "lastAt": 1792455002528
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 5,
+          "firstAt": 1792454477206,
+          "lastAt": 1792455072458
+        }
+      ],
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 781,
+          "rowsWritten": 0,
+          "durationMs": 1.6243
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.4332
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2096
+        },
+        {
+          "name": "leases",
+          "rowsRead": 778,
+          "rowsWritten": 0,
+          "durationMs": 0.3426
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 210,
+          "rowsWritten": 0,
+          "durationMs": 0.9261
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 536,
+          "rowsWritten": 0,
+          "durationMs": 1.6797
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 20.0629
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792455069676,
+        "last_success_at": 1792455072738,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      }
+    },
+    {
+      "checkedAt": "2026-10-20T00:13:30.445Z",
+      "finishedAt": "2026-10-20T00:13:34.810Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.8"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 23,
+          "ready": 57,
+          "deferred": 4,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 10,
+          "objects": 10,
+          "withReach": 10,
+          "firstAt": 1792454443037,
+          "lastAt": 1792455201687
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454425092,
+          "lastAt": 1792455067652
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 36,
+          "firstAt": 1792454408582,
+          "lastAt": 1792455200633
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 12,
+          "firstAt": 1792454408116,
+          "lastAt": 1792455199590
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 13,
+          "firstAt": 1792454407546,
+          "lastAt": 1792455199377
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454440657,
+          "lastAt": 1792455198885
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 23,
+          "firstAt": 1792454407187,
+          "lastAt": 1792455198486
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 5,
+          "firstAt": 1792454477206,
+          "lastAt": 1792455072458
+        }
+      ],
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 781,
+          "rowsWritten": 0,
+          "durationMs": 0.5962
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.4793
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2565
+        },
+        {
+          "name": "leases",
+          "rowsRead": 778,
+          "rowsWritten": 0,
+          "durationMs": 0.4191
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 234,
+          "rowsWritten": 0,
+          "durationMs": 1.0229
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 540,
+          "rowsWritten": 0,
+          "durationMs": 1.3414
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 20.961
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792455202756,
+        "last_success_at": 1792455201687,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      }
+    },
+    {
+      "checkedAt": "2026-10-20T00:16:37.100Z",
+      "finishedAt": "2026-10-20T00:16:41.841Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.8"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 21,
+          "ready": 59,
+          "deferred": 3,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 13,
+          "objects": 13,
+          "withReach": 13,
+          "firstAt": 1792454443037,
+          "lastAt": 1792455393274
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454425092,
+          "lastAt": 1792455067652
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 42,
+          "firstAt": 1792454408582,
+          "lastAt": 1792455392767
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 15,
+          "firstAt": 1792454408116,
+          "lastAt": 1792455391547
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 16,
+          "firstAt": 1792454407546,
+          "lastAt": 1792455391231
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 13,
+          "firstAt": 1792454440657,
+          "lastAt": 1792455390739
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 26,
+          "firstAt": 1792454407187,
+          "lastAt": 1792455390428
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 5,
+          "firstAt": 1792454477206,
+          "lastAt": 1792455072458
+        }
+      ],
+      "meta": [
+        {
+          "name": "migrations",
+          "rowsRead": 15,
+          "rowsWritten": 0,
+          "durationMs": 0.2136
+        },
+        {
+          "name": "jobs",
+          "rowsRead": 781,
+          "rowsWritten": 0,
+          "durationMs": 0.652
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.4829
+        },
+        {
+          "name": "counts",
+          "rowsRead": 13996,
+          "rowsWritten": 0,
+          "durationMs": 0.5174
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2179
+        },
+        {
+          "name": "leases",
+          "rowsRead": 778,
+          "rowsWritten": 0,
+          "durationMs": 0.3701
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 270,
+          "rowsWritten": 0,
+          "durationMs": 0.9994
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 546,
+          "rowsWritten": 0,
+          "durationMs": 1.3267
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 17.1992
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792455394341,
+        "last_success_at": 1792455393274,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      },
+      "counts": {
+        "publications": 258,
+        "snapshots": 1807,
+        "receipts": 8079,
+        "comments": 3852
+      }
+    },
+    {
+      "checkedAt": "2026-10-20T00:18:05.954Z",
+      "finishedAt": "2026-10-20T00:18:10.076Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.9"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 20,
+          "ready": 58,
+          "deferred": 4,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 14,
+          "objects": 14,
+          "withReach": 14,
+          "firstAt": 1792454443037,
+          "lastAt": 1792455457429
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454425092,
+          "lastAt": 1792455067652
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 44,
+          "firstAt": 1792454408582,
+          "lastAt": 1792455456968
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 16,
+          "firstAt": 1792454408116,
+          "lastAt": 1792455455637
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 17,
+          "firstAt": 1792454407546,
+          "lastAt": 1792455455108
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 14,
+          "firstAt": 1792454440657,
+          "lastAt": 1792455454744
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 27,
+          "firstAt": 1792454407187,
+          "lastAt": 1792455454296
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 5,
+          "firstAt": 1792454477206,
+          "lastAt": 1792455072458
+        }
+      ],
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 781,
+          "rowsWritten": 0,
+          "durationMs": 0.6817
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.6726
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2229
+        },
+        {
+          "name": "leases",
+          "rowsRead": 778,
+          "rowsWritten": 0,
+          "durationMs": 0.5404
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 282,
+          "rowsWritten": 0,
+          "durationMs": 1.0908
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 548,
+          "rowsWritten": 0,
+          "durationMs": 1.736
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 19.6711
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792455458490,
+        "last_success_at": 1792455457429,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      }
+    },
+    {
+      "checkedAt": "2026-10-20T00:19:03.783Z",
+      "finishedAt": "2026-10-20T00:19:08.274Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.9"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 19,
+          "ready": 57,
+          "deferred": 5,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 15,
+          "objects": 15,
+          "withReach": 15,
+          "firstAt": 1792454443037,
+          "lastAt": 1792455521632
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454425092,
+          "lastAt": 1792455067652
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 46,
+          "firstAt": 1792454408582,
+          "lastAt": 1792455520695
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 17,
+          "firstAt": 1792454408116,
+          "lastAt": 1792455519514
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 18,
+          "firstAt": 1792454407546,
+          "lastAt": 1792455519097
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 15,
+          "firstAt": 1792454440657,
+          "lastAt": 1792455518596
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 28,
+          "firstAt": 1792454407187,
+          "lastAt": 1792455518339
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 5,
+          "firstAt": 1792454477206,
+          "lastAt": 1792455072458
+        }
+      ],
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 781,
+          "rowsWritten": 0,
+          "durationMs": 0.9266
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.5979
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2851
+        },
+        {
+          "name": "leases",
+          "rowsRead": 778,
+          "rowsWritten": 0,
+          "durationMs": 0.3688
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 294,
+          "rowsWritten": 0,
+          "durationMs": 1.2043
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 550,
+          "rowsWritten": 0,
+          "durationMs": 1.7696
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 20.3873
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792455522695,
+        "last_success_at": 1792455521632,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      }
+    },
+    {
+      "checkedAt": "2026-10-20T00:22:15.406Z",
+      "finishedAt": "2026-10-20T00:22:20.697Z",
+      "health": {
+        "status": "ok",
+        "revision": "0.3.9"
+      },
+      "collection": {
+        "mediaRefresh": {
+          "publications": 243,
+          "missingSnapshots": 0,
+          "staleSnapshots": 16,
+          "ready": 59,
+          "deferred": 3,
+          "retries": [
+            {
+              "errorCode": "INSTAGRAM_OBJECT_UNAVAILABLE",
+              "count": 3,
+              "nextAttemptAt": 1792540835287
+            },
+            {
+              "errorCode": "INSTAGRAM_SOURCE_ERROR",
+              "count": 28,
+              "nextAttemptAt": null
+            }
+          ]
+        }
+      },
+      "snapshots": [
+        {
+          "product_type": "FEED",
+          "snapshots": 18,
+          "objects": 18,
+          "withReach": 18,
+          "firstAt": 1792454443037,
+          "lastAt": 1792455713173
+        },
+        {
+          "product_type": "REELS",
+          "snapshots": 2,
+          "objects": 2,
+          "withReach": 2,
+          "firstAt": 1792454410506,
+          "lastAt": 1792454422761
+        }
+      ],
+      "receipts": [
+        {
+          "family": "comments",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 10,
+          "firstAt": 1792454425092,
+          "lastAt": 1792455067652
+        },
+        {
+          "family": "comments",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 3,
+          "firstAt": 1792454445307,
+          "lastAt": 1792454469158
+        },
+        {
+          "family": "insights",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 52,
+          "firstAt": 1792454408582,
+          "lastAt": 1792455712661
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": -1,
+          "graphSubcode": 2207086,
+          "n": 4,
+          "firstAt": 1792454409644,
+          "lastAt": 1792454422403
+        },
+        {
+          "family": "insights",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 20,
+          "firstAt": 1792454408116,
+          "lastAt": 1792455711206
+        },
+        {
+          "family": "media_catalog",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 21,
+          "firstAt": 1792454407546,
+          "lastAt": 1792455710491
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "not_supported",
+          "graphCode": 100,
+          "graphSubcode": null,
+          "n": 18,
+          "firstAt": 1792454440657,
+          "lastAt": 1792455710077
+        },
+        {
+          "family": "media_catalog",
+          "status": 400,
+          "result": "object_unavailable",
+          "graphCode": 100,
+          "graphSubcode": 33,
+          "n": 1,
+          "firstAt": 1792454434775,
+          "lastAt": 1792454434775
+        },
+        {
+          "family": "profile",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 31,
+          "firstAt": 1792454407187,
+          "lastAt": 1792455709631
+        },
+        {
+          "family": "replies",
+          "status": 200,
+          "result": "success",
+          "graphCode": null,
+          "graphSubcode": null,
+          "n": 5,
+          "firstAt": 1792454477206,
+          "lastAt": 1792455072458
+        }
+      ],
+      "meta": [
+        {
+          "name": "jobs",
+          "rowsRead": 781,
+          "rowsWritten": 0,
+          "durationMs": 0.8183
+        },
+        {
+          "name": "historicalControls",
+          "rowsRead": 21,
+          "rowsWritten": 0,
+          "durationMs": 0.5373
+        },
+        {
+          "name": "schedule",
+          "rowsRead": 1,
+          "rowsWritten": 0,
+          "durationMs": 0.2012
+        },
+        {
+          "name": "leases",
+          "rowsRead": 778,
+          "rowsWritten": 0,
+          "durationMs": 0.3813
+        },
+        {
+          "name": "recentReceiptResults",
+          "rowsRead": 330,
+          "rowsWritten": 0,
+          "durationMs": 1.1396
+        },
+        {
+          "name": "recentSnapshots",
+          "rowsRead": 556,
+          "rowsWritten": 0,
+          "durationMs": 1.8228
+        },
+        {
+          "name": "mediaRefresh",
+          "rowsRead": 1230,
+          "rowsWritten": 0,
+          "durationMs": 16.2435
+        },
+        {
+          "name": "commentRefreshToday",
+          "rowsRead": 241,
+          "rowsWritten": 0,
+          "durationMs": 0.2695
+        }
+      ],
+      "leaseState": {
+        "expiredSyncRuns": 0,
+        "expiredJobLeases": 0,
+        "runningJobs": 0
+      },
+      "schedule": {
+        "enabled": 1,
+        "next_stories_at": 1792458012112,
+        "next_discovery_at": 1792458006480,
+        "next_catalogue_at": 1793555814488,
+        "next_insights_at": 1792540814948,
+        "retry_at": 1792455714239,
+        "last_success_at": 1792455713173,
+        "error_code": null,
+        "failures": 0,
+        "claim_expires_at": null
+      },
+      "commentRefreshToday": [
+        {
+          "status": "completed",
+          "jobs": 13,
+          "pages": 18,
+          "observations": 113,
+          "lastUsefulAt": 1792455068572
+        }
+      ]
+    }
+  ],
+  "preservedJobs": [
+    {
+      "id": "6c958fc0-d489-54b1-961e-f34e017c2069",
+      "account_id": "ig_17841402362568040",
+      "origin": "stories",
+      "status": "completed",
+      "pages": 1,
+      "collected": 0,
+      "attempt": 0,
+      "failures": 0,
+      "next_attempt_at": 1792454413439,
+      "started_at": 1792454412264,
+      "completed_at": 1792454413439,
+      "last_success_at": 1792454413439,
+      "error_code": null,
+      "lease_expires_at": null,
+      "automatic": 1,
+      "media_processed": 0,
+      "target_media_id": null,
+      "skipped_media": 0,
+      "skipped_periods": 0,
+      "first_attempt_at": 1792454412405,
+      "last_attempt_at": 1792454412405,
+      "first_useful_observation_at": null,
+      "last_useful_observation_at": null,
+      "http_attempts": 2,
+      "last_step_duration_ms": 1034,
+      "latency_origin": "recorded_from_creation",
+      "http_attempts_since_at": 1792454412405,
+      "last_step_http_attempts": 2,
+      "cursorBytes": 0,
+      "cursorSHA256": null
+    },
+    {
+      "id": "501cb356-2540-5895-a181-66d20f371c18",
+      "account_id": "ig_17841402362568040",
+      "origin": "comments",
+      "status": "completed",
+      "pages": 542,
+      "collected": 4067,
+      "attempt": 0,
+      "failures": 0,
+      "next_attempt_at": 1792370414429,
+      "started_at": 1792347665004,
+      "completed_at": 1792370414429,
+      "last_success_at": 1792370414429,
+      "error_code": null,
+      "lease_expires_at": null,
+      "automatic": 0,
+      "media_processed": 241,
+      "target_media_id": null,
+      "skipped_media": 2,
+      "skipped_periods": 0,
+      "first_attempt_at": 1792347669532,
+      "last_attempt_at": 1792370413689,
+      "first_useful_observation_at": 1792347670901,
+      "last_useful_observation_at": 1792370410142,
+      "http_attempts": 542,
+      "last_step_duration_ms": 740,
+      "latency_origin": "recorded_from_creation",
+      "http_attempts_since_at": 1792347669532,
+      "last_step_http_attempts": 1,
+      "cursorBytes": 0,
+      "cursorSHA256": null
+    },
+    {
+      "id": "244da4fa-13c7-40fb-b48c-8988eeb3f21a",
+      "account_id": "ig_17841402362568040",
+      "origin": "manual",
+      "status": "completed",
+      "pages": 238,
+      "collected": 238,
+      "attempt": 5,
+      "failures": 0,
+      "next_attempt_at": 1792347665107,
+      "started_at": 1791440937629,
+      "completed_at": 1792347665107,
+      "last_success_at": 1792347665107,
+      "error_code": null,
+      "lease_expires_at": null,
+      "automatic": 0,
+      "media_processed": 238,
+      "target_media_id": null,
+      "skipped_media": 0,
+      "skipped_periods": 0,
+      "first_attempt_at": null,
+      "last_attempt_at": 1792347662482,
+      "first_useful_observation_at": null,
+      "last_useful_observation_at": 1792347663714,
+      "http_attempts": 1182,
+      "last_step_duration_ms": 2625,
+      "latency_origin": null,
+      "http_attempts_since_at": 1791477954442,
+      "last_step_http_attempts": 4,
+      "cursorBytes": 0,
+      "cursorSHA256": null
+    }
+  ],
+  "commentsStatusAtRead": {
+    "observedAt": "2026-10-20T00:09:24.640Z",
+    "comments": {
+      "lastFullPassAt": 1792370414429,
+      "publications": 243,
+      "uniqueComments": 3852,
+      "stalePublications": 4,
+      "partialPublications": 80,
+      "pendingReplyBranches": 0,
+      "unverifiedReplyBranches": 1048,
+      "unavailablePublications": 3,
+      "currentPass": null,
+      "webhook": {
+        "subscriptionConfirmedAt": 1791432192539,
+        "lastReceivedAt": 1792426482017,
+        "lastEventAt": 1792426431000,
+        "active": true
+      }
+    }
+  },
+  "oldAttemptRecords": [
+    {
+      "jobId": null,
+      "firstAt": 1791059450533,
+      "lastAt": 1791220834416,
+      "attempts": 23
+    }
+  ],
+  "oldInsightRecords": [
+    {
+      "firstAt": 1791142530517,
+      "lastAt": 1791143730596,
+      "attempts": 2
+    }
+  ],
+  "indexes": {
+    "checkedAt": "2026-10-20T00:09:55.465Z",
+    "mode": "plans",
+    "plans": [
+      {
+        "name": "receiptRetention",
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 202,
+            "detail": "SEARCH instagram_http_attempts USING INDEX instagram_attempt_time (requested_at<?)"
+          }
+        ],
+        "result": []
+      },
+      {
+        "name": "sampleRetention",
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 192,
+            "detail": "SEARCH instagram_http_attempts USING INDEX instagram_attempt_sample_time (requested_at<?)"
+          }
+        ],
+        "result": [
+          {
+            "id": "93217138-9354-4642-9e7e-69586f277991"
+          }
+        ]
+      },
+      {
+        "name": "lastReceipt",
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 62,
+            "detail": "SEARCH instagram_http_attempts USING INDEX instagram_attempt_account_time (account_id=?)"
+          }
+        ],
+        "result": [
+          {
+            "json_extract(payload_json,'$.result')": "success"
+          }
+        ]
+      },
+      {
+        "name": "accountPeriods",
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 51,
+            "detail": "SEARCH account_insights USING INDEX account_insights_account_time (account_id=? AND observed_at>?)"
+          }
+        ],
+        "result": [
+          {
+            "id": "80f3af64-60b9-47ac-aa0a-93941ff9b9e6"
+          },
+          {
+            "id": "edf3ca83-86ba-4008-a102-9c6c2a50c786"
+          },
+          {
+            "id": "df1ba5ca-8c2b-4d0a-b88c-98d3be53aaa8"
+          },
+          {
+            "id": "7be97304-442c-4e1b-92e8-ceb79279fbeb"
+          },
+          {
+            "id": "6200fc65-65e7-43fa-a519-79f3bc861d21"
+          },
+          {
+            "id": "09be68bb-9515-4d46-8dbb-02260ef7b4e6"
+          },
+          {
+            "id": "fcb98981-5815-49b2-95cc-6fc4923b20e1"
+          },
+          {
+            "id": "94113835-fb83-406c-9401-33ee46450aa6"
+          },
+          {
+            "id": "54aaee2a-fafa-4ca5-b9a7-8998a748c203"
+          },
+          {
+            "id": "ebaa1911-85e5-4f27-9a4f-1c6715f3932b"
+          },
+          {
+            "id": "0c2cf45f-0b84-408e-b012-ba91bd57469d"
+          },
+          {
+            "id": "c9aab2ef-fbc5-4694-a444-3a8201918464"
+          },
+          {
+            "id": "d40b19b2-ba63-4527-aeeb-3d222ac7ebad"
+          },
+          {
+            "id": "56ab4e6e-64af-4646-aa7d-ba96309690f5"
+          },
+          {
+            "id": "84eae7c9-3cb2-40da-8c52-cd0d48852169"
+          },
+          {
+            "id": "6d6a1953-c8bc-4326-92ab-9c9ed3556a73"
+          },
+          {
+            "id": "a357d008-6be8-4b35-8048-b9dcec2242de"
+          },
+          {
+            "id": "d0b68247-f653-5a42-bdc4-ee83ddbb6bef"
+          },
+          {
+            "id": "0a931359-a9a8-4a89-9939-45de33f93769"
+          },
+          {
+            "id": "d538d22d-52e9-465e-abe3-eb40bdee1b68"
+          },
+          {
+            "id": "1e16718e-8b8c-4132-a99b-53913d0b9360"
+          },
+          {
+            "id": "8d65c28c-6551-4986-9372-6f06581acdfd"
+          },
+          {
+            "id": "91ec3def-f59f-5164-9de6-1d4622f75b3f"
+          },
+          {
+            "id": "bf341f05-ee49-55cf-9450-d7743b039688"
+          },
+          {
+            "id": "b8f1f3e5-43fb-5dec-9393-cb8df9f4b811"
+          },
+          {
+            "id": "ac8aabc8-67fc-592d-b66b-94e19cbd19a1"
+          },
+          {
+            "id": "3862d695-3dbb-5682-9729-d116a74e94a2"
+          },
+          {
+            "id": "9b1c31a0-c395-53f2-bb88-8c9ca14cc8ae"
+          },
+          {
+            "id": "0dfe0cf4-9f9c-5014-a5a0-b9217ae149d1"
+          },
+          {
+            "id": "d375ffe3-8e23-5f0d-962c-9ae98347f1f5"
+          },
+          {
+            "id": "4f1f84b6-e591-510c-9698-27f413651722"
+          },
+          {
+            "id": "1013a8ba-a1f6-5ab1-85f8-91db6ec156e7"
+          },
+          {
+            "id": "d8a6d1c1-2f3c-4c6a-87ff-225547ec18ef"
+          },
+          {
+            "id": "b174feaa-445b-458f-9c0d-0d0cad0f18b2"
+          },
+          {
+            "id": "8b40c697-b9dc-4ee6-b471-4659346fc523"
+          },
+          {
+            "id": "11111111-1111-4111-8111-111111111111"
+          },
+          {
+            "id": "22222222-2222-4222-8222-222222222222"
+          },
+          {
+            "id": "33333333-3333-4333-8333-333333333333"
+          },
+          {
+            "id": "44444444-4444-4444-8444-444444444444"
+          },
+          {
+            "id": "55555555-5555-4555-8555-555555555555"
+          },
+          {
+            "id": "66666666-6666-4666-8666-666666666666"
+          },
+          {
+            "id": "77777777-7777-4777-8777-777777777777"
+          },
+          {
+            "id": "88888888-8888-4888-8888-888888888888"
+          },
+          {
+            "id": "99999999-9999-4999-8999-999999999999"
+          },
+          {
+            "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+          },
+          {
+            "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+          },
+          {
+            "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc"
+          },
+          {
+            "id": "d1111111-1111-4111-8111-111111111111"
+          },
+          {
+            "id": "d2222222-2222-4222-8222-222222222222"
+          },
+          {
+            "id": "d3333333-3333-4333-8333-333333333333"
+          },
+          {
+            "id": "d4444444-4444-4444-8444-444444444444"
+          },
+          {
+            "id": "d5555555-5555-4555-8555-555555555555"
+          },
+          {
+            "id": "d6666666-6666-4666-8666-666666666666"
+          },
+          {
+            "id": "d7777777-7777-4777-8777-777777777777"
+          },
+          {
+            "id": "d8888888-8888-4888-8888-888888888888"
+          },
+          {
+            "id": "d9999999-9999-4999-8999-999999999999"
+          },
+          {
+            "id": "daaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+          },
+          {
+            "id": "dbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+          },
+          {
+            "id": "dccccccc-cccc-4ccc-8ccc-cccccccccccc"
+          },
+          {
+            "id": "946d456c-3f5f-5546-98c4-41729d1ff9d8"
+          },
+          {
+            "id": "181d6b87-ff82-558f-a098-6b5cfddf8694"
+          },
+          {
+            "id": "f89168d1-955f-53fd-b57b-b25596f4c2c0"
+          },
+          {
+            "id": "574af936-d4d9-5b78-915f-c2dc6413bb59"
+          },
+          {
+            "id": "66602d22-9574-5bd7-805a-f440139df16e"
+          },
+          {
+            "id": "dedaf835-f04e-56bb-a2e0-db3bbed31235"
+          },
+          {
+            "id": "3018d51b-98c9-5bf2-996e-81a1560b2011"
+          },
+          {
+            "id": "4f2ac151-126c-5b4d-b6b3-47d2b38ed58e"
+          },
+          {
+            "id": "28515a44-53d4-5b11-b22d-8f1b96d08be7"
+          },
+          {
+            "id": "2a5ce160-e3fa-51a2-a3e8-486eeeb045f2"
+          },
+          {
+            "id": "4cc96c5f-7c82-57af-af51-8072e5af413b"
+          },
+          {
+            "id": "0b05147a-a5e5-5227-a480-7f983a8099b2"
+          },
+          {
+            "id": "3a1266cf-f5de-56d6-a0b0-ac2883a0a8d6"
+          },
+          {
+            "id": "a2f2b68a-e7b8-53c8-b566-8581354eb8e6"
+          },
+          {
+            "id": "9816a8ae-796c-5d08-a773-45d231fda677"
+          },
+          {
+            "id": "022d9fcd-4413-47a8-9ec2-ae1c558b9fb2"
+          },
+          {
+            "id": "bced3aa0-a199-4910-9dcb-344ed73138e3"
+          },
+          {
+            "id": "88772185-a9ae-4c5f-94aa-b6d61d63eb1f"
+          },
+          {
+            "id": "2a33908d-8c0e-591c-81e2-c48c8b2d9392"
+          },
+          {
+            "id": "7228e3cd-f430-5964-b806-8f5c29c0e814"
+          },
+          {
+            "id": "e7cf0fa3-97ee-5906-ab22-cecd3545b2ff"
+          },
+          {
+            "id": "d141c198-d878-5750-b353-edaa4f84f9cb"
+          },
+          {
+            "id": "7665327e-73ee-55ae-a4a6-975bd3fc03d2"
+          },
+          {
+            "id": "6353cfbc-1964-5b75-a528-2c7278050d6d"
+          },
+          {
+            "id": "68b36008-0552-56fa-82fa-bbd67f0d88f4"
+          },
+          {
+            "id": "b9aa76a6-edde-5172-8c1d-0cf0bdb2ccb7"
+          },
+          {
+            "id": "6e89f331-eeb5-51d5-be5f-ded2f0837a44"
+          },
+          {
+            "id": "f7654c35-3b5f-551f-85e8-ddff82b150d5"
+          },
+          {
+            "id": "79c15e25-0528-5145-883d-29ce9e4cf2de"
+          },
+          {
+            "id": "4b5db0e7-752b-5ca5-b3f8-d98ba72b7644"
+          },
+          {
+            "id": "17d8a04d-0f35-5226-9f96-ddeae3ab0436"
+          },
+          {
+            "id": "e4f988c5-0e0d-550d-84e3-057e18047e9b"
+          },
+          {
+            "id": "e47dd9d1-208c-5a1e-aa5c-8d231028583a"
+          },
+          {
+            "id": "78b57779-06c6-589e-8843-93b4bec37ebc"
+          },
+          {
+            "id": "6b49a5ca-3a36-5bd7-92d9-3ef88e62c27a"
+          },
+          {
+            "id": "0f306c26-511d-5d98-a9cb-45d34c509589"
+          },
+          {
+            "id": "d1564749-a9c9-5286-a118-ca955c5545ef"
+          },
+          {
+            "id": "c9028c28-bcb7-5ba6-8605-0865fee2d0dc"
+          },
+          {
+            "id": "931fae8b-7054-523d-b767-b733fda86db7"
+          },
+          {
+            "id": "200ad3c4-1f1f-5175-94a8-25fbbc452550"
+          },
+          {
+            "id": "faaca38e-5ace-5e24-b0a3-2fb3e9f633a4"
+          }
+        ]
+      }
+    ],
+    "meta": [
+      {
+        "name": "receiptRetentionPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.1444
+      },
+      {
+        "name": "receiptRetention",
+        "rowsRead": 1,
+        "rowsWritten": 0,
+        "durationMs": 0.1357
+      },
+      {
+        "name": "sampleRetentionPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.168
+      },
+      {
+        "name": "sampleRetention",
+        "rowsRead": 2,
+        "rowsWritten": 0,
+        "durationMs": 0.2451
+      },
+      {
+        "name": "lastReceiptPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.2171
+      },
+      {
+        "name": "lastReceipt",
+        "rowsRead": 1,
+        "rowsWritten": 0,
+        "durationMs": 0.1981
+      },
+      {
+        "name": "accountPeriodsPlan",
+        "rowsRead": 0,
+        "rowsWritten": 0,
+        "durationMs": 0.1781
+      },
+      {
+        "name": "accountPeriods",
+        "rowsRead": 100,
+        "rowsWritten": 0,
+        "durationMs": 0.4891
+      }
+    ]
+  },
+  "queryInsightsBeforeRelease": {
+    "checkedAt": "2026-10-20T00:13:46.841Z",
+    "mode": "GraphQL_only_no_D1_queries",
+    "totalWindow": {
+      "from": "2026-10-20T00:00:00Z",
+      "to": "2026-10-20T00:13:45.925Z"
+    },
+    "queries": [
+      {
+        "avg": {
+          "rowsRead": 2670
+        },
+        "count": 53,
+        "sum": {
+          "rowsRead": 141549,
+          "rowsWritten": 0
+        },
+        "sqlShape": "SELECT m.id,m.published_at AS publishedAt FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?)))\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id\n           AND origin='?' AND status='?' AND started_at>=?)\n       ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,\n         CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1",
+        "querySHA256": "51a5ad99f7ca0bfce1d4f9d1e8713bb54c33dd11c7e722ae70a80a9137e7640f"
+      },
+      {
+        "avg": {
+          "rowsRead": 4814
+        },
+        "count": 10,
+        "sum": {
+          "rowsRead": 48140,
+          "rowsWritten": 0
+        },
+        "sqlShape": "SELECT (SELECT MAX(completed_at) FROM collection_jobs WHERE account_id=? AND origin='?' AND status='?') AS lastFullPassAt,\n       COUNT(*) AS publications,(SELECT COUNT(*) FROM comments c JOIN media cm ON cm.id=c.media_id WHERE cm.account_id=?) AS uniqueComments,\n       SUM(CASE WHEN s.last_complete_at IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation THEN 1 ELSE 0 END) AS stalePublications,\n       SUM(CASE WHEN s.error_code IS NOT NULL OR s.omitted_branches>0 THEN 1 ELSE 0 END) AS partialPublications,\n       COALESCE(SUM(s.omitted_branches),0) AS unverifiedReplyBranches,\n       SUM(CASE WHEN s.unavailable_until>? THEN 1 ELSE 0 END) AS unavailablePublications,\n       (SELECT COALESCE(SUM(json_array_length(cursor,'?')),0) FROM collection_jobs WHERE account_id=? AND origin IN ('?','?') AND status IN ('?','?')) AS pendingReplyBranches\n       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id WHERE m.account_id=? AND m.product_type!='?'",
+        "querySHA256": "51b4c435a3223864601e23d4fa8fe6c5499d016df8a1c8fbe4e52ace30644eca"
+      },
+      {
+        "avg": {
+          "rowsRead": 302
+        },
+        "count": 100,
+        "sum": {
+          "rowsRead": 30248,
+          "rowsWritten": 0
+        },
+        "sqlShape": "SELECT recorded_requests AS recordedRequests,since_at AS sinceAt,usage_percent AS usagePercent,usage_observed_at AS usageObservedAt,blocked_until AS blockedUntil,observed_at AS observedAt,attempts,responses,failures_before_response AS failuresBeforeResponse,timeouts,rate_limited_responses AS rateLimitedResponses,accounting_since_at AS accountingSinceAt,usage_headers_json AS usageHeadersJson,(SELECT COUNT(*) FROM instagram_metric_support WHERE account_id=? AND api_version=? AND expires_at>?) AS cachedUnavailableMetrics FROM instagram_api_state WHERE id=?",
+        "querySHA256": "356a488f6f934c7d64bc37cd8fc12990c46910957b45c7136f453ed6504d87d9"
+      }
+    ],
+    "errors": null
+  },
+  "queryComparison": {
+    "checkedAt": "2026-10-20T00:18:32.718Z",
+    "cases": [
+      {
+        "name": "now",
+        "offsetMs": 0,
+        "before": [],
+        "after": []
+      },
+      {
+        "name": "oneHour",
+        "offsetMs": 3600000,
+        "before": [
+          {
+            "id": "ig_17841402362568040_18114087029111618",
+            "publishedAt": 1792242341000
+          }
+        ],
+        "after": [
+          {
+            "id": "ig_17841402362568040_18114087029111618",
+            "publishedAt": 1792242341000
+          }
+        ]
+      },
+      {
+        "name": "oneWeek",
+        "offsetMs": 604800000,
+        "before": [
+          {
+            "id": "ig_17841402362568040_18088845560430600",
+            "publishedAt": 1789424553000
+          }
+        ],
+        "after": [
+          {
+            "id": "ig_17841402362568040_18088845560430600",
+            "publishedAt": 1789424553000
+          }
+        ]
+      }
+    ],
+    "meta": [
+      {
+        "name": "nowBefore",
+        "rowsRead": 1775,
+        "rowsWritten": 0,
+        "durationMs": 9.7396
+      },
+      {
+        "name": "nowAfter",
+        "rowsRead": 1223,
+        "rowsWritten": 0,
+        "durationMs": 8.3382
+      },
+      {
+        "name": "oneHourBefore",
+        "rowsRead": 1776,
+        "rowsWritten": 0,
+        "durationMs": 11.8833
+      },
+      {
+        "name": "oneHourAfter",
+        "rowsRead": 1258,
+        "rowsWritten": 0,
+        "durationMs": 7.4141
+      },
+      {
+        "name": "oneWeekBefore",
+        "rowsRead": 2023,
+        "rowsWritten": 0,
+        "durationMs": 11.6667
+      },
+      {
+        "name": "oneWeekAfter",
+        "rowsRead": 2266,
+        "rowsWritten": 0,
+        "durationMs": 10.0503
+      }
+    ]
+  },
+  "fix": {
+    "dueCandidatesMaterializedBeforeCorrelatedJobProbes": true,
+    "selectedCommentTargetReusedWithinTick": true,
+    "publicReplayAndWindowUnchanged": true,
+    "noNewMigration": true
+  },
+  "checks": {
+    "command": "pnpm check",
+    "exitCode": 0,
+    "backendTests": 206,
+    "mcpTests": 27,
+    "targetedTests": 24,
+    "node": "24.18.0",
+    "pnpm": "11.15.1"
+  },
+  "telemetry": {
+    "samples": [
+      {
+        "checkedAt": "2026-10-20T00:07:56.118Z",
+        "mode": "GraphQL_only_no_D1_queries",
+        "totalWindow": {
+          "from": "2026-10-20T00:00:00Z",
+          "to": "2026-10-20T00:07:54.907Z"
+        },
+        "total": [
+          {
+            "sum": {
+              "readQueries": 616,
+              "rowsRead": 115675,
+              "rowsWritten": 2240,
+              "writeQueries": 658
+            }
+          }
+        ],
+        "errors": null
+      },
+      {
+        "checkedAt": "2026-10-20T00:13:43.675Z",
+        "mode": "GraphQL_only_no_D1_queries",
+        "totalWindow": {
+          "from": "2026-10-20T00:00:00Z",
+          "to": "2026-10-20T00:13:42.411Z"
+        },
+        "total": [
+          {
+            "sum": {
+              "readQueries": 832,
+              "rowsRead": 227032,
+              "rowsWritten": 2701,
+              "writeQueries": 809
+            }
+          }
+        ],
+        "errors": null
+      },
+      {
+        "checkedAt": "2026-10-20T00:17:20.314Z",
+        "mode": "GraphQL_only_no_D1_queries",
+        "totalWindow": {
+          "from": "2026-10-20T00:00:00Z",
+          "to": "2026-10-20T00:17:19.353Z"
+        },
+        "total": [
+          {
+            "sum": {
+              "readQueries": 945,
+              "rowsRead": 257365,
+              "rowsWritten": 3113,
+              "writeQueries": 962
+            }
+          }
+        ],
+        "errors": null
+      },
+      {
+        "checkedAt": "2026-10-20T00:22:15.346Z",
+        "mode": "GraphQL_only_no_D1_queries",
+        "totalWindow": {
+          "from": "2026-10-20T00:00:00Z",
+          "to": "2026-10-20T00:22:14.327Z"
+        },
+        "total": [
+          {
+            "sum": {
+              "readQueries": 1101,
+              "rowsRead": 355215,
+              "rowsWritten": 3568,
+              "writeQueries": 1138
+            }
+          }
+        ],
+        "errors": null
+      }
+    ],
+    "cumulativeCounterDeltaPerMinuteNotASteadyRate": {
+      "rowsRead": 19903.45,
+      "rowsWritten": 92.55
+    },
+    "shortPostReleaseWindowMinutes": 4.916,
+    "samplingAndIngestionDelay": true,
+    "includesOwnDiagnostics": true,
+    "notSteadyStateOrFullDayCapacityProof": true,
+    "postReleaseDirectWindow": {
+      "checkedAt": "2026-10-20T00:22:49.693Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:17:20Z",
+        "to": "2026-10-20T00:22:48.247Z"
+      },
+      "total": [
+        {
+          "sum": {
+            "readQueries": 115,
+            "rowsRead": 28713,
+            "rowsWritten": 393,
+            "writeQueries": 153
+          }
+        }
+      ],
+      "errors": null
+    },
+    "postReleaseHotQueries": {
+      "checkedAt": "2026-10-20T00:22:50.804Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:17:20Z",
+        "to": "2026-10-20T00:22:14Z"
+      },
+      "queries": [
+        {
+          "avg": {
+            "rowsRead": 2023
+          },
+          "count": 12,
+          "sum": {
+            "rowsRead": 24276,
+            "rowsWritten": 0
+          },
+          "sqlShape": "SELECT m.id,m.published_at AS publishedAt FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?)))\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id\n           AND origin='?' AND status='?' AND started_at>=?)\n       ORDER BY CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1) THEN 1 ELSE 2 END,\n         CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,COALESCE(s.next_refresh_at,0),m.published_at DESC,m.id LIMIT 1",
+          "querySHA256": "51a5ad99f7ca0bfce1d4f9d1e8713bb54c33dd11c7e722ae70a80a9137e7640f"
+        },
+        {
+          "avg": {
+            "rowsRead": 1223
+          },
+          "count": 12,
+          "sum": {
+            "rowsRead": 14676,
+            "rowsWritten": 0
+          },
+          "sqlShape": "WITH candidates AS MATERIALIZED (\n       SELECT m.id,m.account_id,m.published_at,CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?) THEN 1 ELSE 2 END AS priority,COALESCE(s.next_refresh_at,0) AS next_refresh_at\n       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1)))\n) SELECT m.id,m.published_at AS publishedAt FROM candidates m\n       WHERE NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id\n           AND origin='?' AND status='?' AND started_at>=?)\n       ORDER BY m.priority,CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,m.next_refresh_at,m.published_at DESC,m.id LIMIT 1",
+          "querySHA256": "28748b25e6ff6655f806a095927d398664eaf5c76b7e8d0d44917cd1f3678a3c"
+        },
+        {
+          "avg": {
+            "rowsRead": 861
+          },
+          "count": 10,
+          "sum": {
+            "rowsRead": 8610,
+            "rowsWritten": 0
+          },
+          "sqlShape": "SELECT m.id FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT ?)\n      WHERE m.account_id=? AND m.product_type!='?' AND m.unavailable_until<=? AND (m.unavailable_code IS NOT NULL OR (CASE WHEN json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' OR json_extract(s.metrics_json,'?')='?' THEN 1\n  WHEN instr(s.metrics_json,'?')>0 OR instr(s.metrics_json,char(92))>0\n  THEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'?')='?') ELSE 0 END) OR COALESCE(s.observed_at,0) <= ? - CASE WHEN ?-m.published_at < 2*86400000 THEN 3600000 WHEN ?-m.published_at < 8*86400000 THEN 21600000 WHEN ?-m.published_at < 31*86400000 THEN 86400000 ELSE 604800000 END)\n      AND NOT EXISTS (SELECT 1 FROM sync_runs r WHERE r.id=s.operation_id AND r.account_id=m.account_id\n        AND r.kind='?' AND r.target_media_id=m.id AND r.status='?' AND r.started_at>=?)\n      ORDER BY COALESCE(s.observed_at,0),m.published_at DESC LIMIT 1",
+          "querySHA256": "ec2006ddf32be3da9bddf63b32cf313d9939d50d99edb1867858745a43448a88"
+        }
+      ],
+      "errors": null
+    },
+    "releasedQueryTelemetry": {
+      "checkedAt": "2026-10-20T00:21:06.514Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:17:03Z",
+        "to": "2026-10-20T00:21:04.976Z"
+      },
+      "queries": [
+        {
+          "avg": {
+            "rowsRead": 1223
+          },
+          "count": 12,
+          "sum": {
+            "rowsRead": 14676,
+            "rowsWritten": 0
+          },
+          "sqlShape": "WITH candidates AS MATERIALIZED (\n       SELECT m.id,m.account_id,m.published_at,CASE WHEN s.event_generation>s.processed_generation THEN 0 WHEN s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT ?) THEN 1 ELSE 2 END AS priority,COALESCE(s.next_refresh_at,0) AS next_refresh_at\n       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id\n       WHERE m.account_id=? AND m.product_type!='?' AND m.published_at<=?\n         AND COALESCE(s.unavailable_until,0)<=?\n         AND (s.media_id IS NOT NULL OR m.published_at>?-720*3600000 OR NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND origin='?' AND status='?'))\n         AND (s.media_id IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation OR (s.last_complete_at IS NOT NULL AND s.last_comments_count IS NOT (SELECT json_extract(metrics_json,'?') FROM media_snapshots WHERE media_id=m.id ORDER BY observed_at DESC,id DESC LIMIT 1)))\n) SELECT m.id,m.published_at AS publishedAt FROM candidates m\n       WHERE NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND status='?')\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE target_media_id=m.id AND origin='?' AND error_code IS NOT NULL AND next_attempt_at>?)\n         AND NOT EXISTS (SELECT 1 FROM collection_jobs WHERE account_id=m.account_id AND target_media_id=m.id\n           AND origin='?' AND status='?' AND started_at>=?)\n       ORDER BY m.priority,CASE WHEN m.published_at>?-72*3600000 THEN 0 ELSE 1 END,m.next_refresh_at,m.published_at DESC,m.id LIMIT 1",
+          "querySHA256": "28748b25e6ff6655f806a095927d398664eaf5c76b7e8d0d44917cd1f3678a3c"
+        }
+      ],
+      "errors": null
+    },
+    "counterDeltaMayIncludeLateBackfill": true,
+    "failedQueryInsightsAttempt": {
+      "checkedAt": "2026-10-20T00:08:27.767Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:00:00Z",
+        "to": "2026-10-20T00:08:26.721Z"
+      },
+      "recentWindow": {
+        "from": "2026-10-20T04:00:00Z",
+        "to": "2026-10-20T05:00:00Z"
+      },
+      "errors": [
+        {
+          "message": "Rate limiter budget depleted. Please try again after 5 minutes. Refer to this page for more details about rate limits: https://developers.cloudflare.com/analytics/graphql-api/limits/",
+          "path": null,
+          "extensions": {
+            "code": "budget",
+            "timestamp": "2026-10-20T00:08:27.738023358Z",
+            "ray_id": "a4d3c9c3c9424e6d-SEA"
+          }
+        }
+      ]
+    }
+  },
+  "maintenance": {
+    "manualRun": false,
+    "policyUnchanged": true,
+    "filteredQueryInsights": {
+      "checkedAt": "2026-10-20T00:18:04.187Z",
+      "mode": "GraphQL_only_no_D1_queries",
+      "totalWindow": {
+        "from": "2026-10-20T00:00:00Z",
+        "to": "2026-10-20T00:18:03.111Z"
+      },
+      "queries": [],
+      "errors": null
+    },
+    "naturalDailyPassConfirmed": false,
+    "note": "No matching telemetry rows is inconclusive with sampling/ingestion delay. No cleanup forced."
+  },
+  "followUp": {
+    "id": "social-analytics",
+    "localTime": "2026-10-20T10:00:00+05:00",
+    "staleDuplicateD1Paused": true,
+    "duplicateD1_2Paused": true
+  },
+  "dataSafety": {
+    "manualResumeAdvance": false,
+    "jobsRecreated": false,
+    "cursorsReset": false,
+    "analyticsDeleted": false,
+    "paidPlanEnabled": false,
+    "logsEnabled": false,
+    "pluginChanged": false
+  },
+  "limitations": [
+    "Partial source metrics persist for 28 publications; three unavailable objects retain their own retry state.",
+    "Only the first post-reset Stories pass is observed; hourly recurrence needs the 10:00 audit.",
+    "Daily quota capacity remains unproven; short adaptive telemetry contains diagnostics and catch-up.",
+    "Dense synthetic +7-day SELECT reads 2266 vs2023 (+12%); current/+1h SELECTs improve 31%/29%. These future timestamps are read-only simulations, not clock or data changes.",
+    "Old comments pass completed with two skipped media; historical source coverage is incomplete."
+  ]
+}
