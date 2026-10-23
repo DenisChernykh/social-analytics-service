@@ -1,0 +1,369 @@
+{
+  "checkedAt": "2026-10-23T09:01:36.984Z",
+  "sourceCommit": "c5900d2a92516a51eac908df9c4f4b02ae53ea07",
+  "health": {
+    "status": "ok",
+    "revision": "0.3.12"
+  },
+  "backend": {
+    "deployment": {
+      "id": "31e30a6c-3627-4ff9-8671-09445edd663f",
+      "created_on": "2026-10-23T08:57:35.272288Z",
+      "versions": [
+        {
+          "version_id": "6c266fe6-2608-4900-b07c-fee9c5a972c3",
+          "percentage": 100
+        }
+      ]
+    },
+    "bundle": {
+      "sha256": "cd9057f0b19bee7e42bec83d5abf24cfaac681aefd944d9cf038cdeab09ce400",
+      "remoteEqualsLocal": true
+    },
+    "bindingsUnchanged": true,
+    "observabilityUnchanged": true
+  },
+  "migration": {
+    "id": 17,
+    "name": "0016_great_firedrake.sql",
+    "applied_at": "2026-10-23 08:57:12"
+  },
+  "httpCatchup": {
+    "completed": true,
+    "rowsRead": 18281,
+    "rowsWritten": 1,
+    "oldUnexpiredOperations": 0
+  },
+  "scheduleUnchanged": true,
+  "historicalControls": [
+    {
+      "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+      "sha256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee",
+      "unchanged": true
+    },
+    {
+      "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+      "sha256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac",
+      "unchanged": true
+    },
+    {
+      "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+      "sha256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428",
+      "unchanged": true
+    },
+    {
+      "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+      "sha256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3",
+      "unchanged": true
+    },
+    {
+      "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+      "sha256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9",
+      "unchanged": true
+    },
+    {
+      "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+      "sha256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5",
+      "unchanged": true
+    },
+    {
+      "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+      "sha256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11",
+      "unchanged": true
+    },
+    {
+      "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+      "sha256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d",
+      "unchanged": true
+    },
+    {
+      "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+      "sha256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d",
+      "unchanged": true
+    },
+    {
+      "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+      "sha256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09",
+      "unchanged": true
+    },
+    {
+      "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+      "sha256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70",
+      "unchanged": true
+    },
+    {
+      "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+      "sha256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688",
+      "unchanged": true
+    }
+  ],
+  "counterChecks": [
+    {
+      "projection": "media.collection_status_json",
+      "rowsChecked": 264,
+      "consistent": true,
+      "verificationRowsRead": 7571
+    },
+    {
+      "projection": "accounts.activity_periods_json",
+      "rowsChecked": 1,
+      "consistent": true,
+      "verificationRowsRead": 4252
+    },
+    {
+      "projection": "accounts.collection_jobs_json",
+      "rowsChecked": 1,
+      "consistent": true,
+      "verificationRowsRead": 2439
+    },
+    {
+      "projection": "instagram_api_state.object_freshness_json",
+      "rowsChecked": 1,
+      "consistent": true,
+      "verificationRowsRead": 18281
+    },
+    {
+      "projection": "comment_media_state.unique_saved",
+      "rowsChecked": 244,
+      "consistent": true,
+      "verificationRowsRead": 4320
+    }
+  ],
+  "status": {
+    "http": 200,
+    "mcp": {
+      "checkedAt": "2026-10-23T08:58:56.232Z",
+      "isError": false,
+      "returnedKeys": [
+        "schedule",
+        "jobs",
+        "mediaRefresh",
+        "jobsPage",
+        "diagnostics",
+        "freshness",
+        "dataFreshness",
+        "capacity",
+        "comments",
+        "policy",
+        "coverage",
+        "api",
+        "note"
+      ],
+      "scheduleEnabled": true,
+      "jobsPage": {
+        "hasMore": true,
+        "limit": 20,
+        "cutoff": 1792745926984,
+        "total": 1219,
+        "calculatedAt": 1792745926984,
+        "semantics": "Stable createdAt/id keyset, createdAt<=cutoff; states/aggregates are live at calculatedAt; no mutable status filter."
+      }
+    },
+    "oldAndNewComponentsEqual": true,
+    "pointMeasurement": {
+      "checkedAt": "2026-10-23T09:01:22.871Z",
+      "baseline": "52b8be296d4fbe803f0045778187d8b2002477e4",
+      "scope": "D1Collection status components, period observations, API quota state; account/schedule HTTP wrapper excluded. One read-only comparison on live production.",
+      "before": {
+        "queries": 15,
+        "rowsRead": 71140,
+        "rowsWritten": 0,
+        "measurements": [
+          {
+            "sql": "select \"id\", \"account_id\", \"origin\", \"target_media_id\", \"automatic\", \"status\", \"cursor\", \"pages\", \"collected\", \"media_processed\", \"skipped_media\", \"skipped_periods\", \"attempt\", \"failures\", \"next_attempt_at\", \"started_at\", \"completed_at\", \"last_success_at\", \"error_code\", \"latency_origin\", \"http_attempts_since_at\", \"first_attempt_at\", \"last_attempt_at\", \"first_useful_observation_at\", \"last_useful_observation_at\", \"http_attempts\", \"last_step_duration_ms\", \"last_step_http_attempts\", \"lease_token\", \"lease_expires_at\" from \"collection_jobs\" where (\"collection_jobs\".\"account_id\" = ? and \"collection_jobs\".\"started_at\" <= ?) order by \"collection_jobs\".\"started_at\" DESC, \"collection_jobs\".\"id\" DESC limit ?",
+            "rowsRead": 21,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT origin,status,COUNT(*) count,SUM(status='running' AND next_attempt_at<=?) due,MIN(CASE WHEN status='running' THEN next_attempt_at END) oldestDue,SUM(status='running' AND origin IN ('scheduled','stories') AND started_at+900000<? AND first_attempt_at IS NULL) atRiskFresh,SUM(status='running' AND origin IN ('scheduled','stories','comments_refresh') AND next_attempt_at<=?) freshDue,MAX(last_attempt_at) lastAttempt,MAX(last_success_at) lastSuccess,MAX(last_useful_observation_at) lastUsefulObservation FROM collection_jobs WHERE account_id=? AND started_at<=? GROUP BY origin,status",
+            "rowsRead": 3657,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "WITH observed AS (\n      SELECT s.media_id,MAX(s.observed_at) lastSuccess,\n        MAX(CASE WHEN json_extract(s.metrics_json,'$.views.value') IS NOT NULL\n          OR json_extract(s.metrics_json,'$.reach.value') IS NOT NULL\n          OR json_extract(s.metrics_json,'$.likes.value') IS NOT NULL\n          OR json_extract(s.metrics_json,'$.comments.value') IS NOT NULL\n          OR json_extract(s.story_insights_json,'$.navigationTotal.value') IS NOT NULL\n          THEN s.observed_at\n          WHEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) v WHERE json_extract(v.value,'$.value') IS NOT NULL)\n            OR EXISTS (SELECT 1 FROM json_each(s.story_insights_json,'$.navigation') v WHERE json_extract(v.value,'$.value') IS NOT NULL)\n          THEN s.observed_at END) lastUsefulObservation,\n        SUM(s.provenance_json IS NULL) legacyProvenanceUnknown\n      FROM media_snapshots s JOIN media m ON m.id=s.media_id WHERE m.account_id=? GROUP BY s.media_id\n    ),attempted AS (\n      SELECT object_id,MAX(requested_at) lastAttempt,MAX(CASE WHEN json_extract(payload_json,'$.result')='success' THEN received_at END) lastCheck FROM instagram_http_attempts WHERE account_id=? GROUP BY object_id\n    ) SELECT m.product_type kind,COUNT(*) objects,MAX(a.lastAttempt) lastAttempt,MAX(a.lastCheck) lastCheck,MAX(o.lastSuccess) lastSuccess,MAX(o.lastUsefulObservation) lastUsefulObservation,COALESCE(SUM(o.legacyProvenanceUnknown),0) legacyProvenanceUnknown\n      FROM media m LEFT JOIN observed o ON o.media_id=m.id LEFT JOIN attempted a ON a.object_id=m.external_id WHERE m.account_id=? GROUP BY m.product_type",
+            "rowsRead": 38157,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT\n      (SELECT COUNT(*) FROM sync_runs WHERE account_id=? AND status='running' AND lease_expires_at<=?) expiredSyncAttempts,\n      (SELECT COUNT(*) FROM account_insights WHERE account_id=? AND json_extract(payload_json,'$.status')='running' AND json_extract(payload_json,'$.requestedAt')<=?) expiredInsightAttempts,\n      (SELECT COUNT(*) FROM comment_collections c JOIN media m ON m.id=c.media_id WHERE m.account_id=? AND json_extract(c.result_json,'$.status')='running' AND json_extract(c.result_json,'$.startedAt')<=?) expiredCommentAttempts,\n      (SELECT COUNT(*) FROM collection_jobs WHERE account_id=? AND lease_expires_at>?) leasesInUse",
+            "rowsRead": 1515,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT error_code,COUNT(*) publications,\n      SUM(missing) missingSnapshots,SUM(stale) staleSnapshots,\n      SUM(until_at>? OR (due AND identity_wait)) deferred,\n      SUM(until_at<=? AND due AND NOT identity_wait) ready,\n      MIN(CASE WHEN until_at>? OR (due AND identity_wait)\n        THEN MAX(until_at,CASE WHEN due AND identity_wait THEN ? ELSE 0 END) END) nextAttemptAt\n      FROM (SELECT m.unavailable_code error_code,\n        m.unavailable_until until_at,\n        COALESCE(r.kind='media' AND r.status='completed'\n          AND r.account_id=m.account_id AND r.target_media_id=m.id AND r.started_at>=?,0) identity_wait,\n        s.id IS NULL missing,\n        s.id IS NOT NULL AND s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END stale,\n        m.unavailable_code IS NOT NULL OR s.id IS NULL OR\n          (CASE WHEN json_extract(s.metrics_json,'$.views.reason')='request_deferred' OR json_extract(s.metrics_json,'$.reach.reason')='request_deferred' OR json_extract(s.metrics_json,'$.likes.reason')='request_deferred' OR json_extract(s.metrics_json,'$.comments.reason')='request_deferred' OR json_extract(s.metrics_json,'$.saves.reason')='request_deferred' OR json_extract(s.metrics_json,'$.shares.reason')='request_deferred' OR json_extract(s.metrics_json,'$.totalInteractions.reason')='request_deferred' OR json_extract(s.metrics_json,'$.totalWatchTimeMs.reason')='request_deferred' OR json_extract(s.metrics_json,'$.averageWatchTimeMs.reason')='request_deferred' OR json_extract(s.metrics_json,'$.skipRate.reason')='request_deferred' OR json_extract(s.metrics_json,'$.reposts.reason')='request_deferred' OR json_extract(s.metrics_json,'$.facebookViews.reason')='request_deferred' OR json_extract(s.metrics_json,'$.crosspostedViews.reason')='request_deferred' OR json_extract(s.metrics_json,'$.follows.reason')='request_deferred' OR json_extract(s.metrics_json,'$.profileVisits.reason')='request_deferred' THEN 1\n  WHEN instr(s.metrics_json,'request_deferred')>0 OR instr(s.metrics_json,char(92))>0\n  THEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) metric WHERE json_extract(metric.value,'$.reason')='request_deferred') ELSE 0 END) OR\n          s.observed_at<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END due\n        FROM media m LEFT JOIN media_snapshots s ON s.id=(SELECT latest.id FROM media_snapshots latest WHERE latest.media_id=m.id ORDER BY latest.observed_at DESC LIMIT 1)\n        LEFT JOIN sync_runs r ON r.id=s.operation_id\n        WHERE m.account_id=? AND m.product_type!='STORY') GROUP BY error_code",
+            "rowsRead": 1240,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT (SELECT MAX(completed_at) FROM collection_jobs WHERE account_id=? AND origin='comments' AND status='completed') AS lastFullPassAt,\n       COUNT(*) AS publications,(SELECT COUNT(*) FROM comments c JOIN media cm ON cm.id=c.media_id WHERE cm.account_id=?) AS uniqueComments,\n       SUM(CASE WHEN s.last_complete_at IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation THEN 1 ELSE 0 END) AS stalePublications,\n       SUM(CASE WHEN s.error_code IS NOT NULL OR s.omitted_branches>0 THEN 1 ELSE 0 END) AS partialPublications,\n       COALESCE(SUM(s.omitted_branches),0) AS unverifiedReplyBranches,\n       SUM(CASE WHEN s.unavailable_until>? THEN 1 ELSE 0 END) AS unavailablePublications,\n       (SELECT COALESCE(SUM(json_array_length(cursor,'$.parents')),0) FROM collection_jobs WHERE account_id=? AND origin IN ('comments','comments_refresh') AND status IN ('running','failed')) AS pendingReplyBranches\n       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id WHERE m.account_id=? AND m.product_type!='STORY'",
+            "rowsRead": 4859,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT j.id,j.status,j.media_processed AS mediaProcessed,MAX(0,(SELECT COUNT(*) FROM media WHERE account_id=j.account_id AND product_type!='STORY' AND published_at<=j.started_at)-j.media_processed) AS remainingPublications,j.collected AS observations,j.error_code AS errorCode FROM collection_jobs j WHERE j.account_id=? AND j.origin='comments' AND j.status IN ('running','failed') ORDER BY CASE status WHEN 'running' THEN 0 ELSE 1 END,started_at DESC,id DESC LIMIT 1",
+            "rowsRead": 3,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT subscription_confirmed_at AS subscriptionConfirmedAt,last_received_at AS lastReceivedAt,last_event_at AS lastEventAt FROM comment_webhook_state WHERE account_id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT\n      SUM(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN 1 ELSE 0 END) AS measuredPublications,\n      SUM(CASE WHEN m.discovery_source='history_inferred' THEN 1 ELSE 0 END) AS inferredPublications,\n      AVG(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN MAX(0,m.first_discovered_at-m.published_at)/60000.0 END) AS averageLagMinutes,\n      MAX(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN MAX(0,m.first_discovered_at-m.published_at)/60000.0 END) AS maximumLagMinutes,\n      SUM(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at AND m.first_discovered_at-m.published_at>3600000 THEN 1 ELSE 0 END) AS overOneHour\n      FROM media m JOIN accounts a ON a.id=m.account_id WHERE m.account_id=?",
+            "rowsRead": 265,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT MAX(CASE WHEN status='completed' THEN completed_at END) AS lastFullPassAt,MAX(CASE WHEN status='running' THEN id END) AS currentJobId FROM collection_jobs WHERE account_id=? AND origin IN ('manual','catalogue')",
+            "rowsRead": 5,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT m.id,m.published_at publishedAt,m.product_type productType,a.connected_at connectedAt FROM media m JOIN accounts a ON a.id=m.account_id WHERE m.account_id=?",
+            "rowsRead": 265,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "WITH targets(hours,tolerance) AS (VALUES (?,?),(?,?),(?,?),(?,?),(?,?),(?,?),(?,?))\n        SELECT m.id mediaId,MIN(s.observed_at) observedAt,1 usable\n        FROM media m CROSS JOIN targets t JOIN media_snapshots s ON s.media_id=m.id\n          AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000\n            AND m.published_at+(t.hours+t.tolerance)*3600000\n        WHERE m.account_id=? AND m.product_type!='STORY' AND s.observed_at<=?\n          AND json_extract(s.metrics_json,'$.reach.value') IS NOT NULL\n        GROUP BY m.id,t.hours",
+            "rowsRead": 16931,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT effective_from effectiveFrom,effective_to effectiveTo,enabled,version,json_extract(policy_json,'$.availability') availability,json_extract(policy_json,'$.grantExpiresAt') grantExpiresAt FROM collection_policy_history WHERE account_id=? ORDER BY effective_from",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT json_extract(payload_json,'$.input.from') AS \"from\",json_extract(payload_json,'$.input.to') AS \"to\",MAX(observed_at) AS observedAt FROM account_insights\n       WHERE account_id=? AND observed_at>=? AND json_extract(payload_json,'$.status')='completed'\n         AND NOT EXISTS (SELECT 1 FROM json_each(payload_json,'$.values') v WHERE json_extract(v.value,'$.reason')='request_deferred')\n         AND json_extract(payload_json,'$.apiVersion')=? AND json_extract(payload_json,'$.input.kind')='activity'\n         AND json_extract(payload_json,'$.input.timeZone')=? AND json_extract(payload_json,'$.input.metricType')='total_value'\n         AND json_extract(payload_json,'$.input.breakdown') IS NULL\n         AND (SELECT COUNT(DISTINCT saved.value) FROM json_each(account_insights.payload_json,'$.input.metrics') saved\n           WHERE saved.value IN (?,?,?,?,?,?,?,?,?,?,?,?))=?\n       GROUP BY json_extract(payload_json,'$.input.from'),json_extract(payload_json,'$.input.to')",
+            "rowsRead": 4053,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT recorded_requests AS recordedRequests,since_at AS sinceAt,usage_percent AS usagePercent,usage_observed_at AS usageObservedAt,blocked_until AS blockedUntil,observed_at AS observedAt,attempts,responses,failures_before_response AS failuresBeforeResponse,timeouts,rate_limited_responses AS rateLimitedResponses,accounting_since_at AS accountingSinceAt,usage_headers_json AS usageHeadersJson,(SELECT COUNT(*) FROM instagram_metric_support WHERE account_id=? AND api_version=? AND expires_at>?) AS cachedUnavailableMetrics FROM instagram_api_state WHERE id=?",
+            "rowsRead": 167,
+            "rowsWritten": 0
+          }
+        ]
+      },
+      "after": {
+        "queries": 19,
+        "rowsRead": 5493,
+        "rowsWritten": 0,
+        "measurements": [
+          {
+            "sql": "select \"id\", \"account_id\", \"origin\", \"target_media_id\", \"automatic\", \"status\", \"cursor\", \"pages\", \"collected\", \"media_processed\", \"skipped_media\", \"skipped_periods\", \"attempt\", \"failures\", \"next_attempt_at\", \"started_at\", \"completed_at\", \"last_success_at\", \"error_code\", \"latency_origin\", \"http_attempts_since_at\", \"first_attempt_at\", \"last_attempt_at\", \"first_useful_observation_at\", \"last_useful_observation_at\", \"http_attempts\", \"last_step_duration_ms\", \"last_step_http_attempts\", \"lease_token\", \"lease_expires_at\" from \"collection_jobs\" where (\"collection_jobs\".\"account_id\" = ? and \"collection_jobs\".\"started_at\" <= ?) order by \"collection_jobs\".\"started_at\" DESC, \"collection_jobs\".\"id\" DESC limit ?",
+            "rowsRead": 21,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT collection_jobs_json counters FROM accounts WHERE id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT origin,status,COUNT(*) count,\n      SUM(next_attempt_at<=?) due,MIN(next_attempt_at) oldestDue,\n      SUM(origin IN ('scheduled','stories') AND started_at+900000<? AND first_attempt_at IS NULL) atRiskFresh,\n      SUM(origin IN ('scheduled','stories','comments_refresh') AND next_attempt_at<=?) freshDue,\n      MAX(last_attempt_at) lastAttempt,MAX(last_success_at) lastSuccess,MAX(last_useful_observation_at) lastUsefulObservation\n      FROM collection_jobs INDEXED BY collection_running_account WHERE account_id=? AND status='running' AND started_at<=? GROUP BY origin,status",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT external_id,product_type,collection_status_json FROM media WHERE account_id=?",
+            "rowsRead": 264,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT object_freshness_json FROM instagram_api_state WHERE account_id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT\n      (SELECT COUNT(*) FROM sync_runs WHERE account_id=? AND status='running' AND lease_expires_at<=?) expiredSyncAttempts,\n      (SELECT COUNT(*) FROM account_insights WHERE account_id=? AND json_extract(payload_json,'$.status')='running' AND json_extract(payload_json,'$.requestedAt')<=?) expiredInsightAttempts,\n      (SELECT COUNT(*) FROM comment_collections c JOIN media m ON m.id=c.media_id WHERE m.account_id=? AND json_extract(c.result_json,'$.status')='running' AND json_extract(c.result_json,'$.startedAt')<=?) expiredCommentAttempts,\n      ((SELECT COUNT(*) FROM collection_jobs INDEXED BY collection_running_account WHERE account_id=? AND status='running' AND lease_expires_at>?)\n       +(SELECT COUNT(*) FROM collection_jobs INDEXED BY collection_terminal_leases WHERE account_id=? AND status!='running' AND lease_expires_at IS NOT NULL AND lease_expires_at>?)) leasesInUse",
+            "rowsRead": 297,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT error_code,COUNT(*) publications,\n      SUM(missing) missingSnapshots,SUM(stale) staleSnapshots,\n      SUM(until_at>? OR (due AND identity_wait)) deferred,\n      SUM(until_at<=? AND due AND NOT identity_wait) ready,\n      MIN(CASE WHEN until_at>? OR (due AND identity_wait)\n        THEN MAX(until_at,CASE WHEN due AND identity_wait THEN ? ELSE 0 END) END) nextAttemptAt\n      FROM (SELECT m.unavailable_code error_code,\n        m.unavailable_until until_at,\n        COALESCE(r.kind='media' AND r.status='completed'\n          AND r.account_id=m.account_id AND r.target_media_id=m.id AND r.started_at>=?,0) identity_wait,\n        json_extract(m.collection_status_json,'$.latest.id') IS NULL missing,\n        json_extract(m.collection_status_json,'$.latest.id') IS NOT NULL AND json_extract(m.collection_status_json,'$.latest.at')<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END stale,\n        m.unavailable_code IS NOT NULL OR json_extract(m.collection_status_json,'$.latest.id') IS NULL OR\n          COALESCE(json_extract(m.collection_status_json,'$.latest.deferred'),0) OR\n          json_extract(m.collection_status_json,'$.latest.at')<=? - CASE WHEN ?-m.published_at<2*86400000 THEN 3600000 WHEN ?-m.published_at<8*86400000 THEN 21600000 WHEN ?-m.published_at<31*86400000 THEN 86400000 ELSE 604800000 END due\n        FROM media m LEFT JOIN sync_runs r ON r.id=json_extract(m.collection_status_json,'$.latest.operationId')\n        WHERE m.account_id=? AND m.product_type!='STORY') GROUP BY error_code",
+            "rowsRead": 752,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT collection_jobs_json counters FROM accounts WHERE id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT COALESCE(SUM(s.unique_saved),0) count FROM comment_media_state s JOIN media m ON m.id=s.media_id WHERE m.account_id=?",
+            "rowsRead": 508,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT COUNT(*) AS publications,\n       SUM(CASE WHEN s.last_complete_at IS NULL OR s.next_refresh_at<=? OR s.event_generation>s.processed_generation THEN 1 ELSE 0 END) AS stalePublications,\n       SUM(CASE WHEN s.error_code IS NOT NULL OR s.omitted_branches>0 THEN 1 ELSE 0 END) AS partialPublications,\n       COALESCE(SUM(s.omitted_branches),0) AS unverifiedReplyBranches,\n       SUM(CASE WHEN s.unavailable_until>? THEN 1 ELSE 0 END) AS unavailablePublications,\n       (SELECT COALESCE(SUM(json_array_length(cursor,'$.parents')),0) FROM collection_jobs INDEXED BY collection_running_account WHERE account_id=? AND origin IN ('comments','comments_refresh') AND status='running') AS pendingReplyBranches\n       FROM media m LEFT JOIN comment_media_state s ON s.media_id=m.id WHERE m.account_id=? AND m.product_type!='STORY'",
+            "rowsRead": 508,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT j.id,j.status,j.media_processed AS mediaProcessed,MAX(0,(SELECT COUNT(*) FROM media WHERE account_id=j.account_id AND product_type!='STORY' AND published_at<=j.started_at)-j.media_processed) AS remainingPublications,j.collected AS observations,j.error_code AS errorCode FROM collection_jobs j WHERE j.id=COALESCE((SELECT id FROM collection_jobs WHERE account_id=? AND origin='comments' AND status='running' ORDER BY started_at DESC,id DESC LIMIT 1),(SELECT id FROM collection_jobs WHERE account_id=? AND origin='comments' AND status='failed' ORDER BY started_at DESC,id DESC LIMIT 1))",
+            "rowsRead": 2438,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT subscription_confirmed_at AS subscriptionConfirmedAt,last_received_at AS lastReceivedAt,last_event_at AS lastEventAt FROM comment_webhook_state WHERE account_id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT\n      SUM(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN 1 ELSE 0 END) AS measuredPublications,\n      SUM(CASE WHEN m.discovery_source='history_inferred' THEN 1 ELSE 0 END) AS inferredPublications,\n      AVG(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN MAX(0,m.first_discovered_at-m.published_at)/60000.0 END) AS averageLagMinutes,\n      MAX(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at THEN MAX(0,m.first_discovered_at-m.published_at)/60000.0 END) AS maximumLagMinutes,\n      SUM(CASE WHEN m.discovery_source='collection' AND m.published_at>=a.connected_at AND m.first_discovered_at-m.published_at>3600000 THEN 1 ELSE 0 END) AS overOneHour\n      FROM media m JOIN accounts a ON a.id=m.account_id WHERE m.account_id=?",
+            "rowsRead": 265,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT collection_jobs_json counters FROM accounts WHERE id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT MAX(id) id FROM collection_jobs INDEXED BY collection_running_account WHERE account_id=? AND status='running' AND origin IN ('manual','catalogue')",
+            "rowsRead": 0,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT m.id,m.published_at publishedAt,m.product_type productType,a.connected_at connectedAt,m.collection_status_json counters FROM media m JOIN accounts a ON a.id=m.account_id WHERE m.account_id=?",
+            "rowsRead": 265,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT effective_from effectiveFrom,effective_to effectiveTo,enabled,version,json_extract(policy_json,'$.availability') availability,json_extract(policy_json,'$.grantExpiresAt') grantExpiresAt FROM collection_policy_history WHERE account_id=? ORDER BY effective_from",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT activity_periods_json periods FROM accounts WHERE id=?",
+            "rowsRead": 1,
+            "rowsWritten": 0
+          },
+          {
+            "sql": "SELECT recorded_requests AS recordedRequests,since_at AS sinceAt,usage_percent AS usagePercent,usage_observed_at AS usageObservedAt,blocked_until AS blockedUntil,observed_at AS observedAt,attempts,responses,failures_before_response AS failuresBeforeResponse,timeouts,rate_limited_responses AS rateLimitedResponses,accounting_since_at AS accountingSinceAt,usage_headers_json AS usageHeadersJson,(SELECT COUNT(*) FROM instagram_metric_support WHERE account_id=? AND api_version=? AND expires_at>?) AS cachedUnavailableMetrics FROM instagram_api_state WHERE id=?",
+            "rowsRead": 167,
+            "rowsWritten": 0
+          }
+        ]
+      },
+      "reductionPercent": 92.27860556648861,
+      "periodTimeZone": "Asia/Yekaterinburg"
+    }
+  },
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 225,
+    "mcpTests": 28
+  },
+  "actions": {
+    "manualCollectionCommand": false,
+    "newCloudResources": false,
+    "mcpRedeployed": false,
+    "analyticsDeleted": false
+  },
+  "limitations": [
+    "Read reduction is a single production status-component comparison, not measured daily D1 savings. Account/schedule HTTP wrapper SQL excluded. Counter maintenance adds writes when source analytics changes."
+  ]
+}
