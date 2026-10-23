@@ -1,5 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
-import type { CollectionCommands } from "../modules/collection";
+import { createInsightMaintenance } from "../modules/account-insights";
+import { type CollectionCommands, createCommentRecovery } from "../modules/collection";
+import { createCommentMaintenance } from "../modules/community";
 import { createInstagramMaintenance } from "../modules/instagram";
 import type { RuntimeBindings } from "../platform/config/runtime-config";
 import { databaseDailyLimitError } from "../platform/database/d1-errors";
@@ -93,6 +95,26 @@ export class CollectionRunner extends DurableObject<RuntimeBindings> {
     }
   }
 
+  private async recoverAttempts() {
+    const now = Date.now();
+    const next = (await this.ctx.storage.get<number>("attemptExpiryAt")) ?? 0;
+    if (next > now) return;
+    // Reserve the next check before D1 work, also across eviction/crashes.
+    await this.ctx.storage.put("attemptExpiryAt", now + recoveryIntervalMs);
+    try {
+      if (!(await this.ctx.storage.get<boolean>("completeOmittedRepliesV1"))) {
+        if (await createCommentRecovery(this.env).queueIncomplete(now))
+          await this.ctx.storage.put("completeOmittedRepliesV1", true);
+      }
+      await createInsightMaintenance(this.env).expireAttempts(now);
+      await createCommentMaintenance(this.env).expireAttempts(now);
+    } catch (error) {
+      // Cleanup failure must not stop collection. Daily D1 exhaustion still
+      // pauses every kind of database work through the runner's normal guard.
+      if (databaseDailyLimitError(error, Date.now())) throw error;
+    }
+  }
+
   private async blockedError() {
     const until = (await this.ctx.storage.get<number>("databaseBlockedUntil")) ?? 0;
     if (until > Date.now())
@@ -152,6 +174,7 @@ export class CollectionRunner extends DurableObject<RuntimeBindings> {
       // cannot leave a successful claim without another recovery opportunity.
       await this.armRecovery();
       try {
+        await this.recoverAttempts();
         const executor = this.executor();
         const maintenance = await this.maintenanceWake();
         if (maintenance.nextAt <= Date.now()) await this.maintain(maintenance);

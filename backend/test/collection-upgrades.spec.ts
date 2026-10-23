@@ -280,7 +280,7 @@ describe("calendar period history", () => {
 });
 
 describe("bounded comment fallback and object availability", () => {
-  it("probes at most two omitted branches, preserves authors and reports the remaining unknown branches", async () => {
+  it("verifies all omitted branches, preserves authors and reports no unknown branches after exhaustion", async () => {
     const f = await ready();
     vi.mocked(f.transport.comments).mockImplementation(async (_token, object, replies) => ({
       items: replies
@@ -314,17 +314,16 @@ describe("bounded comment fallback and object availability", () => {
         : {}),
     }));
     const job = await f.collector.start(accountId, crypto.randomUUID(), "comments");
-    await f.collector.advance(job.id);
-    await f.collector.advance(job.id);
+    for (let step = 0; step < 5; step++) await f.collector.advance(job.id);
     expect(await f.collector.advance(job.id)).toMatchObject({
       status: "completed",
-      pages: 3,
-      collected: 7,
+      pages: 6,
+      collected: 10,
     });
-    expect(f.transport.comments).toHaveBeenCalledTimes(3);
+    expect(f.transport.comments).toHaveBeenCalledTimes(6);
     expect((await f.collector.status(accountId)).comments).toMatchObject({
-      unverifiedReplyBranches: 3,
-      partialPublications: 1,
+      unverifiedReplyBranches: 0,
+      partialPublications: 0,
     });
     const response = await f.request(`/api/media/${accountId}_${sampleMedia.id}/comments`);
     expect(await response.json()).toMatchObject({

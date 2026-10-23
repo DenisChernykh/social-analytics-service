@@ -181,7 +181,11 @@ export class AccountInsights {
       await this.store.finish(collection);
       throw error;
     }
-    await this.store.finish(collection);
+    if (!(await this.store.finish(collection)))
+      throw new ApplicationError(
+        "COLLECTION_EXPIRED",
+        "The insight attempt no longer owns its reservation.",
+      );
     return collection;
   }
   async history(

@@ -15,7 +15,7 @@ export class Comments {
   async collection(id: string) {
     const result = await this.store.collection(id);
     if (!result) throw new ApplicationError("NOT_FOUND", "The comment collection was not found.");
-    return result.status === "running" && this.clock() - result.startedAt > 15 * 60_000
+    return result.status === "running" && this.clock() - result.startedAt >= 15 * 60_000
       ? {
           ...result,
           persistedStatus: result.status,

@@ -2,6 +2,7 @@ import type { RuntimeBindings } from "../../platform/config/runtime-config";
 import { Collect } from "./application/collect";
 import type { CollectionAnalytics, CollectionComments } from "./application/ports";
 import { D1Collection } from "./infrastructure/d1-collection";
+import { D1CommentRecovery } from "./infrastructure/d1-comment-recovery";
 
 export { collectionExecution } from "./application/execution-policy";
 export type CollectionCommands = Pick<Collect, "start" | "advance" | "control" | "configure">;
@@ -30,4 +31,8 @@ export function createCollectionOperations(env: RuntimeBindings, options: Collec
     operationId,
     () => crypto.randomUUID(),
   );
+}
+
+export function createCommentRecovery(env: RuntimeBindings) {
+  return new D1CommentRecovery(env.DB);
 }

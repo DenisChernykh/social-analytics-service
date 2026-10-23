@@ -172,11 +172,11 @@ describe("bounded expanded comment collection (#18)", () => {
       bytes = 0;
       const job = await f.collector.start(accountId, crypto.randomUUID(), "comments");
       let result = job;
-      for (let step = 0; result.status === "running" && step < 12; step++)
+      for (let step = 0; result.status === "running" && step < 80; step++)
         result = await f.collector.advance(job.id);
       expect(result).toMatchObject({
         status: "completed",
-        pages: 3,
+        pages: 45,
         mediaProcessed: 1,
         collected: 62,
       });
@@ -184,7 +184,7 @@ describe("bounded expanded comment collection (#18)", () => {
         "SELECT id,parent_id,text,published_at FROM comments ORDER BY id",
       ).all();
       expect(after.results).toEqual(before.results);
-      expect(requests).toBe(3);
+      expect(requests).toBe(45);
       const measured = {
         requests,
         bytes,
@@ -192,7 +192,10 @@ describe("bounded expanded comment collection (#18)", () => {
           await env.DB.prepare("SELECT total FROM benchmark_writes").first<{ total: number }>()
         )?.total,
       };
-      expect(measured.writes).toBeLessThan(old.writes ?? 0);
+      // Full verification now includes all 44 omitted edges, not a two-root
+      // sample. Compare request savings without claiming the old write saving.
+      expect(requests).toBeLessThan(old.requests);
+      expect(measured.writes).toBeGreaterThan(0);
       expect(measured.bytes).toBeGreaterThan(0);
       expect((await f.collector.status(accountId)).comments).toMatchObject({
         uniqueComments: 62,
@@ -203,7 +206,7 @@ describe("bounded expanded comment collection (#18)", () => {
         coverage: {
           uniqueSaved: 62,
           lastCompleteAt: f.now(),
-          omittedReplyBranches: 42,
+          omittedReplyBranches: 0,
           completeHistory: false,
         },
       });
@@ -214,6 +217,44 @@ describe("bounded expanded comment collection (#18)", () => {
           await env.DB.prepare(`DROP TRIGGER benchmark_${table}_${event}`).run();
       await env.DB.prepare("DROP TABLE benchmark_writes").run();
     }
+  });
+
+  it("verifies omitted edges beyond the first two on every outer page and resumes from saved checkpoints", async () => {
+    const queried: string[] = [];
+    const f = await ready(async (input) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith("/comments")) {
+        const second = url.searchParams.get("after") === "second";
+        return Response.json({
+          data: Array.from({ length: 4 }, (_, i) =>
+            comment(String(second && i === 0 ? 103 : (second ? 200 : 100) + i)),
+          ),
+          ...(!second
+            ? { paging: { next: "https://graph.instagram.com/next", cursors: { after: "second" } } }
+            : {}),
+        });
+      }
+      const parent = url.pathname.split("/").at(-2) as string;
+      queried.push(parent);
+      return Response.json({ data: parent === "203" ? [comment("900", parent)] : [] });
+    });
+    const job = await f.collector.start(accountId, crypto.randomUUID(), "comments");
+    let result = job;
+    for (let step = 0; result.status === "running" && step < 20; step++) {
+      // A new executor must continue the stored queue, without an in-memory cache.
+      result = await createCollectionExecutor(env, { transport: () => f.transport }, f.now).advance(
+        job.id,
+      );
+    }
+    expect(result).toMatchObject({ status: "completed", pages: 9, collected: 9 });
+    expect(queried).toEqual(["100", "101", "102", "103", "201", "202", "203"]);
+    expect((await f.collector.status(accountId)).comments).toMatchObject({
+      partialPublications: 0,
+      unverifiedReplyBranches: 0,
+    });
+    expect(await env.DB.prepare("SELECT parent_id FROM comments WHERE id='900'").first()).toEqual({
+      parent_id: "203",
+    });
   });
 
   it("continues independent long branches, empty intermediate pages and an outer continuation; after without next ends a branch", async () => {

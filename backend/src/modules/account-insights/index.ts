@@ -130,3 +130,7 @@ export function createInsightOperations(env: RuntimeBindings, options: InsightOp
 }
 export type { InsightCollection, InsightInput } from "./domain/model";
 export type { ActivityPeriod, ActivityPeriodPlan } from "./domain/periods";
+
+export function createInsightMaintenance(env: RuntimeBindings) {
+  return new D1Insights(env.DB);
+}

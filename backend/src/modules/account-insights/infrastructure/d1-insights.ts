@@ -24,6 +24,21 @@ export class D1Insights implements InsightStore {
     );
   }
 
+  async expireAttempts(now: number) {
+    const result = await this.database
+      .prepare(`UPDATE account_insights
+      SET payload_json=json_set(payload_json,'$.status','failed','$.errorCode','COLLECTION_EXPIRED')
+      WHERE id IN (SELECT a.id FROM account_insights a
+        WHERE json_extract(a.payload_json,'$.status')='running'
+          AND json_extract(a.payload_json,'$.requestedAt')<=?
+          AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE
+            j.status='running' AND j.account_id=a.account_id AND j.lease_expires_at>?
+            AND j.origin IN ('activity','audience')) LIMIT 100)
+        AND json_extract(payload_json,'$.status')='running'`)
+      .bind(now - 900_000, now)
+      .run();
+    return result.meta.changes;
+  }
   async collection(id: string) {
     const row = (
       await this.db.select().from(accountInsights).where(eq(accountInsights.id, id)).limit(1)
@@ -49,7 +64,7 @@ export class D1Insights implements InsightStore {
     return result.length === 1;
   }
   async finish(collection: InsightCollection) {
-    await this.db
+    const rows = await this.db
       .update(accountInsights)
       .set({
         observedAt: collection.observedAt ?? collection.requestedAt,
@@ -59,8 +74,11 @@ export class D1Insights implements InsightStore {
         and(
           eq(accountInsights.id, collection.id),
           sql`json_extract(${accountInsights.payloadJson}, '$.requestedAt')=${collection.requestedAt}`,
+          sql`json_extract(${accountInsights.payloadJson}, '$.status')='running'`,
         ),
-      );
+      )
+      .returning({ id: accountInsights.id });
+    return rows.length > 0;
   }
   async observations(
     accountId: string,

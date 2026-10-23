@@ -6,7 +6,8 @@ export const commentPolicy = {
   monthRefreshHours: 6,
   archiveRefreshHours: 168,
   fullReconciliationDays: 30,
-  omittedProbeLimit: 2,
+  // Maximum omitted parents queued from one bounded outer page, not a pass cap.
+  omittedProbeLimit: 50,
 } as const;
 
 export function commentRefreshDelay(publishedAt: number, now: number): number {

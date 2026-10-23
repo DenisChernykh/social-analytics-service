@@ -33,8 +33,8 @@ export async function advanceComments(
   if (!position.current) return { cursor: null, collected: 0, mediaProcessed: 0, skippedMedia: 0 };
   position.eventGeneration ??= await store.commentGeneration(position.current.id);
   position.omittedBranches ??= 0;
-  position.omittedProbeCount ??= 0;
   position.unverifiedParents ??= [];
+  position.verifiedParents ??= [];
   // Preserve the selected publication on a first-page failure or interruption.
   job.cursor = JSON.stringify(position);
   const checkpoint: CommentCheckpoint = {
@@ -76,6 +76,7 @@ export async function advanceComments(
       if (parentId) {
         position.replyCursor = page.nextCursor;
         if (!page.nextCursor) {
+          if (!position.verifiedParents.includes(parentId)) position.verifiedParents.push(parentId);
           if (position.unverifiedParents.includes(parentId)) {
             position.omittedBranches = Math.max(0, position.omittedBranches - 1);
             position.unverifiedParents = position.unverifiedParents.filter((id) => id !== parentId);
@@ -86,13 +87,17 @@ export async function advanceComments(
         position.commentCursor = page.nextCursor;
         if (page.replyBranches) {
           position.version = 2;
-          const omitted = page.replyBranches.filter((branch) => branch.status === "omitted");
-          position.omittedBranches += omitted.length;
-          const probes = omitted.slice(
-            0,
-            Math.max(0, commentPolicy.omittedProbeLimit - position.omittedProbeCount),
+          const omitted = page.replyBranches.filter(
+            (branch) =>
+              branch.status === "omitted" &&
+              !position.verifiedParents?.includes(branch.parentId) &&
+              !position.unverifiedParents?.includes(branch.parentId),
           );
-          position.omittedProbeCount += probes.length;
+          position.omittedBranches += omitted.length;
+          // Expansion omission is not evidence of an empty replies edge.
+          // Queue every omitted parent, including on later outer pages. The
+          // cursor persists the queue; each advance still reads one source page.
+          const probes = omitted;
           position.unverifiedParents.push(...probes.map((branch) => branch.parentId));
           position.parents = [
             ...page.replyBranches.filter((branch) => branch.status === "partial"),
@@ -112,7 +117,10 @@ export async function advanceComments(
       if (!(error instanceof ApplicationError) || error.code !== "INSTAGRAM_OBJECT_UNAVAILABLE")
         throw error;
       if (parentId) {
-        if (!position.unverifiedParents.includes(parentId)) position.omittedBranches++;
+        if (!position.unverifiedParents.includes(parentId)) {
+          position.omittedBranches++;
+          position.unverifiedParents.push(parentId);
+        }
         finishBranch();
       } else {
         checkpoint.unavailableUntil = now + 24 * 3_600_000;
@@ -134,8 +142,8 @@ export async function advanceComments(
       : await store.nextCommentMedia(job.accountId, position.afterMedia, job.startedAt, now);
     position.eventGeneration = undefined;
     position.omittedBranches = 0;
-    position.omittedProbeCount = 0;
     position.unverifiedParents = [];
+    position.verifiedParents = [];
     position.replyCursor = null;
     position.branchCursors = {};
   }

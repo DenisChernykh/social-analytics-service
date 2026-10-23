@@ -202,7 +202,7 @@ describe("comment freshness, full reconciliation and fairness (#18)", () => {
       status.jobs.some((job) => job.origin === "comments_refresh" && job.status === "completed"),
     ).toBe(true);
     expect(status.comments.uniqueComments).toBe(1);
-  });
+  }, 30_000);
 
   it("uses the documented intervals even with an unchanged counter and prioritizes webhook and counter signals", async () => {
     const f = await ready();

@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-23T09:15:09.676Z",
+  "repair": "Close specifically verified orphaned running attempts from 4\u20135 October as failed/COLLECTION_EXPIRED, with active-lease guards",
+  "changes": [
+    {
+      "table": "account_insights",
+      "changed": 2,
+      "ids": [
+        "0dfe0cf4-9f9c-5014-a5a0-b9217ae149d1",
+        "9b1c31a0-c395-53f2-bb88-8c9ca14cc8ae"
+      ],
+      "observationTimesUnchanged": true,
+      "otherPayloadFieldsUnchanged": true
+    },
+    {
+      "table": "comment_collections",
+      "changed": 23,
+      "ids": [
+        "00299181-86b7-5310-9b73-97731244b00d",
+        "1ba19554-ed3c-5523-9a77-9dbcd99b2953",
+        "1e41d30b-faa7-5c1f-9cc7-ed1ce40d6a53",
+        "2147a083-85cd-53cd-aed9-d744b517c310",
+        "2965b3ef-761a-53bd-81ae-cee8366d914e",
+        "29e02971-2d47-5146-8add-9b34aff1bc90",
+        "50ed1701-24ab-5f19-9e0f-3a836cd6af6c",
+        "51ff4c9c-a3af-59b2-aa6c-052f45814623",
+        "611ee1dc-c459-5e46-8116-9f8c94e70f6d",
+        "63d3f512-3980-5b5c-b67f-562c086e21b5",
+        "7258dcfe-2238-56b4-8efe-8199177f2488",
+        "73cf5ced-3925-5c76-a75c-ac55d2dff380",
+        "7b3482cc-3998-57df-b8dc-fb8df7e584f4",
+        "83f96261-2ce0-53f8-aa1a-3cbe86561760",
+        "8db31f42-8b13-587c-bebb-523073204dfd",
+        "94bbde09-579e-5e4a-af29-0b7ba077ba45",
+        "9e52705e-0df6-54ec-816b-fb42f3c359cf",
+        "9ecdf115-4aa4-5e91-9afe-096b706fbd8c",
+        "ae628a3c-b3d5-59de-9d58-f616b5a2d984",
+        "b8fa31c8-6fed-555c-bc57-745f58fd0de0",
+        "c5b9cd98-7d46-59a3-a9b1-7bbb6a35f357",
+        "d78a6b48-6996-55b1-a89e-c107e7746fc1",
+        "e5a4e02f-ed8e-5b04-ab05-1c7f35ed101c"
+      ],
+      "observationTimesUnchanged": true,
+      "otherPayloadFieldsUnchanged": true
+    }
+  ],
+  "mediaCountersUnchanged": true,
+  "uniqueCommentCountersUnchanged": true,
+  "sourceCalls": 0,
+  "deletedRecords": 0,
+  "backendDeployed": false,
+  "migration": false,
+  "mcpVerification": {
+    "expiredSyncAttempts": 0,
+    "expiredInsightAttempts": 0,
+    "expiredCommentAttempts": 0,
+    "uniqueComments": 3882,
+    "partialPublications": 80,
+    "unverifiedReplyBranches": 1049
+  }
+}

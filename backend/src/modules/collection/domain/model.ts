@@ -54,8 +54,10 @@ export type CommentPosition = {
   replyCursor: string | null;
   branchCursors?: Record<string, string | null>;
   omittedBranches?: number;
+  // Retained for old saved cursors; verification no longer stops at this count.
   omittedProbeCount?: number;
   unverifiedParents?: string[];
+  verifiedParents?: string[];
   eventGeneration?: number;
 };
 export type CollectionSchedule = {

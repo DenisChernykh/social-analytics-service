@@ -23,7 +23,7 @@ export interface InsightStore {
   ): Promise<PeriodObservation[]>;
   collection(id: string): Promise<InsightCollection | null>;
   reserve(collection: InsightCollection): Promise<boolean>;
-  finish(collection: InsightCollection): Promise<void>;
+  finish(collection: InsightCollection): Promise<boolean>;
   observations(
     accountId: string,
     kind: string,

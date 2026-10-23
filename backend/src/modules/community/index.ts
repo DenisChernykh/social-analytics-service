@@ -33,3 +33,7 @@ export function createCommentOperations(env: RuntimeBindings, options: CommentOp
   );
 }
 export type { CommentCollection } from "./domain/model";
+
+export function createCommentMaintenance(env: RuntimeBindings) {
+  return new D1Comments(env.DB);
+}

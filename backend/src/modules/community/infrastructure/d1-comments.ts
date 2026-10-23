@@ -14,6 +14,20 @@ export class D1Comments implements CommentStore {
   constructor(private readonly database: D1Database) {
     this.db = drizzle(database);
   }
+  async expireAttempts(now: number) {
+    const result = await this.database
+      .prepare(`UPDATE comment_collections
+      SET result_json=json_set(result_json,'$.status','failed','$.errorCode','COLLECTION_EXPIRED')
+      WHERE id IN (SELECT c.id FROM comment_collections c
+        WHERE json_extract(c.result_json,'$.status')='running'
+          AND json_extract(c.result_json,'$.startedAt')<=?
+          AND NOT EXISTS (SELECT 1 FROM collection_jobs j WHERE j.id=c.job_id
+            AND j.status='running' AND j.lease_expires_at>?) LIMIT 100)
+        AND json_extract(result_json,'$.status')='running'`)
+      .bind(now - 900_000, now)
+      .run();
+    return result.meta.changes;
+  }
   async collection(id: string) {
     const row = (
       await this.db.select().from(commentCollections).where(eq(commentCollections.id, id)).limit(1)
@@ -94,13 +108,13 @@ export class D1Comments implements CommentStore {
       ...chunks.map((chunk) =>
         this.database
           .prepare(
-            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at,author_id,author_username,like_count,hidden) SELECT json_extract(value,'$.id'),json_extract(value,'$.mediaId'),json_extract(value,'$.parentId'),json_extract(value,'$.text'),json_extract(value,'$.publishedAt'),json_extract(value,'$.observedAt'),json_extract(value,'$.authorId'),json_extract(value,'$.authorUsername'),json_extract(value,'$.likeCount'),json_extract(value,'$.hidden') FROM json_each(?) WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=? AND json_extract(result_json,'$.startedAt')=?)${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at,author_id=excluded.author_id,author_username=excluded.author_username,like_count=excluded.like_count,hidden=excluded.hidden WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
+            `INSERT INTO comments (id,media_id,parent_id,text,published_at,observed_at,author_id,author_username,like_count,hidden) SELECT json_extract(value,'$.id'),json_extract(value,'$.mediaId'),json_extract(value,'$.parentId'),json_extract(value,'$.text'),json_extract(value,'$.publishedAt'),json_extract(value,'$.observedAt'),json_extract(value,'$.authorId'),json_extract(value,'$.authorUsername'),json_extract(value,'$.likeCount'),json_extract(value,'$.hidden') FROM json_each(?) WHERE EXISTS (SELECT 1 FROM comment_collections WHERE id=? AND json_extract(result_json,'$.startedAt')=? AND json_extract(result_json,'$.status')='running')${fence} ON CONFLICT(id) DO UPDATE SET parent_id=COALESCE(excluded.parent_id,comments.parent_id),text=excluded.text,observed_at=excluded.observed_at,author_id=excluded.author_id,author_username=excluded.author_username,like_count=excluded.like_count,hidden=excluded.hidden WHERE comments.media_id=excluded.media_id AND comments.observed_at<=excluded.observed_at`,
           )
           .bind(chunk, collection.id, collection.startedAt, ...fenceValues),
       ),
       this.database
         .prepare(
-          `UPDATE comment_collections SET result_json=?,observed_at=?,job_id=?,parent_id=?,page_fingerprint=? WHERE id=? AND json_extract(result_json,'$.startedAt')=?${fence}`,
+          `UPDATE comment_collections SET result_json=?,observed_at=?,job_id=?,parent_id=?,page_fingerprint=? WHERE id=? AND json_extract(result_json,'$.startedAt')=? AND json_extract(result_json,'$.status')='running'${fence}`,
         )
         .bind(
           JSON.stringify(collection),
