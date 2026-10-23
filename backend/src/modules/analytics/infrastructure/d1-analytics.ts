@@ -54,7 +54,11 @@ function mapMedia(row: typeof mediaTable.$inferSelect): Media {
     metadata: row.metadataJson ? JSON.parse(row.metadataJson) : null,
     firstDiscoveredAt: row.firstDiscoveredAt,
     discoverySource: row.discoverySource as Media["discoverySource"],
-    availability: { unavailableUntil: row.unavailableUntil, errorCode: row.unavailableCode },
+    availability: {
+      unavailableUntil: row.unavailableUntil,
+      errorCode: row.unavailableCode,
+      retryDelayMs: row.failureRetryMs,
+    },
   };
 }
 function mapSnapshot(row: typeof mediaSnapshots.$inferSelect): Snapshot {
@@ -480,11 +484,11 @@ export class D1Analytics implements AnalyticsRepository {
       const media = item.media;
       statements.push(
         this.database
-          .prepare(`INSERT INTO media (id,account_id,external_id,caption,search_text,media_type,product_type,permalink,published_at,updated_at,metadata_json,first_discovered_at,discovery_source,unavailable_until,unavailable_code)
-        SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE ${guard}
+          .prepare(`INSERT INTO media (id,account_id,external_id,caption,search_text,media_type,product_type,permalink,published_at,updated_at,metadata_json,first_discovered_at,discovery_source,unavailable_until,unavailable_code,failure_retry_ms)
+        SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE ${guard}
         ON CONFLICT(id) DO UPDATE SET caption=excluded.caption,search_text=excluded.search_text,media_type=excluded.media_type,
         product_type=excluded.product_type,permalink=excluded.permalink,published_at=excluded.published_at,updated_at=excluded.updated_at,
-        metadata_json=COALESCE(excluded.metadata_json,media.metadata_json),unavailable_until=excluded.unavailable_until,unavailable_code=excluded.unavailable_code`)
+        metadata_json=COALESCE(excluded.metadata_json,media.metadata_json),unavailable_until=excluded.unavailable_until,unavailable_code=excluded.unavailable_code,failure_retry_ms=excluded.failure_retry_ms`)
           .bind(
             media.id,
             media.accountId,
@@ -501,6 +505,7 @@ export class D1Analytics implements AnalyticsRepository {
             media.discoverySource ?? "collection",
             media.availability?.unavailableUntil ?? 0,
             media.availability?.errorCode ?? null,
+            media.availability?.retryDelayMs ?? 0,
             ...fence,
           ),
       );

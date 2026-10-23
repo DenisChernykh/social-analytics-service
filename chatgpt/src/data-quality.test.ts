@@ -78,6 +78,30 @@ const receipt = {
   login: "instagram_login",
 };
 
+test("MCP uses a lightweight job page for continuation and preserves its cursor and aggregates", async () => {
+  const jobs = response("getCollectionJobs");
+  const calls: URL[] = [];
+  const client = await connect(async (request) => {
+    assert.equal(request.method, "GET");
+    const url = new URL(request.url);
+    calls.push(url);
+    assert.equal(url.pathname, "/api/accounts/ig_fixture/collection/jobs");
+    return Response.json(jobs);
+  });
+  try {
+    const result = await client.callTool({
+      name: "get_collection_status",
+      arguments: { accountId: "ig_fixture", limit: 100, cursor: "saved-page" },
+    });
+    assert.notEqual(result.isError, true, JSON.stringify(result));
+    assert.deepEqual(result.structuredContent, { data: jobs });
+    assert.equal(calls[0].searchParams.get("cursor"), "saved-page");
+    assert.equal(calls.length, 1);
+  } finally {
+    await client.close();
+  }
+});
+
 test("MCP retains unknown quota states, true accounting epochs and jobs continuation without hidden collection", async () => {
   const status = response("getCollectionStatus");
   status.jobs = [];

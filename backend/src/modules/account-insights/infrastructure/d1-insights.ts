@@ -19,10 +19,11 @@ export class D1Insights implements InsightStore {
          AND json_extract(payload_json,'$.apiVersion')=? AND json_extract(payload_json,'$.input.kind')='activity'
          AND json_extract(payload_json,'$.input.timeZone')=? AND json_extract(payload_json,'$.input.metricType')='total_value'
          AND json_extract(payload_json,'$.input.breakdown') IS NULL
-         AND NOT EXISTS (SELECT 1 FROM json_each(?) needed WHERE NOT EXISTS (SELECT 1 FROM json_each(account_insights.payload_json,'$.input.metrics') saved WHERE saved.value=needed.value))
+         AND (SELECT COUNT(DISTINCT saved.value) FROM json_each(account_insights.payload_json,'$.input.metrics') saved
+           WHERE saved.value IN (${activityMetrics.map(() => "?").join(",")}))=?
        GROUP BY json_extract(payload_json,'$.input.from'),json_extract(payload_json,'$.input.to')`,
       )
-      .bind(accountId, since, apiVersion, timeZone, JSON.stringify(activityMetrics))
+      .bind(accountId, since, apiVersion, timeZone, ...activityMetrics, activityMetrics.length)
       .all<PeriodObservation>();
     return result.results;
   }

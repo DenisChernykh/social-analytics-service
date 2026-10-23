@@ -2,6 +2,7 @@ import {
   ApplicationError,
   retryableOperation,
 } from "../../../shared/application/application-error";
+import { nextObjectFailureDelay } from "../../../shared/domain/source-failure";
 import type { Snapshot, SyncRun } from "../domain/model";
 import type { AnalyticsRepository, AnalyticsSource } from "./ports";
 
@@ -112,10 +113,25 @@ export class SyncAccount {
           input.kind === "stories"
             ? await this.source.stories(account, input.cursor, input.pageSize)
             : await this.source.mediaPage(account, input.cursor, input.pageSize);
+      // Reject the repeated page before fetching metrics or saving observations.
+      // The job layer also checks legacy completed operations.
+      if (input.cursor && page.nextCursor === input.cursor)
+        throw new ApplicationError(
+          "INSTAGRAM_PAGINATION_STALLED",
+          "Instagram returned a repeated pagination cursor.",
+        );
       const items = [];
       for (const item of page.items) {
         const statistics = await this.source.metrics(account.id, item);
         const { collectionError, ...observation } = statistics;
+        const previousMedia = collectionError ? await this.repository.media(item.media.id) : null;
+        const retryDelayMs = collectionError
+          ? nextObjectFailureDelay(
+              collectionError.code,
+              collectionError.retryAfterMs,
+              previousMedia?.availability,
+            )
+          : 0;
         const snapshot: Snapshot = {
           id: `${run.id}:${item.media.id}`,
           mediaId: item.media.id,
@@ -126,10 +142,11 @@ export class SyncAccount {
             ...item.media,
             availability: collectionError
               ? {
-                  unavailableUntil: this.clock() + collectionError.retryAfterMs,
+                  unavailableUntil: this.clock() + retryDelayMs,
                   errorCode: collectionError.code,
+                  retryDelayMs,
                 }
-              : { unavailableUntil: 0, errorCode: null },
+              : { unavailableUntil: 0, errorCode: null, retryDelayMs: 0 },
           },
           snapshot,
           collectionError,
@@ -141,13 +158,12 @@ export class SyncAccount {
         for (const [index, item] of page.items.entries()) {
           const collected = items[index];
           if (!collected) throw new Error("Missing core observation");
-          if (collected.collectionError) continue;
-          const statistics = await this.source.additionalMetrics(
-            account.id,
-            item,
-            collected.snapshot,
-          );
-          collected.snapshot = { ...collected.snapshot, ...statistics };
+          const statistics = await this.source.additionalMetrics(account.id, item, {
+            ...collected.snapshot,
+            collectionError: collected.collectionError,
+          });
+          const { collectionError: _collectionError, ...observation } = statistics;
+          collected.snapshot = { ...collected.snapshot, ...observation };
         }
       }
       const completedAt = this.clock();

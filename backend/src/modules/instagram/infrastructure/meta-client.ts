@@ -64,6 +64,16 @@ const mediaPageSchema = z.object({
     })
     .optional(),
 });
+const storyCursorPrefix = "stories:v1:";
+const storyCursorSchema = z.object({
+  userId: identifier,
+  pending: z.array(identifier).min(1).max(49),
+  after: z.string().max(2048).nullable(),
+});
+function storyCursor(userId: string, pending: string[], after: string | null) {
+  if (!pending.length) return after;
+  return storyCursorPrefix + btoa(JSON.stringify({ userId, pending, after }));
+}
 const insightsSchema = z.object({
   data: z.array(
     z.object({
@@ -782,7 +792,44 @@ export class MetaClient implements InstagramTransport {
     return this.catalogPage(token, userId, cursor, limit, "media");
   }
   async stories(token: string, userId: string, cursor: string | null, limit: number) {
-    return this.catalogPage(token, userId, cursor, limit, "stories");
+    // Discover a bounded list independently of the atomic metrics page size.
+    // Some source responses advertise another page when limit=1 even for one
+    // active Story. Pending IDs survive eviction in the existing job cursor;
+    // subsequent portions fetch each object's current metadata and metrics.
+    if (cursor?.startsWith(storyCursorPrefix)) {
+      let saved: z.infer<typeof storyCursorSchema>;
+      try {
+        saved = storyCursorSchema.parse(JSON.parse(atob(cursor.slice(storyCursorPrefix.length))));
+        if (saved.userId !== userId) throw new Error("account");
+      } catch {
+        throw new ApplicationError("VALIDATION_FAILED", "Invalid Stories continuation cursor.");
+      }
+      const media: InstagramMedia[] = [];
+      for (const id of saved.pending.slice(0, limit)) {
+        const item = await this.media(token, id);
+        if (item.id !== id)
+          throw new ApplicationError("INSTAGRAM_UNAVAILABLE", "Unexpected Story identity.");
+        media.push({ ...item, productType: "STORY" });
+      }
+      return {
+        media,
+        nextCursor: storyCursor(userId, saved.pending.slice(limit), saved.after),
+      };
+    }
+    const page = await this.catalogPage(token, userId, cursor, 50, "stories");
+    if (page.media.length > 50)
+      throw new ApplicationError(
+        "INSTAGRAM_UNAVAILABLE",
+        "Instagram exceeded the Story list limit.",
+      );
+    return {
+      media: page.media.slice(0, limit),
+      nextCursor: storyCursor(
+        userId,
+        page.media.slice(limit).map((item) => item.id),
+        page.nextCursor,
+      ),
+    };
   }
   private mapMedia(
     item: z.infer<typeof mediaSchema>,
@@ -871,6 +918,11 @@ export class MetaClient implements InstagramTransport {
       throw new ApplicationError(
         "INSTAGRAM_UNAVAILABLE",
         "Instagram pagination did not contain a cursor.",
+      );
+    if (cursor && nextCursor === cursor)
+      throw new ApplicationError(
+        "INSTAGRAM_PAGINATION_STALLED",
+        "Instagram returned a repeated pagination cursor.",
       );
     return { media: result, nextCursor };
   }

@@ -5,7 +5,7 @@ import { D1Collection } from "./infrastructure/d1-collection";
 
 export { collectionExecution } from "./application/execution-policy";
 export type CollectionCommands = Pick<Collect, "start" | "advance" | "control" | "configure">;
-export type CollectionReads = Pick<Collect, "job" | "status">;
+export type CollectionReads = Pick<Collect, "job" | "jobPage" | "status">;
 
 export type CollectionOptions = {
   analytics: (env: RuntimeBindings) => CollectionAnalytics;

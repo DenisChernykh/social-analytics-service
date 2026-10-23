@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "social-analytics",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Личная статистика соцсетей: поиск публикаций, отчёты, история и сравнения. Пока подключён Instagram.",
   "extensions": {
     "com.openai": {

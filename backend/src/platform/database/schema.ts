@@ -55,6 +55,7 @@ export const media = sqliteTable(
     discoverySource: text("discovery_source"),
     unavailableUntil: integer("unavailable_until").notNull().default(0),
     unavailableCode: text("unavailable_code"),
+    failureRetryMs: integer("failure_retry_ms").notNull().default(0),
   },
   (table) => [
     uniqueIndex("media_account_external").on(table.accountId, table.externalId),

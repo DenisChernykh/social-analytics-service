@@ -83,7 +83,7 @@ export interface CollectionStore {
   saveSchedule(schedule: CollectionSchedule): Promise<void>;
   dueMedia(accountId: string, now: number): Promise<string | null>;
   dueAgeMedia(accountId: string, now: number): Promise<DueAgeSnapshot | null>;
-  markUnavailable(mediaId: string, until: number, code: string): Promise<void>;
+  markUnavailable(mediaId: string, until: number, code: string, now: number): Promise<void>;
   nextStoryExpiry(accountId: string, now: number): Promise<number | null>;
   coverage(
     accountId: string,

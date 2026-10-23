@@ -328,6 +328,31 @@ export function createCollectionHttp(
     }),
     note: z.string(),
   });
+  const jobsSchema = statusSchema.pick({ jobs: true, jobsPage: true }).required();
+  router.openapi(
+    createRoute({
+      method: "get",
+      path: "/api/accounts/{accountId}/collection/jobs",
+      operationId: "getCollectionJobs",
+      tags: ["Collection"],
+      security,
+      request: {
+        params,
+        query: z.object({
+          limit: z.coerce.number().int().min(1).max(100).default(20),
+          cursor: z.string().max(4096).optional(),
+        }),
+      },
+      responses: responses(jobsSchema),
+    }),
+    async (c) =>
+      c.json(
+        jobsSchema.parse(
+          await operations(c.env).jobPage(c.req.valid("param").accountId, c.req.valid("query")),
+        ),
+        200,
+      ),
+  );
   router.openapi(
     createRoute({
       method: "get",

@@ -67,7 +67,7 @@ export type Media = {
   context?: ContentContext | null;
   firstDiscoveredAt?: number | null;
   discoverySource?: "collection" | "history_inferred" | null;
-  availability?: { unavailableUntil: number; errorCode: string | null };
+  availability?: { unavailableUntil: number; errorCode: string | null; retryDelayMs?: number };
   metadata?: {
     provider: "instagram_api";
     apiVersion: string;

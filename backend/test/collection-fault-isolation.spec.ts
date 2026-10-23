@@ -318,7 +318,12 @@ describe("collection fault isolation", () => {
       actualApiVersion: "v26.0",
       login: "instagram_login",
     };
-    vi.mocked(f.transport.insights).mockRejectedValueOnce(error);
+    const original = vi.mocked(f.transport.insights).getMockImplementation();
+    vi.mocked(f.transport.insights).mockImplementation(async (...args) => {
+      if (args[1] === bad.id) throw error;
+      if (!original) throw new Error("Missing source fixture");
+      return original(...args);
+    });
     const job = await f.collector.start(accountId, crypto.randomUUID(), "catalogue");
     expect(await f.collector.advance(job.id)).toMatchObject({
       status: "running",

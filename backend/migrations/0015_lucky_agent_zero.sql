@@ -1,0 +1,1 @@
+ALTER TABLE `media` ADD `failure_retry_ms` integer DEFAULT 0 NOT NULL;

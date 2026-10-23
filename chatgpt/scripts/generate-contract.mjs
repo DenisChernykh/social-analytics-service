@@ -80,6 +80,7 @@ const routes = {
   metrics: ["/api/metrics", "get"],
   refresh: ["/api/media/{mediaId}/refresh", "post"],
   collectionStatus: ["/api/accounts/{accountId}/collection", "get"],
+  collectionJobs: ["/api/accounts/{accountId}/collection/jobs", "get"],
   collectionJob: ["/api/accounts/{accountId}/collection", "post"],
   schedule: ["/api/accounts/{accountId}/collection/schedule", "patch"],
   accountInsightCollection: ["/api/accounts/{accountId}/insights/collect", "post"],

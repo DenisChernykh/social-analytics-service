@@ -5726,6 +5726,480 @@
         }
       }
     },
+    "/api/accounts/{accountId}/collection/jobs": {
+      "get": {
+        "operationId": "getCollectionJobs",
+        "tags": [
+          "Collection"
+        ],
+        "security": [
+          {
+            "personalKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "required": true,
+            "name": "accountId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 4096
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection progress and safe status. Automatic collection is disabled until explicitly enabled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "accountId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 150
+                          },
+                          "origin": {
+                            "type": "string",
+                            "enum": [
+                              "manual",
+                              "scheduled",
+                              "stories",
+                              "comments",
+                              "comments_refresh",
+                              "audience",
+                              "activity",
+                              "catalogue"
+                            ]
+                          },
+                          "targetMediaId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "minLength": 1,
+                            "maxLength": 150
+                          },
+                          "latencyOrigin": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "recorded_from_creation"
+                            ]
+                          },
+                          "httpAttemptsSinceAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "firstAttemptAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "lastAttemptAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "firstUsefulObservationAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "lastUsefulObservationAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "httpAttempts": {
+                            "type": "number"
+                          },
+                          "lastStepDurationMs": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "lastStepHttpAttempts": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "effectiveState": {
+                            "type": "string"
+                          },
+                          "waitingReason": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "queueWaitMs": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "continuationWaitMs": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "automatic": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "running",
+                              "completed",
+                              "failed",
+                              "cancelled"
+                            ]
+                          },
+                          "cursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "pages": {
+                            "type": "integer"
+                          },
+                          "collected": {
+                            "type": "integer"
+                          },
+                          "mediaProcessed": {
+                            "type": "integer"
+                          },
+                          "skippedMedia": {
+                            "type": "integer"
+                          },
+                          "skippedPeriods": {
+                            "type": "integer"
+                          },
+                          "attempt": {
+                            "type": "integer"
+                          },
+                          "failures": {
+                            "type": "integer"
+                          },
+                          "nextAttemptAt": {
+                            "type": "number"
+                          },
+                          "startedAt": {
+                            "type": "number"
+                          },
+                          "completedAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "lastSuccessAt": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "errorCode": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "accountId",
+                          "origin",
+                          "automatic",
+                          "status",
+                          "cursor",
+                          "pages",
+                          "collected",
+                          "mediaProcessed",
+                          "skippedMedia",
+                          "skippedPeriods",
+                          "attempt",
+                          "failures",
+                          "nextAttemptAt",
+                          "startedAt",
+                          "completedAt",
+                          "lastSuccessAt",
+                          "errorCode"
+                        ]
+                      }
+                    },
+                    "jobsPage": {
+                      "type": "object",
+                      "properties": {
+                        "nextCursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "cutoff": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "calculatedAt": {
+                          "type": "number"
+                        },
+                        "semantics": {
+                          "type": "string"
+                        },
+                        "aggregates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "origin": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string"
+                              },
+                              "count": {
+                                "type": "number"
+                              },
+                              "due": {
+                                "type": "number"
+                              },
+                              "oldestDue": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "atRiskFresh": {
+                                "type": "number"
+                              },
+                              "freshDue": {
+                                "type": "number"
+                              },
+                              "lastAttempt": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "lastSuccess": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "lastCheck": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "lastUsefulObservation": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "origin",
+                              "status",
+                              "count",
+                              "due",
+                              "oldestDue",
+                              "lastAttempt",
+                              "lastSuccess",
+                              "lastUsefulObservation"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "nextCursor",
+                        "hasMore",
+                        "limit",
+                        "cutoff",
+                        "total",
+                        "calculatedAt",
+                        "semantics",
+                        "aggregates"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "jobs",
+                    "jobsPage"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Problem Details with a stable code; no upstream tokens or error payloads.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts/{accountId}/collection": {
       "get": {
         "operationId": "getCollectionStatus",

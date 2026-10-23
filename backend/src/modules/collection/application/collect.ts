@@ -316,15 +316,11 @@ export class Collect {
     await this.store.control(id, action === "resume" ? "running" : "cancelled", this.clock());
     return this.job(id);
   }
-  async status(accountId: string, input: { limit: number; cursor?: string } = { limit: 20 }) {
+  async jobPage(accountId: string, input: { limit: number; cursor?: string } = { limit: 20 }) {
     await this.analytics.account(accountId);
-    const schedule = await this.schedule(accountId);
-    const plan = await this.analytics.activityPlan(accountId, schedule.timeZone, this.clock());
     const now = this.clock();
     const page = await this.store.jobPage(accountId, input, now);
-    const diagnostics = await this.store.diagnostics(accountId, now);
     return {
-      schedule,
       jobs: page.items.map((job) => ({
         ...job,
         ...jobState(job, now),
@@ -344,19 +340,30 @@ export class Collect {
         semantics:
           "Stable createdAt/id keyset, createdAt<=cutoff; states/aggregates are live at calculatedAt; no mutable status filter.",
       },
+    };
+  }
+  async status(accountId: string, input: { limit: number; cursor?: string } = { limit: 20 }) {
+    const page = await this.jobPage(accountId, input);
+    const schedule = await this.schedule(accountId);
+    const plan = await this.analytics.activityPlan(accountId, schedule.timeZone, this.clock());
+    const now = this.clock();
+    const diagnostics = await this.store.diagnostics(accountId, now);
+    return {
+      schedule,
+      ...page,
       diagnostics,
-      freshness: page.aggregates.map((a) => ({ ...a, lastCheck: a.lastSuccess })),
+      freshness: page.jobsPage.aggregates.map((a) => ({ ...a, lastCheck: a.lastSuccess })),
       dataFreshness: await this.store.dataFreshness(accountId),
       mediaRefresh: await this.store.mediaRefreshStatus(accountId, now),
       capacity: {
-        dueJobs: page.aggregates.reduce((n, a) => n + a.due, 0),
-        atRiskFreshJobs: page.aggregates.reduce((n, a) => n + a.atRiskFresh, 0),
+        dueJobs: page.jobsPage.aggregates.reduce((n, a) => n + a.due, 0),
+        atRiskFreshJobs: page.jobsPage.aggregates.reduce((n, a) => n + a.atRiskFresh, 0),
         scope:
           "All jobs within cutoff; freshDue is a lower bound of steps for this account, excluding undiscovered objects and other accounts.",
         maximumHttpAttemptsPerTick: collectionExecution.maximumHttpAttempts,
         tickWorkMs: collectionExecution.workBudgetMs,
         persistenceReserveMs: collectionExecution.persistenceReserveMs,
-        pressureIndicator: page.aggregates.some((a) => a.freshDue > 0),
+        pressureIndicator: page.jobsPage.aggregates.some((a) => a.freshDue > 0),
         overload: "not_measured" as const,
         assumptions:
           "Durable Object alarms continue ready portions without a fixed Cron slot quota. Throughput depends on source latency, access, leases and quota; capacity is not measured by counting due jobs.",
@@ -715,6 +722,7 @@ export class Collect {
               error instanceof ApplicationError ? (error.retryAfterMs ?? 0) : 0,
             ),
           code,
+          this.clock(),
         );
         await this.store.finishSchedule(
           {

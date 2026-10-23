@@ -2,6 +2,7 @@ import { and, eq, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { collectionJobs, collectionSchedules } from "../../../platform/database/schema";
 import { ApplicationError } from "../../../shared/application/application-error";
+import { nextObjectFailureDelay } from "../../../shared/domain/source-failure";
 import type { ActivityPeriod } from "../../account-insights";
 import { metricKeys } from "../../analytics";
 import type { CollectionStore } from "../application/ports";
@@ -126,7 +127,15 @@ export class D1Collection implements CollectionStore {
     const rows = await this.database
       .prepare(`WITH observed AS (
       SELECT s.media_id,MAX(s.observed_at) lastSuccess,
-        MAX(CASE WHEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) v WHERE json_extract(v.value,'$.value') IS NOT NULL) OR json_extract(s.story_insights_json,'$.navigationTotal.value') IS NOT NULL OR EXISTS (SELECT 1 FROM json_each(s.story_insights_json,'$.navigation') v WHERE json_extract(v.value,'$.value') IS NOT NULL) THEN s.observed_at END) lastUsefulObservation,
+        MAX(CASE WHEN json_extract(s.metrics_json,'$.views.value') IS NOT NULL
+          OR json_extract(s.metrics_json,'$.reach.value') IS NOT NULL
+          OR json_extract(s.metrics_json,'$.likes.value') IS NOT NULL
+          OR json_extract(s.metrics_json,'$.comments.value') IS NOT NULL
+          OR json_extract(s.story_insights_json,'$.navigationTotal.value') IS NOT NULL
+          THEN s.observed_at
+          WHEN EXISTS (SELECT 1 FROM json_each(s.metrics_json) v WHERE json_extract(v.value,'$.value') IS NOT NULL)
+            OR EXISTS (SELECT 1 FROM json_each(s.story_insights_json,'$.navigation') v WHERE json_extract(v.value,'$.value') IS NOT NULL)
+          THEN s.observed_at END) lastUsefulObservation,
         SUM(s.provenance_json IS NULL) legacyProvenanceUnknown
       FROM media_snapshots s JOIN media m ON m.id=s.media_id WHERE m.account_id=? GROUP BY s.media_id
     ),attempted AS (
@@ -696,10 +705,19 @@ export class D1Collection implements CollectionStore {
       .first();
     return row !== null;
   }
-  async markUnavailable(mediaId: string, until: number, code: string) {
+  async markUnavailable(mediaId: string, until: number, code: string, now: number) {
+    const previous = await this.database
+      .prepare(
+        "SELECT unavailable_code errorCode,failure_retry_ms retryDelayMs FROM media WHERE id=?",
+      )
+      .bind(mediaId)
+      .first<{ errorCode: string | null; retryDelayMs: number }>();
+    const delay = nextObjectFailureDelay(code, Math.max(0, until - now), previous ?? undefined);
     await this.database
-      .prepare("UPDATE media SET unavailable_until=?,unavailable_code=? WHERE id=?")
-      .bind(until, code, mediaId)
+      .prepare(
+        "UPDATE media SET unavailable_until=?,unavailable_code=?,failure_retry_ms=? WHERE id=?",
+      )
+      .bind(now + delay, code, delay, mediaId)
       .run();
   }
   async nextStoryExpiry(accountId: string, now: number) {
@@ -744,9 +762,16 @@ export class D1Collection implements CollectionStore {
       .all<{ id: string; publishedAt: number; productType: string; connectedAt: number }>();
     const observations = await this.database
       .prepare(
-        "SELECT media_id mediaId,observed_at observedAt,json_extract(metrics_json,'$.reach.value') IS NOT NULL usable FROM media_snapshots WHERE media_id IN (SELECT id FROM media WHERE account_id=?) AND observed_at<=?",
+        `WITH targets(hours,tolerance) AS (VALUES ${ageSnapshotWindows.map(() => "(?,?)").join(",")})
+        SELECT m.id mediaId,MIN(s.observed_at) observedAt,1 usable
+        FROM media m CROSS JOIN targets t JOIN media_snapshots s ON s.media_id=m.id
+          AND s.observed_at BETWEEN m.published_at+(t.hours-t.tolerance)*3600000
+            AND m.published_at+(t.hours+t.tolerance)*3600000
+        WHERE m.account_id=? AND m.product_type!='STORY' AND s.observed_at<=?
+          AND json_extract(s.metrics_json,'$.reach.value') IS NOT NULL
+        GROUP BY m.id,t.hours`,
       )
-      .bind(accountId, now)
+      .bind(...ageSnapshotWindows.flatMap((t) => [t.targetHours, t.toleranceHours]), accountId, now)
       .all<{ mediaId: string; observedAt: number; usable: boolean }>();
     const policies = await this.database
       .prepare(

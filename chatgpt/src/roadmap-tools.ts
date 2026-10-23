@@ -92,14 +92,15 @@ export function registerRoadmapTools(server: McpServer, run: Run) {
   register(
     "get_collection_status",
     "Полнота и расписание сбора",
-    "Сохранённое состояние: analysisCoverage отдельно от доказанных collectionObligations. mediaRefresh различает отсутствие снимка, устаревший снимок, готовое обновление и отложенный повтор отдельного объекта; retries содержит причины и сроки. effectiveState/waitingReason различают работу, ожидание и неполный проход из-за pagination_stalled; failed не повторяется автоматически. unknown_schema и usagePercent=null не означают свободную квоту. jobsPage содержит cutoff, total/aggregates и nextCursor/hasMore: следуй продолжению, состояния jobs могут меняться между страницами. Чтение не запускает сбор.",
+    "Сохранённое состояние: analysisCoverage отдельно от доказанных collectionObligations. mediaRefresh различает отсутствие снимка, устаревший снимок, готовое обновление и отложенный повтор отдельного объекта; retries содержит причины и сроки. effectiveState/waitingReason различают работу, ожидание и неполный проход из-за pagination_stalled; failed не повторяется автоматически. unknown_schema и usagePercent=null не означают свободную квоту. Для проверки текущей очереди достаточно jobsPage.total/aggregates: не обходи историю без необходимости. cursor возвращает только jobs/jobsPage через лёгкое чтение без повторного расчёта диагностики; сохрани сводку первой страницы. Состояния jobs могут меняться между страницами. Чтение не запускает сбор.",
     z.object({
       accountId: id,
       limit: z.number().int().min(1).max(100).default(20),
       cursor: z.string().max(4096).optional(),
     }),
-    contract.collectionStatusResponse,
-    ({ accountId, ...args }) => query(`/api/accounts/${accountId}/collection`, args),
+    z.union([contract.collectionStatusResponse, contract.collectionJobsResponse]),
+    ({ accountId, ...args }) =>
+      query(`/api/accounts/${accountId}/collection${args.cursor ? "/jobs" : ""}`, args),
   );
   register(
     "subscribe_comment_webhook",

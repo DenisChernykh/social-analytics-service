@@ -442,11 +442,81 @@ export class InstagramSource implements AnalyticsSource {
     };
   }
 
+  private async recoverCore(
+    accountId: string,
+    item: { media: Media },
+    initial: MediaStatistics,
+  ): Promise<MediaStatistics> {
+    let current = initial;
+    // An unclassified batch refusal does not prove that every field is
+    // unavailable. Probe at most three core fields, after all page objects
+    // have had their first pass, under the same operation and HTTP budget.
+    const keys = (["reach", "views", "saves", "shares"] as const)
+      .filter((key) => current.metrics[key].reason === "source_error")
+      .slice(0, 3);
+    for (const key of keys) {
+      const definition = metricDefinitions[key];
+      let response: Record<string, InstagramInsight>;
+      try {
+        response = await this.reader.insights(accountId, item.media.externalId, [definition.field]);
+      } catch (error) {
+        if (!(error instanceof ApplicationError)) throw error;
+        if (error.code === "REQUEST_BUDGET_EXHAUSTED") break;
+        if (objectFailureDelay(error.code) !== null) continue;
+        throw error;
+      }
+      const value = response[definition.field];
+      if (!value) continue;
+      const receipt = value.receipt;
+      const previous = current.provenance;
+      current = {
+        ...current,
+        observedAt: this.clock(),
+        metrics: {
+          ...current.metrics,
+          [key]: {
+            value: value.value,
+            reason: value.reason,
+            sourceField: definition.field,
+            unit: definition.unit,
+            provenance: receipt
+              ? {
+                  ...receipt,
+                  definitionVersion,
+                  surface: definition.surface,
+                  distribution: definition.distribution,
+                }
+              : undefined,
+          },
+        },
+        provenance:
+          receipt?.responseReceivedAt != null
+            ? {
+                requestStartedAt: Math.min(
+                  receipt.requestStartedAt,
+                  previous?.requestStartedAt ?? Infinity,
+                ),
+                responseReceivedAt: Math.max(
+                  receipt.responseReceivedAt,
+                  previous?.responseReceivedAt ?? 0,
+                ),
+                receiptIds: [...new Set([...(previous?.receiptIds ?? []), receipt.receiptId])],
+                semantics: "sequential_requests_lifetime",
+                definitionVersion,
+              }
+            : previous,
+      };
+    }
+    return current;
+  }
+
   async additionalMetrics(
     accountId: string,
     item: { media: Media; initialMetrics: Partial<Metrics> },
     current: MediaStatistics,
   ): Promise<MediaStatistics> {
+    if (current.collectionError?.code === "INSTAGRAM_SOURCE_ERROR")
+      return this.recoverCore(accountId, item, current);
     if (current.collectionError) return current;
     // At most two cross-surface fields: one batch and at most two isolated probes.
     // The reader keeps the same operation, budget, backoff and object capability scope.

@@ -24,7 +24,7 @@ describe("Core-first collection through real HTTP policy, D1 and reports", () =>
     const expectedCore: Record<string, number> = {
       reels_supported: 11,
       feed_supported: 10,
-      feed_source_refusal: 2,
+      feed_source_refusal: 4,
       story_supported: 7,
       reels_optional_rejected: 11,
       feed_restrictions: 8,
@@ -80,7 +80,10 @@ describe("Core-first collection through real HTTP policy, D1 and reports", () =>
     expect(
       await env.DB.prepare("SELECT unavailable_code FROM media").first("unavailable_code"),
     ).toBe("INSTAGRAM_SOURCE_ERROR");
-    expect(runner.calls.filter((call) => call.family === "scalar")).toHaveLength(1);
+    expect(runner.calls.filter((call) => call.family === "scalar")).toHaveLength(4);
+    expect(result.reports[0]?.metrics?.views).toMatchObject({ value: 2000, reason: null });
+    expect(result.reports[0]?.metrics?.saves).toMatchObject({ value: 20, reason: null });
+    expect(result.attempts).toBeLessThanOrEqual(6);
     expect(runner.calls.filter((call) => call.family === "structured")).toHaveLength(0);
   });
 
@@ -125,6 +128,22 @@ describe("Core-first collection through real HTTP policy, D1 and reports", () =>
       );
       expect(report.calculated?.saveRate.value).toBe(2);
     }
+  });
+
+  it("gives every page object its core attempt before probing a refused field within the same six-request budget", async () => {
+    const runner = await scenarioRunner(env.DB, {
+      ...namedCase("feed_source_refusal"),
+      mediaCount: 2,
+    });
+    const result = await exerciseScenario(runner);
+    const scalar = runner.calls.filter((call) => call.family === "scalar");
+    expect(scalar.slice(0, 2).map((call) => call.objectId)).toEqual(runner.media.map((m) => m.id));
+    expect(scalar.slice(0, 2).every((call) => call.fields.length > 1)).toBe(true);
+    expect(result.attempts).toBe(6);
+    expect(result.reports).toHaveLength(2);
+    expect(result.reports.every((report) => report.metrics?.likes.value === 100)).toBe(true);
+    expect(result.reports.every((report) => report.metrics?.reach.value === null)).toBe(true);
+    expect(result.reports[0]?.metrics?.views.value).toBe(2000);
   });
 
   it("keeps supported watch/skip and cross-surface values with distinct receipts and an honest observation window", async () => {

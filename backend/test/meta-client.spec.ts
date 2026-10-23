@@ -10,6 +10,101 @@ const config = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
 describe("official Meta API adapter", () => {
+  it("discovers Stories with a bounded list and resumes each pending ID after recreating the client", async () => {
+    const item = (id: string) => ({
+      id,
+      media_type: "IMAGE",
+      permalink: `https://www.instagram.com/stories/test/${id}/`,
+      timestamp: "2026-10-23T06:00:00Z",
+    });
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        json({
+          data: [item("11"), item("22"), item("33")],
+          paging: {
+            cursors: { after: "source-next" },
+            next: "https://untrusted.example/?access_token=hidden",
+          },
+        }),
+      )
+      .mockResolvedValueOnce(json(item("22")))
+      .mockResolvedValueOnce(json(item("33")))
+      .mockResolvedValueOnce(json({ data: [] }));
+    const first = await new MetaClient(config, request).stories("fake-token", "123", null, 1);
+    expect(first.media.map((m) => m.id)).toEqual(["11"]);
+    expect(new URL(String(request.mock.calls[0]?.[0])).searchParams.get("limit")).toBe("50");
+    const second = await new MetaClient(config, request).stories(
+      "fake-token",
+      "123",
+      first.nextCursor,
+      1,
+    );
+    expect(second.media.map((m) => m.id)).toEqual(["22"]);
+    const third = await new MetaClient(config, request).stories(
+      "fake-token",
+      "123",
+      second.nextCursor,
+      1,
+    );
+    expect(third.media.map((m) => m.id)).toEqual(["33"]);
+    expect(third.nextCursor).toBe("source-next");
+    expect(
+      await new MetaClient(config, request).stories("fake-token", "123", third.nextCursor, 1),
+    ).toEqual({ media: [], nextCursor: null });
+    expect(request.mock.calls.map(([url]) => new URL(String(url)).pathname)).toEqual([
+      "/v26.0/123/stories",
+      "/v26.0/22",
+      "/v26.0/33",
+      "/v26.0/123/stories",
+    ]);
+    expect(new URL(String(request.mock.calls[3]?.[0])).searchParams.get("after")).toBe(
+      "source-next",
+    );
+    expect(JSON.stringify([first.nextCursor, second.nextCursor])).not.toContain("hidden");
+    expect(first.nextCursor?.length).toBeLessThan(4096);
+  });
+
+  it("avoids a false single-Story continuation when the source advertises next only for limit=1", async () => {
+    const request = vi.fn<typeof fetch>(async (url) =>
+      json({
+        data: [
+          {
+            id: "11",
+            media_type: "IMAGE",
+            permalink: "https://www.instagram.com/stories/test/11/",
+            timestamp: "2026-10-23T06:00:00Z",
+          },
+        ],
+        ...(new URL(String(url)).searchParams.get("limit") === "1"
+          ? { paging: { next: "https://graph.instagram.com/next", cursors: { after: "same" } } }
+          : {}),
+      }),
+    );
+    expect(
+      await new MetaClient(config, request).stories("fake-token", "123", null, 1),
+    ).toMatchObject({ media: [{ id: "11", productType: "STORY" }], nextCursor: null });
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects repeated source cursors and cross-account pending Stories without fetching extra objects", async () => {
+    const request = vi.fn<typeof fetch>().mockResolvedValueOnce(
+      json({
+        data: [],
+        paging: { next: "https://untrusted.example/", cursors: { after: "same" } },
+      }),
+    );
+    const client = new MetaClient(config, request);
+    await expect(client.stories("fake-token", "123", "same", 1)).rejects.toMatchObject({
+      code: "INSTAGRAM_PAGINATION_STALLED",
+    });
+    const cursor = `stories:v1:${btoa(JSON.stringify({ userId: "999", pending: ["11"], after: null }))}`;
+    await expect(client.stories("fake-token", "123", cursor, 1)).rejects.toMatchObject({
+      code: "VALIDATION_FAILED",
+    });
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+
   it("distinguishes Story viewer thresholds from missing permissions without probing every metric", async () => {
     const request = vi
       .fn<typeof fetch>()
