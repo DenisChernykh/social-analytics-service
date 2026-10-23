@@ -126,6 +126,7 @@ const SourceMetricSchema = z.object({
       "source_error",
       "request_deferred",
       "insufficient_audience",
+      "before_account_conversion",
     ])
     .nullable(),
 });

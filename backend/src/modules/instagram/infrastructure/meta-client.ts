@@ -154,13 +154,22 @@ const commentsPageSchema = z.object({
 
 class MetricUnavailable extends Error {
   constructor(
-    readonly reason: "not_supported" | "permission_required" | "insufficient_audience",
+    readonly reason:
+      | "not_supported"
+      | "permission_required"
+      | "insufficient_audience"
+      | "before_account_conversion",
     readonly rejectedFields: string[] = [],
     readonly probeFields: string[] = [],
   ) {
     super(reason);
   }
 }
+// Reserved capability marker, never a metric name. Uses the existing 24-hour,
+// account/object/API/query-scoped cache without another D1 lookup per request.
+const beforeConversionMarker = ":before_account_conversion";
+const beforeConversionMessage =
+  "The media was posted before the most recent time that the user's account was converted to a business account from a personal account.";
 class AudienceUnavailable extends Error {}
 class OptionalFieldUnavailable extends Error {
   constructor(readonly field: string) {
@@ -469,7 +478,14 @@ export class MetaClient implements InstagramTransport {
       throw failure;
     }
     const body = data as {
-      error?: { code?: number; error_subcode?: number; is_transient?: boolean; message?: string };
+      error?: {
+        code?: number;
+        error_subcode?: number;
+        is_transient?: boolean;
+        message?: string;
+        error_user_title?: string;
+        error_user_msg?: string;
+      };
       code?: number;
       error_type?: string;
       error_message?: string;
@@ -536,6 +552,16 @@ export class MetaClient implements InstagramTransport {
       ) {
         attempt.result = "insufficient_audience";
         failure = new AudienceUnavailable("insufficient_audience");
+      } else if (
+        metricRequest &&
+        code === 100 &&
+        attempt.graphSubcode === 2108006 &&
+        (message === beforeConversionMessage ||
+          body.error?.error_user_msg === beforeConversionMessage ||
+          body.error?.error_user_title === "Media Posted Before Business Account Conversion")
+      ) {
+        attempt.result = "before_account_conversion";
+        failure = new MetricUnavailable("before_account_conversion");
       } else if (metricRequest && code === 100) {
         const rejected = message.match(
           /does not support the metrics:\s*([a-z_]+(?:\s*,\s*[a-z_]+)*)\./i,
@@ -931,7 +957,10 @@ export class MetaClient implements InstagramTransport {
     const data = this.parsed(
       insightsSchema,
       await this.json(
-        this.graph(`${encodeURIComponent(mediaId)}/insights`, { metric: fields.join(",") }),
+        this.graph(`${encodeURIComponent(mediaId)}/insights`, {
+          metric: fields.join(","),
+          locale: "en_US",
+        }),
         "insights",
         { headers: { Authorization: `Bearer ${token}` } },
         true,
@@ -969,6 +998,11 @@ export class MetaClient implements InstagramTransport {
     const result: Record<string, InstagramInsight> = {};
     const signature = "media:lifetime:scalar";
     const cached = await this.unsupported(mediaId, signature);
+    let beforeConversion = cached.includes(beforeConversionMarker);
+    if (beforeConversion)
+      return Object.fromEntries(
+        fields.map((field) => [field, { value: null, reason: "before_account_conversion" }]),
+      );
     let pending = [...new Set(fields)].filter((field) => !cached.includes(field));
     const additionalOnly = fields.every(
       (field) => field === "facebook_views" || field === "crossposted_views",
@@ -976,6 +1010,10 @@ export class MetaClient implements InstagramTransport {
     for (const field of fields.filter((field) => cached.includes(field)))
       result[field] = { value: null, reason: "not_supported" };
     const individual = async (field: string) => {
+      if (beforeConversion) {
+        result[field] = { value: null, reason: "before_account_conversion" };
+        return;
+      }
       try {
         Object.assign(result, await this.insightBatch(token, mediaId, [field]));
       } catch (failure) {
@@ -992,6 +1030,10 @@ export class MetaClient implements InstagramTransport {
         }
         if (!(failure instanceof MetricUnavailable)) throw failure;
         result[field] = { value: null, reason: failure.reason, receipt: this.lastReceipt };
+        if (failure.reason === "before_account_conversion") {
+          beforeConversion = true;
+          await this.rememberUnsupported(mediaId, signature, [beforeConversionMarker]);
+        }
         if (
           failure.reason === "not_supported" &&
           (failure.rejectedFields.includes(field) || failure.probeFields.includes(field))
@@ -1020,6 +1062,8 @@ export class MetaClient implements InstagramTransport {
           return result;
         }
         if (!(error instanceof MetricUnavailable)) throw error;
+        if (error.reason === "before_account_conversion")
+          await this.rememberUnsupported(mediaId, signature, [beforeConversionMarker]);
         if (error.reason !== "not_supported" || pending.length === 1) {
           if (error.reason === "not_supported")
             await this.rememberUnsupported(
@@ -1134,6 +1178,12 @@ export class MetaClient implements InstagramTransport {
       query.until,
     ]);
     const cached = await this.unsupported(objectId, signature);
+    if (cached.includes(beforeConversionMarker))
+      return fields.map((metric) => ({
+        ...this.structuredValue({ ...query, metric }),
+        reason: "before_account_conversion",
+        receipt: undefined,
+      }));
     const results = new Map<string, StructuredInsight>();
     for (const metric of fields.filter((field) => cached.includes(field)))
       results.set(metric, {
@@ -1147,6 +1197,7 @@ export class MetaClient implements InstagramTransport {
         metric: pending.join(","),
         period: query.period,
         metric_type: query.metricType,
+        locale: "en_US",
       };
       if (query.since !== undefined) parameters.since = String(Math.floor(query.since / 1000));
       if (query.until !== undefined) parameters.until = String(Math.floor(query.until / 1000));
@@ -1196,6 +1247,8 @@ export class MetaClient implements InstagramTransport {
           break;
         }
         if (!(error instanceof MetricUnavailable)) throw error;
+        if (error.reason === "before_account_conversion")
+          await this.rememberUnsupported(objectId, signature, [beforeConversionMarker]);
         if (error.rejectedFields.length) {
           await this.rememberUnsupported(objectId, signature, error.rejectedFields);
           for (const metric of error.rejectedFields)

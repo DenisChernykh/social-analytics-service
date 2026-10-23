@@ -10,6 +10,31 @@ const config = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
 describe("official Meta API adapter", () => {
+  it("recognizes explicit pre-conversion explanations in either Meta error envelope", async () => {
+    for (const explanation of [
+      {
+        message:
+          "The media was posted before the most recent time that the user's account was converted to a business account from a personal account.",
+      },
+      {
+        message: "Invalid parameter",
+        error_user_title: "Media Posted Before Business Account Conversion",
+      },
+    ]) {
+      const request = vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(
+          json({ error: { code: 100, error_subcode: 2108006, ...explanation } }, 400),
+        );
+      const client = new MetaClient(config, request);
+      expect(await client.insights("fixture", "123", ["views", "reach"])).toEqual({
+        views: { value: null, reason: "before_account_conversion" },
+        reach: { value: null, reason: "before_account_conversion" },
+      });
+      expect(request).toHaveBeenCalledTimes(1);
+      expect(new URL(String(request.mock.calls[0]?.[0])).searchParams.get("locale")).toBe("en_US");
+    }
+  });
   it("discovers Stories with a bounded list and resumes each pending ID after recreating the client", async () => {
     const item = (id: string) => ({
       id,

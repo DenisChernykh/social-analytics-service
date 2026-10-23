@@ -129,6 +129,7 @@ export const metricSchema = z
         "source_error",
         "request_deferred",
         "insufficient_audience",
+        "before_account_conversion",
       ])
       .nullable(),
   })

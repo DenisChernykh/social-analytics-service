@@ -17,6 +17,61 @@ beforeEach(async () => {
 });
 
 describe("Core-first collection through real HTTP policy, D1 and reports", () => {
+  it("recognizes confirmed pre-conversion media without retrying fields or blocking metadata", async () => {
+    const runner = await scenarioRunner(env.DB, {
+      name: "feed_pre_conversion",
+      productType: "FEED",
+      maxAttempts: 6,
+      beforeConversion: true,
+    });
+    const result = await exerciseScenario(runner);
+    expect(result.run).toMatchObject({ status: "completed", coverageState: "partial" });
+    expect(result.reports[0]?.metrics?.reach).toMatchObject({
+      value: null,
+      reason: "before_account_conversion",
+    });
+    expect(result.reports[0]?.metrics?.likes).toMatchObject({
+      value: 100,
+      sourceField: "like_count",
+    });
+    expect(result.reports[0]?.metrics?.comments).toMatchObject({ value: 10 });
+    expect(runner.calls.filter((call) => call.family === "scalar")).toHaveLength(1);
+    expect(
+      await env.DB.prepare("SELECT unavailable_code FROM media").first("unavailable_code"),
+    ).toBeNull();
+    const client = new MetaClient(
+      {
+        clientId: "fixture",
+        clientSecret: "fixture",
+        redirectUri: "https://example.com/callback",
+        apiVersion: "v26.0",
+      },
+      vi.fn(() => {
+        throw new Error("Cached restriction must not request Meta");
+      }),
+      { policy: new D1RequestPolicy(env.DB), accountId: phase1AccountId, clock: runner.now },
+    );
+    expect(
+      await client.insights("fixture", runner.media[0]?.id as string, [
+        "reach",
+        "views",
+        "facebook_views",
+      ]),
+    ).toMatchObject({
+      reach: { value: null, reason: "before_account_conversion" },
+      views: { value: null, reason: "before_account_conversion" },
+      facebook_views: { value: null, reason: "before_account_conversion" },
+    });
+    const before = runner.calls.length;
+    runner.advance(300_000);
+    runner.resetBudget();
+    expect((await runner.collect(crypto.randomUUID())).status).toBe(200);
+    expect(runner.calls.slice(before).map((call) => call.family)).toEqual(["profile", "catalog"]);
+    runner.advance(24 * 3_600_000 + 1);
+    runner.resetBudget();
+    expect((await runner.collect(crypto.randomUUID())).status).toBe(200);
+    expect(runner.calls.filter((call) => call.family === "scalar")).toHaveLength(2);
+  });
   it.each(collectionCases)("collects $name under the shared budget", async (scenario) => {
     const runner = await scenarioRunner(env.DB, scenario);
     const result = await exerciseScenario(runner);

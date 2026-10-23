@@ -138,6 +138,7 @@ export type HttpAttempt = {
     | "invalid_breakdown"
     | "permission_required"
     | "insufficient_audience"
+    | "before_account_conversion"
     | "object_unavailable"
     | "rate_limited"
     | "retryable"

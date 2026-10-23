@@ -97,6 +97,7 @@ export type InstagramInsight = {
     | "source_error"
     | "request_deferred"
     | "insufficient_audience"
+    | "before_account_conversion"
     | null;
 };
 export interface InstagramReader {

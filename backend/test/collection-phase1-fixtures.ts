@@ -12,6 +12,7 @@ export type CollectionCase = {
   denyProfileActivity?: boolean;
   failCoreOnce?: boolean;
   refuseCore?: boolean;
+  beforeConversion?: boolean;
   coreQuotaPercent?: number;
   invalidAdditional?: string;
   malformedAdditional?: boolean;
@@ -193,6 +194,18 @@ export function collectionFixture(scenario: CollectionCase) {
       if (!item) throw new Error("Unknown fixture object");
       return json(rawMedia(item));
     }
+    if (scenario.beforeConversion)
+      return json(
+        {
+          error: {
+            code: 100,
+            error_subcode: 2108006,
+            message:
+              "The media was posted before the most recent time that the user's account was converted to a business account from a personal account.",
+          },
+        },
+        400,
+      );
     if (family === "structured") {
       if (fields[0] === "profile_activity" && scenario.denyProfileActivity)
         return json({ error: { code: 200, message: "Fixture permission required" } }, 403);

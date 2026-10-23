@@ -67,6 +67,7 @@ export type InsightValue = {
     | "source_error"
     | "request_deferred"
     | "insufficient_audience"
+    | "before_account_conversion"
     | null;
   description: string | null;
   points: { value: number | null; endTime: number; reason: string | null }[];

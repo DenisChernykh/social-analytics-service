@@ -396,6 +396,12 @@ test("Contract retains null, zero, formulas, time and drops unknown response key
   report.media = media;
   const metrics = report.metrics as Record<string, unknown>;
   metrics.reposts = { value: null, unit: "count", sourceField: "reposts", reason: "not_supported" };
+  metrics.reach = {
+    value: null,
+    unit: "count",
+    sourceField: "reach",
+    reason: "before_account_conversion",
+  };
   const client = await connect(async () => Response.json(report));
   try {
     const result = await client.callTool({
