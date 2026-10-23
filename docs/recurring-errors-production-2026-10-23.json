@@ -1,0 +1,403 @@
+{
+  "checkedAt": "2026-10-23T07:38:25.816Z",
+  "timeZone": "Asia/Yekaterinburg",
+  "sourceCommit": "59cbcb28b0e93a28f2f6565e88cc888f4953bf17",
+  "backend": {
+    "health": {
+      "status": 200,
+      "data": {
+        "status": "ok",
+        "revision": "0.3.10"
+      }
+    },
+    "deployment": {
+      "id": "f8c2376f-b010-493f-80b8-1a1b6b266c08",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "sharper.togas-6q@icloud.com",
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "d975aa55-7484-4462-9a05-1a6ac1f82acd",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-23T07:33:45.118905Z"
+    },
+    "bundle": {
+      "remoteSHA256": "062b2f9c4bc306bc66c53837e561950650f302221d7511cee7f814ea30f94667",
+      "localSHA256": "062b2f9c4bc306bc66c53837e561950650f302221d7511cee7f814ea30f94667",
+      "equal": true
+    },
+    "migration": {
+      "id": 16,
+      "name": "0015_lucky_agent_zero.sql",
+      "applied_at": "2026-10-23 07:32:47"
+    },
+    "invocationLogs": false,
+    "secretNamesUnchanged": true,
+    "resourceBindingsUnchanged": true,
+    "historicalControlsUnchanged": true,
+    "historicalControls": [
+      {
+        "id": "004dde66-9aa4-5868-b41f-211be3ce6d4f:ig_17841402362568040_18081218903397003",
+        "media_id": "ig_17841402362568040_18081218903397003",
+        "observed_at": 1791654622092,
+        "metricsSHA256": "727088575bb8ce93018a50d936db83b7bd9efe340edd209e8b5ea92902f25dee"
+      },
+      {
+        "id": "00c27438-0168-59a8-9fdc-28b32bb1d63e:ig_17841402362568040_17872575796522924",
+        "media_id": "ig_17841402362568040_17872575796522924",
+        "observed_at": 1791791420878,
+        "metricsSHA256": "b6d99c9c3e1cff363ded64ab68b65d777a39484fbc36b09823b0a0c1f2b806ac"
+      },
+      {
+        "id": "0174fa9d-3fe2-5e91-bc6e-a53a3aaaa4d5:ig_17841402362568040_18092591924160341",
+        "media_id": "ig_17841402362568040_18092591924160341",
+        "observed_at": 1791455727114,
+        "metricsSHA256": "e663048c1d8ef9edbd0f46a7b7b44bb1031632577ff3c209714d0d87d61a0428"
+      },
+      {
+        "id": "019b58f6-c78b-5b9e-a8e0-dc72870a4a03:ig_17841402362568040_17857059501655545",
+        "media_id": "ig_17841402362568040_17857059501655545",
+        "observed_at": 1790952719616,
+        "metricsSHA256": "59299f48e644b5d3f331bfcff452a1fda950b10780b1f6aea0cf476492ed45e3"
+      },
+      {
+        "id": "0210a2dd-2bee-5f0b-b76b-780c2fb6ac42:ig_17841402362568040_18499761757071577",
+        "media_id": "ig_17841402362568040_18499761757071577",
+        "observed_at": 1790952758400,
+        "metricsSHA256": "9fb3ab5b11add48a8707b76f216ca13bb539bd866d087b893162b0d03fe887d9"
+      },
+      {
+        "id": "022ba3af-528b-5df5-ad23-817cf523dae0:ig_17841402362568040_18093292946656602",
+        "media_id": "ig_17841402362568040_18093292946656602",
+        "observed_at": 1791370531426,
+        "metricsSHA256": "197d6c089fa33db11aa92ccc12080507e84d968d870bf151f7edf0d294b1f4a5"
+      },
+      {
+        "id": "02303b67-6a89-569c-ac17-753227de5611:ig_17841402362568040_18074484620460916",
+        "media_id": "ig_17841402362568040_18074484620460916",
+        "observed_at": 1791187237464,
+        "metricsSHA256": "749b447167bab368648cbc0813782808a0de1282ce94641349c8b9e99978df11"
+      },
+      {
+        "id": "02398282-70ec-5c41-900a-b7c301111971:ig_17841402362568040_18184928518357793",
+        "media_id": "ig_17841402362568040_18184928518357793",
+        "observed_at": 1791501060069,
+        "metricsSHA256": "8867880bb1f5258916d50cb5f0347200a60ab8268108f1a8ca90cf6bd918364d"
+      },
+      {
+        "id": "0249693b-4ee1-5337-914c-f3a33f1cfa6d:ig_17841402362568040_17860663988262545",
+        "media_id": "ig_17841402362568040_17860663988262545",
+        "observed_at": 1790952873559,
+        "metricsSHA256": "6a8617fd5c7853caee29add4b3e1a1d3a7b9702b207a54264533f168b666397d"
+      },
+      {
+        "id": "0262fad7-4e89-587f-9689-985077d97b78:ig_17841402362568040_17882339396369585",
+        "media_id": "ig_17841402362568040_17882339396369585",
+        "observed_at": 1790952862151,
+        "metricsSHA256": "6eade99e5d6aef459990dbed3483a9ad61e9601e0de552a842e52ae198896f09"
+      },
+      {
+        "id": "02b95c44-227e-5db0-af68-5f613d7c2160:ig_17841402362568040_18065403764488565",
+        "media_id": "ig_17841402362568040_18065403764488565",
+        "observed_at": 1790952795801,
+        "metricsSHA256": "f9d3d5d384035b22aed8de4e65c93f7d8d6890701a967d3067ff5d269f927f70"
+      },
+      {
+        "id": "03a17125-f097-5bab-b797-52d63d955d84:ig_17841402362568040_18093432221582150",
+        "media_id": "ig_17841402362568040_18093432221582150",
+        "observed_at": 1791516365255,
+        "metricsSHA256": "687992f37759ab6ced2c22fe257a76b838280dd1d928ff0e421b7afe35130688"
+      }
+    ],
+    "jobPages": [
+      {
+        "keys": ["jobs", "jobsPage"],
+        "total": 1215,
+        "aggregates": [
+          {
+            "origin": "activity",
+            "status": "completed",
+            "count": 13,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792713661842,
+            "lastSuccess": 1792713663857,
+            "lastUsefulObservation": 1792713663352
+          },
+          {
+            "origin": "audience",
+            "status": "completed",
+            "count": 21,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792713680762,
+            "lastSuccess": 1792713682275,
+            "lastUsefulObservation": 1792713682150
+          },
+          {
+            "origin": "comments",
+            "status": "cancelled",
+            "count": 1,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": null,
+            "lastSuccess": 1791017856293,
+            "lastUsefulObservation": null
+          },
+          {
+            "origin": "comments",
+            "status": "completed",
+            "count": 4,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792370413689,
+            "lastSuccess": 1792370414429,
+            "lastUsefulObservation": 1792370410142
+          },
+          {
+            "origin": "comments_refresh",
+            "status": "completed",
+            "count": 510,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792740233667,
+            "lastSuccess": 1792740234801,
+            "lastUsefulObservation": 1792740234801
+          },
+          {
+            "origin": "manual",
+            "status": "completed",
+            "count": 2,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792347662482,
+            "lastSuccess": 1792347665107,
+            "lastUsefulObservation": 1792347663714
+          },
+          {
+            "origin": "scheduled",
+            "status": "completed",
+            "count": 289,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792739985552,
+            "lastSuccess": 1792739987479,
+            "lastUsefulObservation": 1792739987271
+          },
+          {
+            "origin": "stories",
+            "status": "cancelled",
+            "count": 2,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": null,
+            "lastSuccess": 1790952356520,
+            "lastUsefulObservation": null
+          },
+          {
+            "origin": "stories",
+            "status": "completed",
+            "count": 290,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792684967819,
+            "lastSuccess": 1792684972930,
+            "lastUsefulObservation": 1792684971786
+          },
+          {
+            "origin": "stories",
+            "status": "failed",
+            "count": 83,
+            "due": 0,
+            "oldestDue": null,
+            "atRiskFresh": 0,
+            "freshDue": 0,
+            "lastAttempt": 1792738947579,
+            "lastSuccess": 1792738946110,
+            "lastUsefulObservation": 1792738945418
+          }
+        ],
+        "jobIds": ["4bfd4b06-23fb-51d4-ba34-e595f1924bb3"]
+      },
+      {
+        "keys": ["jobs", "jobsPage"],
+        "total": 1215,
+        "jobIds": ["961b1c3d-4dc4-5860-8005-50953934af3e"]
+      }
+    ],
+    "unauthenticatedJobsStatus": 401
+  },
+  "site": {
+    "projectId": "appgprj_6abf85476cec8191928b2376b9e8626f",
+    "version": 16,
+    "deploymentId": "appgdep_6adb0e31ca448191b49bb7717b003514",
+    "versionId": "appgprj_6abf85476cec8191928b2376b9e8626f~appgver_69749089616c8191b887be34bcb0b25e",
+    "status": "succeeded",
+    "url": "https://social-analytics.scary-rustles-7p.chatgpt.site",
+    "hasMcp": true,
+    "envSetRevision": 1,
+    "sourceCommit": "4d4d494d6541e39dbf07533e3522d75c97f93567",
+    "audience": {
+      "role": "owner",
+      "mode": "custom",
+      "revision": 1,
+      "allowedCount": 1,
+      "groups": 0
+    },
+    "pluginId": "plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01"
+  },
+  "mcpContinuation": {
+    "keys": ["jobs", "jobsPage"],
+    "jobs": 1,
+    "total": 1209,
+    "heavyDiagnosticsPresent": false
+  },
+  "observed": {
+    "checkedAt": "2026-10-23T07:38:25.816Z",
+    "from": "2026-10-23T07:33:45.118Z",
+    "partialRefreshes": [
+      {
+        "id": "ig_17841402362568040_18049478653181820",
+        "code": "INSTAGRAM_SOURCE_ERROR",
+        "delayMs": 300000,
+        "retryAt": 1792741362601,
+        "observedAt": 1792741062562,
+        "views": null,
+        "reach": null,
+        "saves": null,
+        "viewsReason": "source_error",
+        "reachReason": "source_error"
+      },
+      {
+        "id": "ig_17841402362568040_17950857841291313",
+        "code": "INSTAGRAM_SOURCE_ERROR",
+        "delayMs": 300000,
+        "retryAt": 1792741220544,
+        "observedAt": 1792740920513,
+        "views": null,
+        "reach": null,
+        "saves": null,
+        "viewsReason": "source_error",
+        "reachReason": "source_error"
+      },
+      {
+        "id": "ig_17841402362568040_17886353755382608",
+        "code": "INSTAGRAM_SOURCE_ERROR",
+        "delayMs": 300000,
+        "retryAt": 1792741156574,
+        "observedAt": 1792740856539,
+        "views": null,
+        "reach": null,
+        "saves": null,
+        "viewsReason": "source_error",
+        "reachReason": "source_error"
+      }
+    ],
+    "http": [
+      {
+        "family": "insights",
+        "result": "not_supported",
+        "graphCode": 100,
+        "subcode": null,
+        "attempts": 2
+      },
+      {
+        "family": "insights",
+        "result": "source_error",
+        "graphCode": 100,
+        "subcode": 2108006,
+        "attempts": 12
+      },
+      {
+        "family": "insights",
+        "result": "success",
+        "graphCode": null,
+        "subcode": null,
+        "attempts": 10
+      },
+      {
+        "family": "media_catalog",
+        "result": "not_supported",
+        "graphCode": 100,
+        "subcode": null,
+        "attempts": 3
+      },
+      {
+        "family": "media_catalog",
+        "result": "success",
+        "graphCode": null,
+        "subcode": null,
+        "attempts": 7
+      },
+      {
+        "family": "profile",
+        "result": "success",
+        "graphCode": null,
+        "subcode": null,
+        "attempts": 7
+      }
+    ],
+    "story": {
+      "id": "ffbd5d10-20f1-42b2-ac87-da93fa7febea",
+      "status": "completed",
+      "pages": 4,
+      "collected": 4,
+      "media_processed": 4,
+      "failures": 0,
+      "error_code": null,
+      "started_at": 1792740978366,
+      "completed_at": 1792741000541,
+      "last_step_http_attempts": 6,
+      "http_attempts": 23
+    },
+    "storyLimits": [
+      {
+        "listLimit": "50"
+      }
+    ]
+  },
+  "checks": {
+    "backendTests": 216,
+    "mcpTests": 28,
+    "rootPnpmCheck": "passed",
+    "localMigration": "applied"
+  },
+  "actions": {
+    "remoteMigration": "0015_lucky_agent_zero.sql",
+    "backendDeployment": true,
+    "mcpDeployment": true,
+    "verificationStoryJob": "ffbd5d10-20f1-42b2-ac87-da93fa7febea",
+    "manualAdvance": false,
+    "scheduleChanged": false,
+    "analyticsDeleted": false
+  },
+  "limitations": [
+    "Real Story verification is one pass, not proof of daily stability.",
+    "Three observed refused publications still reject isolated fields with Graph 100/2108006; no unsupported inference.",
+    "Increasing object backoff is tested locally; the first observed production failures have the initial five-minute delay.",
+    "D1 savings require a representative post-release window; no percentage claimed."
+  ]
+}

@@ -8,6 +8,23 @@ Site: https://social-analytics.scary-rustles-7p.chatgpt.site
 Плагин: https://chatgpt.com/plugins/plugin_asdk_app_sites_deb527bae8d08191b6ba5ffaa6041c01
 Исходники и инструкции: [chatgpt/README.md](../chatgpt/README.md).
 
+## Публикация 0.4.2
+
+2026-10-23 в 07:36:15 UTC опубликован MCP 0.4.2, Sites 16. Native deployment
+`appgdep_6adb0e31ca448191b49bb7717b003514`: succeeded, has_mcp=true,
+runtime env revision 1. Проверенный source
+`4d4d494d6541e39dbf07533e3522d75c97f93567` сохранён в прежнем source repository.
+Site, plugin ID, policy revision 1 и единственный разрешённый владелец сохранены.
+
+Cursor-продолжения get_collection_status идут в новый лёгкий endpoint
+collection/jobs и возвращают только jobs/jobsPage. Сводка первой страницы
+остаётся полной; инструкция больше не требует читать всю историю для
+обычной проверки очереди. Реальный установленный плагин подтвердил лёгкое
+продолжение без coverage/diagnostics. 28 MCP-тестов и сборка прошли.
+Backend 0.3.10 и migration 0015 опубликованы по тому же разрешению.
+Сохранность и ограничения зафиксированы в
+[production evidence](recurring-errors-production-2026-10-23.json).
+
 ## Публикация 0.4.1
 
 2026-10-18 в 18:23:38 UTC выпущен адаптер `0.4.1`, Sites 15. Manifest,
