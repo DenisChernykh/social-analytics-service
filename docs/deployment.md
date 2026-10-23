@@ -2,6 +2,22 @@
 
 ## Выпуск 0.3.11 / MCP 0.4.3: причина Graph 100/2108006
 
+Опубликовано по ранее выданному разрешению на исправления backend/MCP и push:
+MCP 0.4.3 — Sites 17, deployment appgdep_6adb14dbe3dc81919ae5e7823dc18ea5,
+08:03:48 UTC; backend 0.3.11 — source a6ccb8f, version
+001dc4b9-d8aa-4e87-9c81-63276c523cf7, 100% traffic, 08:04:44 UTC.
+Нативный Sites publish succeeded, has_mcp=true; owner-only access и policy
+revision 1 сохранены. Bundle production побайтно совпадает с локальным.
+218 backend + 28 MCP тестов прошли. Миграций в этом выпуске нет.
+
+Естественные production DO alarms уже распознали ограничение у трёх публикаций,
+без ручных collection commands. В каждом проходе одна общая попытка Insights
+и одна profile_activity, без повторных scalar-проб. Через установленный MCP
+проверен отчёт: reach/views/saved null с before_account_conversion, like_count=91
+и comments_count=6 сохраняются. Кеш содержит отдельные маркеры ограничения.
+Проверены 12 исторических снимков, bindings и настройки logs — без изменений.
+Доказательства: [pre-conversion-production-2026-10-23.json](pre-conversion-production-2026-10-23.json).
+
 Точечная проверка 23 октября через alarm изолированного локального SQLite DO
 подтвердила отказ 100/2108006 у трёх публикаций июля–августа 2019 года.
 При locale=en_US Meta объясняет для проверенной публикации, что она вышла

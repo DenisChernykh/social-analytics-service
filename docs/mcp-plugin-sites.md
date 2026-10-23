@@ -1,5 +1,18 @@
 # Social Analytics: MCP и плагин Sites
 
+## Публикация 0.4.3
+
+2026-10-23 в 08:03:48 UTC опубликован MCP 0.4.3, Sites 17, native deployment
+appgdep_6adb14dbe3dc81919ae5e7823dc18ea5 (succeeded, has_mcp=true).
+Source 836ac016b74b2d7f513e90a542982250c64e9269. Новый контракт сохраняет
+причину before_account_conversion; инструкции объясняют подтверждённый отказ
+для медиа до последнего перехода в бизнес-аккаунт без обещаний восстановить
+Insights. Через установленный connector get_media_report проверены null и
+причина, а также доступные likes/comments. Backend 0.3.11 опубликован отдельно
+по тому же разрешению. Owner-only access, policy revision 1 и env revision 1
+сохранены. Доказательства: docs/pre-conversion-production-2026-10-23.json.
+
+
 Social Analytics — общий проект для всех соцсетей владельца. Первая готовая
 интеграция — Instagram. Другие платформы пока не подключены; MCP не подменяет
 их данные статистикой Instagram. Готовый backend и настройки Meta сохранены.

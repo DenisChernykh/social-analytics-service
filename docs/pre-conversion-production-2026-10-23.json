@@ -1,0 +1,331 @@
+{
+  "checkedAt": "2026-10-23T08:07:55.580Z",
+  "sourceCommit": "a6ccb8f1c7f52fa64998a23f7d3ef28c5e563c75",
+  "health": {
+    "status": "ok",
+    "revision": "0.3.11"
+  },
+  "backend": {
+    "deployment": {
+      "id": "134c8948-59de-4a22-9430-5e28c2dd279c",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "001dc4b9-d8aa-4e87-9c81-63276c523cf7",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-23T08:04:44.420724Z"
+    },
+    "bundle": {
+      "remoteSHA256": "8c22a8d743b2bc159a7bda37406af3fad9271ac881a551d9b7ff3b7ffa1d5b37",
+      "localSHA256": "8c22a8d743b2bc159a7bda37406af3fad9271ac881a551d9b7ff3b7ffa1d5b37",
+      "equal": true
+    },
+    "resourceBindingsUnchanged": true,
+    "observabilityUnchanged": true,
+    "historicalControlsUnchanged": true,
+    "controlsChecked": 12,
+    "receipts": [
+      {
+        "id": "18f23969-3bf1-4626-8a6e-1f46ad23084b",
+        "operation_id": "74564d4f-5a26-5269-bc55-a95674a797da",
+        "object_id": "17918996893318779",
+        "requested_at": 1792742689238,
+        "result": "before_account_conversion",
+        "subcode": 2108006,
+        "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+      },
+      {
+        "id": "d9e267dc-a532-4b2a-88d6-f9baabc5d2cd",
+        "operation_id": "74564d4f-5a26-5269-bc55-a95674a797da",
+        "object_id": "17918996893318779",
+        "requested_at": 1792742689648,
+        "result": "before_account_conversion",
+        "subcode": 2108006,
+        "metric": "profile_activity"
+      },
+      {
+        "id": "d1dd0498-2b28-474a-be5c-f4d5646ceddb",
+        "operation_id": "e8994344-8a0c-5572-8d3f-2ae32b08ab07",
+        "object_id": "17886353755382608",
+        "requested_at": 1792742751849,
+        "result": "before_account_conversion",
+        "subcode": 2108006,
+        "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+      },
+      {
+        "id": "4e9635ee-5aaf-4d7b-94ba-204085ba62cc",
+        "operation_id": "e8994344-8a0c-5572-8d3f-2ae32b08ab07",
+        "object_id": "17886353755382608",
+        "requested_at": 1792742752288,
+        "result": "before_account_conversion",
+        "subcode": 2108006,
+        "metric": "profile_activity"
+      },
+      {
+        "id": "20be8f7c-2413-46bf-a241-8c6fa21a9cf1",
+        "operation_id": "91bf0fdd-f3c7-5042-9c00-4883c589e4e1",
+        "object_id": "17950857841291313",
+        "requested_at": 1792742814413,
+        "result": "before_account_conversion",
+        "subcode": 2108006,
+        "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits"
+      },
+      {
+        "id": "8f3602f5-9270-406d-b914-6714d7f7fdb5",
+        "operation_id": "91bf0fdd-f3c7-5042-9c00-4883c589e4e1",
+        "object_id": "17950857841291313",
+        "requested_at": 1792742814816,
+        "result": "before_account_conversion",
+        "subcode": 2108006,
+        "metric": "profile_activity"
+      }
+    ],
+    "operations": [
+      {
+        "id": "74564d4f-5a26-5269-bc55-a95674a797da",
+        "calls": [
+          {
+            "object_id": null,
+            "family": "profile",
+            "metric": null,
+            "result": "success"
+          },
+          {
+            "object_id": "17918996893318779",
+            "family": "media_catalog",
+            "metric": null,
+            "result": "success"
+          },
+          {
+            "object_id": "17918996893318779",
+            "family": "insights",
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits",
+            "result": "before_account_conversion"
+          },
+          {
+            "object_id": "17918996893318779",
+            "family": "insights",
+            "metric": "profile_activity",
+            "result": "before_account_conversion"
+          }
+        ]
+      },
+      {
+        "id": "e8994344-8a0c-5572-8d3f-2ae32b08ab07",
+        "calls": [
+          {
+            "object_id": null,
+            "family": "profile",
+            "metric": null,
+            "result": "success"
+          },
+          {
+            "object_id": "17886353755382608",
+            "family": "media_catalog",
+            "metric": null,
+            "result": "success"
+          },
+          {
+            "object_id": "17886353755382608",
+            "family": "insights",
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits",
+            "result": "before_account_conversion"
+          },
+          {
+            "object_id": "17886353755382608",
+            "family": "insights",
+            "metric": "profile_activity",
+            "result": "before_account_conversion"
+          }
+        ]
+      },
+      {
+        "id": "91bf0fdd-f3c7-5042-9c00-4883c589e4e1",
+        "calls": [
+          {
+            "object_id": null,
+            "family": "profile",
+            "metric": null,
+            "result": "success"
+          },
+          {
+            "object_id": "17950857841291313",
+            "family": "media_catalog",
+            "metric": null,
+            "result": "success"
+          },
+          {
+            "object_id": "17950857841291313",
+            "family": "insights",
+            "metric": "views,reach,likes,comments,saved,shares,total_interactions,follows,profile_visits",
+            "result": "before_account_conversion"
+          },
+          {
+            "object_id": "17950857841291313",
+            "family": "insights",
+            "metric": "profile_activity",
+            "result": "before_account_conversion"
+          }
+        ]
+      }
+    ],
+    "media": [
+      {
+        "external_id": "17886353755382608",
+        "unavailable_code": null,
+        "unavailable_until": 0
+      },
+      {
+        "external_id": "17918996893318779",
+        "unavailable_code": null,
+        "unavailable_until": 0
+      }
+    ],
+    "capabilityCache": [
+      {
+        "object_id": "17886353755382608",
+        "api_version": "v26.0",
+        "signature": "ig-login:capability-v2:[\"lifetime\",\"total_value\",\"action_type\",null,null,null]",
+        "metric": ":before_account_conversion",
+        "observed_at": 1792742752564,
+        "expires_at": 1792829152564
+      },
+      {
+        "object_id": "17886353755382608",
+        "api_version": "v26.0",
+        "signature": "ig-login:capability-v2:media:lifetime:scalar",
+        "metric": ":before_account_conversion",
+        "observed_at": 1792742752145,
+        "expires_at": 1792829152145
+      },
+      {
+        "object_id": "17918996893318779",
+        "api_version": "v26.0",
+        "signature": "ig-login:capability-v2:[\"lifetime\",\"total_value\",\"action_type\",null,null,null]",
+        "metric": ":before_account_conversion",
+        "observed_at": 1792742689944,
+        "expires_at": 1792829089944
+      },
+      {
+        "object_id": "17918996893318779",
+        "api_version": "v26.0",
+        "signature": "ig-login:capability-v2:media:lifetime:scalar",
+        "metric": ":before_account_conversion",
+        "observed_at": 1792742689507,
+        "expires_at": 1792829089507
+      },
+      {
+        "object_id": "17950857841291313",
+        "api_version": "v26.0",
+        "signature": "ig-login:capability-v2:[\"lifetime\",\"total_value\",\"action_type\",null,null,null]",
+        "metric": ":before_account_conversion",
+        "observed_at": 1792742815280,
+        "expires_at": 1792829215280
+      },
+      {
+        "object_id": "17950857841291313",
+        "api_version": "v26.0",
+        "signature": "ig-login:capability-v2:media:lifetime:scalar",
+        "metric": ":before_account_conversion",
+        "observed_at": 1792742814672,
+        "expires_at": 1792829214672
+      }
+    ]
+  },
+  "mcp": {
+    "deployment": {
+      "id": "appgdep_6adb14dbe3dc81919ae5e7823dc18ea5",
+      "project_id": "appgprj_6abf85476cec8191928b2376b9e8626f",
+      "title": "Social Analytics",
+      "version_id": "appgprj_6abf85476cec8191928b2376b9e8626f~appgver_2c1411c288a08191869978bc235df46c",
+      "type": "publish",
+      "status": "succeeded",
+      "url": "https://social-analytics.scary-rustles-7p.chatgpt.site",
+      "has_mcp": true,
+      "screenshot_asset_pointer": null,
+      "provider_deployment_id": "site---6abf85476cec8191928b2376b9e8626f",
+      "failure_message": null,
+      "env_set_revision": 1,
+      "updated_at": "2026-10-23T08:03:48.679001+00:00"
+    },
+    "sourceCommit": "836ac016b74b2d7f513e90a542982250c64e9269",
+    "report": {
+      "checkedAt": "2026-10-23T08:07:28.664Z",
+      "mediaId": "ig_17841402362568040_17886353755382608",
+      "metrics": {
+        "views": {
+          "value": null,
+          "reason": "before_account_conversion",
+          "sourceField": "views"
+        },
+        "reach": {
+          "value": null,
+          "reason": "before_account_conversion",
+          "sourceField": "reach"
+        },
+        "likes": {
+          "value": 91,
+          "reason": null,
+          "sourceField": "like_count"
+        },
+        "comments": {
+          "value": 6,
+          "reason": null,
+          "sourceField": "comments_count"
+        },
+        "saves": {
+          "value": null,
+          "reason": "before_account_conversion",
+          "sourceField": "saved"
+        }
+      },
+      "source": {
+        "provider": "instagram_api",
+        "apiVersion": "v26.0",
+        "observedAt": 1792742752660,
+        "ageSeconds": 41.589,
+        "scope": "field_specific_media_lifetime",
+        "object": "media",
+        "aggregation": "lifetime"
+      },
+      "observation": {
+        "requestStartedAt": 1792742751442,
+        "responseReceivedAt": 1792742752503,
+        "receiptIds": [
+          "d1dd0498-2b28-474a-be5c-f4d5646ceddb",
+          "568239e1-c70b-448d-8bc0-ec11dcc1d400",
+          "4e9635ee-5aaf-4d7b-94ba-204085ba62cc"
+        ],
+        "semantics": "sequential_requests_lifetime",
+        "definitionVersion": "instagram-measurement-v2"
+      }
+    },
+    "versionNumber": 17,
+    "accessMode": "custom",
+    "ownerOnly": true,
+    "accessPolicyRevision": 1
+  },
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 218,
+    "mcpTests": 28
+  },
+  "actions": {
+    "migration": false,
+    "scheduleChanged": false,
+    "manualCollectionCommand": false,
+    "sourceCallsAfterDeployment": "natural production DO alarms",
+    "analyticsDeleted": false
+  },
+  "limitations": [
+    "Only observed publications are confirmed; other 100/2108006 refusals must carry the explicit provider explanation before classification.",
+    "No recovery of unavailable reach/views is claimed. The per-object/query capability cache expires after 24 hours.",
+    "No representative D1 savings percentage is available yet."
+  ]
+}
