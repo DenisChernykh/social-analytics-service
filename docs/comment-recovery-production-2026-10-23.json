@@ -1,0 +1,208 @@
+{
+  "checkedAt": "2026-10-23T09:22:37.680Z",
+  "sourceCommit": "d8e71aa",
+  "health": {
+    "status": "ok",
+    "revision": "0.3.13"
+  },
+  "deployment": {
+    "id": "73a21da1-33ca-4b0f-8444-b52a0f5b702d",
+    "created_on": "2026-10-23T09:21:39.923192Z",
+    "versions": [
+      {
+        "version_id": "9084f20c-27fe-406f-b5a9-02503444894e",
+        "percentage": 100
+      }
+    ]
+  },
+  "bundle": {
+    "remoteEqualsLocal": true,
+    "sha256": "0409b1015a10c3cf086c59f06e666583941c5011a53268a4b2b8aa5b29c8b264"
+  },
+  "bindingsUnchanged": true,
+  "observabilityUnchanged": true,
+  "scheduleUnchanged": true,
+  "historicalControlsUnchanged": true,
+  "controlsChecked": 12,
+  "baseline": {
+    "publications": 77,
+    "branches": 1049
+  },
+  "checks": {
+    "rootPnpmCheck": "passed",
+    "backendTests": 230,
+    "mcpTests": 28
+  },
+  "migration": false,
+  "mcpDeployed": false,
+  "verificationCheckedAt": "2026-10-23T09:25:03.424Z",
+  "mcp": {
+    "checkedAt": "2026-10-23T09:25:03.424Z",
+    "isError": false,
+    "diagnostics": {
+      "expiredSyncAttempts": 0,
+      "expiredInsightAttempts": 0,
+      "expiredCommentAttempts": 0,
+      "leasesInUse": 0
+    },
+    "comments": {
+      "lastFullPassAt": 1792370414429,
+      "publications": 244,
+      "uniqueComments": 3882,
+      "stalePublications": 79,
+      "partialPublications": 79,
+      "pendingReplyBranches": 0,
+      "unverifiedReplyBranches": 1048,
+      "unavailablePublications": 3,
+      "currentPass": null,
+      "webhook": {
+        "subscriptionConfirmedAt": 1791432192539,
+        "lastReceivedAt": 1792738630999,
+        "lastEventAt": 1792738630000,
+        "active": true
+      }
+    },
+    "capacity": {
+      "dueJobs": 0,
+      "atRiskFreshJobs": 0,
+      "scope": "All jobs within cutoff; freshDue is a lower bound of steps for this account, excluding undiscovered objects and other accounts.",
+      "maximumHttpAttemptsPerTick": 6,
+      "tickWorkMs": 90000,
+      "persistenceReserveMs": 15000,
+      "pressureIndicator": false,
+      "overload": "not_measured",
+      "assumptions": "Durable Object alarms continue ready portions without a fixed Cron slot quota. Throughput depends on source latency, access, leases and quota; capacity is not measured by counting due jobs."
+    }
+  },
+  "progress": [
+    {
+      "checkedAt": "2026-10-23T09:23:02.921Z",
+      "cutover": "2026-10-23T09:21:39.923192Z",
+      "baselinePublications": 77,
+      "verifiedComplete": 0,
+      "attempted": 1,
+      "currentlyUnverifiedBranches": 1048,
+      "savedCommentsBefore": 3129,
+      "savedCommentsNow": 3129,
+      "newErrors": [],
+      "jobs": [
+        {
+          "status": "running",
+          "error_code": null,
+          "jobs": 1,
+          "pages": 4,
+          "processed": 0,
+          "observations": 50,
+          "lastSuccess": 1792747380923,
+          "pendingParents": 0
+        }
+      ],
+      "http": [
+        {
+          "family": "comments",
+          "result": "success",
+          "code": null,
+          "subcode": null,
+          "calls": 1,
+          "lastAt": 1792747371013
+        },
+        {
+          "family": "replies",
+          "result": "success",
+          "code": null,
+          "subcode": null,
+          "calls": 3,
+          "lastAt": 1792747380534
+        }
+      ]
+    },
+    {
+      "checkedAt": "2026-10-23T09:23:36.083Z",
+      "cutover": "2026-10-23T09:21:39.923192Z",
+      "baselinePublications": 77,
+      "verifiedComplete": 1,
+      "attempted": 1,
+      "currentlyUnverifiedBranches": 1048,
+      "savedCommentsBefore": 3129,
+      "savedCommentsNow": 3129,
+      "newErrors": [],
+      "jobs": [
+        {
+          "status": "completed",
+          "error_code": null,
+          "jobs": 1,
+          "pages": 5,
+          "processed": 1,
+          "observations": 76,
+          "lastSuccess": 1792747383735,
+          "pendingParents": 0
+        }
+      ],
+      "http": [
+        {
+          "family": "comments",
+          "result": "success",
+          "code": null,
+          "subcode": null,
+          "calls": 2,
+          "lastAt": 1792747382840
+        },
+        {
+          "family": "replies",
+          "result": "success",
+          "code": null,
+          "subcode": null,
+          "calls": 3,
+          "lastAt": 1792747380534
+        }
+      ]
+    },
+    {
+      "checkedAt": "2026-10-23T09:24:30.021Z",
+      "cutover": "2026-10-23T09:21:39.923192Z",
+      "baselinePublications": 77,
+      "verifiedComplete": 1,
+      "attempted": 1,
+      "currentlyUnverifiedBranches": 1048,
+      "savedCommentsBefore": 3129,
+      "savedCommentsNow": 3129,
+      "newErrors": [],
+      "jobs": [
+        {
+          "status": "completed",
+          "error_code": null,
+          "jobs": 2,
+          "pages": 6,
+          "processed": 2,
+          "observations": 95,
+          "lastSuccess": 1792747446396,
+          "pendingParents": 0
+        }
+      ],
+      "http": [
+        {
+          "family": "comments",
+          "result": "success",
+          "code": null,
+          "subcode": null,
+          "calls": 3,
+          "lastAt": 1792747445093
+        },
+        {
+          "family": "replies",
+          "result": "success",
+          "code": null,
+          "subcode": null,
+          "calls": 3,
+          "lastAt": 1792747380534
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Background rechecking is still running. One of the original 77 publications has completed verification in this observation window; the others are scheduled.",
+    "Raw unverified branch counts may change while an outer pass is in progress; completed publications are checked independently using last_complete_at and error/omission flags.",
+    "Three publications remain unavailable from the provider. No newly recovered texts are claimed in this window: saved count remains 3882.",
+    "All omitted edges require extra source calls and D1 writes; per-alarm budgets and D1 daily-quota guards remain active."
+  ]
+}
