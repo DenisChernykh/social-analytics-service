@@ -164,7 +164,8 @@ describe("bounded expanded comment collection (#18)", () => {
         )?.total,
       };
       expect(old.requests).toBe(51);
-      expect(old).toMatchObject({ bytes: 5208, writes: 164 });
+      // 62 new identities also maintain the ready unique-comment counter.
+      expect(old).toMatchObject({ bytes: 5208, writes: 226 });
       await f.request(`/api/media/${mediaId}/comments`, "DELETE");
       await env.DB.prepare("UPDATE benchmark_writes SET total=0").run();
       requests = 0;

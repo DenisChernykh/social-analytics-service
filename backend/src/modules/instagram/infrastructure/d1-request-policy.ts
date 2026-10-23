@@ -101,6 +101,7 @@ export class D1RequestPolicy implements InstagramRequestPolicy {
   }
   async beginAttempt(attempt: HttpAttempt) {
     const id = JSON.stringify([attempt.accountId, attempt.requestedApiVersion]);
+    const objectPath = `$.${JSON.stringify(attempt.objectId ?? "")}.lastAttempt`;
     await this.database.batch([
       this.database
         .prepare(
@@ -116,7 +117,7 @@ export class D1RequestPolicy implements InstagramRequestPolicy {
         ),
       this.database
         .prepare(
-          "INSERT INTO instagram_api_state(id,account_id,api_version,since_at,observed_at,attempts,accounting_since_at) VALUES(?,?,?,?,?,1,?) ON CONFLICT(id) DO UPDATE SET attempts=instagram_api_state.attempts+1,accounting_since_at=COALESCE(instagram_api_state.accounting_since_at,excluded.accounting_since_at)",
+          "INSERT INTO instagram_api_state(id,account_id,api_version,since_at,observed_at,attempts,accounting_since_at,object_freshness_json) VALUES(?,?,?,?,?,1,?,?) ON CONFLICT(id) DO UPDATE SET attempts=instagram_api_state.attempts+1,accounting_since_at=COALESCE(instagram_api_state.accounting_since_at,excluded.accounting_since_at),object_freshness_json=CASE WHEN ? IS NULL THEN instagram_api_state.object_freshness_json ELSE json_set(instagram_api_state.object_freshness_json,?,MAX(COALESCE(json_extract(instagram_api_state.object_freshness_json,?),0),?)) END",
         )
         .bind(
           id,
@@ -124,6 +125,15 @@ export class D1RequestPolicy implements InstagramRequestPolicy {
           attempt.requestedApiVersion,
           attempt.requestStartedAt,
           attempt.requestStartedAt,
+          attempt.requestStartedAt,
+          JSON.stringify(
+            attempt.objectId === null
+              ? {}
+              : { [attempt.objectId]: { lastAttempt: attempt.requestStartedAt, lastCheck: null } },
+          ),
+          attempt.objectId,
+          objectPath,
+          objectPath,
           attempt.requestStartedAt,
         ),
     ]);
@@ -145,13 +155,14 @@ export class D1RequestPolicy implements InstagramRequestPolicy {
     const now = attempt.responseReceivedAt ?? attempt.failedAt ?? attempt.requestStartedAt;
     const id = JSON.stringify([attempt.accountId, attempt.requestedApiVersion]);
     const responded = attempt.httpStatus !== null;
+    const objectPath = `$.${JSON.stringify(attempt.objectId ?? "")}.lastCheck`;
     await this.database.batch([
       this.database
         .prepare("UPDATE instagram_http_attempts SET received_at=?,payload_json=? WHERE id=?")
         .bind(attempt.responseReceivedAt, JSON.stringify(attempt), attempt.id),
       this.database
         .prepare(
-          "UPDATE instagram_api_state SET recorded_requests=recorded_requests+?,responses=responses+?,failures_before_response=failures_before_response+?,timeouts=timeouts+?,rate_limited_responses=rate_limited_responses+?,usage_headers_json=CASE WHEN ? THEN ? ELSE usage_headers_json END,blocked_until=MAX(blocked_until,?),usage_percent=COALESCE(?,usage_percent),usage_observed_at=COALESCE(?,usage_observed_at),observed_at=CASE WHEN ? THEN MAX(COALESCE(observed_at,0),?) ELSE observed_at END WHERE id=?",
+          "UPDATE instagram_api_state SET recorded_requests=recorded_requests+?,responses=responses+?,failures_before_response=failures_before_response+?,timeouts=timeouts+?,rate_limited_responses=rate_limited_responses+?,usage_headers_json=CASE WHEN ? THEN ? ELSE usage_headers_json END,blocked_until=MAX(blocked_until,?),usage_percent=COALESCE(?,usage_percent),usage_observed_at=COALESCE(?,usage_observed_at),observed_at=CASE WHEN ? THEN MAX(COALESCE(observed_at,0),?) ELSE observed_at END,object_freshness_json=CASE WHEN ? THEN json_set(object_freshness_json,?,MAX(COALESCE(json_extract(object_freshness_json,?),0),?)) ELSE object_freshness_json END WHERE id=?",
         )
         .bind(
           Number(responded),
@@ -166,6 +177,14 @@ export class D1RequestPolicy implements InstagramRequestPolicy {
           usage.usagePercent === null ? null : now,
           Number(responded),
           now,
+          Number(
+            attempt.objectId !== null &&
+              attempt.result === "success" &&
+              attempt.responseReceivedAt !== null,
+          ),
+          objectPath,
+          objectPath,
+          attempt.responseReceivedAt,
           id,
         ),
     ]);

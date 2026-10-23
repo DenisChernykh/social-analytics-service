@@ -11,6 +11,8 @@ export const accounts = sqliteTable(
     accountType: text("account_type").notNull(),
     connectedAt: integer("connected_at").notNull(),
     lastSyncedAt: integer("last_synced_at"),
+    collectionJobsJson: text("collection_jobs_json").notNull().default("{}"),
+    activityPeriodsJson: text("activity_periods_json").notNull().default("{}"),
   },
   (table) => [uniqueIndex("accounts_platform_external").on(table.platform, table.externalId)],
 );
@@ -56,6 +58,7 @@ export const media = sqliteTable(
     unavailableUntil: integer("unavailable_until").notNull().default(0),
     unavailableCode: text("unavailable_code"),
     failureRetryMs: integer("failure_retry_ms").notNull().default(0),
+    collectionStatusJson: text("collection_status_json").notNull().default("{}"),
   },
   (table) => [
     uniqueIndex("media_account_external").on(table.accountId, table.externalId),
@@ -171,6 +174,11 @@ export const collectionJobs = sqliteTable(
   },
   (table) => [
     index("collection_due").on(table.status, table.nextAttemptAt),
+    index("collection_account_page").on(table.accountId, table.startedAt, table.id),
+    index("collection_running_account").on(table.accountId).where(sql`${table.status}='running'`),
+    index("collection_terminal_leases")
+      .on(table.accountId, table.leaseExpiresAt)
+      .where(sql`${table.status}!='running' AND ${table.leaseExpiresAt} IS NOT NULL`),
     index("collection_comment_target").on(table.targetMediaId, table.status),
     index("collection_account_origin").on(
       table.accountId,
@@ -215,6 +223,9 @@ export const accountInsights = sqliteTable(
   (table) => [
     index("account_insights_query_time").on(table.accountId, table.signature, table.observedAt),
     index("account_insights_account_time").on(table.accountId, table.observedAt),
+    index("account_insights_running")
+      .on(table.accountId)
+      .where(sql`json_extract(${table.payloadJson},'$.status')='running'`),
   ],
 );
 
@@ -254,6 +265,9 @@ export const commentCollections = sqliteTable(
   (table) => [
     index("comment_collections_media_time").on(table.mediaId, table.observedAt),
     index("comment_collections_job_page").on(table.jobId, table.parentId, table.pageFingerprint),
+    index("comment_collections_running")
+      .on(table.mediaId)
+      .where(sql`json_extract(${table.resultJson},'$.status')='running'`),
   ],
 );
 
@@ -261,6 +275,7 @@ export const commentMediaState = sqliteTable("comment_media_state", {
   mediaId: text("media_id")
     .primaryKey()
     .references(() => media.id, { onDelete: "cascade" }),
+  uniqueSaved: integer("unique_saved").notNull().default(0),
   lastAttemptAt: integer("last_attempt_at"),
   lastCompleteAt: integer("last_complete_at"),
   nextRefreshAt: integer("next_refresh_at").notNull().default(0),
@@ -278,6 +293,7 @@ export const instagramApiState = sqliteTable("instagram_api_state", {
   accountId: text("account_id")
     .notNull()
     .references(() => accounts.id, { onDelete: "cascade" }),
+  objectFreshnessJson: text("object_freshness_json").notNull().default("{}"),
   apiVersion: text("api_version").notNull(),
   blockedUntil: integer("blocked_until").notNull().default(0),
   usagePercent: real("usage_percent"),

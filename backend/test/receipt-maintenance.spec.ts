@@ -94,11 +94,9 @@ describe("daily receipt maintenance", () => {
       quotaObservation({ retryAfter: null, appUsage: null, businessUsage: null }, now),
     );
     const queries = prepare.mock.calls.map(([sql]) => sql);
-    expect(
-      queries.some(
-        (sql) => sql.includes("DELETE FROM instagram_http_attempts") || sql.includes("json_set"),
-      ),
-    ).toBe(false);
+    expect(queries.some((sql) => sql.includes("DELETE FROM instagram_http_attempts"))).toBe(false);
+    // Freshness now updates the same accounting row; it adds no SQL write.
+    expect(queries).toHaveLength(4);
     expect(
       await env.DB.prepare("SELECT received_at FROM instagram_http_attempts WHERE id=?")
         .bind(attempt.id)

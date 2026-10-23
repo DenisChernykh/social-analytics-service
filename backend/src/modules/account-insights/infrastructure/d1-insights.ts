@@ -2,8 +2,7 @@ import { and, desc, eq, lt, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { accountInsights } from "../../../platform/database/schema";
 import type { InsightSelection, InsightStore } from "../application/ports";
-import { activityMetrics, type InsightCollection } from "../domain/model";
-import type { PeriodObservation } from "../domain/periods";
+import type { InsightCollection } from "../domain/model";
 
 export class D1Insights implements InsightStore {
   private readonly db;
@@ -11,22 +10,20 @@ export class D1Insights implements InsightStore {
     this.db = drizzle(database);
   }
   async periodObservations(accountId: string, timeZone: string, apiVersion: string, since: number) {
-    const result = await this.database
-      .prepare(
-        `SELECT json_extract(payload_json,'$.input.from') AS "from",json_extract(payload_json,'$.input.to') AS "to",MAX(observed_at) AS observedAt FROM account_insights
-       WHERE account_id=? AND observed_at>=? AND json_extract(payload_json,'$.status')='completed'
-         AND NOT EXISTS (SELECT 1 FROM json_each(payload_json,'$.values') v WHERE json_extract(v.value,'$.reason')='request_deferred')
-         AND json_extract(payload_json,'$.apiVersion')=? AND json_extract(payload_json,'$.input.kind')='activity'
-         AND json_extract(payload_json,'$.input.timeZone')=? AND json_extract(payload_json,'$.input.metricType')='total_value'
-         AND json_extract(payload_json,'$.input.breakdown') IS NULL
-         AND (SELECT COUNT(DISTINCT saved.value) FROM json_each(account_insights.payload_json,'$.input.metrics') saved
-           WHERE saved.value IN (${activityMetrics.map(() => "?").join(",")}))=?
-       GROUP BY json_extract(payload_json,'$.input.from'),json_extract(payload_json,'$.input.to')`,
-      )
-      .bind(accountId, since, apiVersion, timeZone, ...activityMetrics, activityMetrics.length)
-      .all<PeriodObservation>();
-    return result.results;
+    const row = await this.database
+      .prepare("SELECT activity_periods_json periods FROM accounts WHERE id=?")
+      .bind(accountId)
+      .first<{ periods: string }>();
+    return Object.entries(JSON.parse(row?.periods ?? "{}") as Record<string, number>).flatMap(
+      ([key, observedAt]) => {
+        const [version, zone, from, to] = key.split("|");
+        return version === apiVersion && zone === timeZone && observedAt >= since
+          ? [{ from: Number(from), to: Number(to), observedAt }]
+          : [];
+      },
+    );
   }
+
   async collection(id: string) {
     const row = (
       await this.db.select().from(accountInsights).where(eq(accountInsights.id, id)).limit(1)

@@ -15,6 +15,16 @@ import { type FieldFreshness, type MetricKey, metricKeys } from "../domain/model
 import { normalizeSearch } from "../domain/search";
 
 type Cursor = { time: number; id: string; rank?: number; filter?: string };
+// Internal status counters must not enter the account API or domain values.
+const accountColumns = {
+  id: accounts.id,
+  platform: accounts.platform,
+  externalId: accounts.externalId,
+  username: accounts.username,
+  accountType: accounts.accountType,
+  connectedAt: accounts.connectedAt,
+  lastSyncedAt: accounts.lastSyncedAt,
+};
 function encodeCursor(cursor: Cursor): string {
   return btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(cursor))));
 }
@@ -80,13 +90,16 @@ export class D1Analytics implements AnalyticsRepository {
     this.db = drizzle(database);
   }
   async accounts() {
-    return (await this.db.select().from(accounts).orderBy(accounts.username)) as Account[];
+    return (await this.db
+      .select(accountColumns)
+      .from(accounts)
+      .orderBy(accounts.username)) as Account[];
   }
   async account(id: string) {
     return (
-      ((await this.db.select().from(accounts).where(eq(accounts.id, id)).limit(1))[0] as
-        | Account
-        | undefined) ?? null
+      ((
+        await this.db.select(accountColumns).from(accounts).where(eq(accounts.id, id)).limit(1)
+      )[0] as Account | undefined) ?? null
     );
   }
   async media(id: string) {
